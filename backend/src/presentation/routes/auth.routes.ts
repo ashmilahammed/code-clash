@@ -9,11 +9,11 @@ const router = Router();
 router.post("/register", registerController);
 router.post("/login", loginController);
 
-// Protected route example
+// Protected example route
 router.get("/me", authMiddleware, (req: any, res) => {
-  res.json({ 
+  return res.json({
     message: "Protected route accessed",
-    user: req.user 
+    user: req.user
   });
 });
 

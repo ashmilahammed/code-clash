@@ -1,25 +1,61 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
 
-const UserSchema = new mongoose.Schema(
-    {
-        username: { type: String, required: true },
-        email: { type: String, required: true, unique: true },
+export interface IUserDoc extends Document {
+  username: string;
+  email: string;
+  password: string;
 
-        password: { type: String },
+  avatar_id?: string | null;
+  badge_id?: string | null;
+  level_id?: string | null;
 
-        avatar: { type: String, default: null },
+  xp: number;
 
-        xp: { type: Number, default: 0 },
-        level: { type: Number, default: 1 },
-        streak: { type: Number, default: 0 },
+  current_streak: number;
+  longest_streak: number;
 
-        role: { type: String, default: "user" },
+  is_premium: boolean;
 
-        refreshToken: { type: String, default: null }
-    },
-    { timestamps: true }
+  date_joined: Date;
+
+  role: "user" | "admin";
+  status: "active" | "blocked";
+
+  refreshToken?: string | null;
+
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+
+const UserSchema = new Schema<IUserDoc>(
+  {
+    username: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+
+    password: { type: String, required: true },
+
+    avatar_id: { type: Schema.Types.ObjectId, ref: "Avatar", default: null },
+    badge_id: { type: Schema.Types.ObjectId, ref: "Badge", default: null },
+    level_id: { type: Schema.Types.ObjectId, ref: "Level", default: null },
+
+    xp: { type: Number, default: 0 },
+
+    current_streak: { type: Number, default: 0 },
+    longest_streak: { type: Number, default: 0 },
+
+    is_premium: { type: Boolean, default: false },
+
+    date_joined: { type: Date, default: Date.now },
+
+    role: { type: String, enum: ["user", "admin"], default: "user" },
+    status: { type: String, enum: ["active", "blocked"], default: "active" },
+
+    refreshToken: { type: String, default: null },
+  },
+  { timestamps: true }
 );
 
 
-export default mongoose.model("User", UserSchema);
+export const UserModel = mongoose.model<IUserDoc>("User", UserSchema);
