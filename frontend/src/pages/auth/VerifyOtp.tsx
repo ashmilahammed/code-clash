@@ -1,75 +1,8 @@
-// import { useState } from "react";
-// import { useNavigate, useLocation } from "react-router-dom";
-// import { verifyOtpApi } from "../../api/authApi";
-
-
-// const VerifyOtp = () => {
-//   const [otp, setOtp] = useState("");
-//   const [error, setError] = useState<string | null>(null);
-//   const [loading, setLoading] = useState(false);
-
-//   const navigate = useNavigate();
-//   const location = useLocation();
-
-//   // Read userId from URL: /auth/verify-otp?userId=123
-//   const userId = new URLSearchParams(location.search).get("userId");
-
-//   if (!userId) {
-//     return <p>Error: Missing userId. Go back and register again.</p>;
-//   }
-
-//   const submitOtp = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     setError(null);
-
-//     if (otp.trim().length === 0) {
-//       setError("OTP cannot be empty");
-//       return;
-//     }
-
-//     try {
-//       setLoading(true);
-
-//       await verifyOtpApi({ userId, otp });
-
-//       // OTP success → go to login
-//       navigate("/auth/login", { replace: true });
-
-//     } catch (err: any) {
-//       const msg = err?.response?.data?.message || "Invalid OTP. Try again.";
-//       setError(msg);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <form onSubmit={submitOtp}>
-//       <h2>Verify OTP</h2>
-
-//       {error && <p style={{ color: "red" }}>{error}</p>}
-
-//       <input
-//         value={otp}
-//         onChange={(e) => setOtp(e.target.value)}
-//         placeholder="Enter OTP"
-//       />
-
-//       <button disabled={loading}>
-//         {loading ? "Verifying..." : "Verify"}
-//       </button>
-//     </form>
-//   );
-// };
-
-// export default VerifyOtp;
-
-
-
-
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { verifyOtpApi, resendOtpApi } from "../../api/authApi";
+
+
 
 const VerifyOtp = () => {
   const [otp, setOtp] = useState("");
@@ -82,12 +15,35 @@ const VerifyOtp = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // userId from URL: /auth/verify-otp?userId=123
-  const userId = new URLSearchParams(location.search).get("userId");
+  // userId from URL: /auth/verify-otp?userId=123&email=user@example.com&otp=654321
+  const params = new URLSearchParams(location.search);
+  const userId = params.get("userId");
+  const email = params.get("email");
+  const otpFromLogin = params.get("otp"); // NEW
 
   if (!userId) {
-    return <p>Error: Missing userId. Go back and register again.</p>;
+    return (
+      <div className="auth-page">
+        <h2>Verify OTP</h2>
+        <p style={{ color: "red" }}>Error: Missing userId. Go back and register again.</p>
+        <button onClick={() => navigate("/auth/register")}>Go to Register</button>
+      </div>
+    );
   }
+
+  // NEW: Console log OTP if coming from login redirect
+  useEffect(() => {
+    if (otpFromLogin) {
+      console.log("OTP from login redirect =", otpFromLogin);
+    }
+  }, [otpFromLogin]);
+
+  // NEW: Auto-fill OTP field (optional, for development)
+  useEffect(() => {
+    if (otpFromLogin) {
+      setOtp(otpFromLogin);
+    }
+  }, [otpFromLogin]);
 
   // Timer countdown
   useEffect(() => {
@@ -142,32 +98,54 @@ const VerifyOtp = () => {
   };
 
   return (
-    <form onSubmit={submitOtp}>
+    <div className="auth-page">
       <h2>Verify OTP</h2>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>{success}</p>}
+      {email && (
+        <p style={{ marginBottom: "10px", color: "#666" }}>
+          Please verify your account for <strong>{email}</strong>
+        </p>
+      )}
 
-      <input
-        value={otp}
-        onChange={(e) => setOtp(e.target.value)}
-        placeholder="Enter OTP"
-      />
+      <p style={{ marginBottom: "20px", fontSize: "14px" }}>
+        An OTP has been sent to your email. Please enter it below to verify your account.
+      </p>
 
-      <button disabled={loading}>
-        {loading ? "Verifying..." : "Verify"}
-      </button>
+      <form onSubmit={submitOtp}>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        {success && <p style={{ color: "green" }}>{success}</p>}
 
-      <div style={{ marginTop: "10px" }}>
-        {timer > 0 ? (
-          <p>Resend OTP in {timer}s</p>
-        ) : (
-          <button type="button" onClick={resendOtp}>
-            Resend OTP
+        <input
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          placeholder="Enter OTP"
+        />
+
+        <button disabled={loading}>
+          {loading ? "Verifying..." : "Verify"}
+        </button>
+
+        <div style={{ marginTop: "10px" }}>
+          {timer > 0 ? (
+            <p>Resend OTP in {timer}s</p>
+          ) : (
+            <button type="button" onClick={resendOtp}>
+              Resend OTP
+            </button>
+          )}
+        </div>
+
+        <div style={{ marginTop: "15px" }}>
+          <button
+            type="button"
+            onClick={() => navigate("/auth/login")}
+            style={{ background: "none", border: "none", color: "blue", cursor: "pointer" }}
+          >
+            ← Back to Login
           </button>
-        )}
-      </div>
-    </form>
+        </div>
+      </form>
+    </div>
   );
 };
 

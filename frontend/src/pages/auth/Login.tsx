@@ -36,6 +36,15 @@ const Login: React.FC = () => {
       navigate("/dashboard", { replace: true });
 
     } catch (err: any) {
+      // Check if this is an unverified user error
+      // if (err?.response?.data?.requiresVerification) {
+      if (err?.response?.data?.needsVerification) {
+        const userId = err.response.data.userId;
+        // Redirect to OTP verification page with userId and email
+        navigate(`/auth/verify-otp?userId=${userId}&email=${encodeURIComponent(email)}`);
+        return;
+      }
+
       const msg =
         err?.response?.data?.message ||
         err?.message ||

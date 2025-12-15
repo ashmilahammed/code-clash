@@ -44,12 +44,12 @@ export class UserRepository implements IUserRepository {
     }
 
     async findByEmail(email: string): Promise<IUser | null> {
-        const user = await UserModel.findOne({ email }).lean();
+        const user = await UserModel.findOne({ email });
         return user ? this.toDomain(user) : null;
     }
 
     async findById(id: string): Promise<IUser | null> {
-        const user = await UserModel.findById(id).lean();
+        const user = await UserModel.findById(id);
         return user ? this.toDomain(user) : null;
     }
 

@@ -10,7 +10,8 @@ import { forgotPasswordUseCase } from "../../application/use-cases/auth/forgetPa
 import { verifyForgotOtpUseCase } from "../../application/use-cases/auth/verifyForgotOtpUseCase";
 import { resetPasswordUseCase } from "../../application/use-cases/auth/resetPasswordUseCase";
 
-
+import { generateOtp } from "../../utils/generateOtp";
+import { EmailService } from "../../infrastructure/services/emailService";
 
 // repository + use-case instance
 const userRepo = new UserRepository();
@@ -78,6 +79,36 @@ export const resendOtpController = async (req: Request, res: Response) => {
 
 
 // login (only if verified)
+// export const loginController = async (req: Request, res: Response) => {
+//   try {
+//     const { email, password } = req.body;
+
+//     const user = await userRepo.findByEmail(email);
+//     if (!user) throw new Error("User not found");
+
+//     // If user is NOT verified, redirect
+//     if (!user.isVerified) {
+//       return res.status(400).json({
+//         message: "Please verify your OTP before logging in",
+//         userId: user.id,
+//         needsVerification: true,
+//       });
+//     }
+
+//     // User is verified ,continue login
+//     const result = await loginUseCase.execute(email, password);
+
+//     return res.json({
+//       message: "Login successful",
+//       user: result.user,
+//       accessToken: result.accessToken,
+//       refreshToken: result.refreshToken,
+//     });
+
+//   } catch (err: any) {
+//     return res.status(400).json({ message: err.message });
+//   }
+// };
 export const loginController = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
@@ -85,10 +116,30 @@ export const loginController = async (req: Request, res: Response) => {
     const user = await userRepo.findByEmail(email);
     if (!user) throw new Error("User not found");
 
+    // If NOT verified → send new OTP and redirect
     if (!user.isVerified) {
-      throw new Error("Please verify your OTP before logging in");
+
+      // Generate OTP
+      const { otp, expires } = generateOtp();
+
+      // Store OTP in DB (keep isVerified=false)
+      await userRepo.saveOtp(user.id!, otp, expires, true);
+
+      // Email OTP
+      await new EmailService().sendOtpEmail(email, otp);
+
+      // Log OTP for development
+      console.log(`LOGIN (unverified user) OTP for ${email}: ${otp}`);
+
+      return res.status(400).json({
+        message: "Please verify your OTP before logging in",
+        needsVerification: true,
+        userId: user.id,
+        otp: process.env.NODE_ENV === "development" ? otp : undefined,
+      });
     }
 
+    // If verified → continue login
     const result = await loginUseCase.execute(email, password);
 
     return res.json({
@@ -102,6 +153,7 @@ export const loginController = async (req: Request, res: Response) => {
     return res.status(400).json({ message: err.message });
   }
 };
+
 
 
 ///
@@ -147,7 +199,7 @@ export const verifyForgotOtpController = async (req: Request, res: Response) => 
 };
 
 
-///
+// 
 export const resetPasswordController = async (req: Request, res: Response) => {
   try {
     const { userId, password } = req.body;
