@@ -10,7 +10,7 @@ const api = axios.create({
 });
 
 
-// RESPONSE INTERCEPTOR
+// Res interceptor
 api.interceptors.response.use(
   (res) => res,
   async (err: AxiosError) => {
@@ -21,27 +21,27 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        // Get new tokens
+        // new tokens
         const res = await refreshTokenApi();
 
         const newAccessToken = res.data.accessToken;
 
         // Update Zustand auth store
         useAuthStore.getState().setCredentials({
-          user: useAuthStore.getState().user!, // user is already known
+          user: useAuthStore.getState().user!, 
           accessToken: newAccessToken,
         });
 
-        // Update Axios default header
+        
         api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
 
-        // Update the failed request's header
+        // failed request's header
         originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
 
         // Retry original request
         return api(originalRequest);
+
       } catch (error) {
-        // If refresh also fails → logout user
         useAuthStore.getState().logoutUser();
       }
     }

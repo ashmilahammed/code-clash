@@ -31,6 +31,10 @@ export class UserRepository implements IUserRepository {
 
             refreshToken: doc.refreshToken ?? null,
 
+            isVerified: doc.isVerified,
+            otp: doc.otp ?? null,
+            otpExpires: doc.otpExpires ?? null,
+
         };
     }
 
@@ -40,16 +44,53 @@ export class UserRepository implements IUserRepository {
     }
 
     async findByEmail(email: string): Promise<IUser | null> {
-        const user = await UserModel.findOne({ email });
+        const user = await UserModel.findOne({ email }).lean();
         return user ? this.toDomain(user) : null;
     }
 
     async findById(id: string): Promise<IUser | null> {
-        const user = await UserModel.findById(id);
+        const user = await UserModel.findById(id).lean();
         return user ? this.toDomain(user) : null;
     }
 
     async updateRefreshToken(id: string, refreshToken: string | null): Promise<void> {
         await UserModel.findByIdAndUpdate(id, { refreshToken });
     }
+
+
+    ////
+    // async saveOtp(id: string, otp: string | null, otpExpires: Date | null): Promise<void> {
+    //     await UserModel.findByIdAndUpdate(id, {
+    //         otp,
+    //         otpExpires,
+    //         isVerified: false,
+    //     });
+    // }
+    async saveOtp(
+        id: string,
+        otp: string | null,
+        otpExpires: Date | null,
+        resetVerifyField: boolean = false // default = false
+    ) {
+        await UserModel.findByIdAndUpdate(id, {
+            otp,
+            otpExpires,
+            ...(resetVerifyField ? { isVerified: false } : {})
+        });
+    }
+
+
+
+    async verifyUser(id: string): Promise<void> {
+        await UserModel.findByIdAndUpdate(id, {
+            isVerified: true,
+            otp: null,
+            otpExpires: null,
+        });
+    }
+
+    async updatePassword(id: string, hashed: string) {
+        await UserModel.findByIdAndUpdate(id, { password: hashed });
+    }
+
 }

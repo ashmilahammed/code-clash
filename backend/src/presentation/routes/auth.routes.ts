@@ -1,5 +1,7 @@
 import { Router } from "express";
-import { registerController, loginController } from "../controllers/auth.controller";
+import { registerController, verifyOtpController, resendOtpController } from "../controllers/auth.controller";
+import { loginController, logoutController } from "../controllers/auth.controller";
+import { forgotPasswordController, verifyForgotOtpController, resetPasswordController } from "../controllers/auth.controller";
 import { authMiddleware } from "../middlewares/auth.Middleware";
 
 
@@ -7,14 +9,18 @@ const router = Router();
 
 // Public routes
 router.post("/register", registerController);
+router.post("/verify-otp", verifyOtpController);
+router.post("/resend-otp", resendOtpController)
+
 router.post("/login", loginController);
 
-// Protected example route
-router.get("/me", authMiddleware, (req: any, res) => {
-  return res.json({
-    message: "Protected route accessed",
-    user: req.user
-  });
-});
+router.post("/forgot-password", forgotPasswordController);
+router.post("/forgot-password/verify-otp", verifyForgotOtpController);
+router.post("/reset-password", resetPasswordController);
+
+//protected logout
+router.post('/logout', authMiddleware, logoutController)
+
+
 
 export default router;

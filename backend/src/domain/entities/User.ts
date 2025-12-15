@@ -24,4 +24,8 @@ export interface IUser {
 
   refreshToken?: string | null;
 
+
+  isVerified: boolean;            
+  otp?: string | null;            
+  otpExpires?: Date | null;      
 }

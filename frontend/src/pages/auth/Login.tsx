@@ -5,7 +5,6 @@ import { useAuthStore } from "../../store/useAuthStore";
 
 
 
-
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const setCredentials = useAuthStore((s) => s.setCredentials);
@@ -29,13 +28,11 @@ const Login: React.FC = () => {
 
       const res = await loginApi({ email, password });
 
-      // save user + token in Zustand
       setCredentials({
         user: res.data.user,
         accessToken: res.data.accessToken,
       });
 
-      // redirect to dashboard
       navigate("/dashboard", { replace: true });
 
     } catch (err: any) {
@@ -79,6 +76,14 @@ const Login: React.FC = () => {
             required
           />
         </label>
+
+        {/* Forgot Password Link */}
+        <p
+          onClick={() => navigate("/auth/forgot-password")}
+          style={{ color: "blue", cursor: "pointer", marginTop: "10px" }}
+        >
+          Forgot Password?
+        </p>
 
         <button type="submit" disabled={loading}>
           {loading ? "Logging in..." : "Login"}

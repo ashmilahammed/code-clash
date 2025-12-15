@@ -21,4 +21,7 @@ export const ENV = {
 
   ACCESS_TOKEN_EXPIRES: process.env.ACCESS_TOKEN_EXPIRES ?? "15m",
   REFRESH_TOKEN_EXPIRES: process.env.REFRESH_TOKEN_EXPIRES ?? "7d",
+
+  EMAIL_USER: process.env.EMAIL_USER ?? "",
+  EMAIL_PASS: process.env.EMAIL_PASS ?? "",
 };

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { JwtService } from "../../infrastructure/security/jwtService";
 
+
 export const authMiddleware = (req: any, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) return res.status(401).json({ message: "No token" });
