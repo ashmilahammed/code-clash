@@ -43,6 +43,7 @@ export class UserRepository implements IUserRepository {
         return this.toDomain(created);
     }
 
+
     async findByEmail(email: string): Promise<IUser | null> {
         const user = await UserModel.findOne({ email });
         return user ? this.toDomain(user) : null;

@@ -15,11 +15,12 @@ const VerifyOtp = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // userId from URL: /auth/verify-otp?userId=123&email=user@example.com&otp=654321
+  // userId from URL: 
+  // /auth/verify-otp?userId=123&email=user@example.com&otp=654321
   const params = new URLSearchParams(location.search);
   const userId = params.get("userId");
   const email = params.get("email");
-  const otpFromLogin = params.get("otp"); // NEW
+  const otpFromLogin = params.get("otp"); 
 
   if (!userId) {
     return (
@@ -31,21 +32,21 @@ const VerifyOtp = () => {
     );
   }
 
-  // NEW: Console log OTP if coming from login redirect
+  // OTP console coming from login redirect
   useEffect(() => {
     if (otpFromLogin) {
       console.log("OTP from login redirect =", otpFromLogin);
     }
   }, [otpFromLogin]);
 
-  // NEW: Auto-fill OTP field (optional, for development)
+
   useEffect(() => {
     if (otpFromLogin) {
       setOtp(otpFromLogin);
     }
   }, [otpFromLogin]);
 
-  // Timer countdown
+
   useEffect(() => {
     if (timer === 0) return;
 

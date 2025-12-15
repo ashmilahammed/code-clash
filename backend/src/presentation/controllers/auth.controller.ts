@@ -13,6 +13,9 @@ import { resetPasswordUseCase } from "../../application/use-cases/auth/resetPass
 import { generateOtp } from "../../utils/generateOtp";
 import { EmailService } from "../../infrastructure/services/emailService";
 
+import { googleLoginUseCase } from "../../application/use-cases/auth/googleLoginUseCase";
+
+
 // repository + use-case instance
 const userRepo = new UserRepository();
 const loginUseCase = new LoginUseCase(userRepo);
@@ -32,7 +35,7 @@ export const registerController = async (req: Request, res: Response) => {
     });
 
   } catch (err: any) {
-    return res.status(400).json({ message: err.message });
+    return res.status(400).json({ message: err.message || "Failed to register" });
   }
 };
 
@@ -51,7 +54,7 @@ export const verifyOtpController = async (req: Request, res: Response) => {
     return res.json(result);
 
   } catch (err: any) {
-    return res.status(400).json({ message: err.message });
+    return res.status(400).json({ message: err.message || "Failed to Verify OTP" });
   }
 };
 
@@ -60,18 +63,18 @@ export const verifyOtpController = async (req: Request, res: Response) => {
 ///
 export const resendOtpController = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.body;
+    const { userId, ignoreVerified } = req.body;
 
     if (!userId) {
       return res.status(400).json({ message: "userId is required" });
     }
 
-    const result = await resendOtpUseCase(userId);
+    const result = await resendOtpUseCase(userId, { ignoreVerified });
 
     return res.json(result);
 
   } catch (err: any) {
-    return res.status(400).json({ message: err.message });
+    return res.status(400).json({ message: err.message || "Failed to resend OTP" });
   }
 };
 
@@ -116,19 +119,17 @@ export const loginController = async (req: Request, res: Response) => {
     const user = await userRepo.findByEmail(email);
     if (!user) throw new Error("User not found");
 
-    // If NOT verified → send new OTP and redirect
+
     if (!user.isVerified) {
 
-      // Generate OTP
       const { otp, expires } = generateOtp();
 
-      // Store OTP in DB (keep isVerified=false)
+      // Store OTP in DB
       await userRepo.saveOtp(user.id!, otp, expires, true);
 
-      // Email OTP
       await new EmailService().sendOtpEmail(email, otp);
 
-      // Log OTP for development
+      ///
       console.log(`LOGIN (unverified user) OTP for ${email}: ${otp}`);
 
       return res.status(400).json({
@@ -139,7 +140,7 @@ export const loginController = async (req: Request, res: Response) => {
       });
     }
 
-    // If verified → continue login
+    // If verified, continue login
     const result = await loginUseCase.execute(email, password);
 
     return res.json({
@@ -150,7 +151,7 @@ export const loginController = async (req: Request, res: Response) => {
     });
 
   } catch (err: any) {
-    return res.status(400).json({ message: err.message });
+    return res.status(400).json({ message: err.message || "Failed to Login" });
   }
 };
 
@@ -170,7 +171,7 @@ export const logoutController = async (req: any, res: Response) => {
     return res.json(result);
 
   } catch (err: any) {
-    return res.status(500).json({ message: "Logout failed" });
+    return res.status(500).json({ message: err.message || "Logout Failed" });
   }
 };
 
@@ -182,10 +183,12 @@ export const forgotPasswordController = async (req: Request, res: Response) => {
     const { email } = req.body;
     const result = await forgotPasswordUseCase(email);
     return res.json(result);
+
   } catch (err: any) {
-    return res.status(400).json({ message: err.message });
+    return res.status(400).json({ message: err.message || "Failed to get Forgot Password" });
   }
 };
+
 
 ///
 export const verifyForgotOtpController = async (req: Request, res: Response) => {
@@ -194,7 +197,7 @@ export const verifyForgotOtpController = async (req: Request, res: Response) => 
     const result = await verifyForgotOtpUseCase(userId, otp);
     return res.json(result);
   } catch (err: any) {
-    return res.status(400).json({ message: err.message });
+    return res.status(400).json({ message: err.message || "Failed to verify OTP" });
   }
 };
 
@@ -206,7 +209,7 @@ export const resetPasswordController = async (req: Request, res: Response) => {
     const result = await resetPasswordUseCase(userId, password);
     return res.json(result);
   } catch (err: any) {
-    return res.status(400).json({ message: err.message });
+    return res.status(400).json({ message: err.message || "Failed to reset Password" });
   }
 };
 
@@ -214,72 +217,31 @@ export const resetPasswordController = async (req: Request, res: Response) => {
 
 
 
+// 
 
+export const googleLoginController = async (req: Request, res: Response) => {
+  try {
 
+    const { googleToken } = req.body;
 
+    if (!googleToken) {
+      return res.status(400).json({
+        message: "Google ID token is required",
+      });
+    }
 
+    const result = await googleLoginUseCase(googleToken);
 
+    return res.status(200).json({
+      user: result.user,
+      accessToken: result.accessToken,
+      refreshToken: result.refreshToken,
+    });
 
-// export const registerController = async (req: Request, res: Response) => {
-//   try {
-//     const { username, email, password } = req.body;
-
-//     const result = await registerUseCase(username, email, password);
-
-//     // result.user is already a DTO
-//     const userDTO = result.user;
-
-//     return res.json({
-//       message: "User registered successfully",
-//       user: userDTO,
-//       accessToken: result.accessToken,
-//       refreshToken: result.refreshToken
-//     });
-
-//   } catch (err: any) {
-//     return res.status(400).json({ message: err.message });
-//   }
-// };
-
-
-
-// export const loginController = async (req: Request, res: Response) => {
-//   try {
-//     const { email, password } = req.body;
-
-//     const result = await loginUseCase.execute(email, password);
-
-//     // result.user is already a DTO
-//     const userDTO = result.user;
-
-//     return res.json({
-//       message: "Login successful",
-//       user: userDTO,
-//       accessToken: result.accessToken,
-//       refreshToken: result.refreshToken
-//     });
-
-//   } catch (err: any) {
-//     return res.status(400).json({ message: err.message });
-//   }
-// };
-
-
-
-// export const logoutController = async (req: any, res: Response) => {
-//   try {
-//     const userId = req.user?.userId; // coming from authMiddleware
-
-//     if (!userId) {
-//       return res.status(401).json({ message: "Unauthorized" });
-//     }
-
-//     const result = await logoutUseCase.execute(userId);
-
-//     return res.json(result);
-
-//   } catch (err: any) {
-//     return res.status(500).json({ message: "Logout failed" });
-//   }
-// };
+  } catch (err: any) {
+    return res.status(401).json({
+      message: err.message || "Google login failed",
+    });
+  }
+};
 

@@ -4,7 +4,7 @@ export interface IUser {
 
   username: string;
   email: string;
-  password: string;
+  password: string | null;
 
   avatar_id?: string | null;
   badge_id?: string | null;

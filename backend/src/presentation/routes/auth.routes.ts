@@ -1,7 +1,15 @@
 import { Router } from "express";
-import { registerController, verifyOtpController, resendOtpController } from "../controllers/auth.controller";
-import { loginController, logoutController } from "../controllers/auth.controller";
-import { forgotPasswordController, verifyForgotOtpController, resetPasswordController } from "../controllers/auth.controller";
+import {
+  registerController,
+  verifyOtpController,
+  resendOtpController,
+  loginController,
+  logoutController,
+  forgotPasswordController,
+  verifyForgotOtpController,
+  resetPasswordController,
+  googleLoginController,
+} from "../controllers/auth.controller";
 import { authMiddleware } from "../middlewares/auth.Middleware";
 
 
@@ -14,9 +22,13 @@ router.post("/resend-otp", resendOtpController)
 
 router.post("/login", loginController);
 
+router.post("/google", googleLoginController)
+
 router.post("/forgot-password", forgotPasswordController);
 router.post("/forgot-password/verify-otp", verifyForgotOtpController);
 router.post("/reset-password", resetPasswordController);
+
+
 
 //protected logout
 router.post('/logout', authMiddleware, logoutController)

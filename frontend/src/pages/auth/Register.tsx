@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerApi } from "../../api/authApi";
 
+
+
 const Register: React.FC = () => {
   const navigate = useNavigate();
 

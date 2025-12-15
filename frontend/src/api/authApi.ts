@@ -15,7 +15,7 @@ export const refreshTokenApi = () =>
 export const verifyOtpApi = (data: { userId: string; otp: string }) =>
   api.post("/auth/verify-otp", data);
 
-export const resendOtpApi = (data: { userId: string }) =>
+export const resendOtpApi = (data: { userId: string; ignoreVerified?: boolean }) =>
   api.post("/auth/resend-otp", data);
 
 
@@ -27,3 +27,8 @@ export const verifyForgotOtpApi = (data: { userId: string; otp: string }) =>
 
 export const resetPasswordApi = (data: { userId: string; password: string }) =>
   api.post("/auth/reset-password", data);
+
+
+// google
+export const googleLoginApi = (data: { googleToken: string }) =>
+  api.post("/auth/google", data);

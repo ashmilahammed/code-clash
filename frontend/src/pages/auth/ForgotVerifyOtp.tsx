@@ -1,64 +1,115 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { verifyForgotOtpApi } from "../../api/authApi";
+import { verifyForgotOtpApi, resendOtpApi } from "../../api/authApi";
 
 
+
+const RESEND_COOLDOWN = 30; // seconds
 
 const ForgotVerifyOtp = () => {
-  const [otp, setOtp] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+    const [otp, setOtp] = useState("");
+    const [error, setError] = useState<string | null>(null);
+    const [message, setMessage] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [resending, setResending] = useState(false);
+    const [cooldown, setCooldown] = useState(0);
 
-  const navigate = useNavigate();
-  const location = useLocation();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const userId = new URLSearchParams(location.search).get("userId");
 
-  const userId = new URLSearchParams(location.search).get("userId");
-
-  if (!userId) {
-    return <p>Error: User ID missing. Go back and try again.</p>;
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-
-    if (otp.trim().length === 0) {
-      setError("OTP cannot be empty");
-      return;
+    if (!userId) {
+        return <p>Error: User ID missing. Go back and try again.</p>;
     }
 
-    try {
-      setLoading(true);
+    // countdown timer
+    useEffect(() => {
+        if (cooldown <= 0) return;
 
-      await verifyForgotOtpApi({ userId, otp });
+        const timer = setInterval(() => {
+            setCooldown((prev) => prev - 1);
+        }, 1000);
 
-      navigate(`/auth/reset-password?userId=${userId}`);
+        return () => clearInterval(timer);
+    }, [cooldown]);
 
-    } catch (err: any) {
-      const msg = err?.response?.data?.message || "Invalid OTP";
-      setError(msg);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError(null);
+        setMessage(null);
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <h2>Verify OTP</h2>
+        if (!otp.trim()) {
+            setError("OTP cannot be empty");
+            return;
+        }
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        try {
+            setLoading(true);
+            await verifyForgotOtpApi({ userId, otp });
+            navigate(`/auth/reset-password?userId=${userId}`);
+        } catch (err: any) {
+            setError(err?.response?.data?.message || "Invalid OTP");
+        } finally {
+            setLoading(false);
+        }
+    };
 
-      <input
-        value={otp}
-        onChange={(e) => setOtp(e.target.value)}
-        placeholder="Enter OTP"
-      />
+    const handleResendOtp = async () => {
+        if (cooldown > 0) return;
 
-      <button disabled={loading}>
-        {loading ? "Verifying..." : "Verify OTP"}
-      </button>
-    </form>
-  );
+        try {
+            setResending(true);
+            setError(null);
+            setMessage(null);
+
+            await resendOtpApi({ userId, ignoreVerified: true, });
+
+            setMessage("OTP resent successfully");
+            setCooldown(RESEND_COOLDOWN);
+
+        } catch (err: any) {
+            setError(err?.response?.data?.message || "Failed to resend OTP");
+        } finally {
+            setResending(false);
+        }
+    };
+
+
+    //
+    return (
+        <form onSubmit={handleSubmit}>
+            <h2>Verify OTP</h2>
+
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            {message && <p style={{ color: "green" }}>{message}</p>}
+
+            <input
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                placeholder="Enter OTP"
+            />
+
+            <button type="submit" disabled={loading}>
+                {loading ? "Verifying..." : "Verify OTP"}
+            </button>
+
+            {/* Resend OTP */}
+            <p
+                onClick={cooldown > 0 || resending ? undefined : handleResendOtp}
+                style={{
+                    marginTop: "10px",
+                    color: cooldown > 0 ? "gray" : "blue",
+                    cursor: cooldown > 0 ? "not-allowed" : "pointer",
+                }}
+            >
+                {cooldown > 0
+                    ? `Resend OTP in ${cooldown}s`
+                    : resending
+                        ? "Resending OTP..."
+                        : "Resend OTP"}
+            </p>
+        </form>
+    );
 };
 
 export default ForgotVerifyOtp;

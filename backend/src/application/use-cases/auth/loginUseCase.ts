@@ -6,13 +6,17 @@ import { IUserRepository } from "../../interfaces/IUserRepository";
 
 export class LoginUseCase {
 
-  constructor(private userRepository: IUserRepository) {}
+  constructor(private userRepository: IUserRepository) { }
 
   async execute(email: string, password: string) {
 
-
     const user = await this.userRepository.findByEmail(email);
     if (!user) throw new Error("User not found");
+
+    // block Google users
+    if (!user.password) {
+      throw new Error("Use Google login for this account");
+    }
 
     const isMatch = await PasswordService.comparePassword(password, user.password);
     if (!isMatch) throw new Error("Invalid credentials");

@@ -4,7 +4,8 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IUserDoc extends Document {
   username: string;
   email: string;
-  password: string;
+  password?: string | null;
+
 
   avatar_id?: string | null;
   badge_id?: string | null;
@@ -40,7 +41,7 @@ const UserSchema = new Schema<IUserDoc>(
 
     email: { type: String, required: true, unique: true },
 
-    password: { type: String, required: true },
+    password: { type: String, required: false, default: null },
 
     avatar_id: { type: Schema.Types.ObjectId, ref: "Avatar", default: null },
     badge_id: { type: Schema.Types.ObjectId, ref: "Badge", default: null },

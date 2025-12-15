@@ -2,10 +2,16 @@ import axios, { AxiosError } from "axios";
 import { useAuthStore } from "../store/useAuthStore";
 import { refreshTokenApi } from "./authApi";
 
+
+// const api = axios.create({
+//   baseURL: "http://localhost:5000/api",
+//   withCredentials: true,
+// });
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
 });
+
 
 // req interceptor
 api.interceptors.request.use((config) => {
