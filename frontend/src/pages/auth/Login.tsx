@@ -37,7 +37,15 @@ const Login: React.FC = () => {
         accessToken: res.data.accessToken,
       });
 
-      navigate("/dashboard", { replace: true });
+      // navigate("/dashboard", { replace: true });
+      if (res.data.user.role === "admin") {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate("/dashboard", { replace: true });
+      }
+
+
+
     } catch (err: any) {
       // OTP verification flow
       if (err?.response?.data?.needsVerification) {

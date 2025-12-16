@@ -14,7 +14,7 @@ const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 const userRepo = new UserRepository();
 
 export const googleLoginUseCase = async (idToken: string) => {
-    // 1. Verify Google token
+    // Verify Google token
     const ticket = await client.verifyIdToken({
         idToken,
         audience: GOOGLE_CLIENT_ID,

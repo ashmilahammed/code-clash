@@ -3,11 +3,16 @@ import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
 import VerifyOtp from "./pages/auth/VerifyOtp";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+
 import Dashboard from "./pages/dashboard/Dashboard";
 
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ForgotVerifyOtp from "./pages/auth/ForgotVerifyOtp";
 import ResetPassword from "./pages/auth/ResetPassword";
+
+import AdminRoute from "./components/common/AdminRoute";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+
 
 
 function App() {
@@ -29,13 +34,23 @@ function App() {
       <Route path="/auth/reset-password" element={<ResetPassword />} />
 
 
-      {/* Protected Route */}
+      {/*user Protected Route */}
       <Route
         path="/dashboard"
         element={
           <ProtectedRoute>
             <Dashboard />
           </ProtectedRoute>
+        }
+      />
+
+      {/* Admin protected route */}
+      <Route
+        path="/admin"
+        element={
+          <AdminRoute>
+            <AdminDashboard />
+          </AdminRoute>
         }
       />
 

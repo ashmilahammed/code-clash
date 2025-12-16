@@ -35,6 +35,7 @@ export interface IUserDoc extends Document {
 
 
 
+
 const UserSchema = new Schema<IUserDoc>(
   {
     username: { type: String, required: true },
