@@ -1,19 +1,26 @@
-import { UserRepository } from "../../../infrastructure/repositories/UserRepository";
+import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 
 
-const userRepo = new UserRepository();
+export class VerifyForgotOtpUseCase {
+  constructor(private userRepo: IUserRepository) {}
 
-export const verifyForgotOtpUseCase = async (userId: string, otp: string) => {
-    
-  const user = await userRepo.findById(userId);
-  if (!user) throw new Error("User not found");
 
-  if (user.otp !== otp || !user.otpExpires || user.otpExpires < new Date()) {
-    throw new Error("Invalid or expired OTP");
+  async execute(userId: string, otp: string) {
+
+    const user = await this.userRepo.findById(userId);
+    if (!user) throw new Error("User not found");
+
+    if (
+      user.otp !== otp ||
+      !user.otpExpires ||
+      user.otpExpires < new Date()
+    ) {
+      throw new Error("Invalid or expired OTP");
+    }
+
+    // clear OTP so it cannot be reused
+    await this.userRepo.saveOtp(userId, null, null);
+
+    return { success: true };
   }
-
-  // clear OTP so it cannot be reused
-  await userRepo.saveOtp(userId, null, null);
-
-  return { success: true };
-};
+}

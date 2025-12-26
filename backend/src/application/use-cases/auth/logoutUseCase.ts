@@ -1,5 +1,4 @@
-import { IUserRepository } from "../../interfaces/IUserRepository";
-
+import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 
 
 export class LogoutUseCase {
@@ -10,4 +9,3 @@ export class LogoutUseCase {
     return { message: "Logged out successfully" };
   }
 }
-

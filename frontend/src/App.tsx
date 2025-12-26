@@ -13,6 +13,8 @@ import ResetPassword from "./pages/auth/ResetPassword";
 import AdminRoute from "./components/common/AdminRoute";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 
+import "./App.css"
+
 
 
 function App() {

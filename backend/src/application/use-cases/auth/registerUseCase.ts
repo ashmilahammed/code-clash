@@ -1,64 +1,61 @@
-import { UserRepository } from "../../../infrastructure/repositories/UserRepository";
+import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import { PasswordService } from "../../../infrastructure/security/passwordService";
 import { generateOtp } from "../../../utils/generateOtp";
-import { EmailService } from "../../../infrastructure/services/emailService";
 
-const userRepo = new UserRepository();
-const emailService = new EmailService();
 
-export const registerUseCase = async (
-  username: string,
-  email: string,
-  password: string
-) => {
 
-  // 
-  const existing = await userRepo.findByEmail(email);
-  if (existing) throw new Error("Email already registered");
+interface IEmailService {
+  sendOtpEmail(email: string, otp: string): Promise<void>;
+}
 
-  //
-  const hashed = await PasswordService.hashPassword(password);
+export class RegisterUseCase {
+  constructor(
+    private userRepo: IUserRepository,
+    private emailService: IEmailService
+  ) {}
 
-  //Create user without otp 
-  const newUser = await userRepo.createUser({
-    username,
-    email,
-    password: hashed,
+  async execute(username: string, email: string, password: string) {
+    const existing = await this.userRepo.findByEmail(email);
+    if (existing) throw new Error("Email already registered");
 
-    avatar_id: null,
-    badge_id: null,
-    level_id: null,
+    const hashed = await PasswordService.hashPassword(password);
 
-    xp: 0,
-    current_streak: 0,
-    longest_streak: 0,
+    //Create user without otp 
+    const newUser = await this.userRepo.createUser({
+      username,
+      email,
+      password: hashed,
 
-    is_premium: false,
+      avatar_id: null,
+      badge_id: null,
+      level_id: null,
 
-    date_joined: new Date(),
+      xp: 0,
+      current_streak: 0,
+      longest_streak: 0,
 
-    role: "user",
-    status: "active",
+      is_premium: false,
+      date_joined: new Date(),
 
-    refreshToken: null,
+      role: "user",
+      status: "active",
+      refreshToken: null,
+      isVerified: false,
+    });
+
+    // generate OTP
+    const { otp, expires } = generateOtp();
 
     //
-    isVerified: false,
-  });
+    await this.userRepo.saveOtp(newUser.id!, otp, expires, true);
+    //
+    await this.emailService.sendOtpEmail(email, otp);
 
-  // Generate OTP
-  const { otp, expires } = generateOtp();
+    console.log(`REGISTER OTP for ${email}: ${otp}`);
 
-  // 
-  await userRepo.saveOtp(newUser.id!, otp, expires, true);
-
-  // 
-  await emailService.sendOtpEmail(email, otp);
-
-  console.log(`REGISTER OTP for ${email}: ${otp}`);
-
-  return {
-    message: "OTP sent to email",
-    userId: newUser.id, // required for /verify-otp
-  };
-};
+    return {
+      message: "OTP sent to email",
+      userId: newUser.id, // required for /verify-otp
+    };
+  }
+}

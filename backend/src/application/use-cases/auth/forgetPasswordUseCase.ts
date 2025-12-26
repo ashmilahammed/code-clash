@@ -1,25 +1,29 @@
-import { UserRepository } from "../../../infrastructure/repositories/UserRepository";
+import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import { generateOtp } from "../../../utils/generateOtp";
-import { EmailService } from "../../../infrastructure/services/emailService";
 
 
+interface IEmailService {
+  sendOtpEmail(email: string, otp: string): Promise<void>;
+}
 
-const userRepo = new UserRepository();
-const emailService = new EmailService();
+export class ForgotPasswordUseCase {
+  constructor(
+    private userRepo: IUserRepository,
+    private emailService: IEmailService
+  ) {}
 
+  async execute(email: string) {
+    const user = await this.userRepo.findByEmail(email);
+    if (!user) throw new Error("No account found with this email");
 
-export const forgotPasswordUseCase = async (email: string) => {
-  const user = await userRepo.findByEmail(email);
-  if (!user) throw new Error("No account found with this email");
+    const { otp, expires } = generateOtp();
 
-  const { otp, expires } = generateOtp();
+    await this.userRepo.saveOtp(user.id!, otp, expires, false);
 
-  // Forgot-password OTP 
-  await userRepo.saveOtp(user.id!, otp, expires, false);
+    await this.emailService.sendOtpEmail(email, otp);
 
-  await emailService.sendOtpEmail(email, otp);
+    console.log(`Forgot Password OTP for ${email}: ${otp}`);
 
-  console.log(`Forgot Password OTP for ${email}: ${otp}`);
-
-  return { userId: user.id };
-};
+    return { userId: user.id };
+  }
+}

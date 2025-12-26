@@ -1,19 +1,34 @@
+import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import { PasswordService } from "../../../infrastructure/security/passwordService";
 import { JwtService } from "../../../infrastructure/security/jwtService";
-import { IUserRepository } from "../../interfaces/IUserRepository";
+import { generateOtp } from "../../../utils/generateOtp";
 
 
+interface IEmailService {
+  sendOtpEmail(email: string, otp: string): Promise<void>;
+}
 
 export class LoginUseCase {
-
-  constructor(private userRepository: IUserRepository) { }
+  constructor(
+    private userRepository: IUserRepository,
+    private emailService: IEmailService
+  ) {}
 
   async execute(email: string, password: string) {
-
     const user = await this.userRepository.findByEmail(email);
     if (!user) throw new Error("User not found");
 
-    // block Google users
+    // user not verified ,resend OTP
+    if (!user.isVerified) {
+      const { otp, expires } = generateOtp();
+
+      await this.userRepository.saveOtp(user.id!, otp, expires, true);
+      await this.emailService.sendOtpEmail(email, otp);
+
+      throw new Error("ACCOUNT_NOT_VERIFIED");
+    }
+
+    // Google-only user
     if (!user.password) {
       throw new Error("Use Google login for this account");
     }
@@ -21,14 +36,14 @@ export class LoginUseCase {
     const isMatch = await PasswordService.comparePassword(password, user.password);
     if (!isMatch) throw new Error("Invalid credentials");
 
-    // jwt payload
+    //jwt payload
     const payload = {
       userId: user.id!,
       email: user.email,
-      role: user.role
+      role: user.role,
     };
 
-    // generate token
+    //
     const accessToken = JwtService.generateAccessToken(payload);
     const refreshToken = JwtService.generateRefreshToken(payload);
 
@@ -38,7 +53,9 @@ export class LoginUseCase {
     return {
       user,
       accessToken,
-      refreshToken
+      refreshToken,
     };
   }
 }
+
+

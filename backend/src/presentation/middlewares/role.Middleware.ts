@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 
+
+
 export const requireRole = (role: "user" | "admin") => {
   return (req: any, res: Response, next: NextFunction) => {
     if (!req.user) {

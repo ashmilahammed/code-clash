@@ -1,30 +1,30 @@
-import { UserRepository } from "../../../infrastructure/repositories/UserRepository";
+import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 
 
 
-const userRepo = new UserRepository();
+export class VerifyOtpUseCase {
+  constructor(private userRepo: IUserRepository) {}
 
-export const verifyOtpUseCase = async (userId: string, otp: string) => {
-
-    const user = await userRepo.findById(userId);
+  async execute(userId: string, otp: string) {
+    const user = await this.userRepo.findById(userId);
     if (!user) throw new Error("User not found");
 
     if (user.isVerified) {
-        throw new Error("User is already verified");
+      throw new Error("User is already verified");
     }
 
     if (user.otp !== otp) {
-        throw new Error("Invalid OTP");
+      throw new Error("Invalid OTP");
     }
 
     if (!user.otpExpires || user.otpExpires < new Date()) {
-        throw new Error("OTP expired");
+      throw new Error("OTP expired");
     }
 
-    ///
-    await userRepo.verifyUser(userId);
+    await this.userRepo.verifyUser(userId);
 
     return {
-        message: "OTP verified successfully",
+      message: "OTP verified successfully",
     };
-};
+  }
+}

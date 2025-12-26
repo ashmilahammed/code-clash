@@ -1,32 +1,39 @@
-import { UserRepository } from "../../../infrastructure/repositories/UserRepository";
+import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import { generateOtp } from "../../../utils/generateOtp";
-import { EmailService } from "../../../infrastructure/services/emailService";
 
 
+interface IEmailService {
+  sendOtpEmail(email: string, otp: string): Promise<void>;
+}
 
+export class ResendOtpUseCase {
+  constructor(
+    private userRepo: IUserRepository,
+    private emailService: IEmailService
+  ) { }
 
-const userRepo = new UserRepository();
-const emailService = new EmailService();
+  async execute(
+    userId: string,
+    options?: { ignoreVerified?: boolean }
+  ) {
 
-export const resendOtpUseCase = async (
-  userId: string,
-  options?: { ignoreVerified?: boolean }
-) => {
-  const user = await userRepo.findById(userId);
-  if (!user) throw new Error("User not found");
+    const user = await this.userRepo.findById(userId);
+    if (!user) throw new Error("User not found");
 
-  // Only block verified users when NOT in forgot-password flow
-  if (user.isVerified && !options?.ignoreVerified) {
-    throw new Error("User is already verified");
+    // Only block verified users when NOT in forgot-password flow
+    if (user.isVerified && !options?.ignoreVerified) {
+      throw new Error("User is already verified");
+    }
+
+    const { otp, expires } = generateOtp();
+
+    await this.userRepo.saveOtp(userId, otp, expires);
+
+    await this.emailService.sendOtpEmail(user.email, otp);
+
+    //
+    console.log(`Resent OTP to ${user.email}: ${otp}`);
+
+    return { message: "New OTP sent to email" };
   }
-
-  const { otp, expires } = generateOtp();
-
-  await userRepo.saveOtp(userId, otp, expires);
-
-  await emailService.sendOtpEmail(user.email, otp);
-
-  console.log(`Resent OTP to ${user.email}: ${otp}`);
-
-  return { message: "New OTP sent to email" };
-};
+}
