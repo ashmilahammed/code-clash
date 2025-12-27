@@ -9,8 +9,10 @@ import {
   verifyForgotOtpController,
   resetPasswordController,
   googleLoginController,
+  refreshSessionController,
 } from "../controllers/auth.controller";
 import { authMiddleware } from "../middlewares/auth.Middleware";
+
 
 
 const router = Router();
@@ -28,6 +30,8 @@ router.post("/forgot-password", forgotPasswordController);
 router.post("/forgot-password/verify-otp", verifyForgotOtpController);
 router.post("/reset-password", resetPasswordController);
 
+//session handle
+router.get('/refresh',refreshSessionController)
 
 
 //protected logout

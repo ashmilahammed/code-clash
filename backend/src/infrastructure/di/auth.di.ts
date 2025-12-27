@@ -83,6 +83,8 @@ import { GoogleLoginUseCase } from "../../application/use-cases/auth/googleLogin
 import { LoginUseCase } from "../../application/use-cases/auth/loginUseCase";
 import { LogoutUseCase } from "../../application/use-cases/auth/logoutUseCase";
 
+import { RefreshSessionUseCase } from "../../application/use-cases/auth/refreshSessionUseCase";
+
 
 
 // Validate env first
@@ -120,3 +122,5 @@ export const googleLoginUseCase = new GoogleLoginUseCase(userRepository, googleC
 export const loginUseCase = new LoginUseCase(userRepository, emailService);
 
 export const logoutUseCase = new LogoutUseCase(userRepository);
+
+export const refreshSessionUseCase = new RefreshSessionUseCase(userRepository)

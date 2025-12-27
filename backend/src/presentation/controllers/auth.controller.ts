@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 // import { UserRepository } from "../../infrastructure/repositories/UserRepository";
 // import { registerUseCase } from "../../application/use-cases/auth/registerUseCase";
-import { registerUseCase } from "../../infrastructure/di/auth.di";
+import { refreshSessionUseCase, registerUseCase } from "../../infrastructure/di/auth.di";
 import { verifyOtpUseCase } from "../../infrastructure/di/auth.di";
 import { resendOtpUseCase } from "../../infrastructure/di/auth.di";
 
@@ -17,6 +17,8 @@ import { resetPasswordUseCase } from "../../infrastructure/di/auth.di";
 // import { EmailService } from "../../infrastructure/services/emailService";
 
 import { googleLoginUseCase } from "../../infrastructure/di/auth.di";
+
+import { RefreshSessionUseCase } from "../../application/use-cases/auth/refreshSessionUseCase";
 
 
 
@@ -145,12 +147,28 @@ export const loginController = async (req: Request, res: Response) => {
 
     const result = await loginUseCase.execute(email, password);
 
+    // return res.json({
+    //   message: "Login successful",
+    //   user: result.user,
+    //   accessToken: result.accessToken,
+    //   refreshToken: result.refreshToken,
+    // });
+
+    // refresh token as cookie(session)
+    res.cookie("refreshToken", result.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    //
     return res.json({
       message: "Login successful",
       user: result.user,
       accessToken: result.accessToken,
-      refreshToken: result.refreshToken,
     });
+
 
   } catch (err: any) {
     if (err.message === "ACCOUNT_NOT_VERIFIED") {
@@ -178,9 +196,20 @@ export const logoutController = async (req: any, res: Response) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const result = await logoutUseCase.execute(userId);
+    // const result = await logoutUseCase.execute(userId);
+    // return res.json(result);
 
-    return res.json(result);
+    // 
+    await logoutUseCase.execute(userId);
+
+    // Clear refresh token cookie 
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    });
+
+    return res.json({ message: "Logged out successfully" });
 
   } catch (err: any) {
     return res.status(500).json({
@@ -262,11 +291,27 @@ export const googleLoginController = async (req: Request, res: Response) => {
 
     const result = await googleLoginUseCase.execute(googleToken);
 
+    // return res.status(200).json({
+    //   user: result.user,
+    //   accessToken: result.accessToken,
+    //   refreshToken: result.refreshToken,
+    // });
+
+
+    // refresh token cookie
+    res.cookie("refreshToken", result.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    // 
     return res.status(200).json({
       user: result.user,
       accessToken: result.accessToken,
-      refreshToken: result.refreshToken,
     });
+
 
   } catch (err: any) {
     return res.status(401).json({
@@ -276,5 +321,25 @@ export const googleLoginController = async (req: Request, res: Response) => {
 };
 
 
+
+
+//
+
+export const refreshSessionController = async (req: Request, res: Response) => {
+  try {
+    const refreshToken = req.cookies?.refreshToken;
+
+    const result = await refreshSessionUseCase.execute(refreshToken);
+
+    return res.status(200).json({
+      accessToken: result.accessToken,
+    });
+
+  } catch (err: any) {
+    return res.status(401).json({
+      message: err.message || "Session expired",
+    });
+  }
+};
 
 
