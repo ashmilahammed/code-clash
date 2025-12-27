@@ -10,7 +10,7 @@ export const logoutApi = () =>
   api.post("/auth/logout");
 
 export const refreshTokenApi = () =>
-  api.get("/auth/refresh");
+  api.get("/auth/refresh-session");
 
 export const verifyOtpApi = (data: { userId: string; otp: string }) =>
   api.post("/auth/verify-otp", data);
@@ -32,3 +32,9 @@ export const resetPasswordApi = (data: { userId: string; password: string }) =>
 // google
 export const googleLoginApi = (data: { googleToken: string }) =>
   api.post("/auth/google", data);
+
+
+export const meApi = () =>
+  api.get("/auth/me");
+
+

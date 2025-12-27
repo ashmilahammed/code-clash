@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 // import { UserRepository } from "../../infrastructure/repositories/UserRepository";
 // import { registerUseCase } from "../../application/use-cases/auth/registerUseCase";
-import { refreshSessionUseCase, registerUseCase } from "../../infrastructure/di/auth.di";
+import { registerUseCase } from "../../infrastructure/di/auth.di";
 import { verifyOtpUseCase } from "../../infrastructure/di/auth.di";
 import { resendOtpUseCase } from "../../infrastructure/di/auth.di";
 
@@ -18,8 +18,9 @@ import { resetPasswordUseCase } from "../../infrastructure/di/auth.di";
 
 import { googleLoginUseCase } from "../../infrastructure/di/auth.di";
 
-import { RefreshSessionUseCase } from "../../application/use-cases/auth/refreshSessionUseCase";
+import { refreshSessionUseCase } from "../../infrastructure/di/auth.di";
 
+import { getCurrentUserUseCase } from "../../infrastructure/di/auth.di";
 
 
 // repository + use-case instance
@@ -341,5 +342,30 @@ export const refreshSessionController = async (req: Request, res: Response) => {
     });
   }
 };
+
+
+
+
+//
+export const meController = async (req: any, res: Response) => {
+  try {
+    const userId = req.user?.userId;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const user = await getCurrentUserUseCase.execute(userId);
+
+    return res.status(200).json({ user });
+  } catch (err: any) {
+    return res.status(400).json({
+      message: err.message || "Failed to fetch user",
+    });
+  }
+};
+
+
+
 
 

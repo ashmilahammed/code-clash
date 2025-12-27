@@ -84,6 +84,7 @@ import { LoginUseCase } from "../../application/use-cases/auth/loginUseCase";
 import { LogoutUseCase } from "../../application/use-cases/auth/logoutUseCase";
 
 import { RefreshSessionUseCase } from "../../application/use-cases/auth/refreshSessionUseCase";
+import { GetCurrentUserUseCase } from "../../application/use-cases/auth/getCurrentUseCase";
 
 
 
@@ -124,3 +125,5 @@ export const loginUseCase = new LoginUseCase(userRepository, emailService);
 export const logoutUseCase = new LogoutUseCase(userRepository);
 
 export const refreshSessionUseCase = new RefreshSessionUseCase(userRepository)
+
+export const getCurrentUserUseCase = new GetCurrentUserUseCase(userRepository);

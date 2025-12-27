@@ -9,10 +9,12 @@ interface Props {
 }
 
 const ProtectedRoute = ({ children }: Props) => {
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const accessToken = useAuthStore((s) => s.accessToken);
+  const { isAuthenticated, isLoading } = useAuthStore();
 
-  if (!isAuthenticated || !accessToken) {
+  // wait until refresh check finishes
+  if (isLoading) return null; 
+
+  if (!isAuthenticated) {
     return <Navigate to="/auth/login" replace />;
   }
 
@@ -20,3 +22,19 @@ const ProtectedRoute = ({ children }: Props) => {
 };
 
 export default ProtectedRoute;
+
+
+
+
+// const ProtectedRoute = ({ children }: Props) => {
+//   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+//   const accessToken = useAuthStore((s) => s.accessToken);
+
+//   if (!isAuthenticated || !accessToken) {
+//     return <Navigate to="/auth/login" replace />;
+//   }
+
+//   return children;
+// };
+
+// export default ProtectedRoute;

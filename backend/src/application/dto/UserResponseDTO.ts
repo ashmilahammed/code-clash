@@ -1,4 +1,3 @@
-
 export interface UserResponseDTO {
   id: string;
   username: string;
@@ -16,6 +15,8 @@ export interface UserResponseDTO {
 
   role: "user" | "admin";
   status: "active" | "blocked";
+
+  // isVerified: boolean;
 
   createdAt?: Date;
   updatedAt?: Date;

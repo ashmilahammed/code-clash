@@ -10,6 +10,7 @@ import {
   resetPasswordController,
   googleLoginController,
   refreshSessionController,
+  meController
 } from "../controllers/auth.controller";
 import { authMiddleware } from "../middlewares/auth.Middleware";
 
@@ -31,11 +32,12 @@ router.post("/forgot-password/verify-otp", verifyForgotOtpController);
 router.post("/reset-password", resetPasswordController);
 
 //session handle
-router.get('/refresh',refreshSessionController)
+router.get('/refresh-session',refreshSessionController)
 
 
 //protected logout
-router.post('/logout', authMiddleware, logoutController)
+router.post('/logout', authMiddleware, logoutController);
+router.get("/me", authMiddleware, meController);
 
 
 
