@@ -63,11 +63,12 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
 
-  setCredentials: (data: { user: User; accessToken: string }) => void;
-  updateAccessToken: (token: string) => void; // ✅ NEW
+  setCredentials: (data: { user: User | null; accessToken: string }) => void;
+  updateAccessToken: (token: string) => void;
   logoutUser: () => void;
   stopLoading: () => void;
 }
+
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
@@ -75,21 +76,22 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
   isLoading: true,
 
-  // 🔥 ONLY for login & session restore
+  //  login & session restore
   setCredentials: ({ user, accessToken }) =>
     set({
       user,
       accessToken,
-      isAuthenticated: true,
+      // isAuthenticated: true,
+      isAuthenticated : !!user,
       isLoading: false,
     }),
 
-  // 🔥 ONLY for axios refresh
+  // for axios refresh
   updateAccessToken: (accessToken) =>
     set((state) => ({
       ...state,
       accessToken,
-      isAuthenticated: true,
+      // isAuthenticated: true,
     })),
 
   logoutUser: () =>

@@ -9,19 +9,24 @@ interface Props {
 }
 
 const ProtectedRoute = ({ children }: Props) => {
-  const { isAuthenticated, isLoading } = useAuthStore();
-
+  const { isAuthenticated, isLoading, user } = useAuthStore();
+  
   // wait until refresh check finishes
-  if (isLoading) return null; 
+  if (isLoading) return null;
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !user) {
     return <Navigate to="/auth/login" replace />;
+  }
+
+  if (user.role === "admin") {
+    return <Navigate to="/admin" replace />;
   }
 
   return children;
 };
 
 export default ProtectedRoute;
+
 
 
 

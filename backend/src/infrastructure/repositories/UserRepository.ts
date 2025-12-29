@@ -94,4 +94,40 @@ export class UserRepository implements IUserRepository {
         await UserModel.findByIdAndUpdate(id, { password: hashed });
     }
 
+
+
+    async findAll(
+        page: number,
+        limit: number,
+        filter?: { status?: "active" | "blocked" }
+    ): Promise<{ users: IUser[]; total: number }> {
+        const query: any = {};
+
+        if (filter?.status) {
+            query.status = filter.status;
+        }
+
+        const skip = (page - 1) * limit;
+
+        const [users, total] = await Promise.all([
+            UserModel.find(query)
+                .skip(skip)
+                .limit(limit)
+                .sort({ date_joined: -1 }),
+            UserModel.countDocuments(query),
+        ]);
+
+        return {
+            users: users.map((doc) => this.toDomain(doc)),
+            total,
+        };
+    }
+
+    async updateStatus(
+        userId: string,
+        status: "active" | "blocked"
+    ): Promise<void> {
+        await UserModel.findByIdAndUpdate(userId, { status });
+    }
+
 }

@@ -5,7 +5,10 @@ import React from "react";
 
 
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, isAuthenticated } = useAuthStore();
+  const { user, isAuthenticated, isLoading } = useAuthStore();
+
+  //wait for auth hydration
+  if (isLoading) return null;
 
   if (!isAuthenticated || !user) {
     return <Navigate to="/auth/login" replace />;

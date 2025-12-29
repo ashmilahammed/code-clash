@@ -17,6 +17,7 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+
   // Email/password login
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,6 +60,7 @@ const Login: React.FC = () => {
     }
   };
 
+
   // Google login
   const handleGoogleLogin = async (credential: string) => {
     try {
@@ -72,7 +74,13 @@ const Login: React.FC = () => {
         accessToken: res.data.accessToken,
       });
 
-      navigate("/dashboard", { replace: true });
+      // navigate("/dashboard", { replace: true });
+      if (res.data.user.role === "admin") {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate("/dashboard", { replace: true });
+      }
+
 
     } catch (err: any) {
       const msg =
@@ -88,7 +96,7 @@ const Login: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-8 animate-fadeIn">
-        
+
         <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">
           Login
         </h2>

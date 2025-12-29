@@ -1,18 +1,73 @@
 import { Request, Response, NextFunction } from "express";
 import { JwtService } from "../../infrastructure/security/jwtService";
+import { UserRepository } from "../../infrastructure/repositories/UserRepository";
 
 
-export const authMiddleware = (req: any, res: Response, next: NextFunction) => {
+
+const userRepo = new UserRepository();
+
+export const authMiddleware = async (
+  req: any,
+  res: Response,
+  next: NextFunction
+) => {
   const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(401).json({ message: "No token" });
+
+  if (!authHeader) {
+    return res.status(401).json({ message: "No token" });
+  }
 
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = JwtService.verifyAccessToken(token);
-    req.user = decoded;
+    const decoded: any = JwtService.verifyAccessToken(token);
+
+    // Always check current user status from DB
+    const user = await userRepo.findById(decoded.userId);
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    if (user.status === "blocked") {
+      return res.status(403).json({ message: "Account blocked" });
+    }
+
+    req.user = {
+      userId: user.id,
+      role: user.role,
+    };
+
     next();
   } catch {
     return res.status(403).json({ message: "Invalid or expired token" });
   }
 };
+
+
+
+
+
+
+
+
+
+
+// import { Request, Response, NextFunction } from "express";
+// import { JwtService } from "../../infrastructure/security/jwtService";
+
+
+// export const authMiddleware = (req: any, res: Response, next: NextFunction) => {
+//   const authHeader = req.headers.authorization;
+//   if (!authHeader) return res.status(401).json({ message: "No token" });
+
+//   const token = authHeader.split(" ")[1];
+
+//   try {
+//     const decoded = JwtService.verifyAccessToken(token);
+//     req.user = decoded;
+//     next();
+//   } catch {
+//     return res.status(403).json({ message: "Invalid or expired token" });
+//   }
+// };

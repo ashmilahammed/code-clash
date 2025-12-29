@@ -4,6 +4,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectDB from "./infrastructure/database/mongo";
 import authRoutes from "./presentation/routes/auth.routes";
+import adminRoutes from "./presentation/routes/admin.routes"
+
 
 dotenv.config();
 
@@ -15,12 +17,17 @@ app.use(cookieParser());
 
 // Routes
 app.use("/api/auth", authRoutes);
+//
+app.use("/api/admin", adminRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
+
+
 const PORT = process.env.PORT || 5000;
+
 
 // DB
 connectDB().then(() => {

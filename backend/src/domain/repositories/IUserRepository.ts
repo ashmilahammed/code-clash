@@ -1,16 +1,5 @@
-// import { IUser } from "../entities/User";
-
-
-// export interface IUserRepository {
-//   createUser(user: IUser): Promise<IUser>;
-//   findByEmail(email: string): Promise<IUser | null>;
-//   findById(id: string): Promise<IUser | null>;
-// }
-
-
-
-
 import { IUser } from "../entities/User";
+
 
 export interface IUserRepository {
   createUser(user: Partial<IUser>): Promise<IUser>;
@@ -33,4 +22,23 @@ export interface IUserRepository {
   verifyUser(userId: string): Promise<void>;
 
   updatePassword(userId: string, hashedPassword: string): Promise<void>;
+
+
+
+  // admin
+  findAll(
+    page: number,
+    limit: number,
+    filter?: { status?: "active" | "blocked" }
+  ): Promise<{ users: IUser[]; total: number }>;
+
+
+  updateStatus(
+    userId: string,
+    status: "active" | "blocked"
+  ): Promise<void>;
 }
+
+
+
+
