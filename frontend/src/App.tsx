@@ -153,7 +153,7 @@ function App() {
       </Route>
 
       {/* Errors */}
-      <Route path="/403" element={<Forbidden />} />
+      {/* <Route path="/403" element={<Forbidden />} /> */}
 
     </Routes>
   );

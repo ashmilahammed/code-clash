@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 
 import { loginApi, googleLoginApi } from "../../api/authApi";
@@ -10,12 +10,18 @@ import { useAuthStore } from "../../store/useAuthStore";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const setCredentials = useAuthStore((s) => s.setCredentials);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  //
+  const params = new URLSearchParams(location.search);
+  const blocked = params.get("blocked");
+
 
 
   // Email/password login
@@ -101,11 +107,20 @@ const Login: React.FC = () => {
           Login
         </h2>
 
+        {/*  */}
+        {blocked && (
+          <div className="mb-4 p-3 text-sm text-red-700 bg-red-100 rounded-md">
+            Your account has been blocked by admin.
+          </div>
+        )}
+
+        {/*  */}
         {error && (
           <div className="mb-4 p-3 text-sm text-red-600 bg-red-100 rounded-md">
             {error}
           </div>
         )}
+
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email */}
@@ -119,7 +134,7 @@ const Login: React.FC = () => {
               placeholder="you@example.com"
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
-              required
+              // required
             />
           </div>
 
@@ -134,7 +149,7 @@ const Login: React.FC = () => {
               placeholder="Your password"
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
-              required
+              // required
             />
           </div>
 

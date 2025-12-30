@@ -26,8 +26,14 @@ export class RefreshSessionUseCase {
     //compare stored refresh token (extra security)
     if (user.refreshToken !== refreshToken) {
       throw new Error("Invalid session");
+    };
+
+    //
+    if(user.status === "blocked"){
+      throw new Error("ACCOUNT_BLOCKED")
     }
 
+    
     const newAccessToken = JwtService.generateAccessToken({
       userId: user.id!,
       email: user.email,

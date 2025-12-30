@@ -15,6 +15,8 @@ export interface IUserDoc extends Document {
 
   current_streak: number;
   longest_streak: number;
+  // last_login_date?: Date | null;
+
 
   is_premium: boolean;
 
@@ -52,6 +54,7 @@ const UserSchema = new Schema<IUserDoc>(
 
     current_streak: { type: Number, default: 0 },
     longest_streak: { type: Number, default: 0 },
+    // last_login_date: { type: Date, default: null },
 
     is_premium: { type: Boolean, default: false },
 

@@ -30,7 +30,10 @@ export const authMiddleware = async (
     }
 
     if (user.status === "blocked") {
-      return res.status(403).json({ message: "Account blocked" });
+      return res.status(403).json({ 
+        message: "Your account has been blocked by Admin",
+        code : "ACCOUNT_BLOCKED"
+      });
     }
 
     req.user = {

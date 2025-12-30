@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { User } from "lucide-react";
 
 
+
 const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
   const logoutUser = useAuthStore((s) => s.logoutUser);
@@ -48,7 +49,7 @@ const Dashboard = () => {
             <p className="font-medium capitalize">{user?.role}</p>
           </div>
 
-          <div className="p-4 border rounded-lg bg-gray-50">
+          {/* <div className="p-4 border rounded-lg bg-gray-50">
             <p className="text-gray-500 text-sm">XP</p>
             <p className="font-medium">{user?.xp ?? 0}</p>
           </div>
@@ -66,7 +67,7 @@ const Dashboard = () => {
           <div className="p-4 border rounded-lg bg-gray-50">
             <p className="text-gray-500 text-sm">Longest Streak</p>
             <p className="font-medium">{user?.longest_streak ?? 0} days</p>
-          </div>
+          </div> */}
         </div>
 
         {/* Logout Button */}

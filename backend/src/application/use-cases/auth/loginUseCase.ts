@@ -12,7 +12,7 @@ export class LoginUseCase {
   constructor(
     private userRepository: IUserRepository,
     private emailService: IEmailService
-  ) {}
+  ) { }
 
   async execute(email: string, password: string) {
     const user = await this.userRepository.findByEmail(email);
@@ -26,6 +26,10 @@ export class LoginUseCase {
       await this.emailService.sendOtpEmail(email, otp);
 
       throw new Error("ACCOUNT_NOT_VERIFIED");
+    }
+
+    if (user.status === 'blocked') {
+      throw new Error("ACCOUNT_BLOCKED")
     }
 
     // Google-only user

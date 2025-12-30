@@ -108,7 +108,7 @@ const UserManagement = () => {
                       }
                     `}
                   >
-                    {u.status === "active" ? "Ban" : "Unban"}
+                    {u.status === "active" ? "Block" : "Unblock"}
                   </button>
                 </td>
               </tr>

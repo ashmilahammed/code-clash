@@ -37,7 +37,6 @@ export const registerController = async (req: Request, res: Response) => {
   try {
     const { username, email, password } = req.body;
 
-    // const result = await registerUseCase(username, email, password);
     const result = await registerUseCase.execute(username, email, password);
 
     return res.json({
@@ -99,49 +98,6 @@ export const resendOtpController = async (req: Request, res: Response) => {
 
 
 // login (only if verified)
-// export const loginController = async (req: Request, res: Response) => {
-//   try {
-//     const { email, password } = req.body;
-
-//     const user = await userRepo.findByEmail(email);
-//     if (!user) throw new Error("User not found");
-
-
-//     if (!user.isVerified) {
-
-//       const { otp, expires } = generateOtp();
-
-//       // Store OTP in DB
-//       await userRepo.saveOtp(user.id!, otp, expires, true);
-
-//       await new EmailService().sendOtpEmail(email, otp);
-
-//       ///
-//       console.log(`LOGIN (unverified user) OTP for ${email}: ${otp}`);
-
-//       return res.status(400).json({
-//         message: "Please verify your OTP before logging in",
-//         needsVerification: true,
-//         userId: user.id,
-//         otp: process.env.NODE_ENV === "development" ? otp : undefined,
-//       });
-//     }
-
-//     // If verified, continue login
-//     const result = await loginUseCase.execute(email, password);
-
-//     return res.json({
-//       message: "Login successful",
-//       user: result.user,
-//       accessToken: result.accessToken,
-//       refreshToken: result.refreshToken,
-//     });
-
-//   } catch (err: any) {
-//     return res.status(400).json({ message: err.message || "Failed to Login" });
-//   }
-// };
-
 export const loginController = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
@@ -172,6 +128,14 @@ export const loginController = async (req: Request, res: Response) => {
 
 
   } catch (err: any) {
+
+    if (err.message === "ACCOUNT_BLOCKED") {
+      return res.status(403).json({
+        message: "Your account has been blocked by Admin",
+        code: "ACCOUNT_BLOCKED"
+      })
+    }
+
     if (err.message === "ACCOUNT_NOT_VERIFIED") {
       return res.status(400).json({
         message: "Please verify your OTP before logging in",
@@ -337,9 +301,15 @@ export const refreshSessionController = async (req: Request, res: Response) => {
     });
 
   } catch (err: any) {
-    return res.status(401).json({
-      message: err.message || "Session expired",
-    });
+
+    if (err.message === "ACCOUNT_BLOCKED") {
+      return res.status(403).json({
+        message: "Your Account has been blocked by Admin",
+        code: "ACCOUNT_BLOCKED",
+      })
+    }
+
+    return res.status(401).json({ message: err.message || "Session expired" });
   }
 };
 
