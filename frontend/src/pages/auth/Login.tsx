@@ -38,9 +38,13 @@ const Login: React.FC = () => {
       setLoading(true);
       const res = await loginApi({ email, password });
 
+      // setCredentials({
+      //   user: res.data.user,
+      //   accessToken: res.data.accessToken,
+      // });
       setCredentials({
-        user: res.data.user,
-        accessToken: res.data.accessToken,
+        user: res.data.data.user,
+        accessToken: res.data.data.accessToken,
       });
 
       if (res.data.user.role === "admin") {
@@ -75,9 +79,13 @@ const Login: React.FC = () => {
 
       const res = await googleLoginApi({ googleToken: credential });
 
+      // setCredentials({
+      //   user: res.data.user,
+      //   accessToken: res.data.accessToken,
+      // });
       setCredentials({
-        user: res.data.user,
-        accessToken: res.data.accessToken,
+        user: res.data.data.user,
+        accessToken: res.data.data.accessToken,
       });
 
       // navigate("/dashboard", { replace: true });
@@ -134,7 +142,7 @@ const Login: React.FC = () => {
               placeholder="you@example.com"
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
-              // required
+            // required
             />
           </div>
 
@@ -149,7 +157,7 @@ const Login: React.FC = () => {
               placeholder="Your password"
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
-              // required
+            // required
             />
           </div>
 

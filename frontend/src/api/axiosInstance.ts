@@ -49,7 +49,8 @@ api.interceptors.response.use(
 
       try {
         const res = await refreshTokenApi();
-        const newAccessToken = res.data.accessToken;
+        //const newAccessToken = res.data.accessToken;
+        const newAccessToken = res.data.data.accessToken;
 
         //  Only update access token
         // useAuthStore.getState().updateAccessToken(newAccessToken);
@@ -57,7 +58,8 @@ api.interceptors.response.use(
         //
         const meRes = await api.get("/auth/me");
         useAuthStore.getState().setCredentials({
-          user: meRes.data.user,
+          //user: meRes.data.data.user,
+          user: meRes.data.data.user,
           accessToken: newAccessToken,
         });
 

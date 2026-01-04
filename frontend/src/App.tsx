@@ -18,11 +18,10 @@ import AdminLayout from "./components/layout/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserManagement from "./pages/admin/UserManagement";
 
-import Forbidden from "./pages/errors/Forbidden";
 
-import { refreshTokenApi } from "./api/authApi";
 import { useAuthStore } from "./store/useAuthStore";
 
+import { refreshTokenApi } from "./api/authApi";
 import { meApi } from "./api/authApi";
 
 
@@ -37,33 +36,16 @@ function App() {
   const isLoading = useAuthStore((s) => s.isLoading);
 
 
-  // useEffect(() => {
-  //   const restoreSession = async () => {
-  //     try {
-  //       const refreshRes = await refreshTokenApi();
-  //       const meRes = await meApi();
 
-  //       setCredentials({
-  //         user: meRes.data.user,
-  //         accessToken: refreshRes.data.accessToken,
-  //       });
-  //     } catch {
-  //       logoutUser();
-  //     } finally {
-  //       stopLoading();
-  //     }
-  //   };
-
-  //   restoreSession();
-  // }, []);
   useEffect(() => {
     const restoreSession = async () => {
       try {
-        // 1️⃣ refresh session (cookie-based)
+        // refresh session 
         const refreshRes = await refreshTokenApi();
-        const newAccessToken = refreshRes.data.accessToken;
+        //const newAccessToken = refreshRes.data.data.accessToken;
+        const newAccessToken = refreshRes.data.data.accessToken;
 
-        // store token FIRST
+        // store token
         useAuthStore.getState().updateAccessToken(newAccessToken);
 
         // call /me
@@ -71,7 +53,8 @@ function App() {
 
         //  set full credentials
         setCredentials({
-          user: meRes.data.user,
+          //user: meRes.data.data.user,
+          user: meRes.data.data.user,
           accessToken: newAccessToken,
         });
       } catch {
@@ -83,6 +66,12 @@ function App() {
 
     restoreSession();
   }, []);
+
+
+  // useEffect(() => {
+  //   // auth state is restored lazily via axios interceptor
+  //   stopLoading();
+  // }, []);
 
 
   if (isLoading) return null;

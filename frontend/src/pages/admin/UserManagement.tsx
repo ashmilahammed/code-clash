@@ -15,15 +15,22 @@ interface AdminUser {
 const UserManagement = () => {
   const [users, setUsers] = useState<AdminUser[]>([]);
 
+
+  //
   const fetchUsers = async () => {
     try {
-      const res = await getUsersApi({ page: 1, limit: 20 });
-      setUsers(res.data.users);
+      // const res = await getUsersApi({ page: 1, limit: 20 });
+      // setUsers(res.data.data.users);
+      const data = await getUsersApi({ page: 1, limit: 20 });
+      setUsers(data.users);
+
     } catch (err) {
       console.error("Failed to fetch users", err);
     }
   };
 
+
+  //
   const toggleStatus = async (id: string, status: UserStatus) => {
     const newStatus = status === "active" ? "blocked" : "active";
 
@@ -86,10 +93,9 @@ const UserManagement = () => {
                 <td className="py-4">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-medium
-                      ${
-                        u.status === "active"
-                          ? "bg-green-600/20 text-green-400"
-                          : "bg-red-600/20 text-red-400"
+                      ${u.status === "active"
+                        ? "bg-green-600/20 text-green-400"
+                        : "bg-red-600/20 text-red-400"
                       }
                     `}
                   >
@@ -101,10 +107,9 @@ const UserManagement = () => {
                   <button
                     onClick={() => toggleStatus(u.id, u.status)}
                     className={`px-4 py-1.5 rounded-md text-sm font-medium transition
-                      ${
-                        u.status === "active"
-                          ? "bg-red-600 hover:bg-red-700 text-white"
-                          : "bg-green-600 hover:bg-green-700 text-white"
+                      ${u.status === "active"
+                        ? "bg-red-600 hover:bg-red-700 text-white"
+                        : "bg-green-600 hover:bg-green-700 text-white"
                       }
                     `}
                   >
