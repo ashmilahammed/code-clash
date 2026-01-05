@@ -1,4 +1,3 @@
-
 export interface IUser {
   id?: string;
 
@@ -24,8 +23,11 @@ export interface IUser {
 
   refreshToken?: string | null;
 
+  isVerified: boolean;
+  otp?: string | null;
+  otpExpires?: Date | null;
 
-  isVerified: boolean;            
-  otp?: string | null;            
-  otpExpires?: Date | null;      
+  //
+  createdAt?: Date;
+  updatedAt?: Date;
 }

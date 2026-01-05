@@ -42,10 +42,14 @@ export class AdminController {
       return res
         .status(HttpStatus.OK)
         .json(ApiResponse.success(MESSAGES.USER.FETCH_SUCCESS, result));
-    } catch (err: any) {
+
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
+
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(err.message || MESSAGES.COMMON.INTERNAL_ERROR));
+        .json(ApiResponse.error(message));
     }
   };
 
@@ -86,10 +90,14 @@ export class AdminController {
       return res
         .status(HttpStatus.OK)
         .json(ApiResponse.success(MESSAGES.USER.UPDATE_SUCCESS));
-    } catch (err: any) {
+
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
+
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(err.message || MESSAGES.COMMON.INTERNAL_ERROR));
+        .json(ApiResponse.error(message));
     }
   };
 }

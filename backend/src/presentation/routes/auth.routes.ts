@@ -1,15 +1,17 @@
 import { Router } from "express";
 
-import { authController } from "../../infrastructure/di/auth.di";
+import { authController,authMiddleware } from "../../infrastructure/di/auth.di";
 
+// import { registerValidator } from "../validators/register.validators";
+// import { loginValidator } from "../validators/login.validator";
 import { registerValidator } from "../validators/register.validators";
 import { loginValidator } from "../validators/login.validator";
 
-import { authMiddleware } from "../middlewares/auth.Middleware";
+// import { authMiddleware } from "../middlewares/auth.Middleware";
 
 const router = Router();
 
-// ================= PUBLIC ROUTES =================
+//public 
 router.post("/register", registerValidator, authController.register);
 router.post("/verify-otp", authController.verifyOtp);
 router.post("/resend-otp", authController.resendOtp);
@@ -24,10 +26,10 @@ router.post(
 );
 router.post("/reset-password", authController.resetPassword);
 
-// ================= SESSION =================
+//session
 router.get("/refresh-session", authController.refreshSession);
 
-// ================= PROTECTED ROUTES =================
+//protected
 router.post("/logout", authMiddleware, authController.logout);
 router.get("/me", authMiddleware, authController.me);
 

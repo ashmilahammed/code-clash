@@ -1,14 +1,17 @@
 import { Router } from "express";
-import { adminController } from "../../infrastructure/di/admin.di";
+import { adminController, authMiddleware, requireAdmin } from "../../infrastructure/di/admin.di";
 
-import { authMiddleware } from "../middlewares/auth.Middleware";
-import { requireRole } from "../middlewares/role.Middleware";
+// import { authMiddleware } from "../middlewares/auth.Middleware";
+// import { requireRole } from "../middlewares/role.Middleware";
 
 const router = Router();
 
+//middleware chain
 router.use(authMiddleware);
-router.use(requireRole("admin"));
+// router.use(requireRole("admin"));
+router.use(requireAdmin)
 
+//routes
 router.get("/users", adminController.listUsers);
 router.patch("/users/:userId/status", adminController.updateUserStatus);
 
