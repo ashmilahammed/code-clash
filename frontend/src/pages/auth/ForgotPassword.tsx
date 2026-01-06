@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { forgotPasswordApi } from "../../api/authApi";
 
+
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -22,7 +23,8 @@ const ForgotPassword = () => {
       setLoading(true);
       const res = await forgotPasswordApi({ email });
 
-      const userId = res.data?.userId;
+      // const userId = res.data?.userId;
+      const userId = res.data?.data?.userId;
       if (!userId) {
         setError("Unable to process request. Try again.");
         return;

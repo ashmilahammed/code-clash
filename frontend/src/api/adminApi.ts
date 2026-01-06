@@ -21,7 +21,7 @@ interface GetUsersResponse {
 
 export const getUsersApi = async (params: GetUsersParams) => {
   const res = await api.get("/admin/users", { params });
-  return res.data.data as GetUsersResponse; // 👈 unwrap ONCE
+  return res.data.data as GetUsersResponse; // unwrap ONCE
 };
 
 export const updateUserStatusApi = async (

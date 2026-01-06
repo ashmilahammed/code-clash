@@ -1,13 +1,14 @@
 import { ENV } from "../../config/env";
 import nodemailer from "nodemailer";
+import { IEmailService } from "../../domain/services/IEmailService";
 
 
 
-export class EmailService {
+
+export class EmailService implements IEmailService {
   private transporter;
 
   constructor() {
-    
     this.transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -17,7 +18,11 @@ export class EmailService {
     });
   }
 
-  async sendOtpEmail(to: string, otp: string) {
+  async sendOtpEmail(to: string, otp: string): Promise<void> {
+
+    ///
+    console.log(` OTP for ${to}:${otp}`);
+
     const mailOptions = {
       from: ENV.EMAIL_USER,
       to,

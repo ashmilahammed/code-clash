@@ -1,17 +1,19 @@
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
-import { PasswordService } from "../../../infrastructure/security/passwordService";
+import { IPasswordService } from "../../../domain/services/IPasswordService";
+
 
 export class ResetPasswordUseCase {
-  constructor(private userRepo: IUserRepository) {}
+  constructor(
+    private readonly _userRepo: IUserRepository,
+    private readonly _passwordService: IPasswordService
+  ) {}
 
-  async execute(userId: string, newPassword: string) {
-    const hashed = await PasswordService.hashPassword(newPassword);
+  async execute(userId: string, newPassword: string): Promise<void> {
+    const hashed = await this._passwordService.hash(newPassword);
 
-    await this.userRepo.updatePassword(userId, hashed);
+    await this._userRepo.updatePassword(userId, hashed);
 
     // logout from all devices
-    await this.userRepo.updateRefreshToken(userId, null);
-
-    return { message: "Password reset successfully" };
+    await this._userRepo.updateRefreshToken(userId, null);
   }
 }

@@ -42,7 +42,6 @@ function App() {
       try {
         // refresh session 
         const refreshRes = await refreshTokenApi();
-        //const newAccessToken = refreshRes.data.data.accessToken;
         const newAccessToken = refreshRes.data.data.accessToken;
 
         // store token
@@ -149,6 +148,9 @@ function App() {
 }
 
 export default App;
+
+
+
 
 
 

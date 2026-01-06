@@ -1,27 +1,28 @@
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
-import { PasswordService } from "../../../infrastructure/security/passwordService";
+import { IEmailService } from "../../../domain/services/IEmailService";
+import { IPasswordService } from "../../../domain/services/IPasswordService";
 import { generateOtp } from "../../../utils/generateOtp";
 
 
 
-interface IEmailService {
-  sendOtpEmail(email: string, otp: string): Promise<void>;
-}
-
 export class RegisterUseCase {
   constructor(
-    private userRepo: IUserRepository,
-    private emailService: IEmailService
+    private readonly _userRepo: IUserRepository,
+    private readonly _emailService: IEmailService,
+    private readonly _passwordService: IPasswordService
   ) {}
 
   async execute(username: string, email: string, password: string) {
-    const existing = await this.userRepo.findByEmail(email);
-    if (existing) throw new Error("Email already registered");
 
-    const hashed = await PasswordService.hashPassword(password);
+    const existing = await this._userRepo.findByEmail(email);
+    if (existing) {
+      throw new Error("EMAIL_ALREADY_REGISTERED");
+    }
 
-    //Create user without otp 
-    const newUser = await this.userRepo.createUser({
+    const hashed = await this._passwordService.hash(password);
+
+    //create user without otp
+    const newUser = await this._userRepo.createUser({
       username,
       email,
       password: hashed,
@@ -43,19 +44,15 @@ export class RegisterUseCase {
       isVerified: false,
     });
 
-    // generate OTP
+    //generate otp
     const { otp, expires } = generateOtp();
 
-    //
-    await this.userRepo.saveOtp(newUser.id!, otp, expires, true);
-    //
-    await this.emailService.sendOtpEmail(email, otp);
-
-    console.log(`REGISTER OTP for ${email}: ${otp}`);
+    await this._userRepo.saveOtp(newUser.id!, otp, expires, true);
+    await this._emailService.sendOtpEmail(email, otp);
 
     return {
-      message: "OTP sent to email",
-      userId: newUser.id, // required for /verify-otp
+      userId: newUser.id,
     };
   }
 }
+

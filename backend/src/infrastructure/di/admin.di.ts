@@ -1,27 +1,6 @@
-// import { UserRepository } from "../repositories/UserRepository";
-
-// import { ListUsersUseCase } from "../../application/use-cases/admin/listUsersUseCase";
-// import { UpdateUserStatusUseCase } from "../../application/use-cases/admin/updateUserStatusUseCase";
-
-// import { AdminController } from "../../presentation/controllers/admin.controllers";
-
-
-// // repositories
-// const userRepository = new UserRepository();
-
-// // use cases
-// const listUsersUseCase = new ListUsersUseCase(userRepository);
-// const updateUserStatusUseCase = new UpdateUserStatusUseCase(userRepository);
-
-// // controller
-// export const adminController = new AdminController(
-//   listUsersUseCase,
-//   updateUserStatusUseCase
-// );
-
-
 import { UserRepository } from "../repositories/UserRepository";
 import { ConsoleLogger } from "../services/logger";
+import { JwtService } from "../security/jwtService";
 
 import { ListUsersUseCase } from "../../application/use-cases/admin/listUsersUseCase";
 import { UpdateUserStatusUseCase } from "../../application/use-cases/admin/updateUserStatusUseCase";
@@ -30,17 +9,21 @@ import { AdminController } from "../../presentation/controllers/admin.controller
 import { createAuthMiddleware } from "../../presentation/middlewares/auth.Middleware";
 import { createRequireRole } from "../../presentation/middlewares/role.Middleware";
 
-// ================= CORE DEPENDENCIES =================
+
+
+// core dependencies
 const userRepository = new UserRepository();
 const logger = new ConsoleLogger();
+const jwtService = new JwtService();
 
-// ================= USE CASES =================
+// use cases
 const listUsersUseCase = new ListUsersUseCase(userRepository);
 const updateUserStatusUseCase = new UpdateUserStatusUseCase(userRepository);
 
-// ================= MIDDLEWARE =================
+//middleware
 export const authMiddleware = createAuthMiddleware(
   userRepository,
+  jwtService,
   logger
 );
 
@@ -49,7 +32,7 @@ export const requireAdmin = createRequireRole(
   logger
 );
 
-// ================= CONTROLLER =================
+// controllers
 export const adminController = new AdminController(
   listUsersUseCase,
   updateUserStatusUseCase
@@ -58,18 +41,41 @@ export const adminController = new AdminController(
 
 
 
+
+
 // import { UserRepository } from "../repositories/UserRepository";
+// import { ConsoleLogger } from "../services/logger";
 
 // import { ListUsersUseCase } from "../../application/use-cases/admin/listUsersUseCase";
 // import { UpdateUserStatusUseCase } from "../../application/use-cases/admin/updateUserStatusUseCase";
 
+// import { AdminController } from "../../presentation/controllers/admin.controllers";
+// import { createAuthMiddleware } from "../../presentation/middlewares/auth.Middleware";
+// import { createRequireRole } from "../../presentation/middlewares/role.Middleware";
 
-// // repository
+// // core dependency
 // const userRepository = new UserRepository();
+// const logger = new ConsoleLogger();
 
 // // use cases
-// export const listUsersUseCase =
-//   new ListUsersUseCase(userRepository);
+// const listUsersUseCase = new ListUsersUseCase(userRepository);
+// const updateUserStatusUseCase = new UpdateUserStatusUseCase(userRepository);
 
-// export const updateUserStatusUseCase =
-//   new UpdateUserStatusUseCase(userRepository);
+// //middleware
+// export const authMiddleware = createAuthMiddleware(
+//   userRepository,
+//   logger
+// );
+
+// export const requireAdmin = createRequireRole(
+//   "admin",
+//   logger
+// );
+
+// //controller
+// export const adminController = new AdminController(
+//   listUsersUseCase,
+//   updateUserStatusUseCase
+// );
+
+

@@ -1,15 +1,16 @@
 import bcrypt from "bcrypt";
+import { IPasswordService } from "../../domain/services/IPasswordService";
 
 
-export const PasswordService = {
-  hashPassword: async (password: string) => {
-    return await bcrypt.hash(password, 10);
-  },
-
-  comparePassword: async (password: string, hash: string) => {
-    return await bcrypt.compare(password, hash);
+export class PasswordService implements IPasswordService {
+  async hash(password: string): Promise<string> {
+    return bcrypt.hash(password, 10);
   }
-};
+
+  async compare(password: string, hash: string): Promise<boolean> {
+    return bcrypt.compare(password, hash);
+  }
+}
 
 
 

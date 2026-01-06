@@ -1,15 +1,13 @@
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
+import { IEmailService } from "../../../domain/services/IEmailService";
 import { generateOtp } from "../../../utils/generateOtp";
 
 
-interface IEmailService {
-  sendOtpEmail(email: string, otp: string): Promise<void>;
-}
 
 export class ResendOtpUseCase {
   constructor(
-    private userRepo: IUserRepository,
-    private emailService: IEmailService
+    private readonly _userRepo: IUserRepository,
+    private readonly _emailService: IEmailService
   ) { }
 
   async execute(
@@ -17,7 +15,7 @@ export class ResendOtpUseCase {
     options?: { ignoreVerified?: boolean }
   ) {
 
-    const user = await this.userRepo.findById(userId);
+    const user = await this._userRepo.findById(userId);
     if (!user) throw new Error("User not found");
 
     // Only block verified users when NOT in forgot-password flow
@@ -27,9 +25,9 @@ export class ResendOtpUseCase {
 
     const { otp, expires } = generateOtp();
 
-    await this.userRepo.saveOtp(userId, otp, expires);
+    await this._userRepo.saveOtp(userId, otp, expires);
 
-    await this.emailService.sendOtpEmail(user.email, otp);
+    await this._emailService.sendOtpEmail(user.email, otp);
 
     //
     console.log(`Resent OTP to ${user.email}: ${otp}`);

@@ -48,7 +48,8 @@ const Register: React.FC = () => {
 
       const res = await registerApi({ username, email, password });
 
-      const userId = res.data?.userId;
+      // const userId = res.data?.userId;
+      const userId = res.data?.data?.userId;
       if (!userId) throw new Error("Failed to register user. Try again.");
 
       navigate(`/auth/verify-otp?userId=${userId}`);
@@ -95,7 +96,7 @@ const Register: React.FC = () => {
               value={username}
               onChange={(e) => setUserName(e.target.value)}
               placeholder="Your full name"
-              // required
+            // required
             />
           </div>
 
@@ -107,7 +108,7 @@ const Register: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              // required
+            // required
             />
           </div>
 
@@ -119,7 +120,7 @@ const Register: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="At least 6 characters"
-              // required
+            // required
             />
           </div>
 
@@ -131,7 +132,7 @@ const Register: React.FC = () => {
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               placeholder="Repeat password"
-              // required
+            // required
             />
           </div>
 
