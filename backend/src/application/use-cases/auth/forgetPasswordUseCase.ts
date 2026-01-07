@@ -19,7 +19,7 @@ export class ForgotPasswordUseCase {
     await this._userRepo.saveOtp(user.id!, otp, expires, false);
     await this._emailService.sendOtpEmail(email, otp);
 
-    console.log(`Forgot Password OTP for ${email}: ${otp}`);
+    // console.log(`Forgot Password OTP for ${email}: ${otp}`);
 
     return { userId: user.id };
   }
