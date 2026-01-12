@@ -29,7 +29,8 @@ export const loginValidator = (
 
   if (password.length < 6) {
     return res.status(400).json({
-      message: "Password must be at least 6 characters",
+      // message: "Password must be at least 6 characters",
+      message: "PASSWORD_TOO_SHORT",
     });
   }
 

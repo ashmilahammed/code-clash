@@ -8,7 +8,7 @@ export class ForgotPasswordUseCase {
   constructor(
     private readonly _userRepo: IUserRepository,
     private readonly _emailService: IEmailService
-  ) {}
+  ) { }
 
   async execute(email: string) {
     const user = await this._userRepo.findByEmail(email);

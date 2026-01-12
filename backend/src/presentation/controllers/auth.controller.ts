@@ -19,6 +19,7 @@ import { MESSAGES } from "../constants/messages";
 import { HttpStatus } from "../constants/httpStatus";
 
 
+
 export class AuthController {
   constructor(
     private readonly _registerUseCase: RegisterUseCase,
@@ -452,6 +453,8 @@ export class AuthController {
 
 
 }
+
+
 
 
 

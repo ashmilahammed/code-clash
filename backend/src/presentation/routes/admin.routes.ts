@@ -8,7 +8,6 @@ const router = Router();
 
 //middleware chain
 router.use(authMiddleware);
-// router.use(requireRole("admin"));
 router.use(requireAdmin)
 
 //routes

@@ -5,262 +5,192 @@ import { BaseRepository } from "./BaseRepository";
 
 import { IUserDoc } from "../database/models/UserModel";
 
+import { ListQuery } from "../../domain/types/ListQuery";
+import { PaginatedResult } from "../../domain/types/PaginatedResult";
+
+
+
 export class UserRepository
-  extends BaseRepository<IUserDoc>
-  implements IUserRepository {
+    extends BaseRepository<IUserDoc>
+    implements IUserRepository {
 
-  constructor() {
-    super(UserModel);
-  }
+    constructor() {
+        super(UserModel);
+    }
 
-  //  Mapper stays here (correct place)
-  private toDomain(doc: any): IUser {
-    return {
-      id: doc._id.toString(),
+    //  Mapper stays here (correct place)
+    private toDomain(doc: any): IUser {
+        return {
+            id: doc._id.toString(),
 
-      username: doc.username,
-      email: doc.email,
-      password: doc.password,
+            username: doc.username,
+            email: doc.email,
+            password: doc.password,
 
-      avatar_id: doc.avatar_id?.toString() ?? null,
-      badge_id: doc.badge_id?.toString() ?? null,
-      level_id: doc.level_id?.toString() ?? null,
+            avatar_id: doc.avatar_id?.toString() ?? null,
+            badge_id: doc.badge_id?.toString() ?? null,
+            level_id: doc.level_id?.toString() ?? null,
 
-      xp: doc.xp,
+            xp: doc.xp,
 
-      current_streak: doc.current_streak,
-      longest_streak: doc.longest_streak,
+            current_streak: doc.current_streak,
+            longest_streak: doc.longest_streak,
 
-      is_premium: doc.is_premium,
+            is_premium: doc.is_premium,
 
-      date_joined: doc.date_joined,
+            date_joined: doc.date_joined,
 
-      role: doc.role,
-      status: doc.status,
+            role: doc.role,
+            status: doc.status,
 
-      refreshToken: doc.refreshToken ?? null,
+            refreshToken: doc.refreshToken ?? null,
 
-      isVerified: doc.isVerified,
-      otp: doc.otp ?? null,
-      otpExpires: doc.otpExpires ?? null,
-    };
-  }
+            isVerified: doc.isVerified,
+            otp: doc.otp ?? null,
+            otpExpires: doc.otpExpires ?? null,
+        };
+    }
 
-  // ================= CREATE =================
-  async createUser(user: IUser): Promise<IUser> {
-    const created = await this.createRaw(user);
-    return this.toDomain(created);
-  }
+    //
+    async createUser(user: IUser): Promise<IUser> {
+        const created = await this.createRaw(user);
+        return this.toDomain(created);
+    }
 
-  // ================= FIND =================
-  async findByEmail(email: string): Promise<IUser | null> {
-    const doc = await UserModel.findOne({ email }).exec();
-    return doc ? this.toDomain(doc) : null;
-  }
+    //
+    async findByEmail(email: string): Promise<IUser | null> {
+        const doc = await UserModel.findOne({ email }).exec();
+        return doc ? this.toDomain(doc) : null;
+    }
 
-  async findById(id: string): Promise<IUser | null> {
-    const doc = await this.findByIdRaw(id);
-    return doc ? this.toDomain(doc) : null;
-  }
+    async findById(id: string): Promise<IUser | null> {
+        const doc = await this.findByIdRaw(id);
+        return doc ? this.toDomain(doc) : null;
+    }
 
-  // ================= AUTH =================
-  async updateRefreshToken(
-    id: string,
-    refreshToken: string | null
-  ): Promise<void> {
-    await this.updateRaw(id, { refreshToken });
-  }
+    //auth
+    async updateRefreshToken(
+        id: string,
+        refreshToken: string | null
+    ): Promise<void> {
+        await this.updateRaw(id, { refreshToken });
+    }
 
-  async saveOtp(
-    id: string,
-    otp: string | null,
-    otpExpires: Date | null,
-    resetVerifyField = false
-  ): Promise<void> {
-    await this.updateRaw(id, {
-      otp,
-      otpExpires,
-      ...(resetVerifyField && { isVerified: false }),
-    });
-  }
+    async saveOtp(
+        id: string,
+        otp: string | null,
+        otpExpires: Date | null,
+        resetVerifyField = false
+    ): Promise<void> {
+        await this.updateRaw(id, {
+            otp,
+            otpExpires,
+            ...(resetVerifyField && { isVerified: false }),
+        });
+    }
 
-  async verifyUser(id: string): Promise<void> {
-    await this.updateRaw(id, {
-      isVerified: true,
-      otp: null,
-      otpExpires: null,
-    });
-  }
+    async verifyUser(id: string): Promise<void> {
+        await this.updateRaw(id, {
+            isVerified: true,
+            otp: null,
+            otpExpires: null,
+        });
+    }
 
-  async updatePassword(id: string, hashed: string): Promise<void> {
-    await this.updateRaw(id, { password: hashed });
-  }
+    async updatePassword(id: string, hashed: string): Promise<void> {
+        await this.updateRaw(id, { password: hashed });
+    }
 
-  // ================= ADMIN =================
-  async findAll(
-    page: number,
-    limit: number,
-    filter?: { status?: "active" | "blocked" }
-  ): Promise<{ users: IUser[]; total: number }> {
+    //Admin
+    // async findAll(query: ListQuery): Promise<PaginatedResult<IUser>> {
+    //     const {
+    //         page,
+    //         limit,
+    //         search,
+    //         filters,
+    //         sortBy = "date_joined",
+    //         sortOrder = "desc",
+    //     } = query;
 
-    const query: any = {};
-    if (filter?.status) query.status = filter.status;
+    //     const mongoQuery: any = {};
 
-    const skip = (page - 1) * limit;
+    //     // filter by status
+    //     if (filters?.status) {
+    //         mongoQuery.status = filters.status;
+    //     }
 
-    const [docs, total] = await Promise.all([
-      this.findManyRaw(query, skip, limit, { date_joined: -1 }),
-      this.count(query),
-    ]);
+    //     // search by username
+    //     if (search) {
+    //         mongoQuery.username = { $regex: search, $options: "i" };
+    //     }
 
-    return {
-      users: docs.map((d) => this.toDomain(d)),
-      total,
-    };
-  }
+    //     const skip = (page - 1) * limit;
+    //     const sort = { [sortBy]: sortOrder === "asc" ? 1 : -1 };
 
-  async updateStatus(
-    userId: string,
-    status: "active" | "blocked"
-  ): Promise<void> {
-    await this.updateRaw(userId, { status });
-  }
+    //     const [docs, total] = await Promise.all([
+    //         this.findManyRaw(mongoQuery, skip, limit, sort),
+    //         this.count(mongoQuery),
+    //     ]);
+
+    //     return {
+    //         data: docs.map((d) => this.toDomain(d)),
+    //         page,
+    //         limit,
+    //         total,
+    //         totalPages: Math.ceil(total / limit),
+    //     };
+    // }
+
+    async findAll(query: ListQuery): Promise<PaginatedResult<IUser>> {
+        const {
+            page,
+            limit,
+            search,
+            status,
+            sortBy = "date_joined",
+            sortOrder = "desc",
+        } = query;
+
+        const mongoQuery: any = {};
+
+        // filter by status
+        if (status) {
+            mongoQuery.status = status;
+        }
+
+        // search by username
+        if (search) {
+            mongoQuery.username = { $regex: search, $options: "i" };
+        }
+
+        const skip = (page - 1) * limit;
+        const sort = { [sortBy]: sortOrder === "asc" ? 1 : -1 };
+
+        const [docs, total] = await Promise.all([
+            this.findManyRaw(mongoQuery, skip, limit, sort),
+            this.count(mongoQuery),
+        ]);
+
+        return {
+            data: docs.map((d) => this.toDomain(d)),
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit),
+        };
+    }
+
+
+
+
+    async updateStatus(
+        userId: string,
+        status: "active" | "blocked"
+    ): Promise<void> {
+        await this.updateRaw(userId, { status });
+    }
 }
 
 
 
 
-
-// import { IUserRepository } from "../../domain/repositories/IUserRepository";
-// import { IUser } from "../../domain/entities/User";
-// import { UserModel } from "../database/models/UserModel";
-
-
-// export class UserRepository implements IUserRepository {
-
-//     private toDomain(doc: any): IUser {
-//         return {
-//             id: doc._id.toString(),
-
-//             username: doc.username,
-//             email: doc.email,
-//             password: doc.password,
-
-//             avatar_id: doc.avatar_id?.toString() ?? null,
-//             badge_id: doc.badge_id?.toString() ?? null,
-//             level_id: doc.level_id?.toString() ?? null,
-
-//             xp: doc.xp,
-
-//             current_streak: doc.current_streak,
-//             longest_streak: doc.longest_streak,
-
-//             is_premium: doc.is_premium,
-
-//             date_joined: doc.date_joined,
-
-//             role: doc.role,
-//             status: doc.status,
-
-//             refreshToken: doc.refreshToken ?? null,
-
-//             isVerified: doc.isVerified,
-//             otp: doc.otp ?? null,
-//             otpExpires: doc.otpExpires ?? null,
-
-//         };
-//     }
-
-//     async createUser(user: IUser): Promise<IUser> {
-//         const created = await UserModel.create(user);
-//         return this.toDomain(created);
-//     }
-
-
-//     async findByEmail(email: string): Promise<IUser | null> {
-//         const user = await UserModel.findOne({ email });
-//         return user ? this.toDomain(user) : null;
-//     }
-
-//     async findById(id: string): Promise<IUser | null> {
-//         const user = await UserModel.findById(id);
-//         return user ? this.toDomain(user) : null;
-//     }
-
-//     async updateRefreshToken(id: string, refreshToken: string | null): Promise<void> {
-//         await UserModel.findByIdAndUpdate(id, { refreshToken });
-//     }
-
-
-//     ////
-//     // async saveOtp(id: string, otp: string | null, otpExpires: Date | null): Promise<void> {
-//     //     await UserModel.findByIdAndUpdate(id, {
-//     //         otp,
-//     //         otpExpires,
-//     //         isVerified: false,
-//     //     });
-//     // }
-//     async saveOtp(
-//         id: string,
-//         otp: string | null,
-//         otpExpires: Date | null,
-//         resetVerifyField: boolean = false // default = false
-//     ) {
-//         await UserModel.findByIdAndUpdate(id, {
-//             otp,
-//             otpExpires,
-//             ...(resetVerifyField ? { isVerified: false } : {})
-//         });
-//     }
-
-
-
-//     async verifyUser(id: string): Promise<void> {
-//         await UserModel.findByIdAndUpdate(id, {
-//             isVerified: true,
-//             otp: null,
-//             otpExpires: null,
-//         });
-//     }
-
-//     async updatePassword(id: string, hashed: string) {
-//         await UserModel.findByIdAndUpdate(id, { password: hashed });
-//     }
-
-
-
-//     async findAll(
-//         page: number,
-//         limit: number,
-//         filter?: { status?: "active" | "blocked" }
-//     ): Promise<{ users: IUser[]; total: number }> {
-//         const query: any = {};
-
-//         if (filter?.status) {
-//             query.status = filter.status;
-//         }
-
-//         const skip = (page - 1) * limit;
-
-//         const [users, total] = await Promise.all([
-//             UserModel.find(query)
-//                 .skip(skip)
-//                 .limit(limit)
-//                 .sort({ date_joined: -1 }),
-//             UserModel.countDocuments(query),
-//         ]);
-
-//         return {
-//             users: users.map((doc) => this.toDomain(doc)),
-//             total,
-//         };
-//     }
-
-//     async updateStatus(
-//         userId: string,
-//         status: "active" | "blocked"
-//     ): Promise<void> {
-//         await UserModel.findByIdAndUpdate(userId, { status });
-//     }
-
-// }

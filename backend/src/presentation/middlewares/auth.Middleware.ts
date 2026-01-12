@@ -33,7 +33,7 @@ export const createAuthMiddleware = (
     }
 
     try {
-      
+
       const decoded = jwtService.verifyAccessToken(token);
 
       const user = await userRepo.findById(decoded.userId);
@@ -61,6 +61,11 @@ export const createAuthMiddleware = (
     }
   };
 };
+
+
+
+
+
 
 
 

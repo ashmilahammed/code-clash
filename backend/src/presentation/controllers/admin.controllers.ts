@@ -23,6 +23,38 @@ export class AdminController {
 
 
   ///
+  // listUsers = async (req: Request, res: Response) => {
+  //   try {
+  //     const page = Number(req.query.page ?? 1);
+  //     const limit = Number(req.query.limit ?? 10);
+
+  //     const status =
+  //       req.query.status === "active" || req.query.status === "blocked"
+  //         ? req.query.status
+  //         : undefined;
+
+  //     const result = await this.listUsersUseCase.execute(
+  //       page,
+  //       limit,
+  //       status
+  //     );
+
+  //     return res
+  //       .status(HttpStatus.OK)
+  //       .json(ApiResponse.success(MESSAGES.USER.FETCH_SUCCESS, result));
+
+  //   } catch (err: unknown) {
+  //     const message =
+  //       err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
+
+  //     return res
+  //       .status(HttpStatus.INTERNAL_SERVER_ERROR)
+  //       .json(ApiResponse.error(message));
+  //   }
+  // };
+
+
+
   listUsers = async (req: Request, res: Response) => {
     try {
       const page = Number(req.query.page ?? 1);
@@ -33,11 +65,21 @@ export class AdminController {
           ? req.query.status
           : undefined;
 
-      const result = await this.listUsersUseCase.execute(
+      const query: any = {
         page,
         limit,
-        status
-      );
+      };
+
+      if (typeof req.query.search === "string") {
+        query.search = req.query.search;
+      }
+
+      if (status) {
+        // query.filters = { status };
+        query.status = status;
+      }
+
+      const result = await this.listUsersUseCase.execute(query);
 
       return res
         .status(HttpStatus.OK)
@@ -55,7 +97,9 @@ export class AdminController {
 
 
 
-  ///
+
+
+
   updateUserStatus = async (req: Request, res: Response) => {
     try {
       const { userId } = req.params;
@@ -101,6 +145,9 @@ export class AdminController {
     }
   };
 }
+
+
+
 
 
 

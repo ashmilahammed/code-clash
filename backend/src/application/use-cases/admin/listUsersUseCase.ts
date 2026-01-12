@@ -1,20 +1,50 @@
-// import { IUser } from "../../../domain/entities/User";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
+import { ListQuery } from "../../../domain/types/ListQuery";
+import { PaginatedResult } from "../../../domain/types/PaginatedResult";
+import { UserResponseDTO } from "../../dto/UserResponseDTO";
+import { UserMapper } from "../../mappers/UserMapper";
 
 
 
 export class ListUsersUseCase {
-    constructor(private userRepo: IUserRepository) { }
+  constructor(
+    private readonly _userRepo: IUserRepository
+  ) {}
 
-    async execute(
-        page: number,
-        limit: number,
-        status?: "active" | "blocked"
-    ) {
-        const filter = status ? { status } : undefined;
+  async execute(
+    query: ListQuery
+  ): Promise<PaginatedResult<UserResponseDTO>> {
 
-        return this.userRepo.findAll(page, limit, filter);
-    }
+    const result = await this._userRepo.findAll(query);
+
+    return {
+      ...result,
+      data: result.data.map(UserMapper.toResponse),
+    };
+  }
 }
+
+
+
+
+
+
+
+// import { IUserRepository } from "../../../domain/repositories/IUserRepository";
+
+
+// export class ListUsersUseCase {
+//     constructor(private userRepo: IUserRepository) { }
+
+//     async execute(
+//         page: number,
+//         limit: number,
+//         status?: "active" | "blocked"
+//     ) {
+//         const filter = status ? { status } : undefined;
+
+//         return this.userRepo.findAll(page, limit, filter);
+//     }
+// }
 
 

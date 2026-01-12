@@ -14,11 +14,11 @@ export class VerifyOtpUseCase {
     }
 
     if (user.otp !== otp) {
-      throw new Error("Invalid OTP");
+      throw new Error("INVALID_OTP");
     }
 
     if (!user.otpExpires || user.otpExpires < new Date()) {
-      throw new Error("OTP expired");
+      throw new Error("OTP_EXPIRED");
     }
 
     await this.userRepo.verifyUser(userId);

@@ -15,7 +15,7 @@ export class VerifyForgotOtpUseCase {
       !user.otpExpires ||
       user.otpExpires < new Date()
     ) {
-      throw new Error("Invalid or expired OTP");
+      throw new Error("INVALID_OR_EXPIRED_OTP");
     }
 
     // clear OTP so it cannot be reused
