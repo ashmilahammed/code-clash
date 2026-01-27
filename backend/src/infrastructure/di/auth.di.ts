@@ -18,6 +18,8 @@ import { RefreshSessionUseCase } from "../../application/use-cases/auth/refreshS
 import { GetCurrentUserUseCase } from "../../application/use-cases/auth/getCurrentUserUseCase";
 import { GoogleLoginUseCase } from "../../application/use-cases/auth/googleLoginUseCase";
 
+import { UpdateLoginStreakUseCase } from "../../application/use-cases/user/updateLoginStreakUseCase";
+
 import { OAuth2Client } from "google-auth-library";
 import { AuthController } from "../../presentation/controllers/auth.controller";
 import { createAuthMiddleware } from "../../presentation/middlewares/auth.Middleware";
@@ -48,12 +50,18 @@ const forgotPasswordUseCase = new ForgotPasswordUseCase(userRepository, emailSer
 const verifyForgotOtpUseCase = new VerifyForgotOtpUseCase(userRepository);
 const resetPasswordUseCase = new ResetPasswordUseCase(userRepository, passwordService);
 
+
+//
+const updateLoginStreakUseCase = new UpdateLoginStreakUseCase(userRepository);
+
 const loginUseCase = new LoginUseCase(
     userRepository,
     emailService,
     passwordService,
-    jwtService
+    jwtService,
+    updateLoginStreakUseCase
 );
+
 const logoutUseCase = new LogoutUseCase(userRepository);
 
 const refreshSessionUseCase = new RefreshSessionUseCase(userRepository, jwtService);

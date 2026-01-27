@@ -16,6 +16,8 @@ const Register: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+
+  
   //
   const validate = () => {
     if (!username.trim() || !email.trim() || !password) {

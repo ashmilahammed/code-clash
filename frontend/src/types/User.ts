@@ -1,4 +1,4 @@
-export interface UserResponseDTO {
+export interface User {
   id: string;
   username: string;
   email: string;
@@ -6,7 +6,7 @@ export interface UserResponseDTO {
   xp: number;
   level_id: string | null;
   avatar_id: string | null;
-  badge_id: string | null; 
+  badge_id: string | null;
 
   current_streak: number;
   longest_streak: number;
@@ -15,9 +15,6 @@ export interface UserResponseDTO {
 
   role: "user" | "admin";
   status: "active" | "blocked";
-
-  // isVerified: boolean;
-
-  createdAt?: Date;
-  updatedAt?: Date;
 }
+
+

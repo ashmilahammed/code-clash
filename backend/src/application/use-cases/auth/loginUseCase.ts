@@ -4,6 +4,8 @@ import { IPasswordService } from "../../../domain/services/IPasswordService";
 import { IJwtService } from "../../../domain/services/IJwtService";
 import { generateOtp } from "../../../utils/generateOtp";
 
+import { UpdateLoginStreakUseCase } from "../user/updateLoginStreakUseCase";
+
 
 
 export class LoginUseCase {
@@ -11,8 +13,10 @@ export class LoginUseCase {
     private readonly _userRepository: IUserRepository,
     private readonly _emailService: IEmailService,
     private readonly _passwordService: IPasswordService,
-    private readonly _jwtService: IJwtService
-  ) {}
+    private readonly _jwtService: IJwtService,
+
+    private readonly _updateLoginStreakUseCase: UpdateLoginStreakUseCase
+  ) { }
 
 
   async execute(email: string, password: string) {
@@ -31,13 +35,16 @@ export class LoginUseCase {
       throw new Error("ACCOUNT_BLOCKED");
     }
 
-     // Google-only user
+    // Google-only user
     if (!user.password) {
       throw new Error("GOOGLE_ONLY_ACCOUNT");
     }
 
     const isMatch = await this._passwordService.compare(password, user.password);
     if (!isMatch) throw new Error("INVALID_CREDENTIALS");
+
+    //login streak
+    await this._updateLoginStreakUseCase.execute(user.id!);
 
     //jwt payload
     const payload = {

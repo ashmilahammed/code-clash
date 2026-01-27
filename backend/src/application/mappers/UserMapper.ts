@@ -27,8 +27,8 @@ export class UserMapper {
       status: domain.status,
 
       //
-      ...(domain.createdAt && { createdAt: domain.createdAt }),
-      ...(domain.updatedAt && { updatedAt: domain.updatedAt }),
+      // ...(domain.createdAt && { createdAt: domain.createdAt }),
+      // ...(domain.updatedAt && { updatedAt: domain.updatedAt }),
     };
   }
 

@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { getUsersApi, updateUserStatusApi } from "../../api/adminApi";
 import type { UserStatus, AdminUser } from "../../api/adminApi";
 
+import { useDebounce } from "../../hooks/useDebounce";
+
+
 
 
 const UserManagement = () => {
@@ -14,13 +17,19 @@ const UserManagement = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<UserStatus | "">("");
 
+
+  const debouncedSearch = useDebounce(search, 400);
+
+
   //
   const fetchUsers = async () => {
     try {
+
       const data = await getUsersApi({
         page,
         limit,
-        ...(search && { search }),
+        // ...(search && { search }), 
+        ...(debouncedSearch && { search: debouncedSearch }),
         // ...(status && { filters: { status } }),
         ...(status && { status }),
       });
@@ -35,7 +44,7 @@ const UserManagement = () => {
   // refetch when filters change
   useEffect(() => {
     fetchUsers();
-  }, [page, search, status]);
+  }, [page, debouncedSearch, status]);
 
   //actions
   const toggleStatus = async (id: string, currentStatus: UserStatus) => {

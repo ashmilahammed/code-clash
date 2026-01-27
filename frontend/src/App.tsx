@@ -13,6 +13,7 @@ import AdminRoute from "./components/common/AdminRoute";
 import GuestRoute from "./components/common/GuestRoute";
 
 import Dashboard from "./pages/dashboard/Dashboard";
+import UserLayout from "./components/layout/UserLayout";
 
 import AdminLayout from "./components/layout/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -72,7 +73,6 @@ function App() {
   //   stopLoading();
   // }, []);
 
-
   if (isLoading) return null;
 
 
@@ -80,18 +80,11 @@ function App() {
   return (
     <Routes>
       {/* Default */}
-      {/* <Route path="/" element={<Login />} /> */}
       <Route path="/" element={<Navigate to="/auth/login" replace />} />
 
-      {/* Auth */}
-      {/* <Route path="/auth/login" element={<Login />} />
-      <Route path="/auth/register" element={<Register />} />
-      <Route path="/auth/verify-otp" element={<VerifyOtp />} />
-      <Route path="/auth/forgot-password" element={<ForgotPassword />} />
-      <Route path="/auth/forgot-verify-otp" element={<ForgotVerifyOtp />} />
-      <Route path="/auth/reset-password" element={<ResetPassword />} /> */}
+
       {/* Guest-only routes */}
-      <Route
+      {/* <Route
         path="/auth/login"
         element={<GuestRoute><Login /></GuestRoute>}
       />
@@ -114,21 +107,29 @@ function App() {
       <Route
         path="/auth/reset-password"
         element={<GuestRoute><ResetPassword /></GuestRoute>}
-      />
+      /> */}
+
+      <Route element={<GuestRoute />}>
+        <Route path="/auth/login" element={<Login />} />
+        <Route path="/auth/register" element={<Register />} />
+        <Route path="/auth/verify-otp" element={<VerifyOtp />} />
+        <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+        <Route path="/auth/forgot-verify-otp" element={<ForgotVerifyOtp />} />
+        <Route path="/auth/reset-password" element={<ResetPassword />} />
+      </Route>
+
 
 
       {/* User protected */}
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
+      <Route element={<ProtectedRoute />}>
+        <Route element={<UserLayout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
+      </Route>
+
 
       {/* Admin protected */}
-      <Route
+      {/* <Route
         path="/admin"
         element={
           <AdminRoute>
@@ -138,7 +139,16 @@ function App() {
       >
         <Route index element={<AdminDashboard />} />
         <Route path="users" element={<UserManagement />} />
+      </Route> */}
+      <Route element={<AdminRoute />}>
+        <Route element={<AdminLayout />}>
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<UserManagement />} />
+        </Route>
       </Route>
+
+
+
 
       {/* Errors */}
       {/* <Route path="/403" element={<Forbidden />} /> */}

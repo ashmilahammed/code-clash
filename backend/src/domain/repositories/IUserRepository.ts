@@ -41,6 +41,20 @@ export interface IUserRepository {
     userId: string,
     status: "active" | "blocked"
   ): Promise<void>;
+
+
+
+  updateLoginStreak(
+    userId: string,
+    currentStreak: number,
+    longestStreak: number,
+    lastLoginDate: Date
+  ): Promise<void>;
+
+
+
+  addXp(userId: string, xp: number): Promise<void>;
+
 }
 
 

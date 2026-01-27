@@ -27,12 +27,16 @@ export abstract class BaseRepository<TDoc extends Document> {
     await this._model.findByIdAndUpdate(id, data).exec();
   }
 
-  async count(filter: any = {}): Promise<number> {
+  // async count(filter: any = {}): Promise<number> {
+  //   return this._model.countDocuments(filter).exec();
+  // }
+  async count(filter: Record<string, unknown> = {}): Promise<number> {
     return this._model.countDocuments(filter).exec();
   }
 
   async findManyRaw(
-    filter: any,
+    // filter: any,
+    filter: Record<string, unknown>,
     skip: number,
     limit: number,
     sort: any

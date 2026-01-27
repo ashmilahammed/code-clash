@@ -213,7 +213,7 @@ export class AuthController {
   //   }
   // };
 
-  // ================= LOGOUT =================
+  // 
   logout = async (req: Request, res: Response) => {
     try {
       const user = res.locals.user as { userId: string; role: "user" | "admin" } | undefined;

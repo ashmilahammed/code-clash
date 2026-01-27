@@ -13,6 +13,8 @@ export interface IUser {
 
   current_streak: number;
   longest_streak: number;
+  last_login_date?: Date | null;
+
 
   is_premium: boolean;
 
@@ -28,6 +30,6 @@ export interface IUser {
   otpExpires?: Date | null;
 
   //
-  createdAt?: Date;
-  updatedAt?: Date;
+  // createdAt?: Date;
+  // updatedAt?: Date;
 }

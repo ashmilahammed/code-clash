@@ -18,14 +18,16 @@ export class UserRepository
         super(UserModel);
     }
 
-    //  Mapper stays here (correct place)
-    private toDomain(doc: any): IUser {
+    //  Mapper stays here 
+    private toDomain(doc: IUserDoc): IUser {
         return {
             id: doc._id.toString(),
 
             username: doc.username,
             email: doc.email,
-            password: doc.password,
+            // password: doc.password,
+            password: doc.password ?? null,
+
 
             avatar_id: doc.avatar_id?.toString() ?? null,
             badge_id: doc.badge_id?.toString() ?? null,
@@ -52,7 +54,7 @@ export class UserRepository
     }
 
     //
-    async createUser(user: IUser): Promise<IUser> {
+    async createUser(user: Partial<IUser>): Promise<IUser> {
         const created = await this.createRaw(user);
         return this.toDomain(created);
     }
@@ -151,7 +153,9 @@ export class UserRepository
             sortOrder = "desc",
         } = query;
 
-        const mongoQuery: any = {};
+        // const mongoQuery: any = {};
+        const mongoQuery: Record<string, unknown> = {};
+
 
         // filter by status
         if (status) {
@@ -189,6 +193,38 @@ export class UserRepository
     ): Promise<void> {
         await this.updateRaw(userId, { status });
     }
+
+
+
+
+    async updateLoginStreak(
+        userId: string,
+        currentStreak: number,
+        longestStreak: number,
+        lastLoginDate: Date
+    ): Promise<void> {
+        await UserModel.updateOne(
+            { _id: userId },
+            {
+                $set: {
+                    current_streak: currentStreak,
+                    longest_streak: longestStreak,
+                    last_login_date: lastLoginDate,
+                },
+            }
+        );
+    }
+
+
+
+    async addXp(userId: string, xp: number): Promise<void> {
+        await UserModel.updateOne(
+            { _id: userId },
+            { $inc: { xp } }
+        );
+    }
+
+
 }
 
 

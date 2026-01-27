@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import connectDB from "./infrastructure/database/mongo";
 import authRoutes from "./presentation/routes/auth.routes";
 import adminRoutes from "./presentation/routes/admin.routes"
-
+import userRoutes from "./presentation/routes/user.routes";
 
 dotenv.config();
 
@@ -19,12 +19,8 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 //
 app.use("/api/admin", adminRoutes);
-
-// app.get("/", (req, res) => {
-//   res.send("API is running...");
-// });
-
-
+//
+app.use("/api/user", userRoutes);
 
 const PORT = process.env.PORT || 5000;
 
