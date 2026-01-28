@@ -1,5 +1,5 @@
 import { UserRepository } from "../repositories/UserRepository";
-import { ConsoleLogger } from "../services/logger";
+import { WinstonLogger } from "../services/logger";
 import { JwtService } from "../security/jwtService";
 
 import { ListUsersUseCase } from "../../application/use-cases/admin/listUsersUseCase";
@@ -13,12 +13,12 @@ import { createRequireRole } from "../../presentation/middlewares/role.Middlewar
 
 // core dependencies
 const userRepository = new UserRepository();
-const logger = new ConsoleLogger();
+const logger = new WinstonLogger();
 const jwtService = new JwtService();
 
 // use cases
 const listUsersUseCase = new ListUsersUseCase(userRepository);
-const updateUserStatusUseCase = new UpdateUserStatusUseCase(userRepository);
+const updateUserStatusUseCase = new UpdateUserStatusUseCase(userRepository, logger);
 
 //middleware
 export const authMiddleware = createAuthMiddleware(

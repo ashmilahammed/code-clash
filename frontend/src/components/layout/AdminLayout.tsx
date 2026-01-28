@@ -1,18 +1,22 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import Navbar from "./Navbar";
+import AdminNavbar from "./AdminNavbar";
+
 
 
 const AdminLayout = () => {
   return (
-    <div className="flex min-h-screen bg-[#0f172a] text-white">
-      {/* Sidebar */}
+    <div className="h-screen bg-[#0f172a] text-white overflow-hidden">
+      {/* Sidebar (fixed) */}
       <Sidebar />
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col">
-        <Navbar />
-        <main className="p-6">
+      {/* Main column */}
+      <div className="ml-64 h-full flex flex-col">
+        {/* Navbar (fixed height) */}
+        <AdminNavbar/>
+
+        {/* ONLY this scrolls */}
+        <main className="flex-1 mt-16 p-6 overflow-y-auto">
           <Outlet />
         </main>
       </div>
@@ -21,3 +25,4 @@ const AdminLayout = () => {
 };
 
 export default AdminLayout;
+

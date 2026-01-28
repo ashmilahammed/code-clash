@@ -3,6 +3,7 @@ import { getUsersApi, updateUserStatusApi } from "../../api/adminApi";
 import type { UserStatus, AdminUser } from "../../api/adminApi";
 
 import { useDebounce } from "../../hooks/useDebounce";
+import ConfirmModal from "../../components/modals/ConfirmModal";
 
 
 
@@ -19,6 +20,14 @@ const UserManagement = () => {
 
 
   const debouncedSearch = useDebounce(search, 400);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const [selectedUser, setSelectedUser] = useState<{
+    id: string;
+    status: UserStatus;
+    username: string;
+  } | null>(null);
+
 
 
   //
@@ -46,24 +55,61 @@ const UserManagement = () => {
     fetchUsers();
   }, [page, debouncedSearch, status]);
 
+
   //actions
-  const toggleStatus = async (id: string, currentStatus: UserStatus) => {
+  // const toggleStatus = async (id: string, currentStatus: UserStatus) => {
+  //   const newStatus: UserStatus =
+  //     currentStatus === "active" ? "blocked" : "active";
+
+  //   try {
+  //     await updateUserStatusApi(id, newStatus);
+
+  //     // optimistic update
+  //     setUsers((prev) =>
+  //       prev.map((u) =>
+  //         u.id === id ? { ...u, status: newStatus } : u
+  //       )
+  //     );
+  //   } catch (err) {
+  //     console.error("Failed to update user status", err);
+  //   }
+  // };
+
+  const requestToggleStatus = (user: AdminUser) => {
+    setSelectedUser({
+      id: user.id,
+      status: user.status,
+      username: user.username,
+    });
+    setConfirmOpen(true);
+  };
+
+
+
+  const confirmToggleStatus = async () => {
+    if (!selectedUser) return;
+
     const newStatus: UserStatus =
-      currentStatus === "active" ? "blocked" : "active";
+      selectedUser.status === "active" ? "blocked" : "active";
 
     try {
-      await updateUserStatusApi(id, newStatus);
+      await updateUserStatusApi(selectedUser.id, newStatus);
 
-      // optimistic update
       setUsers((prev) =>
         prev.map((u) =>
-          u.id === id ? { ...u, status: newStatus } : u
+          u.id === selectedUser.id
+            ? { ...u, status: newStatus }
+            : u
         )
       );
     } catch (err) {
       console.error("Failed to update user status", err);
+    } finally {
+      setConfirmOpen(false);
+      setSelectedUser(null);
     }
   };
+
 
 
 
@@ -147,7 +193,8 @@ const UserManagement = () => {
 
                 <td className="py-4 text-right">
                   <button
-                    onClick={() => toggleStatus(u.id, u.status)}
+                    // onClick={() => toggleStatus(u.id, u.status)}
+                    onClick={() => requestToggleStatus(u)}
                     className={`px-4 py-1.5 rounded-md text-sm font-medium transition
                       ${u.status === "active"
                         ? "bg-red-600 hover:bg-red-700 text-white"
@@ -197,6 +244,33 @@ const UserManagement = () => {
           Next
         </button>
       </div>
+
+
+
+
+      <ConfirmModal
+        open={confirmOpen}
+        title={
+          selectedUser?.status === "active"
+            ? "Block User"
+            : "Unblock User"
+        }
+        message={
+          selectedUser?.status === "active"
+            ? `Are you sure you want to block ${selectedUser?.username}?`
+            : `Are you sure you want to unblock ${selectedUser?.username}?`
+        }
+        confirmText={
+          selectedUser?.status === "active" ? "Block" : "Unblock"
+        }
+        onCancel={() => {
+          setConfirmOpen(false);
+          setSelectedUser(null);
+        }}
+        onConfirm={confirmToggleStatus}
+      />
+
+
     </div>
   );
 };

@@ -14,6 +14,7 @@ import GuestRoute from "./components/common/GuestRoute";
 
 import Dashboard from "./pages/dashboard/Dashboard";
 import UserLayout from "./components/layout/UserLayout";
+import Badges from "./pages/profile/Badges";
 
 import AdminLayout from "./components/layout/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -84,30 +85,6 @@ function App() {
 
 
       {/* Guest-only routes */}
-      {/* <Route
-        path="/auth/login"
-        element={<GuestRoute><Login /></GuestRoute>}
-      />
-      <Route
-        path="/auth/register"
-        element={<GuestRoute><Register /></GuestRoute>}
-      />
-      <Route
-        path="/auth/verify-otp"
-        element={<GuestRoute><VerifyOtp /></GuestRoute>}
-      />
-      <Route
-        path="/auth/forgot-password"
-        element={<GuestRoute><ForgotPassword /></GuestRoute>}
-      />
-      <Route
-        path="/auth/forgot-verify-otp"
-        element={<GuestRoute><ForgotVerifyOtp /></GuestRoute>}
-      />
-      <Route
-        path="/auth/reset-password"
-        element={<GuestRoute><ResetPassword /></GuestRoute>}
-      /> */}
 
       <Route element={<GuestRoute />}>
         <Route path="/auth/login" element={<Login />} />
@@ -124,6 +101,7 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<UserLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/badges" element={<Badges />} />
         </Route>
       </Route>
 

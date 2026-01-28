@@ -1,52 +1,45 @@
-import React from "react";
-
 interface LevelProgressProps {
   level: number;
   currentXp: number;
   nextLevelXp: number;
 }
 
-const LevelProgress: React.FC<LevelProgressProps> = ({
+const LevelProgress = ({
   level,
   currentXp,
   nextLevelXp,
-}) => {
-  const progressPercentage = Math.min(
+}: LevelProgressProps) => {
+  const progress = Math.min(
     (currentXp / nextLevelXp) * 100,
     100
   );
 
   return (
-    <div className="w-full bg-linear-to-br from-[#0F172A] to-[#020617] rounded-2xl p-6 shadow-lg">
+    <div className="bg-slate-900 rounded-xl p-6 shadow-md">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h2 className="text-white text-lg font-semibold">
-            Level {level}
-          </h2>
-          <p className="text-slate-400 text-sm">
-            {currentXp} / {nextLevelXp} XP
-          </p>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <span className="text-indigo-400 text-sm font-semibold">
+            ⚡ Level {level}
+          </span>
         </div>
-
-        <div className="text-cyan-400 font-bold text-xl">
-          ⚡
-        </div>
+        <span className="text-xs text-slate-400">
+          {currentXp} / {nextLevelXp} XP
+        </span>
       </div>
 
-      {/* Progress Bar */}
-      <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden">
+      {/* Progress bar */}
+      <div className="w-full h-3 bg-slate-700 rounded-full overflow-hidden">
         <div
-          className="h-full bg-linear-to-r from-cyan-400 to-blue-500 transition-all duration-700 ease-out"
-          style={{ width: `${progressPercentage}%` }}
+          className="h-full bg-linear-to-r from-indigo-500 to-cyan-400 transition-all duration-500"
+          style={{ width: `${progress}%` }}
         />
       </div>
 
       {/* Footer */}
-      <div className="mt-3 flex justify-between text-xs text-slate-400">
-        <span>Current XP</span>
-        <span>{Math.max(nextLevelXp - currentXp, 0)} XP to next level</span>
-      </div>
+      <p className="text-xs text-slate-400 mt-2">
+        {nextLevelXp - currentXp} XP to next level
+      </p>
     </div>
   );
 };

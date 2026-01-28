@@ -18,7 +18,7 @@ export class UserRepository
         super(UserModel);
     }
 
-    //  Mapper stays here 
+    //  Mapper 
     private toDomain(doc: IUserDoc): IUser {
         return {
             id: doc._id.toString(),
@@ -37,6 +37,7 @@ export class UserRepository
 
             current_streak: doc.current_streak,
             longest_streak: doc.longest_streak,
+             last_login_date: doc.last_login_date ?? null, 
 
             is_premium: doc.is_premium,
 

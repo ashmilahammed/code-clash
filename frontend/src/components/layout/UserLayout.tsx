@@ -1,11 +1,12 @@
 import { Outlet } from "react-router-dom";
-import Navbar from "./Navbar";
+import UserNavbar from "./UserNavbar";
+
 
 const UserLayout = () => {
   return (
     <div className="min-h-screen bg-[#0B1220]">
       {/* Fixed navbar */}
-      <Navbar />
+      <UserNavbar />
 
       {/* Page content */}
       <main className="pt-16">

@@ -3,7 +3,7 @@ import { EmailService } from "../services/emailService";
 import { JwtService } from "../security/jwtService";
 import { PasswordService } from "../security/passwordService";
 
-import { ConsoleLogger } from "../services/logger";
+import { WinstonLogger } from "../services/logger";
 
 
 import { RegisterUseCase } from "../../application/use-cases/auth/registerUseCase";
@@ -28,7 +28,7 @@ import { createAuthMiddleware } from "../../presentation/middlewares/auth.Middle
 // core dependencies
 const userRepository = new UserRepository();
 const emailService = new EmailService();
-const logger = new ConsoleLogger();
+const logger = new WinstonLogger();
 const passwordService = new PasswordService()
 const jwtService = new JwtService();
 
