@@ -19,6 +19,14 @@ const Sidebar = () => {
         >
           Users Management
         </NavLink>
+
+        <NavLink
+          to="/admin/challenges"
+          className="block p-2 rounded hover:bg-slate-700"
+        >
+          Challenge Management
+        </NavLink>
+
       </nav>
     </aside>
   );

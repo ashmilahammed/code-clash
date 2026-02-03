@@ -19,7 +19,8 @@ import Badges from "./pages/profile/Badges";
 import AdminLayout from "./components/layout/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserManagement from "./pages/admin/UserManagement";
-
+import ChallengeManagement from "./pages/admin/ChallengeManagement"
+import ChallengeDetails from "./pages/dashboard/ChallengeDetails";
 
 import { useAuthStore } from "./store/useAuthStore";
 
@@ -85,7 +86,6 @@ function App() {
 
 
       {/* Guest-only routes */}
-
       <Route element={<GuestRoute />}>
         <Route path="/auth/login" element={<Login />} />
         <Route path="/auth/register" element={<Register />} />
@@ -101,6 +101,7 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<UserLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/challenges/:id" element={<ChallengeDetails />} />
           <Route path="/badges" element={<Badges />} />
         </Route>
       </Route>
@@ -122,6 +123,7 @@ function App() {
         <Route element={<AdminLayout />}>
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<UserManagement />} />
+          <Route path="/admin/challenges" element={<ChallengeManagement />} />
         </Route>
       </Route>
 

@@ -5,26 +5,6 @@ import type { ListQuery } from "../types/ListQuery";
 //types
 export type UserStatus = "active" | "blocked";
 
-// export interface ListQuery {
-//     page: number;
-//     limit: number;
-//     search?: string;
-//     sortBy?: string;
-//     sortOrder?: "asc" | "desc";
-//     filters?: {
-//         status?: UserStatus;
-//     };
-// }
-// export interface ListQuery {
-//     page: number;
-//     limit: number;
-//     search?: string;
-//     status?: UserStatus; 
-//     sortBy?: string;
-//     sortOrder?: "asc" | "desc";
-// }
-
-
 export interface PaginatedResponse<T> {
     data: T[];
     page: number;
@@ -40,7 +20,6 @@ export interface AdminUser {
     status: UserStatus;
 }
 
-// api
 
 //get paginated users(admin)
 export const getUsersApi = async (
@@ -65,6 +44,21 @@ export const updateUserStatusApi = async (
 
 
 
+
+// challenges
+export interface CreateChallengePayload {
+  title: string;
+  description: string;
+  difficulty: "easy" | "medium" | "hard";
+  xpReward: number;
+}
+
+export const createChallengeApi = async (
+  payload: CreateChallengePayload
+) => {
+  const res = await api.post("/challenges", payload);
+  return res.data.challenge;
+};
 
 
 

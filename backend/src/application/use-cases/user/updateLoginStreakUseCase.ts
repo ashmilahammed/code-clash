@@ -9,7 +9,7 @@ export class UpdateLoginStreakUseCase {
         const user = await this._userRepo.findById(userId);
         if (!user) return;
 
-        // Normalize "today" to UTC day start
+        // "today" to UTC day start
         const today = new Date();
         today.setUTCHours(0, 0, 0, 0);
 

@@ -74,7 +74,7 @@ const Dashboard = () => {
 
   
   return (
-    <div className="min-h-screen bg-[#0B1220] px-7 py-6 space-y-8">
+    <div className="min-h-screen bg-[#0B1220] px-6 py-6 space-y-8">
       {/* Level / XP */}
       <LevelProgress
         level={dashboard.level.level}

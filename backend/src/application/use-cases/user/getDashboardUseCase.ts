@@ -1,6 +1,7 @@
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import { IXpService } from "../../../domain/services/IXpService";
 
+
 export class GetDashboardUseCase {
     constructor(
         private readonly _userRepo: IUserRepository,
