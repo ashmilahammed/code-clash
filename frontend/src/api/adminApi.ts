@@ -45,20 +45,20 @@ export const updateUserStatusApi = async (
 
 
 
-// challenges
-export interface CreateChallengePayload {
-  title: string;
-  description: string;
-  difficulty: "easy" | "medium" | "hard";
-  xpReward: number;
-}
+// // challenges
+// export interface CreateChallengePayload {
+//   title: string;
+//   description: string;
+//   difficulty: "easy" | "medium" | "hard";
+//   xpReward: number;
+// }
 
-export const createChallengeApi = async (
-  payload: CreateChallengePayload
-) => {
-  const res = await api.post("/challenges", payload);
-  return res.data.challenge;
-};
+// export const createChallengeApi = async (
+//   payload: CreateChallengePayload
+// ) => {
+//   const res = await api.post("/challenges", payload);
+//   return res.data.challenge;
+// };
 
 
 

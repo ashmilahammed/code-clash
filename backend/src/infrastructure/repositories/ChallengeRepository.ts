@@ -1,51 +1,10 @@
-// import { IChallengeRepository } from "../../domain/repositories/IChallengeRepository";
-// import { IChallenge } from "../../domain/entities/Challenge";
-// import { ChallengeModel, IChallengeDoc } from "../database/models/ChallengeModel";
-
-
-// export class ChallengeRepository implements IChallengeRepository {
-
-//   private toDomain(doc: IChallengeDoc): IChallenge {
-//     return {
-//       id: doc._id.toString(),
-//       title: doc.title,
-//       description: doc.description,
-//       difficulty: doc.difficulty,
-//       xpReward: doc.xpReward,
-//       isActive: doc.isActive,
-//       createdAt: doc.createdAt,
-//       updatedAt: doc.updatedAt,
-//     };
-//   }
-
-//   async create(data: Partial<IChallenge>): Promise<IChallenge> {
-//     const doc = await ChallengeModel.create(data);
-//     return this.toDomain(doc);
-//   }
-
-//   async findAll(): Promise<IChallenge[]> {
-//     const docs = await ChallengeModel.find({ isActive: true }).exec();
-//     return docs.map((d) => this.toDomain(d));
-//   }
-
-//   async findById(id: string): Promise<IChallenge | null> {
-//     const doc = await ChallengeModel.findById(id).exec();
-//     return doc ? this.toDomain(doc) : null;
-//   }
-// }
-
-
-
-
-
-
-
 import { BaseRepository } from "./BaseRepository";
 import { ChallengeModel, IChallengeDoc } from "../database/models/ChallengeModel";
 import { IChallengeRepository } from "../../domain/repositories/IChallengeRepository";
 import { IChallenge } from "../../domain/entities/Challenge";
 import { ChallengeListQuery } from "../../domain/types/ChallengeListQuery";
 import { PaginatedResult } from "../../domain/types/PaginatedResult";
+import { ChallengeMapper } from "../../application/mappers/ChallengeMapper";
 
 
 
@@ -57,29 +16,24 @@ export class ChallengeRepository
         super(ChallengeModel);
     }
 
-    private toDomain(doc: IChallengeDoc): IChallenge {
-        return {
-            id: doc._id.toString(),
-            title: doc.title,
-            description: doc.description,
-            difficulty: doc.difficulty,
-            domain: doc.domain,
-            xpReward: doc.xpReward,
-            timeLimitMinutes: doc.timeLimitMinutes,
-            starterCode: doc.starterCode ?? null,
-            isPremium: doc.isPremium,
-            isActive: doc.isActive,
-            createdAt: doc.createdAt,
-            updatedAt: doc.updatedAt,
-        };
+    async create(data: IChallenge): Promise<IChallenge> {
+        const persistence = ChallengeMapper.toPersistence(data);
+        const created = await this.createRaw(persistence);
+        return ChallengeMapper.toDomain(created);
     }
 
-    async create(data: Partial<IChallenge>): Promise<IChallenge> {
-        const created = await this.createRaw(data);
-        return this.toDomain(created);
+    async update(
+        challengeId: string,
+        data: Partial<IChallenge>
+    ): Promise<IChallenge> {
+        const persistence = ChallengeMapper.toPersistence(data);
+        const updated = await this.updateRaw(challengeId, persistence);
+        return ChallengeMapper.toDomain(updated);
     }
 
-    async findAll(query: ChallengeListQuery): Promise<PaginatedResult<IChallenge>> {
+    async findAll(
+        query: ChallengeListQuery
+    ): Promise<PaginatedResult<IChallenge>> {
         const {
             page,
             limit,
@@ -108,7 +62,7 @@ export class ChallengeRepository
         ]);
 
         return {
-            data: docs.map((d) => this.toDomain(d)),
+            data: docs.map(ChallengeMapper.toDomain),
             page,
             limit,
             total,
@@ -122,4 +76,82 @@ export class ChallengeRepository
     ): Promise<void> {
         await this.updateRaw(challengeId, { isActive });
     }
+
+
+
+    async addTags(challengeId: string, tagIds: string[]): Promise<void> {
+        await this.updateRaw(
+            challengeId,
+            {
+                $addToSet: {
+                    tags: { $each: tagIds },
+                },
+            } as any
+        );
+    }
+
+
+
+    async addLanguages(
+        challengeId: string,
+        languageIds: string[]
+    ): Promise<void> {
+        await this.updateRaw(
+            challengeId,
+            {
+                $set: { languages: languageIds },
+            } as any
+        );
+    }
+
+
+
+    async updateSchedule(
+        challengeId: string,
+        schedule: {
+            availableFrom?: Date | null;
+            availableUntil?: Date | null;
+        }
+    ): Promise<void> {
+        await this.updateRaw(challengeId, schedule);
+    }
+
+
+
+    async findByIdWithLanguages(
+        challengeId: string
+    ): Promise<{ id: string; languages: { key: string }[] } | null> {
+        const doc = await ChallengeModel.findById(challengeId)
+            .populate("languages", "key")
+            .lean();
+
+        if (!doc) return null;
+
+        return {
+            id: doc._id.toString(),
+            languages: (doc.languages as any[]).map((l) => ({
+                key: l.key,
+            })),
+        };
+    }
+
+
+
+
+    // user
+    async findByIdForUser(id: string) {
+        return ChallengeModel.findOne({
+            _id: id,
+            isActive: true,
+            status: "active",
+        })
+            .populate("tags")
+            .populate("languages")
+            .lean();
+    }
+
+
+
 }
+
+

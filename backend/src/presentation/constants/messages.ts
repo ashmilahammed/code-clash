@@ -27,7 +27,24 @@ export const MESSAGES = {
     USER_UNBLOCKED: "User unblocked successfully",
   },
 
+  CHALLENGE: {
+    CREATED: "Challenge created successfully",
+    UPDATED: "Challenge updated successfully",
+    STATUS_UPDATED: "Challenge status updated successfully",
+
+    TAGS_ADDED: "Challenge tags added successfully",
+
+    ID_REQUIRED: "Challenge ID is required",
+    INVALID_STATUS: "Invalid challenge status",
+    INVALID_DATA: "Invalid challenge data",
+
+    FETCHED: "Challenge fetched successfully",
+    LANGUAGES_FETCHED: "Challenge languages fetched successfully",
+    NOT_FOUND: "Challenge not found",
+  },
+
   COMMON: {
+    SUCCESS: "Success",
     BAD_REQUEST: "Bad request",
     INTERNAL_ERROR: "Something went wrong",
     FORBIDDEN: "You are not allowed to access this resource",

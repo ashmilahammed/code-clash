@@ -6,6 +6,7 @@ import connectDB from "./infrastructure/database/mongo";
 import authRoutes from "./presentation/routes/auth.routes";
 import adminRoutes from "./presentation/routes/admin.routes"
 import userRoutes from "./presentation/routes/user.routes";
+import challengeRoutes from "./presentation/routes/challenge.routes";
 
 import { WinstonLogger } from "./infrastructure/services/logger";
 
@@ -23,6 +24,8 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/challenges", challengeRoutes);
+
 
 
 const PORT = process.env.PORT || 5000;

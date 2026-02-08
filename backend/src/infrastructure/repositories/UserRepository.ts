@@ -104,46 +104,8 @@ export class UserRepository
         await this.updateRaw(id, { password: hashed });
     }
 
+    
     //Admin
-    // async findAll(query: ListQuery): Promise<PaginatedResult<IUser>> {
-    //     const {
-    //         page,
-    //         limit,
-    //         search,
-    //         filters,
-    //         sortBy = "date_joined",
-    //         sortOrder = "desc",
-    //     } = query;
-
-    //     const mongoQuery: any = {};
-
-    //     // filter by status
-    //     if (filters?.status) {
-    //         mongoQuery.status = filters.status;
-    //     }
-
-    //     // search by username
-    //     if (search) {
-    //         mongoQuery.username = { $regex: search, $options: "i" };
-    //     }
-
-    //     const skip = (page - 1) * limit;
-    //     const sort = { [sortBy]: sortOrder === "asc" ? 1 : -1 };
-
-    //     const [docs, total] = await Promise.all([
-    //         this.findManyRaw(mongoQuery, skip, limit, sort),
-    //         this.count(mongoQuery),
-    //     ]);
-
-    //     return {
-    //         data: docs.map((d) => this.toDomain(d)),
-    //         page,
-    //         limit,
-    //         total,
-    //         totalPages: Math.ceil(total / limit),
-    //     };
-    // }
-
     async findAll(query: ListQuery): Promise<PaginatedResult<IUser>> {
         const {
             page,

@@ -3,6 +3,7 @@ import { ListQuery } from "../../../domain/types/ListQuery";
 import { PaginatedResult } from "../../../domain/types/PaginatedResult";
 import { IChallenge } from "../../../domain/entities/Challenge";
 
+
 export class ListChallengesUseCase {
   constructor(
     private readonly _challengeRepo: IChallengeRepository

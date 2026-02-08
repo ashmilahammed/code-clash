@@ -38,7 +38,6 @@ export class GetDashboardUseCase {
 
 
     // PURE helper (no side effects)
-    // -------------------------
     private buildStreakDates(
         currentStreak: number,
         lastLoginDate?: Date | null

@@ -2,8 +2,6 @@ import { Router } from "express";
 
 import { authController,authMiddleware } from "../../infrastructure/di/auth.di";
 
-// import { registerValidator } from "../validators/register.validators";
-// import { loginValidator } from "../validators/login.validator";
 import { registerValidator } from "../validators/register.validators";
 import { loginValidator } from "../validators/login.validator";
 

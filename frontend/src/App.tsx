@@ -19,8 +19,18 @@ import Badges from "./pages/profile/Badges";
 import AdminLayout from "./components/layout/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserManagement from "./pages/admin/UserManagement";
+
 import ChallengeManagement from "./pages/admin/ChallengeManagement"
 import ChallengeDetails from "./pages/dashboard/ChallengeDetails";
+
+import CreateChallengeWizard from "./pages/admin/challenges/CreateChallenge";
+import BasicInfo from "./pages/admin/challenges/CreateChallenge/BasicInfo";
+import ChallengeTags from "./pages/admin/challenges/CreateChallenge/tags";
+import ChallengeLanguages from "./pages/admin/challenges/CreateChallenge/languages";
+import ChallengeTestCases from "./pages/admin/challenges/CreateChallenge/testCases";
+import ChallengeHintsAndSchedule from "./pages/admin/challenges/CreateChallenge/HintsAndSchedule";
+import CodeTemplates from "./pages/admin/challenges/CreateChallenge/CodeTemplates";
+
 
 import { useAuthStore } from "./store/useAuthStore";
 
@@ -108,24 +118,46 @@ function App() {
 
 
       {/* Admin protected */}
-      {/* <Route
-        path="/admin"
-        element={
-          <AdminRoute>
-            <AdminLayout />
-          </AdminRoute>
-        }
-      >
-        <Route index element={<AdminDashboard />} />
-        <Route path="users" element={<UserManagement />} />
+      {/* <Route element={<AdminRoute />}>
+        <Route element={<AdminLayout />}>
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<UserManagement />} />
+          <Route path="/admin/challenges" element={<ChallengeManagement />} />
+          
+          <Route path="/admin/challenges/create" element={<BasicInfo />} />
+          <Route path="/admin/challenges/:id/tags" element={<ChallengeTags />} />
+          <Route path="/admin/challenges/:id/languages" element={<ChallengeLanguages />} />
+          <Route path="/admin/challenges/:id/test-cases" element={<ChallengeTestCases />} />
+          <Route path="/admin/challenges/:id/hints" element={<ChallengeHintsAndSchedule />} />
+          <Route path="/admin/challenges/:id/templates" element={<CodeTemplates />} />
+        </Route>
       </Route> */}
+
+      {/* Admin protected */}
       <Route element={<AdminRoute />}>
         <Route element={<AdminLayout />}>
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<UserManagement />} />
           <Route path="/admin/challenges" element={<ChallengeManagement />} />
+
+          {/* wizard */}
+          <Route
+            path="/admin/challenges/create"
+            element={<CreateChallengeWizard />}
+          >
+            {/* Step 1 */}
+            <Route index element={<BasicInfo />} />
+
+            {/* Step 2+ (need challengeId) */}
+            <Route path=":id/tags" element={<ChallengeTags />} />
+            <Route path=":id/languages" element={<ChallengeLanguages />} />
+            <Route path=":id/test-cases" element={<ChallengeTestCases />} />
+            <Route path=":id/hints" element={<ChallengeHintsAndSchedule />} />
+            <Route path=":id/templates" element={<CodeTemplates />} />
+          </Route>
         </Route>
       </Route>
+
 
 
 
@@ -144,75 +176,6 @@ export default App;
 
 
 
-
-
-
-
-
-// import { Routes, Route } from "react-router-dom";
-// import Register from "./pages/auth/Register";
-// import Login from "./pages/auth/Login";
-// import VerifyOtp from "./pages/auth/VerifyOtp";
-// import ProtectedRoute from "./components/common/ProtectedRoute";
-
-// import Dashboard from "./pages/dashboard/Dashboard";
-
-// import ForgotPassword from "./pages/auth/ForgotPassword";
-// import ForgotVerifyOtp from "./pages/auth/ForgotVerifyOtp";
-// import ResetPassword from "./pages/auth/ResetPassword";
-
-// import AdminRoute from "./components/common/AdminRoute";
-// import AdminDashboard from "./pages/admin/AdminDashboard";
-
-// import "./App.css"
-
-
-
-// function App() {
-//   return (
-//     <Routes>
-
-//       {/* Default route */}
-//       <Route path="/" element={<Login />} />
-
-//       {/* Auth routes */}
-//       <Route path="/auth/login" element={<Login />} />
-//       <Route path="/auth/register" element={<Register />} />
-
-//       <Route path="/auth/verify-otp" element={<VerifyOtp />} />
-
-
-//       <Route path="/auth/forgot-password" element={<ForgotPassword />} />
-//       <Route path="/auth/forgot-verify-otp" element={<ForgotVerifyOtp />} />
-//       <Route path="/auth/reset-password" element={<ResetPassword />} />
-
-
-//       {/*user Protected Route */}
-//       <Route
-//         path="/dashboard"
-//         element={
-//           <ProtectedRoute>
-//             <Dashboard />
-//           </ProtectedRoute>
-//         }
-//       />
-
-//       {/* Admin protected route */}
-//       <Route
-//         path="/admin"
-//         element={
-//           <AdminRoute>
-//             <AdminDashboard />
-//           </AdminRoute>
-//         }
-//       />
-
-//     </Routes>
-
-//   );
-// }
-
-// export default App;
 
 
 
