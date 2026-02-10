@@ -1,8 +1,9 @@
-import { IUserRepository } from "../../../domain/repositories/IUserRepository";
+import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
 import { IEmailService } from "../../../domain/services/IEmailService";
 import { IPasswordService } from "../../../domain/services/IPasswordService";
 import { generateOtp } from "../../../utils/generateOtp";
 
+import { UserFactory } from "../../../domain/entities/user/userFactory";
 
 
 export class RegisterUseCase {
@@ -22,12 +23,13 @@ export class RegisterUseCase {
       throw new Error("EMAIL_ALREADY_REGISTERED");
     }
 
-    const hashed = await this._passwordService.hash(password);
+    const hashedPassword = await this._passwordService.hash(password);
     const { otp, expires } = generateOtp();
 
     // Email exists but not verified 
     if (existing && !existing.isVerified) {
-      await this._userRepo.updatePassword(existing.id!, hashed);
+
+      await this._userRepo.updatePassword(existing.id!, hashedPassword);
 
       await this._userRepo.saveOtp(
         existing.id!,
@@ -42,30 +44,42 @@ export class RegisterUseCase {
     }
 
     // New user
-    const newUser = await this._userRepo.createUser({
+    // const newUser = await this._userRepo.createUser({
+    //   username,
+    //   email,
+    //   password: hashed,
+
+    //   avatar_id: null,
+    //   badge_id: null,
+    //   level_id: null,
+
+    //   xp: 0,
+    //   current_streak: 0,
+    //   longest_streak: 0,
+
+    //   is_premium: false,
+    //   date_joined: new Date(),
+
+    //   role: "user",
+    //   status: "active",
+    //   refreshToken: null,
+    //   isVerified: false,
+
+    //   otp,
+    //   otpExpires: expires,
+    // });
+
+
+    // new user
+    const newUser = UserFactory.createEmailUser({
       username,
       email,
-      password: hashed,
-
-      avatar_id: null,
-      badge_id: null,
-      level_id: null,
-
-      xp: 0,
-      current_streak: 0,
-      longest_streak: 0,
-
-      is_premium: false,
-      date_joined: new Date(),
-
-      role: "user",
-      status: "active",
-      refreshToken: null,
-      isVerified: false,
-
+      hashedPassword,
       otp,
       otpExpires: expires,
     });
+
+    // const createdUser = await this._userRepo.createUser(newUser);
 
     await this._emailService.sendOtpEmail(email, otp);
 

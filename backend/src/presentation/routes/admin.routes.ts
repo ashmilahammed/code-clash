@@ -1,30 +1,15 @@
-// import { Router } from "express";
-// import { adminController, authMiddleware, requireAdmin } from "../../infrastructure/di/admin.di";
-
-// // import { authMiddleware } from "../middlewares/auth.Middleware";
-// // import { requireRole } from "../middlewares/role.Middleware";
-
-// const router = Router();
-
-// //middleware chain
-// router.use(authMiddleware);
-// router.use(requireAdmin)
-
-// //routes
-// router.get("/users", adminController.listUsers);
-// router.patch("/users/:userId/status", adminController.updateUserStatus);
-
-// export default router;
-
-
-
-
 import { Router } from "express";
+import { authMiddleware, } from "../../infrastructure/di/auth.di";
 import {
-    adminController,
-    authMiddleware,
     requireAdmin,
-} from "../../infrastructure/di/admin.di";
+    adminController,
+} from "../../infrastructure/di/user.di";
+
+// import {
+//     adminController,
+//     authMiddleware,
+//     requireAdmin,
+// } from "../../infrastructure/di/admin.di";
 import { challengeController } from "../../infrastructure/di/challenge.di";
 
 const router = Router();
@@ -38,9 +23,7 @@ router.get("/users", adminController.listUsers);
 router.patch("/users/:userId/status", adminController.updateUserStatus);
 
 
-
-
-// challenges (ADMIN)
+// challenges(admin)
 router.post("/challenges", challengeController.create);
 router.get("/challenges", challengeController.adminList);
 

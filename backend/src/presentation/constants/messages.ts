@@ -41,6 +41,9 @@ export const MESSAGES = {
     FETCHED: "Challenge fetched successfully",
     LANGUAGES_FETCHED: "Challenge languages fetched successfully",
     NOT_FOUND: "Challenge not found",
+
+    TEMPLATES_FETCHED: "Challenge templates fetched successfully",
+    TEMPLATES_NOT_FOUND: "Challenge templates not found",
   },
 
   COMMON: {

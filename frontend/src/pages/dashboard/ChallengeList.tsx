@@ -185,7 +185,7 @@ const ChallengeList = () => {
     );
   }
 
-  
+
 
   return (
     <div className="bg-[#020617] rounded-xl p-6 space-y-4">
@@ -229,7 +229,9 @@ const ChallengeList = () => {
 
             <button
               onClick={() =>
-                navigate(`/challenges/${challenge.id}`)
+                // navigate(`/challenges/${challenge.id}`)
+                navigate(`/challenges/${challenge.id}/solve`)
+
               }
               className="px-3 py-1 rounded bg-cyan-600 text-black hover:bg-cyan-500 transition"
             >

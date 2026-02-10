@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
-import { ListUsersUseCase } from "../../application/use-cases/admin/listUsersUseCase";
-import { UpdateUserStatusUseCase } from "../../application/use-cases/admin/updateUserStatusUseCase";
+import { ListUsersUseCase } from "../../application/use-cases/user/admin/listUsersUseCase";
+import { UpdateUserStatusUseCase } from "../../application/use-cases/user/admin/updateUserStatusUseCase";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { MESSAGES } from "../constants/messages";
@@ -52,7 +52,6 @@ export class AdminController {
   //       .json(ApiResponse.error(message));
   //   }
   // };
-
 
 
   listUsers = async (req: Request, res: Response) => {

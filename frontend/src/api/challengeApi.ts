@@ -12,7 +12,8 @@ import type { PaginatedResponse } from "./adminApi";
 //user
 export const getChallengesApi = async (): Promise<Challenge[]> => {
     const res = await axiosInstance.get("/challenges");
-    return res.data.data;
+    // return res.data.data;
+    return res.data.data.data;
 };
 
 //
@@ -20,6 +21,17 @@ export const getChallengeByIdApi = async (
     id: string
 ): Promise<Challenge> => {
     const res = await axiosInstance.get(`/challenges/${id}`);
+    return res.data.data;
+};
+
+
+// no solution code(only templates)
+export const getChallengeTemplatesApi = async (
+    challengeId: string
+): Promise<{ language: string; starterCode: string }[]> => {
+    const res = await axiosInstance.get(
+        `/challenges/${challengeId}/templates`
+    );
     return res.data.data;
 };
 

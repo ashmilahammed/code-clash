@@ -1,22 +1,25 @@
 import { Request, Response } from "express";
-import { CreateChallengeUseCase } from "../../application/use-cases/admin/createChallengeUseCase";
-import { ListChallengesUseCase } from "../../application/use-cases/user/listChallengesUseCase";
-import { ListAdminChallengesUseCase } from "../../application/use-cases/admin/listAdminChallengesUseCase";
-import { ToggleChallengeStatusUseCase } from "../../application/use-cases/admin/toggleChallengeStatusUseCase";
-import { AddChallengeTagsUseCase } from "../../application/use-cases/admin/addChallengeTagsUseCase";
-import { GetAvailableLanguagesUseCase } from "../../application/use-cases/admin/getAvailableLanguagesUseCase";
-import { AddChallengeLanguagesUseCase } from "../../application/use-cases/admin/addChallengeLanguagesUseCase";
-import { GetChallengeLanguagesUseCase } from "../../application/use-cases/admin/getChallengeLanguagesUseCase";
+import { CreateChallengeUseCase } from "../../application/use-cases/challenge/admin/createChallengeUseCase";
+import { ListChallengesUseCase } from "../../application/use-cases/challenge/user/listChallengesUseCase";
+import { ListAdminChallengesUseCase } from "../../application/use-cases/challenge/admin/listAdminChallengesUseCase";
+import { ToggleChallengeStatusUseCase } from "../../application/use-cases/challenge/admin/toggleChallengeStatusUseCase";
+import { AddChallengeTagsUseCase } from "../../application/use-cases/challenge/admin/addChallengeTagsUseCase";
+import { GetAvailableLanguagesUseCase } from "../../application/use-cases/challenge/admin/getAvailableLanguagesUseCase";
+import { AddChallengeLanguagesUseCase } from "../../application/use-cases/challenge/admin/addChallengeLanguagesUseCase";
+import { GetChallengeLanguagesUseCase } from "../../application/use-cases/challenge/user/getChallengeLanguagesUseCase";
 
-import { AddChallengeTestCasesUseCase } from "../../application/use-cases/admin/addChallengeTestCasesUseCase";
-import { AddChallengeHintsUseCase } from "../../application/use-cases/admin/addChallengeHintsUseCase";
-import { UpdateChallengeScheduleUseCase } from "../../application/use-cases/admin/updateChallengeScheduleUseCase";
-import { AddChallengeCodeTemplatesUseCase } from "../../application/use-cases/admin/AddChallengeCodeTemplatesUseCase";
-import { GetChallengeByIdUseCase } from "../../application/use-cases/user/getChallengeByIdUseCase";
+import { AddChallengeTestCasesUseCase } from "../../application/use-cases/challenge/admin/addChallengeTestCasesUseCase";
+import { AddChallengeHintsUseCase } from "../../application/use-cases/challenge/admin/addChallengeHintsUseCase";
+import { UpdateChallengeScheduleUseCase } from "../../application/use-cases/challenge/admin/updateChallengeScheduleUseCase";
+import { AddChallengeCodeTemplatesUseCase } from "../../application/use-cases/challenge/admin/addChallengeCodeTemplatesUseCase";
+
+import { GetChallengeByIdUseCase } from "../../application/use-cases/challenge/user/getChallengeByIdUseCase";
+import { GetChallengeCodeTemplatesUseCase } from "../../application/use-cases/challenge/user/getChallengeCodeTemplatesUseCase";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
 import { MESSAGES } from "../constants/messages";
+
 
 
 export class ChallengeController {
@@ -33,7 +36,9 @@ export class ChallengeController {
         private readonly _addHints: AddChallengeHintsUseCase,
         private readonly _updateSchedule: UpdateChallengeScheduleUseCase,
         private readonly _addTemplates: AddChallengeCodeTemplatesUseCase,
-        private readonly _getChallengeById: GetChallengeByIdUseCase
+        private readonly _getChallengeById: GetChallengeByIdUseCase,
+        private readonly _getChallengeTemplates: GetChallengeCodeTemplatesUseCase
+
     ) { }
 
 
@@ -121,8 +126,7 @@ export class ChallengeController {
 
             return res
                 .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.CHALLENGE.FETCHED, challenge)
-                );
+                .json(ApiResponse.success(MESSAGES.CHALLENGE.FETCHED, challenge));
 
         } catch (err: unknown) {
             const message =
@@ -135,6 +139,43 @@ export class ChallengeController {
                 .json(ApiResponse.error(message));
         }
     };
+
+
+
+
+    getTemplates = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+
+            if (!id) {
+                return res
+                    .status(HttpStatus.BAD_REQUEST)
+                    .json(ApiResponse.error(MESSAGES.CHALLENGE.ID_REQUIRED));
+            }
+
+            const templates = await this._getChallengeTemplates.execute(id);
+
+            if (!templates || templates.length === 0) {
+                return res
+                    .status(HttpStatus.NOT_FOUND)
+                    .json(ApiResponse.error(MESSAGES.CHALLENGE.TEMPLATES_NOT_FOUND));
+            }
+
+            return res.status(HttpStatus.OK).json(
+                ApiResponse.success(MESSAGES.CHALLENGE.TEMPLATES_FETCHED, templates)
+            );
+        } catch (err: unknown) {
+            const message =
+                err instanceof Error
+                    ? err.message
+                    : MESSAGES.COMMON.INTERNAL_ERROR;
+
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json(ApiResponse.error(message));
+        }
+    };
+
 
 
 

@@ -65,11 +65,12 @@ const ChallengeDetails = () => {
       {/* Actions (future-ready) */}
       <div className="flex justify-end">
         <button
-          disabled
-          className="px-6 py-2 rounded bg-slate-700 text-slate-300 cursor-not-allowed"
+          onClick={() => navigate(`/challenges/${challenge.id}/solve`)}
+          className="px-6 py-2 rounded bg-blue-600"
         >
-          Solve (coming soon)
+          Solve
         </button>
+
       </div>
     </div>
   );

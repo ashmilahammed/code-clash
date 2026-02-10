@@ -1,26 +1,27 @@
-import { ChallengeRepository } from "../repositories/ChallengeRepository";
-import { ChallengeTagRepository } from "../repositories/ChallengeTagRepository";
-import { ProgrammingLanguageRepository } from "../repositories/ProgrammingLanguageRepository";
-import { ChallengeTestCaseRepository } from "../repositories/ChallengeTestCaseRepository";
-import { ChallengeHintRepository } from "../repositories/ChallengeHintRepository";
-import { ChallengeCodeTemplateRepository } from "../repositories/ChallengeCodeTemplateRepository";
+import { ChallengeRepository } from "../repositories/challenge/ChallengeRepository";
+import { ChallengeTagRepository } from "../repositories/challenge/ChallengeTagRepository";
+import { ProgrammingLanguageRepository } from "../repositories/language/ProgrammingLanguageRepository";
+import { ChallengeTestCaseRepository } from "../repositories/challenge/ChallengeTestCaseRepository";
+import { ChallengeHintRepository } from "../repositories/challenge/ChallengeHintRepository";
+import { ChallengeCodeTemplateRepository } from "../repositories/challenge/ChallengeCodeTemplateRepository";
 
-import { CreateChallengeUseCase } from "../../application/use-cases/admin/createChallengeUseCase";
-import { ListAdminChallengesUseCase } from "../../application/use-cases/admin/listAdminChallengesUseCase";
-import { ListChallengesUseCase } from "../../application/use-cases/user/listChallengesUseCase";
-import { ToggleChallengeStatusUseCase } from "../../application/use-cases/admin/toggleChallengeStatusUseCase";
-import { AddChallengeTagsUseCase } from "../../application/use-cases/admin/addChallengeTagsUseCase";
+import { CreateChallengeUseCase } from "../../application/use-cases/challenge/admin/createChallengeUseCase";
+import { ListAdminChallengesUseCase } from "../../application/use-cases/challenge/admin/listAdminChallengesUseCase";
+import { ToggleChallengeStatusUseCase } from "../../application/use-cases/challenge/admin/toggleChallengeStatusUseCase";
+import { AddChallengeTagsUseCase } from "../../application/use-cases/challenge/admin/addChallengeTagsUseCase";
 
-import { GetAvailableLanguagesUseCase } from "../../application/use-cases/admin/getAvailableLanguagesUseCase";
-import { AddChallengeLanguagesUseCase } from "../../application/use-cases/admin/addChallengeLanguagesUseCase";
-import { GetChallengeLanguagesUseCase } from "../../application/use-cases/admin/getChallengeLanguagesUseCase";
+import { GetAvailableLanguagesUseCase } from "../../application/use-cases/challenge/admin/getAvailableLanguagesUseCase";
+import { AddChallengeLanguagesUseCase } from "../../application/use-cases/challenge/admin/addChallengeLanguagesUseCase";
+import { GetChallengeLanguagesUseCase } from "../../application/use-cases/challenge/user/getChallengeLanguagesUseCase";
 
-import { AddChallengeTestCasesUseCase } from "../../application/use-cases/admin/addChallengeTestCasesUseCase";
-import { AddChallengeHintsUseCase } from "../../application/use-cases/admin/addChallengeHintsUseCase";
-import { UpdateChallengeScheduleUseCase } from "../../application/use-cases/admin/updateChallengeScheduleUseCase";
-import { AddChallengeCodeTemplatesUseCase } from "../../application/use-cases/admin/AddChallengeCodeTemplatesUseCase";
+import { AddChallengeTestCasesUseCase } from "../../application/use-cases/challenge/admin/addChallengeTestCasesUseCase";
+import { AddChallengeHintsUseCase } from "../../application/use-cases/challenge/admin/addChallengeHintsUseCase";
+import { UpdateChallengeScheduleUseCase } from "../../application/use-cases/challenge/admin/updateChallengeScheduleUseCase";
+import { AddChallengeCodeTemplatesUseCase } from "../../application/use-cases/challenge/admin/addChallengeCodeTemplatesUseCase";
 
-import { GetChallengeByIdUseCase } from "../../application/use-cases/user/getChallengeByIdUseCase";
+import { ListChallengesUseCase } from "../../application/use-cases/challenge/user/listChallengesUseCase";
+import { GetChallengeByIdUseCase } from "../../application/use-cases/challenge/user/getChallengeByIdUseCase";
+import { GetChallengeCodeTemplatesUseCase } from "../../application/use-cases/challenge/user/getChallengeCodeTemplatesUseCase";
 
 import { ChallengeController } from "../../presentation/controllers/challenge.controller";
 
@@ -30,7 +31,7 @@ const challengeTagRepository = new ChallengeTagRepository();
 const programmingLanguageRepository = new ProgrammingLanguageRepository();
 const challengeTestCaseRepository = new ChallengeTestCaseRepository();
 const challengeHintRepository = new ChallengeHintRepository();
-const codeTemplateRepository = new ChallengeCodeTemplateRepository();
+const challengeCodeTemplateRepository = new ChallengeCodeTemplateRepository();
 
 
 //admin use cases
@@ -62,7 +63,7 @@ const addChallengeHintsUseCase = new AddChallengeHintsUseCase(challengeHintRepos
 
 const updateChallengeScheduleUseCase = new UpdateChallengeScheduleUseCase(challengeRepository);
 
-const addChallengeCodeTemplatesUseCase = new AddChallengeCodeTemplatesUseCase(codeTemplateRepository);
+const addChallengeCodeTemplatesUseCase = new AddChallengeCodeTemplatesUseCase(challengeCodeTemplateRepository);
 
 
 //user
@@ -70,6 +71,7 @@ const userListChallengesUseCase = new ListChallengesUseCase(challengeRepository)
 
 const getChallengeByIdUseCase = new GetChallengeByIdUseCase(challengeRepository);
 
+const getChallengeCodeTemplatesUseCase = new GetChallengeCodeTemplatesUseCase(challengeCodeTemplateRepository);
 
 
 
@@ -88,5 +90,6 @@ export const challengeController = new ChallengeController(
     updateChallengeScheduleUseCase,
     addChallengeCodeTemplatesUseCase,
 
-    getChallengeByIdUseCase
+    getChallengeByIdUseCase,
+    getChallengeCodeTemplatesUseCase
 );

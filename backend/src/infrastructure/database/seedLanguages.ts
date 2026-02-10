@@ -1,6 +1,6 @@
 // import mongoose from "mongoose";
 import dotenv from "dotenv";
-import { ProgrammingLanguageModel } from "./models/ProgrammingLanguageModel";
+import { ProgrammingLanguageModel } from "./models/language/ProgrammingLanguageModel";
 import connectDB from "./mongo";
 
 dotenv.config();

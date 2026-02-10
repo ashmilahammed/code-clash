@@ -1,4 +1,4 @@
-import { IUserRepository } from "../../../domain/repositories/IUserRepository";
+import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
 import { IEmailService } from "../../../domain/services/IEmailService";
 import { generateOtp } from "../../../utils/generateOtp";
 

@@ -1,4 +1,4 @@
-import { IUserRepository } from "../../../domain/repositories/IUserRepository";
+import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
 import { IJwtService } from "../../../domain/services/IJwtService";
 import { JwtPayload } from "../../../domain/types/JwtPayload";
 
@@ -7,13 +7,15 @@ export class RefreshSessionUseCase {
   constructor(
     private readonly _userRepo: IUserRepository,
     private readonly _jwtService: IJwtService
-  ) {}
+  ) { }
+
 
   async execute(refreshToken: string) {
     if (!refreshToken) {
       throw new Error("NO_REFRESH_TOKEN");
     }
 
+    // Verify refresh token
     const payload: JwtPayload =
       this._jwtService.verifyRefreshToken(refreshToken);
 
@@ -22,7 +24,11 @@ export class RefreshSessionUseCase {
       throw new Error("USER_NOT_FOUND");
     }
 
-    if (user.refreshToken !== refreshToken) {
+    // if (user.refreshToken !== refreshToken) {
+    //   throw new Error("INVALID_SESSION");
+    // }
+    // Validate refresh token via domain
+    if (!user.isRefreshTokenValid(refreshToken)) {
       throw new Error("INVALID_SESSION");
     }
 

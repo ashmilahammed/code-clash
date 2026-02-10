@@ -31,6 +31,8 @@ import ChallengeTestCases from "./pages/admin/challenges/CreateChallenge/testCas
 import ChallengeHintsAndSchedule from "./pages/admin/challenges/CreateChallenge/HintsAndSchedule";
 import CodeTemplates from "./pages/admin/challenges/CreateChallenge/CodeTemplates";
 
+import SolveChallenge from "./pages/challenges/SolveChallenge";
+
 
 import { useAuthStore } from "./store/useAuthStore";
 
@@ -111,8 +113,11 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<UserLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/challenges/:id" element={<ChallengeDetails />} />
           <Route path="/badges" element={<Badges />} />
+          <Route path="/challenges/:id" element={<ChallengeDetails />} />
+
+          <Route path="/challenges/:id/solve" element={<SolveChallenge />} />
+
         </Route>
       </Route>
 

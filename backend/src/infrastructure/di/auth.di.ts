@@ -1,7 +1,7 @@
-import { UserRepository } from "../repositories/UserRepository";
+import { UserRepository } from "../repositories/user/UserRepository";
 import { EmailService } from "../services/emailService";
-import { JwtService } from "../security/jwtService";
-import { PasswordService } from "../security/passwordService";
+import { JwtService } from "../services/security/jwtService";
+import { PasswordService } from "../services/security/passwordService";
 
 import { WinstonLogger } from "../services/logger";
 
@@ -18,7 +18,7 @@ import { RefreshSessionUseCase } from "../../application/use-cases/auth/refreshS
 import { GetCurrentUserUseCase } from "../../application/use-cases/auth/getCurrentUserUseCase";
 import { GoogleLoginUseCase } from "../../application/use-cases/auth/googleLoginUseCase";
 
-import { UpdateLoginStreakUseCase } from "../../application/use-cases/user/updateLoginStreakUseCase";
+import { UpdateLoginStreakUseCase } from "../../application/use-cases/user/user/updateLoginStreakUseCase";
 
 import { OAuth2Client } from "google-auth-library";
 import { AuthController } from "../../presentation/controllers/auth.controller";

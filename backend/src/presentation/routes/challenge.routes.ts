@@ -103,6 +103,11 @@ router.get("/", authMiddleware, challengeController.userList);
 router.get("/languages", authMiddleware, challengeController.getLanguages);
 
 router.get("/:id", authMiddleware, challengeController.getById);
+router.get(
+  "/:id/templates",
+  authMiddleware,
+  challengeController.getTemplates
+);
 
 
 

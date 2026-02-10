@@ -1,7 +1,8 @@
 import { OAuth2Client } from "google-auth-library";
-import { IUserRepository } from "../../../domain/repositories/IUserRepository";
+import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
 import { IJwtService } from "../../../domain/services/IJwtService";
 import { JwtPayload } from "../../../domain/types/JwtPayload";
+import { UserFactory } from "../../../domain/entities/user/userFactory";
 
 
 export class GoogleLoginUseCase {
@@ -35,31 +36,40 @@ export class GoogleLoginUseCase {
                 : email.split("@")[0] ?? email;
 
 
-        // Check if user exists
+        // find or create user
         let user = await this._userRepo.findByEmail(email);
 
+        // if (!user) {
+        //     user = await this._userRepo.createUser({
+        //         username,
+        //         email,
+        //         password: null,
+        //         avatar_id: null,
+        //         badge_id: null,
+        //         level_id: null,
+        //         xp: 0,
+        //         current_streak: 0,
+        //         longest_streak: 0,
+        //         is_premium: false,
+        //         date_joined: new Date(),
+        //         role: "user",
+        //         status: "active",
+        //         refreshToken: null,
+        //         isVerified: true,
+        //         otp: null,
+        //         otpExpires: null,
+        //     });
+        // }
         if (!user) {
-            user = await this._userRepo.createUser({
+            const newUser = UserFactory.createGoogleUser({
                 username,
                 email,
-                password: null,
-                avatar_id: null,
-                badge_id: null,
-                level_id: null,
-                xp: 0,
-                current_streak: 0,
-                longest_streak: 0,
-                is_premium: false,
-                date_joined: new Date(),
-                role: "user",
-                status: "active",
-                refreshToken: null,
-                isVerified: true,
-                otp: null,
-                otpExpires: null,
             });
+
+            user = await this._userRepo.createUser(newUser);
         }
 
+        
         //generate token
         const tokenPayload: JwtPayload = {
             userId: user.id!,

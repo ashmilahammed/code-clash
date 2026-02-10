@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { IUserRepository } from "../../domain/repositories/IUserRepository";
+import { IUserRepository } from "../../domain/repositories/user/IUserRepository";
 import { IJwtService } from "../../domain/services/IJwtService";
 import { Logger } from "../../infrastructure/services/logger";
 

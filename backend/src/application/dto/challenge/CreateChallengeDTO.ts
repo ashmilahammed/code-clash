@@ -1,4 +1,4 @@
-import { ChallengeDifficulty,ChallengeDomain } from "../../../domain/entities/Challenge";
+import { ChallengeDifficulty,ChallengeDomain } from "../../../domain/entities/challenge/Challenge";
 
 export interface CreateChallengeDTO {
   title: string;

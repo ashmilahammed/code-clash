@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { GetDashboardUseCase } from "../../application/use-cases/user/getDashboardUseCase";
+import { GetDashboardUseCase } from "../../application/use-cases/user/user/getDashboardUseCase";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";

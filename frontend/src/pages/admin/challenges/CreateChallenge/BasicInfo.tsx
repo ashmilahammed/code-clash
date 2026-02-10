@@ -4,12 +4,7 @@ import { useState } from "react";
 import { createChallengeBasicApi } from "../../../../api/challengeApi";
 
 type Difficulty = "easy" | "medium" | "hard";
-// type Domain =
-//   | "javascript"
-//   | "python"
-//   | "algorithm"
-//   | "database"
-//   | "network";
+
 type Domain =
   | "arrays"
   | "strings"
@@ -159,11 +154,6 @@ const BasicInfo = () => {
           setForm({ ...form, domain: e.target.value as Domain })
         }
       >
-        {/* <option value="javascript">JavaScript</option>
-        <option value="python">Python</option>
-        <option value="algorithm">Algorithm</option>
-        <option value="database">Database</option>
-        <option value="network">Network</option> */}
         <option value="arrays">Arrays</option>
         <option value="strings">Strings</option>
         <option value="linked-list">Linked List</option>
