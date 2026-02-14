@@ -65,11 +65,6 @@ export class AuthController {
         .json(ApiResponse.error(message));
     }
 
-    // catch (err: any) {
-    //   return res
-    //     .status(HttpStatus.BAD_REQUEST)
-    //     .json(ApiResponse.error(err.message || MESSAGES.COMMON.BAD_REQUEST));
-    // }
   };
 
 

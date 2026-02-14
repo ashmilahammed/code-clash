@@ -1,3 +1,46 @@
+
+
+import { Router } from "express";
+import { authMiddleware } from "../../infrastructure/di/auth.di";
+import { challengeController } from "../../infrastructure/di/challenge.di";
+
+const router = Router();
+
+// user only
+router.get("/", authMiddleware, challengeController.userList);
+
+// languages (read-only)
+router.get("/languages", authMiddleware, challengeController.getLanguages);
+
+router.get("/:id", authMiddleware, challengeController.getById);
+router.get(
+  "/:id/templates",
+  authMiddleware,
+  challengeController.getTemplates
+);
+
+
+
+
+export default router;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // import { Router } from "express";
 // import { authMiddleware } from "../../infrastructure/di/auth.di";
 // import { requireAdmin } from "../../infrastructure/di/admin.di";
@@ -85,34 +128,6 @@
 // export default router;
 
 
-
-
-
-
-
-import { Router } from "express";
-import { authMiddleware } from "../../infrastructure/di/auth.di";
-import { challengeController } from "../../infrastructure/di/challenge.di";
-
-const router = Router();
-
-// user only
-router.get("/", authMiddleware, challengeController.userList);
-
-// languages (read-only)
-router.get("/languages", authMiddleware, challengeController.getLanguages);
-
-router.get("/:id", authMiddleware, challengeController.getById);
-router.get(
-  "/:id/templates",
-  authMiddleware,
-  challengeController.getTemplates
-);
-
-
-
-
-export default router;
 
 
 

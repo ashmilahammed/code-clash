@@ -5,6 +5,7 @@ export interface IXpService {
     level: number;
     nextLevelXp: number;
   };
+
 }
 
 

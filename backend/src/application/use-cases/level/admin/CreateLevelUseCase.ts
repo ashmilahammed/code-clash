@@ -11,7 +11,7 @@ export class CreateLevelUseCase {
   async execute(dto: CreateLevelDTO): Promise<Level> {
     const { levelNumber, minXp, maxXp, title } = dto;
 
-    // 1️Prevent duplicate level number
+    // Prevent duplicate level number
     const existingLevel =
       await this.levelRepository.findByLevelNumber(levelNumber);
 
@@ -43,7 +43,7 @@ export class CreateLevelUseCase {
       throw new Error("XP range overlaps with an existing level");
     }
 
-    // 4️Create domain entity (self-validates)
+    // Create domain entity (self-validates)
     const level = new Level(
       undefined,
       levelNumber,

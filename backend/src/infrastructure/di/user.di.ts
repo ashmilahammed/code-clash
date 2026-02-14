@@ -1,7 +1,7 @@
 import { UserRepository } from "../repositories/user/UserRepository";
 import { XpService } from "../services/xpService";
 import { WinstonLogger } from "../services/logger";
-import { JwtService } from "../services/security/jwtService";
+// import { JwtService } from "../services/security/jwtService";
 
 import { GetDashboardUseCase } from "../../application/use-cases/user/user/getDashboardUseCase";
 import { ListUsersUseCase } from "../../application/use-cases/user/admin/listUsersUseCase";
@@ -10,7 +10,7 @@ import { UpdateUserStatusUseCase } from "../../application/use-cases/user/admin/
 import { UserController } from "../../presentation/controllers/user.controller";
 import { AdminController } from "../../presentation/controllers/admin.controllers";
 
-import { createAuthMiddleware } from "../../presentation/middlewares/auth.Middleware";
+// import { createAuthMiddleware } from "../../presentation/middlewares/auth.Middleware";
 import { createRequireRole } from "../../presentation/middlewares/role.Middleware";
 
 
@@ -19,7 +19,7 @@ import { createRequireRole } from "../../presentation/middlewares/role.Middlewar
 const userRepository = new UserRepository();
 const xpService = new XpService();
 const logger = new WinstonLogger();
-const jwtService = new JwtService();
+// const jwtService = new JwtService();
 
 
 
@@ -41,11 +41,11 @@ const updateUserStatusUseCase = new UpdateUserStatusUseCase(
 
 
 // middlewares
-export const authMiddleware = createAuthMiddleware(
-  userRepository,
-  jwtService,
-  logger
-);
+// export const authMiddleware = createAuthMiddleware(
+//   userRepository,
+//   jwtService,
+//   logger
+// );
 
 export const requireAdmin = createRequireRole(
   "admin",
@@ -63,37 +63,6 @@ export const adminController = new AdminController(
   listUsersUseCase,
   updateUserStatusUseCase
 );
-
-
-
-
-
-
-
-
-
-
-// import { UserRepository } from "../repositories/user/UserRepository";
-// import { XpService } from "../services/xpService";
-// import { GetDashboardUseCase } from "../../application/use-cases/user/user/getDashboardUseCase";
-// import { UserController } from "../../presentation/controllers/user.controller";
-
-
-// // core dependencies
-// const userRepository = new UserRepository();
-// const xpService = new XpService();
-
-// // use cases
-// const getDashboardUseCase = new GetDashboardUseCase(
-//   userRepository,
-//   xpService
-// );
-
-// // controller
-// export const userController = new UserController(
-//   getDashboardUseCase
-// );
-
 
 
 

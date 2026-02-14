@@ -7,6 +7,8 @@ import authRoutes from "./presentation/routes/auth.routes";
 import adminRoutes from "./presentation/routes/admin.routes"
 import userRoutes from "./presentation/routes/user.routes";
 import challengeRoutes from "./presentation/routes/challenge.routes";
+import submissionRoutes from "./presentation/routes/submission.routes";
+import levelRoutes from "./presentation/routes/level.routes";
 
 import { WinstonLogger } from "./infrastructure/services/logger";
 
@@ -25,6 +27,10 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/challenges", challengeRoutes);
+
+app.use("/api/submissions", submissionRoutes);
+
+app.use("/api/levels", levelRoutes);
 
 
 

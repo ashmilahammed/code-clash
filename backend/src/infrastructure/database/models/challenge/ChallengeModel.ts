@@ -6,7 +6,6 @@ export interface IChallengeDoc extends Document {
     description: string;
 
     difficulty: "easy" | "medium" | "hard";
-    // domain: "javascript" | "python" | "algorithm" | "database" | "network";
     domain:
     | "arrays"
     | "strings"
@@ -52,7 +51,6 @@ const ChallengeSchema = new Schema<IChallengeDoc>(
 
         domain: {
             type: String,
-            // enum: ["javascript", "python", "algorithm", "database", "network"],
             enum: [
                 "arrays",
                 "strings",
@@ -91,6 +89,11 @@ const ChallengeSchema = new Schema<IChallengeDoc>(
     },
     { timestamps: true }
 );
+
+
+// index
+// ChallengeSchema.index({ isActive: 1, status: 1 });
+
 
 export const ChallengeModel = mongoose.model<IChallengeDoc>(
     "Challenge",

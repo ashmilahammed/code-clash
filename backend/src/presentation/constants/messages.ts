@@ -46,6 +46,16 @@ export const MESSAGES = {
     TEMPLATES_NOT_FOUND: "Challenge templates not found",
   },
 
+  SUBMISSION: {
+    RUN_SUCCESS: "Code executed successfully",
+    SUBMIT_SUCCESS: "Submission evaluated successfully",
+  },
+
+
+  LEVEL: {
+    CREATED: "Level created successfully",
+  },
+
   COMMON: {
     SUCCESS: "Success",
     BAD_REQUEST: "Bad request",

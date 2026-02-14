@@ -32,12 +32,12 @@ export const createAuthMiddleware = (
       return res.status(401).json({ message: "Invalid token format" });
     }
 
+
     try {
 
       const decoded = jwtService.verifyAccessToken(token);
 
       const user = await userRepo.findById(decoded.userId);
-
       if (!user) {
         return res.status(401).json({ message: "User not found" });
       }
@@ -56,8 +56,10 @@ export const createAuthMiddleware = (
 
       next();
     } catch (err) {
+
       logger.error("Invalid or expired token", err);
-      return res.status(403).json({ message: "Invalid or expired token" });
+      
+      return res.status(401).json({ message: "Invalid or expired token" });
     }
   };
 };
