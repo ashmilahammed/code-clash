@@ -34,4 +34,6 @@ export interface ISubmissionRepository {
     userId: string,
     challengeId: string
   ): Promise<boolean>;
+
+  countSolved(userId: string): Promise<number>;
 }

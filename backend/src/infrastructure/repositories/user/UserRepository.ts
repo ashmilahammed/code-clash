@@ -369,13 +369,24 @@ export class UserRepository
     }
 
 
-        async updateBadge(userId: string, badgeId: string): Promise<void> {
-      await UserModel.updateOne(
-        { _id: userId },
-        { $set: { badge_id: badgeId } }
-      );
+    async updateBadge(userId: string, badgeId: string): Promise<void> {
+        await UserModel.updateOne(
+            { _id: userId },
+            { $set: { badge_id: badgeId } }
+        );
     }
 
+
+    async getLeaderboard(limit = 10): Promise<User[]> {
+        const docs = await UserModel.find({
+            role: "user",
+            status: "active",
+        })
+            .sort({ xp: -1 })
+            .limit(limit);
+
+        return docs.map(UserMapper.toDomain);
+    }
 
 }
 

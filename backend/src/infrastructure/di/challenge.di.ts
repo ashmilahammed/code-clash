@@ -22,6 +22,8 @@ import { AddChallengeCodeTemplatesUseCase } from "../../application/use-cases/ch
 import { ListChallengesUseCase } from "../../application/use-cases/challenge/user/listChallengesUseCase";
 import { GetChallengeByIdUseCase } from "../../application/use-cases/challenge/user/getChallengeByIdUseCase";
 import { GetChallengeCodeTemplatesUseCase } from "../../application/use-cases/challenge/user/getChallengeCodeTemplatesUseCase";
+import { GetChallengeHintsUseCase } from "../../application/use-cases/challenge/user/getChallengeHintsUseCase";
+import { GetChallengeTestCasesUseCase } from "../../application/use-cases/challenge/user/getChallengeTestCasesUseCase";
 
 import { ChallengeController } from "../../presentation/controllers/challenge.controller";
 
@@ -73,6 +75,9 @@ const getChallengeByIdUseCase = new GetChallengeByIdUseCase(challengeRepository)
 
 const getChallengeCodeTemplatesUseCase = new GetChallengeCodeTemplatesUseCase(challengeCodeTemplateRepository);
 
+const getChallengeHintsUseCase = new GetChallengeHintsUseCase(challengeHintRepository);
+const getChallengeTestCasesUseCase = new GetChallengeTestCasesUseCase(challengeTestCaseRepository);
+
 
 
 // controller
@@ -91,5 +96,7 @@ export const challengeController = new ChallengeController(
     addChallengeCodeTemplatesUseCase,
 
     getChallengeByIdUseCase,
-    getChallengeCodeTemplatesUseCase
+    getChallengeCodeTemplatesUseCase,
+    getChallengeHintsUseCase,
+    getChallengeTestCasesUseCase
 );

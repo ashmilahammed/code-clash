@@ -69,4 +69,13 @@ export class SubmissionRepository implements ISubmissionRepository {
 
     return !!exists;
   }
+
+  async countSolved(userId: string): Promise<number> {
+    // Count distinct challengeIds where status is PASSED
+    const distinctChallenges = await SubmissionModel.distinct("challengeId", {
+      userId,
+      finalStatus: "PASSED",
+    });
+    return distinctChallenges.length;
+  }
 }

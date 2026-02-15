@@ -5,5 +5,6 @@ import { userController } from "../../infrastructure/di/user.di";
 const router = Router();
 
 router.get("/dashboard", authMiddleware, userController.getDashboard);
+router.get("/leaderboard", authMiddleware, userController.getLeaderboard);
 
 export default router;

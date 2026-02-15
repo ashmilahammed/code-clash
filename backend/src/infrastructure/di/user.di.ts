@@ -1,9 +1,12 @@
 import { UserRepository } from "../repositories/user/UserRepository";
+import { SubmissionRepository } from "../repositories/submission/SubmissionRepository";
+import { LevelRepository } from "../repositories/level/LevelRepository";
 import { XpService } from "../services/xpService";
 import { WinstonLogger } from "../services/logger";
 // import { JwtService } from "../services/security/jwtService";
 
 import { GetDashboardUseCase } from "../../application/use-cases/user/user/getDashboardUseCase";
+import { GetLeaderboardUseCase } from "../../application/use-cases/user/user/getLeaderboardUseCase";
 import { ListUsersUseCase } from "../../application/use-cases/user/admin/listUsersUseCase";
 import { UpdateUserStatusUseCase } from "../../application/use-cases/user/admin/updateUserStatusUseCase";
 
@@ -17,6 +20,8 @@ import { createRequireRole } from "../../presentation/middlewares/role.Middlewar
 
 // core dependencies
 const userRepository = new UserRepository();
+const submissionRepository = new SubmissionRepository();
+const levelRepository = new LevelRepository();
 const xpService = new XpService();
 const logger = new WinstonLogger();
 // const jwtService = new JwtService();
@@ -27,6 +32,12 @@ const logger = new WinstonLogger();
 const getDashboardUseCase = new GetDashboardUseCase(
   userRepository,
   xpService
+);
+
+const getLeaderboardUseCase = new GetLeaderboardUseCase(
+  userRepository,
+  submissionRepository,
+  levelRepository
 );
 
 
@@ -56,7 +67,8 @@ export const requireAdmin = createRequireRole(
 
 // controllers
 export const userController = new UserController(
-  getDashboardUseCase
+  getDashboardUseCase,
+  getLeaderboardUseCase
 );
 
 export const adminController = new AdminController(

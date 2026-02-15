@@ -7,8 +7,10 @@ export interface ILevelRepository {
 
   //Core: resolve level from XP
   findByXp(xp: number): Promise<Level | null>;
-  
+
   findByLevelNumber(levelNumber: number): Promise<Level | null>;
+
+  findById(id: string): Promise<Level | null>;
 
   create(level: Level): Promise<Level>;
 

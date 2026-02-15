@@ -27,6 +27,11 @@ export class LevelRepository implements ILevelRepository {
     return level ? LevelMapper.toDomain(level) : null;
   }
 
+  async findById(id: string): Promise<Level | null> {
+    const level = await LevelModel.findById(id);
+    return level ? LevelMapper.toDomain(level) : null;
+  }
+
 
   async create(level: Level): Promise<Level> {
     const created = await LevelModel.create(
@@ -36,7 +41,7 @@ export class LevelRepository implements ILevelRepository {
     return LevelMapper.toDomain(created);
   }
 
-  
+
   async delete(id: string): Promise<void> {
     await LevelModel.findByIdAndDelete(id);
   }

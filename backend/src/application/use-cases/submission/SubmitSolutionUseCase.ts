@@ -172,16 +172,14 @@ export class SubmitSolutionUseCase {
                     await this.userRepo.updateBadge(userId, level.badgeId);
                 }
             }
-
-
-
-            return {
-                status: finalStatus,
-                runtime: maxRuntime,
-                memory: memoryUsed,
-                xpEarned,
-                newLevel: level?.levelNumber ?? null
-            };
         }
+
+        return {
+            status: finalStatus,
+            runtime: maxRuntime,
+            memory: memoryUsed,
+            xpEarned,
+            newLevel: null // simplification, real level would need to be fetched if changed
+        };
     }
 }

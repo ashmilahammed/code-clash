@@ -62,8 +62,10 @@ export interface IUserRepository {
   // ): Promise<void>;
 
   updateLevel(userId: string, levelId: string): Promise<void>;
-  
+
   updateBadge(userId: string, badgeId: string): Promise<void>;
+
+  getLeaderboard(limit?: number): Promise<User[]>;
 
 }
 

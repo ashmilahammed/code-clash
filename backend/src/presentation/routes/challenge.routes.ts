@@ -19,6 +19,9 @@ router.get(
   challengeController.getTemplates
 );
 
+router.get("/:id/hints", authMiddleware, challengeController.getHints);
+router.get("/:id/test-cases", authMiddleware, challengeController.getTestCases);
+
 
 
 

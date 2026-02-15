@@ -15,6 +15,8 @@ import { AddChallengeCodeTemplatesUseCase } from "../../application/use-cases/ch
 
 import { GetChallengeByIdUseCase } from "../../application/use-cases/challenge/user/getChallengeByIdUseCase";
 import { GetChallengeCodeTemplatesUseCase } from "../../application/use-cases/challenge/user/getChallengeCodeTemplatesUseCase";
+import { GetChallengeHintsUseCase } from "../../application/use-cases/challenge/user/getChallengeHintsUseCase";
+import { GetChallengeTestCasesUseCase } from "../../application/use-cases/challenge/user/getChallengeTestCasesUseCase";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
@@ -37,7 +39,9 @@ export class ChallengeController {
         private readonly _updateSchedule: UpdateChallengeScheduleUseCase,
         private readonly _addTemplates: AddChallengeCodeTemplatesUseCase,
         private readonly _getChallengeById: GetChallengeByIdUseCase,
-        private readonly _getChallengeTemplates: GetChallengeCodeTemplatesUseCase
+        private readonly _getChallengeTemplates: GetChallengeCodeTemplatesUseCase,
+        private readonly _getHints: GetChallengeHintsUseCase,
+        private readonly _getTestCases: GetChallengeTestCasesUseCase
 
     ) { }
 
@@ -425,6 +429,57 @@ export class ChallengeController {
 
 
 
+
+
+    getHints = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+
+            if (!id) {
+                return res
+                    .status(HttpStatus.BAD_REQUEST)
+                    .json(ApiResponse.error(MESSAGES.CHALLENGE.ID_REQUIRED));
+            }
+
+            const hints = await this._getHints.execute(id);
+
+            return res
+                .status(HttpStatus.OK)
+                .json(ApiResponse.success("Hints fetched successfully", hints));
+        } catch (err: unknown) {
+            const message =
+                err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
+
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json(ApiResponse.error(message));
+        }
+    };
+
+    getTestCases = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+
+            if (!id) {
+                return res
+                    .status(HttpStatus.BAD_REQUEST)
+                    .json(ApiResponse.error(MESSAGES.CHALLENGE.ID_REQUIRED));
+            }
+
+            const testCases = await this._getTestCases.execute(id);
+
+            return res
+                .status(HttpStatus.OK)
+                .json(ApiResponse.success("Test cases fetched successfully", testCases));
+        } catch (err: unknown) {
+            const message =
+                err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
+
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json(ApiResponse.error(message));
+        }
+    };
 
 
     addCodeTemplates = async (req: Request, res: Response) => {
