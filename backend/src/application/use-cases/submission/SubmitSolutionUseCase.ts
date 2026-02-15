@@ -4,13 +4,19 @@ import { ISubmissionRepository } from "../../../domain/repositories/submission/I
 import { ICodeExecutionService } from "../../../domain/services/ICodeExecutionService";
 import { Submission } from "../../../domain/entities/submission/Submission";
 
+import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
+import { ILevelCalculator } from "../../../domain/services/ILevelCalculator";
 
 export class SubmitSolutionUseCase {
     constructor(
         private readonly challengeRepo: IChallengeRepository,
         private readonly testCaseRepo: IChallengeTestCaseRepository,
         private readonly submissionRepo: ISubmissionRepository,
-        private readonly executionService: ICodeExecutionService
+        private readonly executionService: ICodeExecutionService,
+
+        private readonly userRepo: IUserRepository,
+        private readonly levelCalculator: ILevelCalculator
+
     ) { }
 
 
@@ -33,6 +39,7 @@ export class SubmitSolutionUseCase {
         }
 
 
+        // Check allowed language
         const challengeWithLang =
             await this.challengeRepo.findByIdWithLanguages(challengeId);
 
@@ -127,13 +134,54 @@ export class SubmitSolutionUseCase {
             xpEarned
         );
 
-        const saved = await this.submissionRepo.create(submission);
+        // const saved = await this.submissionRepo.create(submission);
+        await this.submissionRepo.create(submission);
 
-        return {
-            status: finalStatus,
-            runtime: maxRuntime,
-            memory: memoryUsed,
-            xpEarned,
-        };
+
+        // XP + Level 
+        if (xpEarned > 0) {
+
+            await this.userRepo.addXp(userId, xpEarned);
+
+            // Reload user to get updated XP
+            const updatedUser = await this.userRepo.findById(userId);
+            if (!updatedUser) {
+                throw new Error("USER_NOT_FOUND_AFTER_XP_UPDATE");
+            }
+
+            // Resolve level
+            // const levelInfo = await this.levelCalculator.resolveLevel(updatedUser.getXp());
+
+            // // Update level in user
+            // await this.userRepo.updateLevel(
+            //     userId,
+            //     levelInfo.levelNumber
+            // );
+
+            const level = await this.levelCalculator.resolveLevel(updatedUser.getXp());
+
+            if (level) {
+                // await this.userRepo.updateLevel(userId, level.id!);
+                if (level?.id) {
+                    await this.userRepo.updateLevel(userId, level.id);
+                }
+
+
+                // optional: auto badge assignment
+                if (level.badgeId) {
+                    await this.userRepo.updateBadge(userId, level.badgeId);
+                }
+            }
+
+
+
+            return {
+                status: finalStatus,
+                runtime: maxRuntime,
+                memory: memoryUsed,
+                xpEarned,
+                newLevel: level?.levelNumber ?? null
+            };
+        }
     }
 }

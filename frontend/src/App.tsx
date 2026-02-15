@@ -18,10 +18,10 @@ import Badges from "./pages/profile/Badges";
 
 import AdminLayout from "./components/layout/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import UserManagement from "./pages/admin/UserManagement";
+import UserManagement from "./pages/admin/userManagement/UserManagement";
 
-import ChallengeManagement from "./pages/admin/ChallengeManagement"
-import ChallengeDetails from "./pages/dashboard/ChallengeDetails";
+import ChallengeManagement from "./pages/admin/challenges/ChallengeManagement"
+// import ChallengeDetails from "./pages/dashboard/ChallengeDetails";
 
 import CreateChallengeWizard from "./pages/admin/challenges/CreateChallenge";
 import BasicInfo from "./pages/admin/challenges/CreateChallenge/BasicInfo";
@@ -30,6 +30,8 @@ import ChallengeLanguages from "./pages/admin/challenges/CreateChallenge/languag
 import ChallengeTestCases from "./pages/admin/challenges/CreateChallenge/testCases";
 import ChallengeHintsAndSchedule from "./pages/admin/challenges/CreateChallenge/HintsAndSchedule";
 import CodeTemplates from "./pages/admin/challenges/CreateChallenge/CodeTemplates";
+
+import LevelManagement from "./pages/admin/levels/LevelManagement";
 
 import SolveChallenge from "./pages/challenges/SolveChallenge";
 
@@ -91,6 +93,7 @@ function App() {
 
 
 
+
   return (
     <Routes>
       {/* Default */}
@@ -114,29 +117,14 @@ function App() {
         <Route element={<UserLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/badges" element={<Badges />} />
-          <Route path="/challenges/:id" element={<ChallengeDetails />} />
+          {/* <Route path="/challenges/:id" element={<ChallengeDetails />} /> */}
 
-          <Route path="/challenges/:id/solve" element={<SolveChallenge />} />
+          <Route path="/challenges/:id" element={<SolveChallenge />} />
 
         </Route>
       </Route>
 
 
-      {/* Admin protected */}
-      {/* <Route element={<AdminRoute />}>
-        <Route element={<AdminLayout />}>
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/users" element={<UserManagement />} />
-          <Route path="/admin/challenges" element={<ChallengeManagement />} />
-          
-          <Route path="/admin/challenges/create" element={<BasicInfo />} />
-          <Route path="/admin/challenges/:id/tags" element={<ChallengeTags />} />
-          <Route path="/admin/challenges/:id/languages" element={<ChallengeLanguages />} />
-          <Route path="/admin/challenges/:id/test-cases" element={<ChallengeTestCases />} />
-          <Route path="/admin/challenges/:id/hints" element={<ChallengeHintsAndSchedule />} />
-          <Route path="/admin/challenges/:id/templates" element={<CodeTemplates />} />
-        </Route>
-      </Route> */}
 
       {/* Admin protected */}
       <Route element={<AdminRoute />}>
@@ -145,15 +133,15 @@ function App() {
           <Route path="/admin/users" element={<UserManagement />} />
           <Route path="/admin/challenges" element={<ChallengeManagement />} />
 
+          <Route path="/admin/levels" element={<LevelManagement />} />
+
           {/* wizard */}
           <Route
-            path="/admin/challenges/create"
-            element={<CreateChallengeWizard />}
-          >
+            path="/admin/challenges/create" element={<CreateChallengeWizard />}>
             {/* Step 1 */}
             <Route index element={<BasicInfo />} />
 
-            {/* Step 2+ (need challengeId) */}
+            {/* Step 2 (need challengeId) */}
             <Route path=":id/tags" element={<ChallengeTags />} />
             <Route path=":id/languages" element={<ChallengeLanguages />} />
             <Route path=":id/test-cases" element={<ChallengeTestCases />} />

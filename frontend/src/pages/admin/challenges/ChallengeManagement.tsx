@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import {
   getAdminChallengesApi,
   toggleChallengeStatusApi,
-} from "../../api/challengeApi";
+} from "../../../api/challengeApi";
 
-import type { Challenge } from "../../types/Challenge";
+import type { Challenge } from "../../../types/Challenge";
 
 const ChallengeManagement = () => {
   const navigate = useNavigate();

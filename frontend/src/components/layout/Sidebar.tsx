@@ -27,6 +27,22 @@ const Sidebar = () => {
           Challenge Management
         </NavLink>
 
+        <NavLink
+          to="/admin/levels"
+          className="block p-2 rounded hover:bg-slate-700"
+        >
+          Level Management
+        </NavLink>
+
+        <NavLink
+          to="/admin/badges"
+          className="block p-2 rounded hover:bg-slate-700"
+        >
+          Badge Management
+        </NavLink>
+
+
+
       </nav>
     </aside>
   );

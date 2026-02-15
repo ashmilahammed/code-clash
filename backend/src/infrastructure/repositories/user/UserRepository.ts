@@ -347,6 +347,36 @@ export class UserRepository
         );
     }
 
+
+
+
+    // async updateLevel(
+    //     userId: string,
+    //     levelNumber: number
+    // ): Promise<void> {
+    //     await UserModel.updateOne(
+    //         { _id: userId },
+    //         { $set: { level_id: levelNumber } }
+    //     );
+    // }
+
+
+    async updateLevel(userId: string, levelId: string): Promise<void> {
+        await UserModel.updateOne(
+            { _id: userId },
+            { $set: { level_id: levelId } }
+        );
+    }
+
+
+        async updateBadge(userId: string, badgeId: string): Promise<void> {
+      await UserModel.updateOne(
+        { _id: userId },
+        { $set: { badge_id: badgeId } }
+      );
+    }
+
+
 }
 
 

@@ -37,7 +37,7 @@ export interface IUserRepository {
   // ): Promise<{ users: IUser[]; total: number }>;
   findAll(query: ListQuery): Promise<PaginatedResult<User>>;
 
-  
+
   updateStatus(
     userId: string,
     status: "active" | "blocked"
@@ -53,6 +53,17 @@ export interface IUserRepository {
 
 
   addXp(userId: string, xp: number): Promise<void>;
+
+
+
+  // updateLevel(
+  //   userId: string,
+  //   levelNumber: number
+  // ): Promise<void>;
+
+  updateLevel(userId: string, levelId: string): Promise<void>;
+  
+  updateBadge(userId: string, badgeId: string): Promise<void>;
 
 }
 

@@ -1,11 +1,6 @@
 export type ChallengeDifficulty = "easy" | "medium" | "hard";
 
-// export type ChallengeDomain =
-//   | "javascript"
-//   | "python"
-//   | "algorithm"
-//   | "database"
-//   | "network";
+
 export type ChallengeDomain =
   | "arrays"
   | "strings"

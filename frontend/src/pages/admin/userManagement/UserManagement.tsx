@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { getUsersApi, updateUserStatusApi } from "../../api/adminApi";
-import type { UserStatus, AdminUser } from "../../api/adminApi";
+import { getUsersApi, updateUserStatusApi } from "../../../api/adminApi";
+import type { UserStatus, AdminUser } from "../../../api/adminApi";
 
-import { useDebounce } from "../../hooks/useDebounce";
-import ConfirmModal from "../../components/modals/ConfirmModal";
+import { useDebounce } from "../../../hooks/useDebounce";
+import ConfirmModal from "../../../components/modals/ConfirmModal";
 
 
 
