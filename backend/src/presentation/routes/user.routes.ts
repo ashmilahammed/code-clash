@@ -17,5 +17,11 @@ router.patch(
   userController.updateAvatar
 );
 
+router.delete(
+  "/avatar",
+  authMiddleware,
+  userController.removeAvatar
+);
+
 
 export default router;

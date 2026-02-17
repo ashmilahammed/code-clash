@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { GetDashboardUseCase } from "../../application/use-cases/user/user/getDashboardUseCase";
 import { GetLeaderboardUseCase } from "../../application/use-cases/user/user/getLeaderboardUseCase";
 import { UpdateUserAvatarUseCase } from "../../application/use-cases/user/user/updateUserAvatarUseCase";
+import { RemoveUserAvatarUseCase } from "../../application/use-cases/user/user/removeUserAvatarUseCase";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
@@ -12,7 +13,8 @@ export class UserController {
   constructor(
     private readonly _getDashboardUseCase: GetDashboardUseCase,
     private readonly _getLeaderboardUseCase: GetLeaderboardUseCase,
-    private readonly _updateUserAvatarUseCase: UpdateUserAvatarUseCase
+    private readonly _updateUserAvatarUseCase: UpdateUserAvatarUseCase,
+    private readonly _removeUserAvatarUseCase: RemoveUserAvatarUseCase
   ) { }
 
 
@@ -92,6 +94,34 @@ export class UserController {
           authUser.userId,
           req.file.buffer
         );
+
+      return res
+        .status(HttpStatus.OK)
+        .json(ApiResponse.success(MESSAGES.USER.UPDATE_SUCCESS, updatedUser));
+
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : MESSAGES.COMMON.INTERNAL_ERROR;
+
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(ApiResponse.error(message));
+    }
+  };
+
+  removeAvatar = async (req: Request, res: Response) => {
+    try {
+      const authUser = res.locals.user as { userId: string };
+
+      if (!authUser?.userId) {
+        return res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
+      }
+
+      const updatedUser = await this._removeUserAvatarUseCase.execute(authUser.userId);
 
       return res
         .status(HttpStatus.OK)

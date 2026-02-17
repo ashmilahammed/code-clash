@@ -11,6 +11,7 @@ import { GetLeaderboardUseCase } from "../../application/use-cases/user/user/get
 import { ListUsersUseCase } from "../../application/use-cases/user/admin/listUsersUseCase";
 import { UpdateUserStatusUseCase } from "../../application/use-cases/user/admin/updateUserStatusUseCase";
 import { UpdateUserAvatarUseCase } from "../../application/use-cases/user/user/updateUserAvatarUseCase";
+import { RemoveUserAvatarUseCase } from "../../application/use-cases/user/user/removeUserAvatarUseCase";
 
 import { UserController } from "../../presentation/controllers/user.controller";
 import { AdminController } from "../../presentation/controllers/admin.controllers";
@@ -47,6 +48,11 @@ const updateUserAvatarUseCase = new UpdateUserAvatarUseCase(
   fileStorage
 );
 
+const removeUserAvatarUseCase = new RemoveUserAvatarUseCase(
+  userRepository,
+  fileStorage
+);
+
 
 //admin(user management)
 const listUsersUseCase = new ListUsersUseCase(userRepository);
@@ -76,7 +82,8 @@ export const requireAdmin = createRequireRole(
 export const userController = new UserController(
   getDashboardUseCase,
   getLeaderboardUseCase,
-  updateUserAvatarUseCase
+  updateUserAvatarUseCase,
+  removeUserAvatarUseCase
 );
 
 export const adminController = new AdminController(
