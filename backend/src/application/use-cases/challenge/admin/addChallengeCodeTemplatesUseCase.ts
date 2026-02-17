@@ -1,4 +1,3 @@
-// import { IChallengeCodeTemplate } from "../../../../domain/entities/challenge/ChallengeCodeTemplate";
 import { ChallengeCodeTemplate } from "../../../../domain/entities/challenge/ChallengeCodeTemplate";
 import { IChallengeCodeTemplateRepository } from "../../../../domain/repositories/challenge/IChallengeCodeTemplateRepository";
 

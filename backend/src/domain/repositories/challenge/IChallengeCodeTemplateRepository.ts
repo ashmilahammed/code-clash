@@ -1,4 +1,3 @@
-// import { IChallengeCodeTemplate } from "../../entities/challenge/ChallengeCodeTemplate";
 import { ChallengeCodeTemplate } from "../../entities/challenge/ChallengeCodeTemplate";
 
 

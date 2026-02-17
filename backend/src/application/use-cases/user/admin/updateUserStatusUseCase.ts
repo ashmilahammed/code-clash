@@ -1,6 +1,7 @@
 import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
 import { Logger } from "../../../../infrastructure/services/logger";
 
+
 export class UpdateUserStatusUseCase {
   constructor(
     private userRepo: IUserRepository,

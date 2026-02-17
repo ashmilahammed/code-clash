@@ -1,16 +1,3 @@
-// export interface IChallengeHint {
-//   id?: string;
-//   challengeId: string;
-
-//   order: number;
-//   content: string;
-
-//   unlockAfterMinutes?: number; // optional
-// }
-
-
-
-
 export class ChallengeHint {
   constructor(
     public readonly id: string | undefined,

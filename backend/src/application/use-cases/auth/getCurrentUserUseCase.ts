@@ -1,4 +1,3 @@
-// import { IUser } from "../../../domain/entities/user/User";
 import { User } from "../../../domain/entities/user/User";
 import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
 

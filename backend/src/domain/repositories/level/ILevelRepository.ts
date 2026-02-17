@@ -14,5 +14,7 @@ export interface ILevelRepository {
 
   create(level: Level): Promise<Level>;
 
-  delete(id: string): Promise<void>;
+  update(id: string, data: Partial<Level>): Promise<Level | null>;
+
+  delete(id: string): Promise<boolean>;
 }

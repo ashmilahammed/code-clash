@@ -1,4 +1,3 @@
-// import { IChallengeTestCase } from "../../entities/challenge/ChallengeTestCase";
 import { ChallengeTestCase } from "../../entities/challenge/ChallengeTestCase";
 
 export interface IChallengeTestCaseRepository {

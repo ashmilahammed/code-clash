@@ -1,6 +1,3 @@
-
-
-
 export class ChallengeTestCase {
   constructor(
     public readonly id: string | undefined,

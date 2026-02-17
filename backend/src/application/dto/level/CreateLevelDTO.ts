@@ -3,4 +3,5 @@ export interface CreateLevelDTO {
   minXp: number;
   maxXp: number;
   title?: string;
+  badgeId?: string;
 }

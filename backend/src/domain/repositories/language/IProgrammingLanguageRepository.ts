@@ -1,4 +1,3 @@
-// import { IProgrammingLanguage } from "../../entities/language/ProgrammingLanguage";
 import { ProgrammingLanguage } from "../../entities/language/ProgrammingLanguage";
 
 export interface IProgrammingLanguageRepository {

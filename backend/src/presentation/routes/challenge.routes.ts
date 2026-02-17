@@ -1,5 +1,3 @@
-
-
 import { Router } from "express";
 import { authMiddleware } from "../../infrastructure/di/auth.di";
 import { challengeController } from "../../infrastructure/di/challenge.di";

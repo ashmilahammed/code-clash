@@ -1,5 +1,4 @@
 import { IChallengeRepository } from "../../../../domain/repositories/challenge/IChallengeRepository";
-// import { IChallenge } from "../../../../domain/entities/challenge/Challenge";
 import { Challenge } from "../../../../domain/entities/challenge/Challenge";
 
 

@@ -4,8 +4,6 @@
 // }
 
 
-
-
 export class ChallengeTag {
   constructor(
     public readonly id: string | undefined,

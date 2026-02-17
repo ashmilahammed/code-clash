@@ -21,7 +21,7 @@ export class GetLeaderboardUseCase {
             ]);
 
             return {
-                ...user.snapshot(), // or custom object
+                ...user.snapshot(), 
                 challengesSolved,
                 levelNumber: level ? level.levelNumber : 0,
                 badgesCount: 0 // placeholder

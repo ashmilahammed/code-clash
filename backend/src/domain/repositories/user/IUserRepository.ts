@@ -1,4 +1,3 @@
-// import { IUser } from "../../entities/user/User";
 import { User } from "../../entities/user/User";
 import { ListQuery } from "../../types/ListQuery";
 import { PaginatedResult } from "../../types/PaginatedResult";

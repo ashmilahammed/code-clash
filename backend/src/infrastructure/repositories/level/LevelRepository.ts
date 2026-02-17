@@ -41,8 +41,18 @@ export class LevelRepository implements ILevelRepository {
     return LevelMapper.toDomain(created);
   }
 
+  async update(id: string, data: Partial<Level>): Promise<Level | null> {
+    const updated = await LevelModel.findByIdAndUpdate(
+      id,
+      { ...data },
+      { new: true }
+    );
 
-  async delete(id: string): Promise<void> {
-    await LevelModel.findByIdAndDelete(id);
+    return updated ? LevelMapper.toDomain(updated) : null;
+  }
+
+  async delete(id: string): Promise<boolean> {
+    const result = await LevelModel.findByIdAndDelete(id);
+    return !!result;
   }
 }

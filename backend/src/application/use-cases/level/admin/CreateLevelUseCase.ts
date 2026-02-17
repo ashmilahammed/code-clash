@@ -6,7 +6,7 @@ import { CreateLevelDTO } from "../../../dto/level/CreateLevelDTO";
 export class CreateLevelUseCase {
   constructor(
     private readonly levelRepository: ILevelRepository
-  ) {}
+  ) { }
 
   async execute(dto: CreateLevelDTO): Promise<Level> {
     const { levelNumber, minXp, maxXp, title } = dto;
@@ -49,7 +49,7 @@ export class CreateLevelUseCase {
       levelNumber,
       minXp,
       maxXp,
-      undefined, // badge comes later
+      dto.badgeId,
       title
     );
 

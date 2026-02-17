@@ -9,6 +9,7 @@ import userRoutes from "./presentation/routes/user.routes";
 import challengeRoutes from "./presentation/routes/challenge.routes";
 import submissionRoutes from "./presentation/routes/submission.routes";
 import levelRoutes from "./presentation/routes/level.routes";
+import badgeRoutes from "./presentation/routes/badge.routes";
 
 import { WinstonLogger } from "./infrastructure/services/logger";
 
@@ -31,6 +32,7 @@ app.use("/api/challenges", challengeRoutes);
 app.use("/api/submissions", submissionRoutes);
 
 app.use("/api/levels", levelRoutes);
+app.use("/api/badges", badgeRoutes);
 
 
 

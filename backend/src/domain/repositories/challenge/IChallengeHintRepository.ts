@@ -1,4 +1,3 @@
-// import { IChallengeHint } from "../../entities/challenge/ChallengeHint";
 import { ChallengeHint } from "../../entities/challenge/ChallengeHint";
 
 export interface IChallengeHintRepository {
