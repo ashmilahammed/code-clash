@@ -1,7 +1,10 @@
-
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { createChallengeBasicApi } from "../../../../api/challengeApi";
+import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import {
+  createChallengeBasicApi,
+  getChallengeByIdApi,
+  updateChallengeBasicApi
+} from "../../../../api/challengeApi";
 
 type Difficulty = "easy" | "medium" | "hard";
 
@@ -22,6 +25,7 @@ type Domain =
 
 const BasicInfo = () => {
   const navigate = useNavigate();
+  const { id } = useParams(); // Get ID if editing
 
   const [form, setForm] = useState<{
     title: string;
@@ -44,6 +48,34 @@ const BasicInfo = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch data if editing
+  useEffect(() => {
+    if (id) {
+      const fetchChallenge = async () => {
+        try {
+          setLoading(true);
+          const data = await getChallengeByIdApi(id);
+          setForm({
+            title: data.title,
+            description: data.description,
+            difficulty: data.difficulty,
+            domain: data.domain,
+            xpReward: data.xpReward,
+            timeLimitMinutes: data.timeLimitMinutes,
+            isPremium: data.isPremium,
+          });
+        } catch (err) {
+          console.error("Failed to fetch challenge", err);
+          setError("Failed to load challenge details");
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchChallenge();
+    }
+  }, [id]);
+
+
   const handleSubmit = async () => {
     if (!form.title.trim()) {
       setError("Challenge title is required");
@@ -59,43 +91,36 @@ const BasicInfo = () => {
       setLoading(true);
       setError(null);
 
-      const res = await createChallengeBasicApi(form);
+      let challengeId = id;
 
-      // move to next wizard step
-      navigate(`/admin/challenges/create/${res.id}/tags`);
+      if (id) {
+        // Update existing
+        await updateChallengeBasicApi(id, form);
+      } else {
+        // Create new
+        const res = await createChallengeBasicApi(form);
+        challengeId = res.id;
+      }
+
+      // move to next wizard step (reuse same path structure, just need ID)
+      // If we are in 'edit' mode, we might want to stay in 'edit' path, 
+      // but 'create' path also works since it just needs ID.
+      // However, to be consistent, if we started in edit, we should probably stay in edit.
+      // But simpler is to always go to the wizard step path which relies on ID.
+
+      const basePath = id ? "/admin/challenges/edit" : "/admin/challenges/create";
+      navigate(`${basePath}/${challengeId}/tags`);
+
     } catch (err: any) {
-      console.error("CREATE CHALLENGE ERROR", err);
+      console.error("SAVE CHALLENGE ERROR", err);
 
       setError(
         err?.response?.data?.message ||
-        "Failed to create challenge"
+        "Failed to save challenge"
       );
     } finally {
       setLoading(false);
     }
-
-
-
-
-
-    // try {
-    //   setError(null);
-    //   setLoading(true);
-
-    //   const res = await createChallengeBasicApi(form);
-
-    //   // next wizard step
-    //   // navigate(`/admin/challenges/${res.id}/tags`);
-    //   navigate(`/admin/challenges/create/${res.id}/tags`);
-
-    // } catch {
-    //   setError("Failed to create challenge");
-    // } finally {
-    //   setLoading(false);
-    // }
-
-
-
   };
 
 
@@ -103,7 +128,7 @@ const BasicInfo = () => {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <h2 className="text-lg font-medium text-slate-200">
-        Basic Information
+        {id ? "Edit Basic Information" : "Basic Information"}
       </h2>
 
       {error && (
@@ -215,7 +240,7 @@ const BasicInfo = () => {
           disabled={loading}
           className="px-5 py-2 rounded bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50"
         >
-          {loading ? "Saving..." : "Save & Continue"}
+          {loading ? "Saving..." : (id ? "Update & Continue" : "Save & Continue")}
         </button>
       </div>
     </div>

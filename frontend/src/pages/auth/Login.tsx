@@ -40,10 +40,6 @@ const Login: React.FC = () => {
       setLoading(true);
       const res = await loginApi({ email, password });
 
-      // setCredentials({
-      //   user: res.data.user,
-      //   accessToken: res.data.accessToken,
-      // });
       setCredentials({
         user: res.data.data.user,
         accessToken: res.data.data.accessToken,
@@ -85,10 +81,7 @@ const Login: React.FC = () => {
 
       const res = await googleLoginApi({ googleToken: credential });
 
-      // setCredentials({
-      //   user: res.data.user,
-      //   accessToken: res.data.accessToken,
-      // });
+
       setCredentials({
         user: res.data.data.user,
         accessToken: res.data.data.accessToken,
@@ -226,113 +219,6 @@ export default Login;
 
 
 
-
-
-
-
-
-// return (
-//   <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-//     <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-8 animate-fadeIn">
-
-//       <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">
-//         Login
-//       </h2>
-
-//       {/*  */}
-//       {blocked && (
-//         <div className="mb-4 p-3 text-sm text-red-700 bg-red-100 rounded-md">
-//           Your account has been blocked by admin.
-//         </div>
-//       )}
-
-//       {/*  */}
-//       {error && (
-//         <div className="mb-4 p-3 text-sm text-red-600 bg-red-100 rounded-md">
-//           {error}
-//         </div>
-//       )}
-
-
-//       <form onSubmit={handleSubmit} className="space-y-5">
-//         {/* Email */}
-//         <div>
-//           <label className="block text-gray-700 font-medium mb-1">
-//             Email
-//           </label>
-//           <input
-//             type="email"
-//             value={email}
-//             placeholder="you@example.com"
-//             onChange={(e) => setEmail(e.target.value)}
-//             className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
-//           // required
-//           />
-//         </div>
-
-//         {/* Password */}
-//         <div>
-//           <label className="block text-gray-700 font-medium mb-1">
-//             Password
-//           </label>
-//           <input
-//             type="password"
-//             value={password}
-//             placeholder="Your password"
-//             onChange={(e) => setPassword(e.target.value)}
-//             className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
-//           // required
-//           />
-//         </div>
-
-//         <p
-//           onClick={() => navigate("/auth/forgot-password")}
-//           className="text-sm text-blue-600 cursor-pointer hover:underline"
-//         >
-//           Forgot Password?
-//         </p>
-
-//         {/* Submit */}
-//         <button
-//           type="submit"
-//           disabled={loading}
-//           className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition disabled:bg-blue-300"
-//         >
-//           {loading ? "Logging in..." : "Login"}
-//         </button>
-//       </form>
-
-//       {/* Divider */}
-//       <div className="my-5 flex items-center justify-center text-gray-500">
-//         <span className="px-4">OR</span>
-//       </div>
-
-//       {/* Google Login */}
-//       <div className="flex justify-center">
-//         <GoogleLogin
-//           onSuccess={(credentialResponse) => {
-//             if (credentialResponse.credential) {
-//               handleGoogleLogin(credentialResponse.credential);
-//             }
-//           }}
-//           onError={() => setError("Google login failed")}
-//         />
-//       </div>
-
-//       {/* Register Link */}
-//       <p className="text-center mt-6 text-gray-700">
-//         Don’t have an account?{" "}
-//         <button
-//           className="text-blue-600 hover:underline"
-//           onClick={() => navigate("/auth/register")}
-//         >
-//           Register
-//         </button>
-//       </p>
-
-//     </div>
-//   </div>
-// );
 
 
 

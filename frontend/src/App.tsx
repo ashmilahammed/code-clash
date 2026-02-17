@@ -14,7 +14,10 @@ import GuestRoute from "./components/common/GuestRoute";
 
 import Dashboard from "./pages/dashboard/Dashboard";
 import UserLayout from "./components/layout/UserLayout";
-import Badges from "./pages/profile/Badges";
+// import Badges from "./pages/profile/Badges";
+import Profile from "./pages/profile/Profile";
+import Leaderboard from "./pages/dashboard/Leaderboard";
+// import Leaderboard from "./pages/dashboard/Leaderboard";
 
 import AdminLayout from "./components/layout/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -116,10 +119,12 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<UserLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/badges" element={<Badges />} />
+          <Route path="/badges" element={<Leaderboard />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
           {/* <Route path="/challenges/:id" element={<ChallengeDetails />} /> */}
 
           <Route path="/challenges/:id" element={<SolveChallenge />} />
+          <Route path="/profile" element={<Profile />} />
 
         </Route>
       </Route>
@@ -147,6 +152,16 @@ function App() {
             <Route path=":id/test-cases" element={<ChallengeTestCases />} />
             <Route path=":id/hints" element={<ChallengeHintsAndSchedule />} />
             <Route path=":id/templates" element={<CodeTemplates />} />
+          </Route>
+
+          {/* Edit / Resume Draft Routes */}
+          <Route path="/admin/challenges/edit/:id" element={<CreateChallengeWizard />}>
+            <Route index element={<BasicInfo />} />
+            <Route path="tags" element={<ChallengeTags />} />
+            <Route path="languages" element={<ChallengeLanguages />} />
+            <Route path="test-cases" element={<ChallengeTestCases />} />
+            <Route path="hints" element={<ChallengeHintsAndSchedule />} />
+            <Route path="templates" element={<CodeTemplates />} />
           </Route>
         </Route>
       </Route>

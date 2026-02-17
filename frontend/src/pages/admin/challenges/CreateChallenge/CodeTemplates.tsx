@@ -102,6 +102,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
   saveCodeTemplatesApi,
   getChallengeLanguagesApi,
+  getAdminChallengeTemplatesApi
 } from "../../../../api/challengeApi";
 
 type CodeTemplateForm = {
@@ -123,8 +124,22 @@ const CodeTemplates = () => {
   useEffect(() => {
     if (!id) return;
 
-    getChallengeLanguagesApi(id)
-      .then((languages: string[]) => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        // First try to fetch existing templates (edit mode)
+        // If none exist, we might be creating new, so fetch languages and init defaults
+
+        // Actually, best approach: fetch existing templates headers.
+        const existingTemplates = await getAdminChallengeTemplatesApi(id).catch(() => []);
+
+        if (existingTemplates && existingTemplates.length > 0) {
+          setTemplates(existingTemplates);
+          return;
+        }
+
+        // Fallback: if no templates found, load from languages
+        const languages = await getChallengeLanguagesApi(id);
         setTemplates(
           languages.map((lang) => ({
             language: lang,
@@ -132,10 +147,17 @@ const CodeTemplates = () => {
             solutionCode: "",
           }))
         );
-      })
-      .catch(() => {
-        setError("Failed to load challenge languages");
-      });
+
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load templates");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+
   }, [id]);
 
 

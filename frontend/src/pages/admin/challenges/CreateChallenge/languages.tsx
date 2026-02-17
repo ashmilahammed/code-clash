@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
   getAvailableLanguagesApi,
   addChallengeLanguagesApi,
+  getChallengeLanguagesApi,
 } from "../../../../api/challengeApi";
 import type { ProgrammingLanguage } from "../../../../types/ProgrammingLanguage";
 
@@ -18,10 +19,18 @@ const ChallengeLanguages = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Load available languages
     getAvailableLanguagesApi()
       .then(setLanguages)
       .catch(() => setError("Failed to load languages"));
-  }, []);
+
+    // If editing, load selected languages
+    if (id) {
+      getChallengeLanguagesApi(id)
+        .then(setSelected)
+        .catch(err => console.error("Failed to load challenge languages", err));
+    }
+  }, [id]);
 
   const toggle = (key: string) => {
     setSelected((prev) =>

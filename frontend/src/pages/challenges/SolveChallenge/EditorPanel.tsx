@@ -102,24 +102,35 @@
 
 
 import Editor from "@monaco-editor/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { runCodeApi, submitSolutionApi } from "../../../api/submissionApi";
 
 
-const EditorPanel = ({ templates, challengeId, setResult }: any) => {
+const EditorPanel = ({ templates, challengeId, testCases, setResult, onSuccess }: any) => {
   const [selectedLang, setSelectedLang] = useState(templates[0]?.language || "javascript");
   const [code, setCode] = useState(templates[0]?.starterCode || "");
   const [loading, setLoading] = useState(false);
+
+  // Update local state when templates prop changes (e.g. data fetched)
+  useEffect(() => {
+    if (templates.length > 0) {
+      const initialLang = templates[0].language;
+      setSelectedLang(initialLang);
+      setCode(templates[0].starterCode);
+    }
+  }, [templates]);
 
 
   //
   const handleRun = async () => {
     setLoading(true);
 
+    const sampleInput = testCases?.find((tc: any) => tc.isSample)?.input || "";
+
     const res = await runCodeApi({
       language: selectedLang,
       code,
-      input: ""
+      input: sampleInput
     });
 
     // console.log(res);
@@ -138,15 +149,30 @@ const EditorPanel = ({ templates, challengeId, setResult }: any) => {
   const handleSubmit = async () => {
     setLoading(true);
 
-    const res = await submitSolutionApi({
-      challengeId,
-      language: selectedLang,
-      code
-    });
+    try {
+      const res = await submitSolutionApi({
+        challengeId,
+        language: selectedLang,
+        code
+      });
 
-    // console.log(res);
-    setResult(res);
-    setLoading(false);
+      setResult(res);
+
+      if (res.status === 'PASSED') {
+        setTimeout(() => {
+          if (onSuccess) onSuccess(res.xpEarned || 0);
+        }, 1000);
+      }
+    } catch (err: any) {
+      console.error(err);
+      // alert("Submit failed");
+      setResult({
+        status: "ERROR",
+        stderr: err.response?.data?.message || "Submission failed"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
 
@@ -161,7 +187,16 @@ const EditorPanel = ({ templates, challengeId, setResult }: any) => {
       <div className="flex items-center justify-between px-4 py-2 border-b border-slate-800 bg-[#0f172a]">
         <select
           value={selectedLang}
-          onChange={(e) => setSelectedLang(e.target.value)}
+          onChange={(e) => {
+            const newLang = e.target.value;
+            setSelectedLang(newLang);
+
+            // Find template for new language
+            const template = templates.find((t: any) => t.language === newLang);
+            if (template) {
+              setCode(template.starterCode);
+            }
+          }}
           className="bg-slate-900 px-2 py-1 rounded"
         >
           {templates.map((t: any) => (
@@ -175,20 +210,20 @@ const EditorPanel = ({ templates, challengeId, setResult }: any) => {
         <div className="flex gap-2">
           <button
             onClick={handleRun}
-            // className="px-3 py-1 bg-slate-700 rounded"
-            className="px-3 py-1 bg-slate-700 rounded hover:bg-slate-600 transition"
+            disabled={loading}
+            className={`px-3 py-1 rounded transition ${loading ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-slate-700 hover:bg-slate-600'}`}
           >
-            Run
+            {loading ? 'Running...' : 'Run'}
           </button>
 
 
           <button
             onClick={handleSubmit}
-            // className="px-3 py-1 bg-green-600 rounded"
-            className="px-4 py-1 bg-green-600 rounded hover:bg-green-500 transition"
+            disabled={loading}
+            className={`px-4 py-1 rounded transition ${loading ? 'bg-green-900/50 text-green-500 cursor-not-allowed' : 'bg-green-600 hover:bg-green-500'}`}
 
           >
-            Submit
+            {loading ? 'Submitting...' : 'Submit'}
           </button>
         </div>
       </div>
@@ -198,7 +233,7 @@ const EditorPanel = ({ templates, challengeId, setResult }: any) => {
       {/* Editor Wrapper */}
       <div className="flex-1">
         <Editor
-          height="100%"  
+          height="100%"
           theme="vs-dark"
           language={selectedLang}
           value={code}

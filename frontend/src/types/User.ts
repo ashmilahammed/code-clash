@@ -5,7 +5,12 @@ export interface User {
 
   xp: number;
   level_id: string | null;
-  avatar_id: string | null;
+  avatar: string | null;
+  about: string | null;
+
+  github_url: string | null;
+  linkedin_url: string | null;
+
   badge_id: string | null;
 
   current_streak: number;
@@ -15,6 +20,11 @@ export interface User {
 
   role: "user" | "admin";
   status: "active" | "blocked";
+
+  // leaderboard stats
+  challengesSolved?: number;
+  levelNumber?: number;
+  badgesCount?: number;
 }
 
 

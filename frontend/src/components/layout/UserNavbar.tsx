@@ -95,7 +95,7 @@ function UserNavbar() {
         {/* Badges */}
         <button
           className="p-2 rounded-full hover:bg-slate-800 transition"
-          title="Badges"
+          title="Leaderboard"
           onClick={() => navigate("/badges")}
         >
           <Award size={18} />
@@ -112,7 +112,10 @@ function UserNavbar() {
         </button>
 
         {/* User name */}
-        <div className="flex flex-col leading-tight text-right">
+        <div
+          className="flex flex-col leading-tight text-right cursor-pointer hover:opacity-80 transition"
+          onClick={() => navigate("/profile")}
+        >
           <span className="text-sm font-medium">
             {user?.username}
           </span>

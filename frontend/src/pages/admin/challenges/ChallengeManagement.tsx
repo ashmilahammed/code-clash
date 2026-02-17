@@ -15,8 +15,9 @@ const ChallengeManagement = () => {
   const [togglingId, setTogglingId] = useState<string | null>(null);
 
   // pagination 
-  const [page] = useState(1);
+  const [page, setPage] = useState(1);
   const [limit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
 
 
   const fetchChallenges = async () => {
@@ -29,6 +30,7 @@ const ChallengeManagement = () => {
       });
 
       setChallenges(res.data);
+      setTotalPages(res.totalPages);
     } catch (err) {
       console.error("Failed to load challenges", err);
     } finally {
@@ -38,7 +40,7 @@ const ChallengeManagement = () => {
 
   useEffect(() => {
     fetchChallenges();
-  }, []);
+  }, [page]);
 
   const toggleStatus = async (id: string, isActive: boolean) => {
     try {
@@ -126,9 +128,12 @@ const ChallengeManagement = () => {
                       onClick={() =>
                         navigate(`/admin/challenges/edit/${c.id}`)
                       }
-                      className="px-3 py-1 rounded bg-slate-700 hover:bg-slate-600 text-sm"
+                      className={`px-3 py-1 rounded text-sm transition ${c.status === 'draft'
+                          ? 'bg-amber-600 hover:bg-amber-700 text-white'
+                          : 'bg-slate-700 hover:bg-slate-600'
+                        }`}
                     >
-                      Edit
+                      {c.status === 'draft' ? "Resume Draft" : "Edit"}
                     </button>
 
                     <button
@@ -155,6 +160,29 @@ const ChallengeManagement = () => {
             </tbody>
           </table>
         )}
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-end items-center gap-3 mt-6">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage((p) => p - 1)}
+          className="px-3 py-1 bg-slate-800 text-white rounded disabled:opacity-40 hover:bg-slate-700 transition"
+        >
+          Prev
+        </button>
+
+        <span className="text-slate-400 text-sm">
+          Page {page} of {totalPages}
+        </span>
+
+        <button
+          disabled={page === totalPages || totalPages === 0}
+          onClick={() => setPage((p) => p + 1)}
+          className="px-3 py-1 bg-slate-800 text-white rounded disabled:opacity-40 hover:bg-slate-700 transition"
+        >
+          Next
+        </button>
       </div>
     </div>
   );

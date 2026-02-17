@@ -29,6 +29,8 @@ export interface Challenge {
   isPremium: boolean;
   isActive: boolean;
   status: ChallengeStatus;
+  availableFrom?: string;
+  availableUntil?: string;
 }
 
 

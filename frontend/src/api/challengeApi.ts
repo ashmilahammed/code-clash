@@ -72,6 +72,14 @@ export const createChallengeBasicApi = async (
     return res.data.data; // { id, status }
 };
 
+export const updateChallengeBasicApi = async (
+    id: string,
+    payload: Partial<CreateChallengePayload>
+): Promise<CreateChallengeResponse> => {
+    const res = await axiosInstance.patch(`/admin/challenges/${id}`, payload);
+    return res.data.data;
+};
+
 
 export const addChallengeTagsApi = async (
     challengeId: string,
@@ -176,7 +184,36 @@ export const saveCodeTemplatesApi = async (
     );
 };
 
+export const getAdminChallengeTemplatesApi = async (
+    challengeId: string
+): Promise<{ language: string; starterCode: string; solutionCode: string }[]> => {
+    const res = await axiosInstance.get(
+        `/admin/challenges/${challengeId}/code-templates`
+    );
+    return res.data.data;
+};
 
 
 
 
+
+// 
+export const getChallengeHintsApi = async (
+    challengeId: string
+): Promise<{ order: number; content: string; unlockAfterMinutes?: number }[]> => {
+    const res = await axiosInstance.get(`/challenges/${challengeId}/hints`);
+    return res.data.data;
+};
+
+export const getChallengeTestCasesApi = async (
+    challengeId: string
+): Promise<{ input: string; expectedOutput: string }[]> => {
+    const res = await axiosInstance.get(`/challenges/${challengeId}/test-cases`);
+    return res.data.data;
+};
+export const getAdminChallengeTestCasesApi = async (
+    challengeId: string
+): Promise<{ input: string; expectedOutput: string; isSample: boolean }[]> => {
+    const res = await axiosInstance.get(`/admin/challenges/${challengeId}/test-cases`);
+    return res.data.data;
+};
