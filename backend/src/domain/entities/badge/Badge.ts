@@ -5,6 +5,10 @@ export class Badge {
         public readonly description: string,
         public readonly icon: string,
         public readonly minXpRequired: number,
+        public readonly category: string,
+        public readonly requirementType: string,
+        public readonly requirementValue: number,
+        public readonly isActive: boolean,
         public readonly createdAt?: Date,
         public readonly updatedAt?: Date
     ) {

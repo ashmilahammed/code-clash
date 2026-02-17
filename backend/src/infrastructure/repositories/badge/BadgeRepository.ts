@@ -19,9 +19,23 @@ export class BadgeRepository implements IBadgeRepository {
             name: badge.name,
             description: badge.description,
             icon: badge.icon,
-            minXpRequired: badge.minXpRequired
+            minXpRequired: badge.minXpRequired,
+            category: badge.category,
+            requirementType: badge.requirementType,
+            requirementValue: badge.requirementValue,
+            isActive: badge.isActive
         });
         return this.toEntity(doc);
+    }
+
+    async update(id: string, badge: Partial<Badge>): Promise<Badge | null> {
+        const doc = await BadgeModel.findByIdAndUpdate(id, badge, { new: true });
+        return doc ? this.toEntity(doc) : null;
+    }
+
+    async delete(id: string): Promise<boolean> {
+        const result = await BadgeModel.findByIdAndDelete(id);
+        return !!result;
     }
 
     private toEntity(doc: IBadgeDoc): Badge {
@@ -31,6 +45,10 @@ export class BadgeRepository implements IBadgeRepository {
             doc.description,
             doc.icon,
             doc.minXpRequired,
+            doc.category,
+            doc.requirementType,
+            doc.requirementValue,
+            doc.isActive,
             doc.createdAt,
             doc.updatedAt
         );

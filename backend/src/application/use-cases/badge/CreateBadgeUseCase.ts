@@ -6,6 +6,10 @@ interface CreateBadgeDTO {
     description: string;
     icon: string;
     minXpRequired?: number;
+    category?: string;
+    requirementType?: string;
+    requirementValue?: number;
+    isActive?: boolean;
 }
 
 export class CreateBadgeUseCase {
@@ -17,7 +21,11 @@ export class CreateBadgeUseCase {
             dto.name,
             dto.description,
             dto.icon,
-            dto.minXpRequired || 0
+            dto.minXpRequired || 0,
+            dto.category || "Achievement",
+            dto.requirementType || "Manual",
+            dto.requirementValue || 0,
+            dto.isActive !== undefined ? dto.isActive : true
         );
         return this.badgeRepository.create(badge);
     }

@@ -6,6 +6,10 @@ export interface IBadgeDoc extends Document {
     description: string;
     icon: string; // URL or icon name
     minXpRequired: number; // Optional
+    category: string;
+    requirementType: string;
+    requirementValue: number;
+    isActive: boolean;
     createdAt: Date;
     updatedAt: Date;
 }

@@ -1,5 +1,5 @@
 import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
-import { User } from "../../../../domain/entities/user/User";
+// import { User } from "../../../../domain/entities/user/User";
 import { ISubmissionRepository } from "../../../../domain/repositories/submission/ISubmissionRepository";
 import { ILevelRepository } from "../../../../domain/repositories/level/ILevelRepository";
 
