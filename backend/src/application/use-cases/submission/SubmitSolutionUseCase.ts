@@ -57,12 +57,18 @@ export class SubmitSolutionUseCase {
         const testCases =
             await this.testCaseRepo.findByChallenge(challengeId);
 
-        const hiddenCases = testCases.filter(
+        let hiddenCases = testCases.filter(
             (tc) => !tc.isSample
         );
 
+        // Fallback: If no hidden cases, use sample cases (for testing purposes)
         if (hiddenCases.length === 0) {
-            throw new Error("No hidden test cases configured");
+            // throw new Error("No hidden test cases configured");
+            hiddenCases = testCases;
+        }
+
+        if (hiddenCases.length === 0) {
+            throw new Error("No test cases found for this challenge");
         }
 
         let finalStatus: "PASSED" | "FAILED" | "ERROR" = "PASSED";

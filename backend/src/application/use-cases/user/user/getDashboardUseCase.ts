@@ -94,25 +94,3 @@ export class GetDashboardUseCase {
 
 
 
-
-
-// import { IUserRepository } from "../../../domain/repositories/IUserRepository";
-
-
-
-// export class GetDashboardUseCase {
-//   constructor(private readonly _userRepo: IUserRepository) {}
-
-//   async execute(userId: string) {
-//     const user = await this._userRepo.findById(userId);
-//     if (!user) throw new Error("USER_NOT_FOUND");
-
-//     return {
-//       user,
-//       // later:
-//       // level
-//       // streak calendar
-//       // challenges
-//     };
-//   }
-// }

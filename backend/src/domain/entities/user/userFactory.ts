@@ -16,7 +16,13 @@ export class UserFactory {
             params.username,
             params.email,
             null,                      // password (null for Google)
-            null,                      // avatar_id
+
+            `https://api.dicebear.com/7.x/avataaars/svg?seed=${params.username}`, // avatar
+            null,
+            null,                      // about
+            null,                      // github_url
+            null,                      // linkedin_url
+
             null,                      // badge_id
             null,                      // level_id
             0,                         // xp
@@ -49,19 +55,25 @@ export class UserFactory {
             params.username,
             params.email,
             params.hashedPassword,
+
+            `https://api.dicebear.com/7.x/avataaars/svg?seed=${params.username}`, // avatar
             null,
-            null,
-            null,
-            0,
-            0,
-            0,
-            null,
-            false,
-            new Date(),
-            "user",
-            "active",
-            null,
-            false,
+            null,                      // about
+            null,                      // github_url
+            null,                      // linkedin_url
+
+            null,                      // badge_id
+            null,                      // level_id
+            0,                         // xp
+            0,                         // current_streak
+            0,                         // longest_streak
+            null,                      // last_login_date
+            false,                     // is_premium
+            new Date(),                // date_joined
+            "user",                    // role
+            "active",                  // status
+            null,                      // refreshToken
+            false,                     // isVerified
             params.otp,
             params.otpExpires
         );

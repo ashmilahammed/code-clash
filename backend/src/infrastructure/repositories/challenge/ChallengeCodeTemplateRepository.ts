@@ -19,7 +19,7 @@
 //     );
 //   }
 
-  
+
 //   async findByChallenge(
 //     challengeId: string
 //   ): Promise<IChallengeCodeTemplate[]> {
@@ -78,14 +78,19 @@ export class ChallengeCodeTemplateRepository
     templates: Omit<ChallengeCodeTemplate, "id" | "challengeId">[]
   ): Promise<void> {
 
-    await ChallengeCodeTemplateModel.insertMany(
-      templates.map((t) =>
-        ChallengeCodeTemplateMapper.toPersistence({
-          ...t,
-          challengeId,
-        })
-      )
-    );
+    // Replace existing templates
+    await ChallengeCodeTemplateModel.deleteMany({ challengeId });
+
+    if (templates.length > 0) {
+      await ChallengeCodeTemplateModel.insertMany(
+        templates.map((t) =>
+          ChallengeCodeTemplateMapper.toPersistence({
+            ...t,
+            challengeId,
+          })
+        )
+      );
+    }
   }
 
 
@@ -97,7 +102,7 @@ export class ChallengeCodeTemplateRepository
 
     return docs.map(ChallengeCodeTemplateMapper.toDomain);
   }
-  
+
 
   async findSolution(
     challengeId: string,

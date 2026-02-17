@@ -80,6 +80,7 @@ export class RegisterUseCase {
     });
 
     // const createdUser = await this._userRepo.createUser(newUser);
+    await this._userRepo.createUser(newUser);
 
     await this._emailService.sendOtpEmail(email, otp);
 

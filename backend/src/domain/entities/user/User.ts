@@ -12,7 +12,13 @@ export class User {
     public email: string,
     private password: string | null,
 
-    public avatar_id: string | null,
+    public avatar: string | null,
+    public avatarPublicId: string | null,
+    public about: string | null,
+
+    public github_url: string | null,
+    public linkedin_url: string | null,
+
     public badge_id: string | null,
     public level_id: string | null,
 
@@ -88,38 +94,38 @@ export class User {
 
 
 
-// login streak
-recordLogin(at: Date = new Date()) {
-  const today = new Date(at);
-  today.setUTCHours(0, 0, 0, 0);
+  // login streak
+  recordLogin(at: Date = new Date()) {
+    const today = new Date(at);
+    today.setUTCHours(0, 0, 0, 0);
 
-  let currentStreak = this.current_streak;
-  const longestStreak = this.longest_streak;
+    let currentStreak = this.current_streak;
+    const longestStreak = this.longest_streak;
 
-  if (this.last_login_date) {
-    const lastLogin = new Date(this.last_login_date);
-    lastLogin.setUTCHours(0, 0, 0, 0);
+    if (this.last_login_date) {
+      const lastLogin = new Date(this.last_login_date);
+      lastLogin.setUTCHours(0, 0, 0, 0);
 
-    const diffDays = Math.floor(
-      (today.getTime() - lastLogin.getTime()) /
+      const diffDays = Math.floor(
+        (today.getTime() - lastLogin.getTime()) /
         (1000 * 60 * 60 * 24)
-    );
+      );
 
-    if (diffDays === 1) {
-      currentStreak += 1;
-    } else if (diffDays > 1) {
+      if (diffDays === 1) {
+        currentStreak += 1;
+      } else if (diffDays > 1) {
+        currentStreak = 1;
+      }
+      // diffDays === 0 → same day, no change
+    } else {
+      // First ever login
       currentStreak = 1;
     }
-    // diffDays === 0 → same day, no change
-  } else {
-    // First ever login
-    currentStreak = 1;
-  }
 
-  this.current_streak = currentStreak;
-  this.longest_streak = Math.max(longestStreak, currentStreak);
-  this.last_login_date = at;
-}
+    this.current_streak = currentStreak;
+    this.longest_streak = Math.max(longestStreak, currentStreak);
+    this.last_login_date = at;
+  }
 
 
 
@@ -182,6 +188,15 @@ recordLogin(at: Date = new Date()) {
   }
 
 
+
+
+  updateAvatar(url: string, publicId: string) {
+    this.avatar = url;
+    this.avatarPublicId = publicId;
+  }
+
+
+
   // READ MODE (safe exposure)
   snapshot() {
     return {
@@ -190,7 +205,12 @@ recordLogin(at: Date = new Date()) {
       email: this.email,
       xp: this.xp,
       level_id: this.level_id,
-      avatar_id: this.avatar_id,
+
+      avatar: this.avatar,
+      about: this.about,
+      github_url: this.github_url,
+      linkedin_url: this.linkedin_url,
+
       badge_id: this.badge_id,
       current_streak: this.current_streak,
       longest_streak: this.longest_streak,
@@ -205,40 +225,3 @@ recordLogin(at: Date = new Date()) {
 
 
 
-
-
-// export interface IUser {
-//   id?: string;
-
-//   username: string;
-//   email: string;
-//   password: string | null;
-
-//   avatar_id?: string | null;
-//   badge_id?: string | null;
-//   level_id?: string | null;
-
-//   xp: number;
-
-//   current_streak: number;
-//   longest_streak: number;
-//   last_login_date?: Date | null;
-
-
-//   is_premium: boolean;
-
-//   date_joined: Date;
-
-//   role: "user" | "admin";
-//   status: "active" | "blocked";
-
-//   refreshToken?: string | null;
-
-//   isVerified: boolean;
-//   otp?: string | null;
-//   otpExpires?: Date | null;
-
-//   //
-//   // createdAt?: Date;
-//   // updatedAt?: Date;
-// }

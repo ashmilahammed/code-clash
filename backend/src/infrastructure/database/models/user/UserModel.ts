@@ -7,7 +7,13 @@ export interface IUserDoc extends Document {
   password?: string | null;
 
 
-  avatar_id?: string | null;
+  avatar?: string | null;
+  avatarPublicId?: string | null;
+
+  about?: string | null;
+  github_url?: string | null;
+  linkedin_url?: string | null;
+
   badge_id?: string | null;
   level_id?: string | null;
 
@@ -46,7 +52,13 @@ const UserSchema = new Schema<IUserDoc>(
 
     password: { type: String, required: false, default: null },
 
-    avatar_id: { type: Schema.Types.ObjectId, ref: "Avatar", default: null },
+    avatar: { type: String, default: null },
+    avatarPublicId: { type: String, default: null },
+
+    about: { type: String, default: null },
+    github_url: { type: String, default: null },
+    linkedin_url: { type: String, default: null },
+
     badge_id: { type: Schema.Types.ObjectId, ref: "Badge", default: null },
     level_id: { type: Schema.Types.ObjectId, ref: "Level", default: null },
 

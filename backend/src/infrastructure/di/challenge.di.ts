@@ -18,6 +18,9 @@ import { AddChallengeTestCasesUseCase } from "../../application/use-cases/challe
 import { AddChallengeHintsUseCase } from "../../application/use-cases/challenge/admin/addChallengeHintsUseCase";
 import { UpdateChallengeScheduleUseCase } from "../../application/use-cases/challenge/admin/updateChallengeScheduleUseCase";
 import { AddChallengeCodeTemplatesUseCase } from "../../application/use-cases/challenge/admin/addChallengeCodeTemplatesUseCase";
+import { UpdateChallengeUseCase } from "../../application/use-cases/challenge/admin/updateChallengeUseCase";
+import { GetAdminChallengeCodeTemplatesUseCase } from "../../application/use-cases/challenge/admin/getAdminChallengeCodeTemplatesUseCase";
+import { GetAdminChallengeTestCasesUseCase } from "../../application/use-cases/challenge/admin/getAdminChallengeTestCasesUseCase";
 
 import { ListChallengesUseCase } from "../../application/use-cases/challenge/user/listChallengesUseCase";
 import { GetChallengeByIdUseCase } from "../../application/use-cases/challenge/user/getChallengeByIdUseCase";
@@ -80,7 +83,10 @@ const getChallengeTestCasesUseCase = new GetChallengeTestCasesUseCase(challengeT
 
 
 
-// controller
+const updateChallengeUseCase = new UpdateChallengeUseCase(challengeRepository);
+
+
+//controller
 export const challengeController = new ChallengeController(
     createChallengeUseCase,
     adminListChallengesUseCase,
@@ -98,5 +104,8 @@ export const challengeController = new ChallengeController(
     getChallengeByIdUseCase,
     getChallengeCodeTemplatesUseCase,
     getChallengeHintsUseCase,
-    getChallengeTestCasesUseCase
+    getChallengeTestCasesUseCase,
+    updateChallengeUseCase,
+    new GetAdminChallengeCodeTemplatesUseCase(challengeCodeTemplateRepository),
+    new GetAdminChallengeTestCasesUseCase(challengeTestCaseRepository)
 );

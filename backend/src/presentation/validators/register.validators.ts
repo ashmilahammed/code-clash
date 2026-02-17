@@ -27,12 +27,15 @@ export const registerValidator = (
     });
   }
 
-  
-  if (typeof password !== "string" || password.length < 6) {
+
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+  if (typeof password !== "string" || !passwordRegex.test(password)) {
     return res.status(400).json({
-      message: "Password must be at least 6 characters",
+      message:
+        "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number.",
     });
   }
+
 
   next();
 };

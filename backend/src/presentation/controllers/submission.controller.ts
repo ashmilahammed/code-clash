@@ -59,6 +59,7 @@ export class SubmissionController {
                 .json(ApiResponse.success(MESSAGES.SUBMISSION.SUBMIT_SUCCESS, result));
 
         } catch (err: any) {
+            console.error("Submit Error:", err);
             const message =
                 err instanceof Error
                     ? err.message
@@ -66,7 +67,7 @@ export class SubmissionController {
 
             return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(message, err.response?.data || err));
         }
     };
 }

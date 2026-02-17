@@ -3,12 +3,14 @@ import { SubmissionRepository } from "../repositories/submission/SubmissionRepos
 import { LevelRepository } from "../repositories/level/LevelRepository";
 import { XpService } from "../services/xpService";
 import { WinstonLogger } from "../services/logger";
-// import { JwtService } from "../services/security/jwtService";
+
+import { CloudinaryStorageService } from "../adapters/fileStorage/CloudinaryStorageService";
 
 import { GetDashboardUseCase } from "../../application/use-cases/user/user/getDashboardUseCase";
 import { GetLeaderboardUseCase } from "../../application/use-cases/user/user/getLeaderboardUseCase";
 import { ListUsersUseCase } from "../../application/use-cases/user/admin/listUsersUseCase";
 import { UpdateUserStatusUseCase } from "../../application/use-cases/user/admin/updateUserStatusUseCase";
+import { UpdateUserAvatarUseCase } from "../../application/use-cases/user/user/updateUserAvatarUseCase";
 
 import { UserController } from "../../presentation/controllers/user.controller";
 import { AdminController } from "../../presentation/controllers/admin.controllers";
@@ -24,8 +26,7 @@ const submissionRepository = new SubmissionRepository();
 const levelRepository = new LevelRepository();
 const xpService = new XpService();
 const logger = new WinstonLogger();
-// const jwtService = new JwtService();
-
+const fileStorage = new CloudinaryStorageService();
 
 
 // user
@@ -38,6 +39,12 @@ const getLeaderboardUseCase = new GetLeaderboardUseCase(
   userRepository,
   submissionRepository,
   levelRepository
+);
+
+
+const updateUserAvatarUseCase = new UpdateUserAvatarUseCase(
+  userRepository,
+  fileStorage
 );
 
 
@@ -68,7 +75,8 @@ export const requireAdmin = createRequireRole(
 // controllers
 export const userController = new UserController(
   getDashboardUseCase,
-  getLeaderboardUseCase
+  getLeaderboardUseCase,
+  updateUserAvatarUseCase
 );
 
 export const adminController = new AdminController(

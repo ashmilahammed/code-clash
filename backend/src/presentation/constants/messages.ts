@@ -27,6 +27,7 @@ export const MESSAGES = {
     USER_UNBLOCKED: "User unblocked successfully",
   },
 
+
   CHALLENGE: {
     CREATED: "Challenge created successfully",
     UPDATED: "Challenge updated successfully",
@@ -40,11 +41,14 @@ export const MESSAGES = {
 
     FETCHED: "Challenge fetched successfully",
     LANGUAGES_FETCHED: "Challenge languages fetched successfully",
+    TEST_CASES_FETCHED: "Challenge test cases fetched successfully",
+    HINTS_FETCHED: "Challenge hints fetched successfully",
     NOT_FOUND: "Challenge not found",
 
     TEMPLATES_FETCHED: "Challenge templates fetched successfully",
     TEMPLATES_NOT_FOUND: "Challenge templates not found",
   },
+
 
   SUBMISSION: {
     RUN_SUCCESS: "Code executed successfully",
@@ -55,6 +59,7 @@ export const MESSAGES = {
   LEVEL: {
     CREATED: "Level created successfully",
   },
+
 
   COMMON: {
     SUCCESS: "Success",

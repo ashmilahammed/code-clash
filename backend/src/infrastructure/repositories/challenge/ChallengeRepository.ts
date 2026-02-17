@@ -85,9 +85,7 @@ export class ChallengeRepository
         await this.updateRaw(
             challengeId,
             {
-                $addToSet: {
-                    tags: { $each: tagIds },
-                },
+                $set: { tags: tagIds },
             } as any
         );
     }

@@ -30,7 +30,9 @@ export class Challenge {
     public availableFrom?: Date | null,
     public availableUntil?: Date | null,
     public readonly createdAt?: Date,
-    public readonly updatedAt?: Date
+    public readonly updatedAt?: Date,
+    public tags?: any[],
+    public languages?: any[]
   ) {
     this.validate();
   }

@@ -90,7 +90,9 @@ export class ChallengeMapper {
       doc.availableFrom ?? null,
       doc.availableUntil ?? null,
       doc.createdAt,
-      doc.updatedAt
+      doc.updatedAt,
+      doc.tags,
+      doc.languages
     );
   }
 

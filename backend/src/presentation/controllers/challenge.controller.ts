@@ -12,6 +12,9 @@ import { AddChallengeTestCasesUseCase } from "../../application/use-cases/challe
 import { AddChallengeHintsUseCase } from "../../application/use-cases/challenge/admin/addChallengeHintsUseCase";
 import { UpdateChallengeScheduleUseCase } from "../../application/use-cases/challenge/admin/updateChallengeScheduleUseCase";
 import { AddChallengeCodeTemplatesUseCase } from "../../application/use-cases/challenge/admin/addChallengeCodeTemplatesUseCase";
+import { UpdateChallengeUseCase } from "../../application/use-cases/challenge/admin/updateChallengeUseCase";
+import { GetAdminChallengeCodeTemplatesUseCase } from "../../application/use-cases/challenge/admin/getAdminChallengeCodeTemplatesUseCase";
+import { GetAdminChallengeTestCasesUseCase } from "../../application/use-cases/challenge/admin/getAdminChallengeTestCasesUseCase";
 
 import { GetChallengeByIdUseCase } from "../../application/use-cases/challenge/user/getChallengeByIdUseCase";
 import { GetChallengeCodeTemplatesUseCase } from "../../application/use-cases/challenge/user/getChallengeCodeTemplatesUseCase";
@@ -41,8 +44,10 @@ export class ChallengeController {
         private readonly _getChallengeById: GetChallengeByIdUseCase,
         private readonly _getChallengeTemplates: GetChallengeCodeTemplatesUseCase,
         private readonly _getHints: GetChallengeHintsUseCase,
-        private readonly _getTestCases: GetChallengeTestCasesUseCase
-
+        private readonly _getTestCases: GetChallengeTestCasesUseCase,
+        private readonly _updateChallenge: UpdateChallengeUseCase,
+        private readonly _getAdminChallengeCodeTemplates: GetAdminChallengeCodeTemplatesUseCase,
+        private readonly _getAdminChallengeTestCases: GetAdminChallengeTestCasesUseCase
     ) { }
 
 
@@ -52,6 +57,37 @@ export class ChallengeController {
 
             return res.status(HttpStatus.CREATED).json(
                 ApiResponse.success(MESSAGES.CHALLENGE.CREATED, {
+                    id: challenge.id,
+                    status: challenge.status,
+                })
+            );
+        } catch (err: unknown) {
+            const message =
+                err instanceof Error
+                    ? err.message
+                    : MESSAGES.COMMON.BAD_REQUEST;
+
+            return res
+                .status(HttpStatus.BAD_REQUEST)
+                .json(ApiResponse.error(message));
+        }
+    };
+
+
+    update = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+
+            if (!id) {
+                return res
+                    .status(HttpStatus.BAD_REQUEST)
+                    .json(ApiResponse.error(MESSAGES.CHALLENGE.ID_REQUIRED));
+            }
+
+            const challenge = await this._updateChallenge.execute(id, req.body);
+
+            return res.status(HttpStatus.OK).json(
+                ApiResponse.success(MESSAGES.CHALLENGE.UPDATED, {
                     id: challenge.id,
                     status: challenge.status,
                 })
@@ -520,8 +556,58 @@ export class ChallengeController {
 
 
 
+
+    getAdminTemplates = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+
+            if (!id) {
+                return res
+                    .status(HttpStatus.BAD_REQUEST)
+                    .json(ApiResponse.error(MESSAGES.CHALLENGE.ID_REQUIRED));
+            }
+
+            const templates = await this._getAdminChallengeCodeTemplates.execute(id);
+
+            return res.status(HttpStatus.OK).json(
+                ApiResponse.success(MESSAGES.CHALLENGE.TEMPLATES_FETCHED, templates)
+            );
+        } catch (err: unknown) {
+            const message =
+                err instanceof Error
+                    ? err.message
+                    : MESSAGES.COMMON.INTERNAL_ERROR;
+
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json(ApiResponse.error(message));
+        }
+    };
+
+    getAdminTestCases = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+
+            if (!id) {
+                return res
+                    .status(HttpStatus.BAD_REQUEST)
+                    .json(ApiResponse.error(MESSAGES.CHALLENGE.ID_REQUIRED));
+            }
+
+            const testCases = await this._getAdminChallengeTestCases.execute(id);
+
+            return res.status(HttpStatus.OK).json(
+                ApiResponse.success(MESSAGES.CHALLENGE.TEST_CASES_FETCHED, testCases)
+            );
+        } catch (err: unknown) {
+            const message =
+                err instanceof Error
+                    ? err.message
+                    : MESSAGES.COMMON.INTERNAL_ERROR;
+
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json(ApiResponse.error(message));
+        }
+    };
 }
-
-
-
-

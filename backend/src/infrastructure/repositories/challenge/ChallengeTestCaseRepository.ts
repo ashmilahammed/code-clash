@@ -57,14 +57,19 @@ export class ChallengeTestCaseRepository
     cases: Omit<ChallengeTestCase, "id" | "challengeId">[]
   ): Promise<void> {
 
-    await ChallengeTestCaseModel.insertMany(
-      cases.map((c) =>
-        ChallengeTestCaseMapper.toPersistence({
-          ...c,
-          challengeId,
-        })
-      )
-    );
+    // Replace existing test cases
+    await ChallengeTestCaseModel.deleteMany({ challengeId });
+
+    if (cases.length > 0) {
+      await ChallengeTestCaseModel.insertMany(
+        cases.map((c) =>
+          ChallengeTestCaseMapper.toPersistence({
+            ...c,
+            challengeId,
+          })
+        )
+      );
+    }
   }
 
   async findByChallenge(

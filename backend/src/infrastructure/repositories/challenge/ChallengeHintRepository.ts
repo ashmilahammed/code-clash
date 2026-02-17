@@ -67,17 +67,22 @@ export class ChallengeHintRepository
     hints: Omit<ChallengeHint, "id" | "challengeId">[]
   ): Promise<void> {
 
-    await ChallengeHintModel.insertMany(
-      hints.map((h) =>
-        ChallengeHintMapper.toPersistence({
-          ...h,
-          challengeId,
-        })
-      )
-    );
+    // Replace existing hints
+    await ChallengeHintModel.deleteMany({ challengeId });
+
+    if (hints.length > 0) {
+      await ChallengeHintModel.insertMany(
+        hints.map((h) =>
+          ChallengeHintMapper.toPersistence({
+            ...h,
+            challengeId,
+          })
+        )
+      );
+    }
   }
 
-  
+
   async findByChallenge(
     challengeId: string
   ): Promise<ChallengeHint[]> {
