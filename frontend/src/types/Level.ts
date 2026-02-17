@@ -5,6 +5,10 @@ export interface Badge {
     description: string;
     icon: string;
     minXpRequired: number;
+    category: string;
+    requirementType: string;
+    requirementValue: number;
+    isActive: boolean;
 }
 
 export interface Level {

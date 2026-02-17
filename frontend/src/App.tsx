@@ -35,6 +35,7 @@ import ChallengeHintsAndSchedule from "./pages/admin/challenges/CreateChallenge/
 import CodeTemplates from "./pages/admin/challenges/CreateChallenge/CodeTemplates";
 
 import LevelManagement from "./pages/admin/levels/LevelManagement";
+import BadgeManagement from "./pages/admin/badges/BadgeManagement";
 
 import SolveChallenge from "./pages/challenges/SolveChallenge";
 
@@ -139,6 +140,7 @@ function App() {
           <Route path="/admin/challenges" element={<ChallengeManagement />} />
 
           <Route path="/admin/levels" element={<LevelManagement />} />
+          <Route path="/admin/badges" element={<BadgeManagement />} />
 
           {/* wizard */}
           <Route

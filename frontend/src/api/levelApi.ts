@@ -1,5 +1,6 @@
 import api from "./axiosInstance";
-import type { Level } from "../types/Level"; 
+
+
 
 export const getAllLevels = async () => {
     const response = await api.get("/levels");

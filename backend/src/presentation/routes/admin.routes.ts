@@ -35,7 +35,7 @@ router.get("/challenges/:id/code-templates", challengeController.getAdminTemplat
 
 
 // levels management
-router.post("/levels", levelController.create);
+// router.post("/levels", levelController.create);
 
 
 export default router;

@@ -1,67 +1,60 @@
 import { useNavigate } from "react-router-dom";
 import { logoutApi } from "../../api/authApi";
 import { useAuthStore } from "../../store/useAuthStore";
-
+import { LogOut } from "lucide-react";
 
 
 const AdminNavbar = () => {
     const navigate = useNavigate();
-    // const user = useAuthStore((s) => s.user);
     const logoutUser = useAuthStore((s) => s.logoutUser);
+
 
     const handleLogout = async () => {
         try {
             await logoutApi();
-        } catch (err) {
-            console.error("Logout failed", err);
         } finally {
             logoutUser();
             navigate("/auth/login");
         }
     };
 
+
+
     return (
         <nav
             className="
-        h-16 px-6
-        flex items-center justify-between
-        bg-slate-900
+        h-16 px-8
+        flex items-center justify-end
+        bg-[#0f172a]/90 backdrop-blur-md
+        border-b border-slate-800
         text-white
-        fixed top-0 left-0 right-0 z-50
+        fixed top-0 left-64 right-0 z-40
       "
         >
-            {/* App name */}
-            <div
-                className="
-        font-bold text-lg tracking-wide
-        bg-linear-to-r from-purple-400 via-pink-500 to-red-500
-        bg-clip-text text-transparent
-        transition duration-300
-        hover:drop-shadow-[0_0_8px_rgba(236,72,153,0.6)]
-        cursor-pointer
-      "
-                onClick={() => navigate("/admin")}
-            >
-                &lt;CODE-CLASH /&gt;
-            </div>
-
-
-            {/* Right side */}
-            <div className="flex items-center gap-4">
-                <span className="text-sm opacity-80">
-                    {/* Admin: {user?.username} */}
+            <div className="flex items-center gap-5">
+                <span className="text-sm text-slate-400">
                     Admin
                 </span>
 
                 <button
                     onClick={handleLogout}
-                    className="text-sm px-3 py-1 rounded bg-red-600 hover:bg-red-700 transition"
+                    className="
+            flex items-center gap-2
+            px-4 py-1.5 rounded-lg
+            bg-red-600/80 hover:bg-red-600
+            transition
+            text-sm font-medium
+            shadow-md
+          "
                 >
+                    <LogOut size={16} />
                     Logout
                 </button>
             </div>
         </nav>
     );
+
+
 };
 
 export default AdminNavbar;

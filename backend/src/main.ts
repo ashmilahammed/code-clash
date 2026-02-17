@@ -26,11 +26,10 @@ app.use(cookieParser());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
+
 app.use("/api/user", userRoutes);
 app.use("/api/challenges", challengeRoutes);
-
 app.use("/api/submissions", submissionRoutes);
-
 app.use("/api/levels", levelRoutes);
 app.use("/api/badges", badgeRoutes);
 
