@@ -21,7 +21,7 @@ const StreakCalendar: React.FC<StreakCalendarProps> = ({
     <div className="bg-linear-to-br from-[#0F172A] to-[#020617] rounded-2xl p-6 shadow-lg text-white">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-lg">🔥 Streak</h3>
+        <h3 className="font-semibold text-lg"> Streak</h3>
         <span className="text-cyan-400 font-bold">
           {currentStreak} days
         </span>

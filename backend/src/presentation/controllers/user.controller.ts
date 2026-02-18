@@ -111,6 +111,8 @@ export class UserController {
     }
   };
 
+
+  
   removeAvatar = async (req: Request, res: Response) => {
     try {
       const authUser = res.locals.user as { userId: string };

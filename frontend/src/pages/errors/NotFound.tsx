@@ -1,27 +1,27 @@
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
 
-const Forbidden = () => {
+const NotFound = () => {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
 
   return (
     <div className="min-h-screen bg-[#0B1220] flex flex-col items-center justify-center text-center px-6">
-      <h1 className="text-6xl font-bold text-red-500 mb-4">403</h1>
+      <h1 className="text-6xl font-bold text-blue-500 mb-4">404</h1>
       <p className="text-slate-300 mb-6">
-        You don’t have permission to access this page.
+        The page you're looking for doesn’t exist.
       </p>
 
       <button
         onClick={() =>
-          navigate(user?.role === "admin" ? "/admin" : "/dashboard")
+          navigate(user ? "/dashboard" : "/", { replace: true })
         }
         className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white"
       >
-        Go Back
+        {user ? "Go to Dashboard" : "Go to Home"}
       </button>
     </div>
   );
 };
 
-export default Forbidden;
+export default NotFound;

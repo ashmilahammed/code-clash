@@ -50,7 +50,7 @@ const NewLeaderboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
 
                 {/* 1. Weekly XP Gainer - Mocked */}
-                <div className="bg-gradient-to-br from-indigo-900 to-indigo-800 rounded-xl p-6 relative overflow-hidden">
+                <div className="bg-linear-to-br from-indigo-900 to-indigo-800 rounded-xl p-6 relative overflow-hidden">
                     <div className="absolute top-4 right-4 bg-indigo-500/20 p-2 rounded-lg">
                         ⚡
                     </div>
@@ -67,7 +67,7 @@ const NewLeaderboard = () => {
                 </div>
 
                 {/* 2. Fastest Solver - Mocked */}
-                <div className="bg-gradient-to-br from-orange-900 to-orange-800/80 rounded-xl p-6 relative overflow-hidden">
+                <div className="bg-linear-to-br from-orange-900 to-orange-800/80 rounded-xl p-6 relative overflow-hidden">
                     <div className="absolute top-4 right-4 bg-orange-500/20 p-2 rounded-lg">
                         ⏱️
                     </div>
@@ -82,7 +82,7 @@ const NewLeaderboard = () => {
                 </div>
 
                 {/* 3. Longest Streak - Real Data */}
-                <div className="bg-gradient-to-br from-emerald-900 to-emerald-800/80 rounded-xl p-6 relative overflow-hidden">
+                <div className="bg-linear-to-br from-emerald-900 to-emerald-800/80 rounded-xl p-6 relative overflow-hidden">
                     <div className="absolute top-4 right-4 bg-emerald-500/20 p-2 rounded-lg">
                         🔥
                     </div>

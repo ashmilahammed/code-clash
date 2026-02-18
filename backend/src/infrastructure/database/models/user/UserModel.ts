@@ -6,7 +6,6 @@ export interface IUserDoc extends Document {
   email: string;
   password?: string | null;
 
-
   avatar?: string | null;
   avatarPublicId?: string | null;
 

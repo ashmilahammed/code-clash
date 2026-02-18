@@ -5,9 +5,11 @@ export interface User {
 
   xp: number;
   level_id: string | null;
-  avatar: string | null;
-  about: string | null;
 
+  avatar: string | null;
+  avatarPublicId?: string | null;
+
+  about: string | null;
   github_url: string | null;
   linkedin_url: string | null;
 

@@ -42,7 +42,8 @@ const Dashboard = () => {
         updateUser({
           xp: data.user.xp,
           level_id: data.user.level_id,
-          avatar_id: data.user.avatar_id,
+          avatar: data.user.avatar,
+          avatarPublicId: data.user.avatarPublicId,
           badge_id: data.user.badge_id,
           current_streak: data.user.current_streak,
           longest_streak: data.user.longest_streak,

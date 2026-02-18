@@ -1,16 +1,19 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 
+import ProtectedRoute from "./components/common/ProtectedRoute";
+import AdminRoute from "./components/common/AdminRoute";
+import GuestRoute from "./components/common/GuestRoute";
+
+import LandingPage from "./pages/LandingPage";
+import LandingLayout from "./components/layout/LandingLayout";
+
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
 import VerifyOtp from "./pages/auth/VerifyOtp";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ForgotVerifyOtp from "./pages/auth/ForgotVerifyOtp";
 import ResetPassword from "./pages/auth/ResetPassword";
-
-import ProtectedRoute from "./components/common/ProtectedRoute";
-import AdminRoute from "./components/common/AdminRoute";
-import GuestRoute from "./components/common/GuestRoute";
 
 import Dashboard from "./pages/dashboard/Dashboard";
 import UserLayout from "./components/layout/UserLayout";
@@ -22,7 +25,6 @@ import Leaderboard from "./pages/dashboard/Leaderboard";
 import AdminLayout from "./components/layout/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserManagement from "./pages/admin/userManagement/UserManagement";
-
 import ChallengeManagement from "./pages/admin/challenges/ChallengeManagement"
 // import ChallengeDetails from "./pages/dashboard/ChallengeDetails";
 
@@ -39,14 +41,18 @@ import BadgeManagement from "./pages/admin/badges/BadgeManagement";
 
 import SolveChallenge from "./pages/challenges/SolveChallenge";
 
-
 import { useAuthStore } from "./store/useAuthStore";
 
 import { refreshTokenApi } from "./api/authApi";
 import { meApi } from "./api/authApi";
 
+import Forbidden from "./pages/errors/Forbidden";
+import NotFound from "./pages/errors/NotFound";
+
 
 import "./App.css";
+
+
 
 
 
@@ -55,6 +61,8 @@ function App() {
   const logoutUser = useAuthStore((s) => s.logoutUser);
   const stopLoading = useAuthStore((s) => s.stopLoading);
   const isLoading = useAuthStore((s) => s.isLoading);
+
+  const user = useAuthStore((s) => s.user);
 
 
 
@@ -98,10 +106,21 @@ function App() {
 
 
 
+
   return (
     <Routes>
-      {/* Default */}
-      <Route path="/" element={<Navigate to="/auth/login" replace />} />
+
+      {/* Landing Page */}
+      <Route element={<LandingLayout />}>
+        {/* <Route path="/" element={<LandingPage />} /> */}
+        <Route
+          path="/"
+          element={
+            user ? <Navigate to="/dashboard" replace /> : <LandingPage />
+          }
+        />
+      </Route>
+
 
 
       {/* Guest-only routes */}
@@ -173,7 +192,9 @@ function App() {
 
 
       {/* Errors */}
-      {/* <Route path="/403" element={<Forbidden />} /> */}
+      <Route path="/403" element={<Forbidden />} />      
+      <Route path="*" element={<NotFound />} />
+
 
     </Routes>
   );

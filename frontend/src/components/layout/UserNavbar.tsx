@@ -28,7 +28,7 @@ function UserNavbar() {
       console.error("Logout failed", err);
     } finally {
       logoutUser();
-      navigate("/auth/login");
+      navigate("/auth/login", { replace: true });
     }
   };
 
