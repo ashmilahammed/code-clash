@@ -96,7 +96,7 @@ function UserNavbar() {
         <button
           className="p-2 rounded-full hover:bg-slate-800 transition"
           title="Leaderboard"
-          onClick={() => navigate("/badges")}
+          onClick={() => navigate("/leaderboard")}
         >
           <Award size={18} />
         </button>

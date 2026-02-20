@@ -1,6 +1,5 @@
 import { IPasswordService } from "../../services/IPasswordService";
 
-
 export type UserRole = "user" | "admin";
 export type UserStatus = "active" | "blocked";
 

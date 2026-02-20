@@ -3,7 +3,7 @@ import { authMiddleware, } from "../../infrastructure/di/auth.di";
 import { requireAdmin, adminController, } from "../../infrastructure/di/user.di";
 
 import { challengeController } from "../../infrastructure/di/challenge.di";
-import { levelController } from "../../infrastructure/di/level.di";
+// import { levelController } from "../../infrastructure/di/level.di";
 
 const router = Router();
 

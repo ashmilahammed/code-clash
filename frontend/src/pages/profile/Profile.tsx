@@ -106,7 +106,7 @@ const Profile = () => {
                                         Change
                                     </span>
                                 </button>
-                                
+
                                 {user.avatar && (
                                     <button
                                         onClick={(e) => {

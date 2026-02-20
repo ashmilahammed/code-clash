@@ -139,7 +139,6 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<UserLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/badges" element={<Leaderboard />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
           {/* <Route path="/challenges/:id" element={<ChallengeDetails />} /> */}
 
@@ -192,7 +191,7 @@ function App() {
 
 
       {/* Errors */}
-      <Route path="/403" element={<Forbidden />} />      
+      <Route path="/403" element={<Forbidden />} />
       <Route path="*" element={<NotFound />} />
 
 
