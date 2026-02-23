@@ -1,35 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Users, Activity } from "lucide-react";
-
-interface Group {
-  id: string;
-  name: string;
-  members: number;
-  active: boolean;
-}
-
-const MOCK_GROUPS: Group[] = [
-  {
-    id: "1",
-    name: "DSA Warriors",
-    members: 24,
-    active: true,
-  },
-  {
-    id: "2",
-    name: "React Ninjas",
-    members: 18,
-    active: true,
-  },
-  {
-    id: "3",
-    name: "Backend Masters",
-    members: 12,
-    active: false,
-  },
-];
+import { useChatStore } from "../../store/useChatStore";
+import { useNavigate } from "react-router-dom";
 
 const ActiveGroups: React.FC = () => {
+  const { conversations, fetchConversations } = useChatStore();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchConversations();
+  }, [fetchConversations]);
+
+  const groups = conversations.filter((c) => c.type === "group").slice(0, 3);
+
   return (
     <div className="mt-10 bg-linear-to-br from-[#0F172A] to-[#020617] rounded-2xl p-6 shadow-lg border border-slate-800">
       {/* Header */}
@@ -39,52 +22,47 @@ const ActiveGroups: React.FC = () => {
           Active Groups
         </h3>
         <span className="text-xs text-slate-400">
-          {MOCK_GROUPS.length} groups
+          {groups.length} groups
         </span>
       </div>
 
       {/* Groups */}
       <div className="space-y-3">
-        {MOCK_GROUPS.map((group) => (
+        {groups.map((group) => (
           <div
             key={group.id}
             className="flex items-center justify-between
                        bg-slate-900/60 rounded-lg px-4 py-3
-                       hover:bg-slate-900 transition"
+                       hover:bg-slate-900 transition cursor-pointer"
+            onClick={() => navigate('/messages')}
           >
             <div>
               <p className="text-white font-medium">
                 {group.name}
               </p>
               <p className="text-xs text-slate-400">
-                {group.members} members
+                {group.participants.length} members
               </p>
             </div>
 
             <div className="flex items-center gap-2">
-              {group.active ? (
-                <span className="flex items-center gap-1 text-xs text-green-400">
-                  <Activity size={14} />
-                  Active
-                </span>
-              ) : (
-                <span className="text-xs text-slate-500">
-                  Inactive
-                </span>
-              )}
+              <span className="flex items-center gap-1 text-xs text-green-400">
+                <Activity size={14} />
+                Active
+              </span>
             </div>
           </div>
         ))}
+        {groups.length === 0 && (
+          <p className="text-sm text-slate-500">No active groups joined.</p>
+        )}
       </div>
 
       {/* Footer CTA */}
       <div className="mt-4 text-right">
         <button
           className="text-sm text-cyan-400 hover:text-cyan-300 transition"
-          onClick={() => {
-            // later: navigate to groups page
-            console.log("View all groups");
-          }}
+          onClick={() => navigate('/messages')}
         >
           View all groups →
         </button>

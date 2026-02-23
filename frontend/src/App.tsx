@@ -20,7 +20,7 @@ import UserLayout from "./components/layout/UserLayout";
 // import Badges from "./pages/profile/Badges";
 import Profile from "./pages/profile/Profile";
 import Leaderboard from "./pages/dashboard/Leaderboard";
-// import Leaderboard from "./pages/dashboard/Leaderboard";
+import Messages from "./pages/chat/Messages";
 
 import AdminLayout from "./components/layout/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -144,6 +144,7 @@ function App() {
 
           <Route path="/challenges/:id" element={<SolveChallenge />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/messages" element={<Messages />} />
 
         </Route>
       </Route>

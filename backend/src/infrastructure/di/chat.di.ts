@@ -1,0 +1,21 @@
+import { ConversationRepository } from "../repositories/chat/ConversationRepository";
+import { MessageRepository } from "../repositories/chat/MessageRepository";
+
+import { CreateGroupUseCase } from "../../application/use-cases/chat/CreateGroupUseCase";
+import { JoinGroupUseCase } from "../../application/use-cases/chat/JoinGroupUseCase";
+import { GetConversationsUseCase } from "../../application/use-cases/chat/GetConversationsUseCase";
+import { SendMessageUseCase } from "../../application/use-cases/chat/SendMessageUseCase";
+import { GetMessagesUseCase } from "../../application/use-cases/chat/GetMessagesUseCase";
+import { GetOrCreateDirectConversationUseCase } from "../../application/use-cases/chat/GetOrCreateDirectConversationUseCase";
+
+// Repositories
+export const conversationRepository = new ConversationRepository();
+export const messageRepository = new MessageRepository();
+
+// Use Cases
+export const createGroupUseCase = new CreateGroupUseCase(conversationRepository);
+export const joinGroupUseCase = new JoinGroupUseCase(conversationRepository);
+export const getConversationsUseCase = new GetConversationsUseCase(conversationRepository);
+export const sendMessageUseCase = new SendMessageUseCase(messageRepository, conversationRepository);
+export const getMessagesUseCase = new GetMessagesUseCase(messageRepository, conversationRepository);
+export const getOrCreateDirectConversationUseCase = new GetOrCreateDirectConversationUseCase(conversationRepository);

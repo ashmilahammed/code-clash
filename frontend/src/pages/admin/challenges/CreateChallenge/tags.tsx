@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { addChallengeTagsApi, getChallengeByIdApi } from "../../../../api/challengeApi";
-import { ChallengeWithRelations } from "../../../../types/Challenge";
+import type{ ChallengeWithRelations } from "../../../../types/Challenge";
 
 
 const ChallengeTags = () => {

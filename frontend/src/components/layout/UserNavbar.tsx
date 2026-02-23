@@ -88,6 +88,7 @@ function UserNavbar() {
         <button
           className="p-2 rounded-full hover:bg-slate-800 transition"
           title="Chat"
+          onClick={() => navigate("/messages")}
         >
           <MessageSquare size={18} />
         </button>
