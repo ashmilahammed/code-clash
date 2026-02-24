@@ -15,6 +15,7 @@ export class MessageRepository implements IMessageRepository {
         if (!Types.ObjectId.isValid(conversationId)) return [];
 
         const docs = await MessageModel.find({ conversationId: new Types.ObjectId(conversationId) })
+            .populate('senderId', 'username profilePic')
             .sort({ createdAt: -1 }) // get newest first
             .skip(skip)
             .limit(limit);
@@ -26,6 +27,7 @@ export class MessageRepository implements IMessageRepository {
     async create(message: Message): Promise<Message> {
         const persistenceData = MessageMapper.toPersistence(message);
         const created = await MessageModel.create(persistenceData);
+        await created.populate('senderId', 'username profilePic');
         return MessageMapper.toDomain(created);
     }
 

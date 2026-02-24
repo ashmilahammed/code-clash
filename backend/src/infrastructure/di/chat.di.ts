@@ -7,6 +7,9 @@ import { GetConversationsUseCase } from "../../application/use-cases/chat/GetCon
 import { SendMessageUseCase } from "../../application/use-cases/chat/SendMessageUseCase";
 import { GetMessagesUseCase } from "../../application/use-cases/chat/GetMessagesUseCase";
 import { GetOrCreateDirectConversationUseCase } from "../../application/use-cases/chat/GetOrCreateDirectConversationUseCase";
+import { GetPublicConversationsUseCase } from "../../application/use-cases/chat/GetPublicConversationsUseCase";
+import { LeaveGroupUseCase } from "../../application/use-cases/chat/LeaveGroupUseCase";
+import { AddParticipantsUseCase } from "../../application/use-cases/chat/AddParticipantsUseCase";
 
 // Repositories
 export const conversationRepository = new ConversationRepository();
@@ -19,3 +22,6 @@ export const getConversationsUseCase = new GetConversationsUseCase(conversationR
 export const sendMessageUseCase = new SendMessageUseCase(messageRepository, conversationRepository);
 export const getMessagesUseCase = new GetMessagesUseCase(messageRepository, conversationRepository);
 export const getOrCreateDirectConversationUseCase = new GetOrCreateDirectConversationUseCase(conversationRepository);
+export const getPublicConversationsUseCase = new GetPublicConversationsUseCase(conversationRepository);
+export const leaveGroupUseCase = new LeaveGroupUseCase(conversationRepository);
+export const addParticipantsUseCase = new AddParticipantsUseCase(conversationRepository);

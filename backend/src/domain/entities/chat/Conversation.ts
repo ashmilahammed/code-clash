@@ -7,6 +7,9 @@ export class Conversation {
         public readonly participants: string[],
         public readonly adminId?: string | null, // for groups
         public readonly name?: string | null, // for groups
+        public readonly description?: string | null, // for groups
+        public readonly memberLimit?: number | null, // for groups
+        public readonly isPrivate?: boolean, // for groups
         public readonly lastMessageAt?: Date | null,
         public readonly createdAt?: Date,
         public readonly updatedAt?: Date
@@ -41,6 +44,10 @@ export class Conversation {
 
             if (!this.adminId) {
                 throw new Error("Group conversations must have an admin");
+            }
+
+            if (this.memberLimit && this.participants.length > this.memberLimit) {
+                throw new Error(`Group member limit of ${this.memberLimit} exceeded`);
             }
         }
     }

@@ -37,9 +37,23 @@ export class ConversationRepository implements IConversationRepository {
         return docs.map(ConversationMapper.toDomain);
     }
 
+    async findPublicGroups(): Promise<Conversation[]> {
+        const docs = await ConversationModel.find({
+            type: 'group',
+            isPrivate: false
+        }).sort({ createdAt: -1 });
+
+        return docs.map(ConversationMapper.toDomain);
+    }
+
     async create(conversation: Conversation): Promise<Conversation> {
         const persistenceData = ConversationMapper.toPersistence(conversation);
-        const created = await ConversationModel.create(persistenceData);
+        // const created = await ConversationModel.create(persistenceData);
+        // return ConversationMapper.toDomain(created);
+
+        const doc = new ConversationModel(persistenceData);
+        const created = await doc.save();
+
         return ConversationMapper.toDomain(created);
     }
 

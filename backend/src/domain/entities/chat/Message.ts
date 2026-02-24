@@ -6,7 +6,8 @@ export class Message {
         public readonly content: string,
         public readonly readBy: string[], // Array of user IDs who have read the message
         public readonly createdAt?: Date,
-        public readonly updatedAt?: Date
+        public readonly updatedAt?: Date,
+        public readonly sender?: { _id: string; username: string; profilePic?: string; }
     ) {
         this.validate();
     }

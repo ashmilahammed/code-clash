@@ -5,6 +5,9 @@ import { Conversation, ConversationType } from "../../../domain/entities/chat/Co
 interface CreateGroupDto {
     adminId: string;
     name: string;
+    description?: string;
+    memberLimit?: number;
+    isPrivate?: boolean;
     participants: string[];
 }
 
@@ -29,7 +32,10 @@ export class CreateGroupUseCase {
             'group' as ConversationType,
             dto.participants,
             dto.adminId,
-            dto.name
+            dto.name,
+            dto.description,
+            dto.memberLimit,
+            dto.isPrivate
         );
 
         return this.conversationRepository.create(conversation);

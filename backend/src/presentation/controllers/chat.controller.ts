@@ -4,14 +4,17 @@ import {
     joinGroupUseCase,
     getConversationsUseCase,
     getMessagesUseCase,
-    getOrCreateDirectConversationUseCase
+    getOrCreateDirectConversationUseCase,
+    getPublicConversationsUseCase,
+    leaveGroupUseCase,
+    addParticipantsUseCase
 } from "../../infrastructure/di/chat.di";
 
 export class ChatController {
 
     async createGroup(req: Request, res: Response): Promise<void> {
         try {
-            const { name, participants } = req.body;
+            const { name, description, memberLimit, isPrivate, participants } = req.body;
             const adminId = res.locals.user?.userId as string; // Assuming you have standard user object attached
 
             if (!adminId) {
@@ -22,12 +25,24 @@ export class ChatController {
             const group = await createGroupUseCase.execute({
                 adminId,
                 name,
+                description,
+                memberLimit,
+                isPrivate,
                 participants: participants || []
             });
 
             res.status(201).json(group);
         } catch (error: any) {
             res.status(400).json({ message: error.message });
+        }
+    }
+
+    async getPublicGroups(req: Request, res: Response): Promise<void> {
+        try {
+            const groups = await getPublicConversationsUseCase.execute();
+            res.status(200).json(groups);
+        } catch (error: any) {
+            res.status(500).json({ message: error.message });
         }
     }
 
@@ -110,6 +125,56 @@ export class ChatController {
 
             const conversation = await getOrCreateDirectConversationUseCase.execute(userId, receiverId);
             res.status(200).json(conversation);
+        } catch (error: any) {
+            res.status(400).json({ message: error.message });
+        }
+    }
+
+    async leaveGroup(req: Request, res: Response): Promise<void> {
+        try {
+            const conversationId = req.params.conversationId;
+            const userId = res.locals.user?.userId as string;
+
+            if (!conversationId) {
+                res.status(400).json({ message: "Conversation ID is required" });
+                return;
+            }
+
+            if (!userId) {
+                res.status(401).json({ message: "Unauthorized" });
+                return;
+            }
+
+            const group = await leaveGroupUseCase.execute(conversationId, userId);
+            res.status(200).json(group);
+        } catch (error: any) {
+            res.status(400).json({ message: error.message });
+        }
+    }
+
+    async addParticipants(req: Request, res: Response): Promise<void> {
+        try {
+            const conversationId = req.params.conversationId;
+            const adderId = res.locals.user?.userId as string;
+            const { participants } = req.body;
+
+            if (!conversationId) {
+                res.status(400).json({ message: "Conversation ID is required" });
+                return;
+            }
+
+            if (!adderId) {
+                res.status(401).json({ message: "Unauthorized" });
+                return;
+            }
+
+            if (!participants || !Array.isArray(participants)) {
+                res.status(400).json({ message: "Participants array is required" });
+                return;
+            }
+
+            const group = await addParticipantsUseCase.execute(conversationId, adderId, participants);
+            res.status(200).json(group);
         } catch (error: any) {
             res.status(400).json({ message: error.message });
         }

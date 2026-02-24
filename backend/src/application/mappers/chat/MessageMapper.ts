@@ -4,14 +4,24 @@ import { IMessageDoc } from "../../../infrastructure/database/models/chat/Messag
 
 export class MessageMapper {
     static toDomain(doc: IMessageDoc): Message {
+        const isPopulated = doc.senderId && typeof doc.senderId === 'object' && doc.senderId.username;
+        const senderIdStr = isPopulated ? doc.senderId._id.toString() : doc.senderId.toString();
+
+        const sender = isPopulated ? {
+            _id: doc.senderId._id.toString(),
+            username: doc.senderId.username,
+            profilePic: doc.senderId.profilePic
+        } : undefined;
+
         return new Message(
             doc._id.toString(),
             doc.conversationId.toString(),
-            doc.senderId.toString(),
+            senderIdStr,
             doc.content,
             doc.readBy.map(userId => userId.toString()),
             doc.createdAt,
-            doc.updatedAt
+            doc.updatedAt,
+            sender
         );
     }
 

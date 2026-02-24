@@ -5,6 +5,7 @@ import { io, Socket } from 'socket.io-client';
 
 interface ChatState {
     conversations: Conversation[];
+    publicGroups: Conversation[];
     activeConversation: Conversation | null;
     messages: Message[];
     socket: Socket | null;
@@ -14,17 +15,21 @@ interface ChatState {
     initializeSocket: (token: string) => void;
     disconnectSocket: () => void;
     fetchConversations: () => Promise<void>;
+    fetchPublicGroups: () => Promise<void>;
     setActiveConversation: (conversation: Conversation | null) => void;
     fetchMessages: (conversationId: string) => Promise<void>;
     sendMessage: (content: string) => void;
     receiveMessage: (message: Message) => void;
-    createGroup: (name: string, participants?: string[]) => Promise<void>;
+    createGroup: (name: string, description?: string, memberLimit?: number, isPrivate?: boolean, participants?: string[]) => Promise<void>;
     joinGroup: (conversationId: string) => Promise<void>;
+    leaveGroup: (conversationId: string) => Promise<void>;
+    inviteToGroup: (conversationId: string, participants: string[]) => Promise<void>;
     startDirectMessage: (receiverId: string) => Promise<void>;
 }
 
 export const useChatStore = create<ChatState>((set, get) => ({
     conversations: [],
+    publicGroups: [],
     activeConversation: null,
     messages: [],
     socket: null,
@@ -120,6 +125,15 @@ export const useChatStore = create<ChatState>((set, get) => ({
         }
     },
 
+    fetchPublicGroups: async () => {
+        try {
+            const publicGroups = await chatApi.getPublicGroups();
+            set({ publicGroups });
+        } catch (error) {
+            console.error('Failed to fetch public groups:', error);
+        }
+    },
+
     // createGroup: async (name: string, participants: string[] = []) => {
     //     try {
     //         const newGroup = await chatApi.createGroup(name, participants);
@@ -131,18 +145,17 @@ export const useChatStore = create<ChatState>((set, get) => ({
     //     }
     // },
 
-    createGroup: async (name: string, participants: string[] = []) => {
-    try {
-        const newGroup = await chatApi.createGroup(name, participants);
-        set(state => ({ conversations: [newGroup, ...state.conversations] }));
-        get().setActiveConversation(newGroup);
-    } catch (error: any) {
-        console.log("STATUS:", error.response?.status);
-        console.log("BACKEND MESSAGE:", error.response?.data);
-        throw error;
-    }
-},
-
+    createGroup: async (name: string, description?: string, memberLimit?: number, isPrivate?: boolean, participants: string[] = []) => {
+        try {
+            const newGroup = await chatApi.createGroup(name, description, memberLimit, isPrivate, participants);
+            set(state => ({ conversations: [newGroup, ...state.conversations] }));
+            get().setActiveConversation(newGroup);
+        } catch (error: any) {
+            console.log("STATUS:", error.response?.status);
+            console.log("BACKEND MESSAGE:", error.response?.data);
+            throw error;
+        }
+    },
 
     joinGroup: async (conversationId: string) => {
         try {
@@ -167,6 +180,37 @@ export const useChatStore = create<ChatState>((set, get) => ({
             get().setActiveConversation(conversation);
         } catch (error) {
             console.error('Failed to start direct message:', error);
+            throw error;
+        }
+    },
+
+    leaveGroup: async (conversationId: string) => {
+        try {
+            await chatApi.leaveGroup(conversationId);
+            get().fetchConversations();
+            get().fetchPublicGroups(); // Re-fetch public groups in case it was public
+
+            const { activeConversation } = get();
+            if (activeConversation?.id === conversationId) {
+                get().setActiveConversation(null);
+            }
+        } catch (error) {
+            console.error('Failed to leave group:', error);
+            throw error;
+        }
+    },
+
+    inviteToGroup: async (conversationId: string, participants: string[]) => {
+        try {
+            const updatedGroup = await chatApi.inviteToGroup(conversationId, participants);
+            get().fetchConversations();
+
+            const { activeConversation } = get();
+            if (activeConversation?.id === conversationId) {
+                get().setActiveConversation(updatedGroup);
+            }
+        } catch (error) {
+            console.error('Failed to invite to group:', error);
             throw error;
         }
     }

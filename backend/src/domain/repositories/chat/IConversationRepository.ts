@@ -4,6 +4,7 @@ export interface IConversationRepository {
     findById(id: string): Promise<Conversation | null>;
     findByParticipants(participants: string[]): Promise<Conversation | null>;
     findUserConversations(userId: string): Promise<Conversation[]>;
+    findPublicGroups(): Promise<Conversation[]>;
     create(conversation: Conversation): Promise<Conversation>;
     update(id: string, data: Partial<Conversation>): Promise<Conversation | null>;
     updateLastMessage(id: string, timestamp: Date): Promise<void>;
