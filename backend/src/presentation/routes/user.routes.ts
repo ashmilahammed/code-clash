@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authMiddleware } from "../../infrastructure/di/auth.di";
 import { userController } from "../../infrastructure/di/user.di";
+import { planController } from "../../infrastructure/di/plan.di";
 
 import { upload } from "../middlewares/upload.middleware";
 
@@ -22,6 +23,8 @@ router.delete(
   authMiddleware,
   userController.removeAvatar
 );
+
+router.get("/plans", authMiddleware, planController.getPublicPlans.bind(planController));
 
 
 export default router;

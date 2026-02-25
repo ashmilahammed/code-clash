@@ -21,6 +21,7 @@ import UserLayout from "./components/layout/UserLayout";
 import Profile from "./pages/profile/Profile";
 import Leaderboard from "./pages/dashboard/Leaderboard";
 import Messages from "./pages/chat/Messages";
+import UpgradePremium from "./pages/premium/UpgradePremium";
 
 import AdminLayout from "./components/layout/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -38,6 +39,7 @@ import CodeTemplates from "./pages/admin/challenges/CreateChallenge/CodeTemplate
 
 import LevelManagement from "./pages/admin/levels/LevelManagement";
 import BadgeManagement from "./pages/admin/badges/BadgeManagement";
+import PlanManagement from "./pages/admin/plans/PlanManagement";
 
 import SolveChallenge from "./pages/challenges/SolveChallenge";
 
@@ -145,6 +147,7 @@ function App() {
           <Route path="/challenges/:id" element={<SolveChallenge />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/messages" element={<Messages />} />
+          <Route path="/premium" element={<UpgradePremium />} />
 
         </Route>
       </Route>
@@ -160,6 +163,7 @@ function App() {
 
           <Route path="/admin/levels" element={<LevelManagement />} />
           <Route path="/admin/badges" element={<BadgeManagement />} />
+          <Route path="/admin/plans" element={<PlanManagement />} />
 
           {/* wizard */}
           <Route

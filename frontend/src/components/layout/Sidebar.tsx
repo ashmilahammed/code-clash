@@ -5,6 +5,7 @@ import {
   Trophy,
   Layers,
   Award,
+  CreditCard,
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -41,7 +42,7 @@ const Sidebar = () => {
 
 
       <nav className="space-y-2 flex-1">
-        
+
         <NavLink
           to="/admin"
           end
@@ -106,6 +107,19 @@ const Sidebar = () => {
         >
           <Award size={18} />
           Badges
+        </NavLink>
+
+        <NavLink
+          to="/admin/plans"
+          className={({ isActive }) =>
+            `${linkBase} ${isActive
+              ? "bg-slate-800 text-white shadow-md"
+              : "text-slate-400 hover:bg-slate-800 hover:text-white"
+            }`
+          }
+        >
+          <CreditCard size={18} />
+          Plans Management
         </NavLink>
       </nav>
 

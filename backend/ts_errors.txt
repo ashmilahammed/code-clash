@@ -1,0 +1,7 @@
+﻿src/application/use-cases/admin/plans/CreatePlanUseCase.ts(1,33): error TS2307: Cannot find module '../../../domain/repositories/admin/IPlanRepository' or its corresponding type declarations.
+src/application/use-cases/admin/plans/CreatePlanUseCase.ts(2,22): error TS2307: Cannot find module '../../../domain/entities/admin/Plan' or its corresponding type declarations.
+src/application/use-cases/admin/plans/DeletePlanUseCase.ts(1,33): error TS2307: Cannot find module '../../../domain/repositories/admin/IPlanRepository' or its corresponding type declarations.
+src/application/use-cases/admin/plans/GetPlansUseCase.ts(1,33): error TS2307: Cannot find module '../../../domain/repositories/admin/IPlanRepository' or its corresponding type declarations.
+src/application/use-cases/admin/plans/GetPlansUseCase.ts(2,22): error TS2307: Cannot find module '../../../domain/entities/admin/Plan' or its corresponding type declarations.
+src/application/use-cases/admin/plans/UpdatePlanUseCase.ts(1,33): error TS2307: Cannot find module '../../../domain/repositories/admin/IPlanRepository' or its corresponding type declarations.
+src/application/use-cases/admin/plans/UpdatePlanUseCase.ts(2,22): error TS2307: Cannot find module '../../../domain/entities/admin/Plan' or its corresponding type declarations.

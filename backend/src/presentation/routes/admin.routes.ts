@@ -4,6 +4,8 @@ import { requireAdmin, adminController, } from "../../infrastructure/di/user.di"
 
 import { challengeController } from "../../infrastructure/di/challenge.di";
 // import { levelController } from "../../infrastructure/di/level.di";
+import planRoutes from "./plan.routes";
+import transactionRoutes from "./transaction.routes";
 
 const router = Router();
 
@@ -37,6 +39,9 @@ router.get("/challenges/:id/code-templates", challengeController.getAdminTemplat
 // levels management
 // router.post("/levels", levelController.create);
 
+// plan management
+router.use("/plans", planRoutes);
+router.use("/transactions", transactionRoutes);
 
 export default router;
 

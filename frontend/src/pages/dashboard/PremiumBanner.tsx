@@ -1,7 +1,10 @@
 import React from "react";
 import { Crown, Zap, Lock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const PremiumBanner: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="mt-10 w-full bg-linear-to-r from-[#1E293B] to-[#020617] rounded-2xl p-6 shadow-lg border border-slate-700">
       {/* Header */}
@@ -37,10 +40,7 @@ const PremiumBanner: React.FC = () => {
         <button
           className="px-6 py-2 rounded-lg bg-linear-to-r from-purple-500 to-cyan-500
                      text-white font-medium shadow-md hover:opacity-90 transition"
-          onClick={() => {
-            // later: navigate to pricing / checkout
-            console.log("Upgrade clicked");
-          }}
+          onClick={() => navigate("/premium")}
         >
           Upgrade to Premium
         </button>
