@@ -1,4 +1,4 @@
-import { IPlanRepository } from "../../../../domain/repositories/admin/IPlanRepository";
+import { IPlanRepository } from "../../../../domain/repositories/plan/IPlanRepository";
 
 export class DeletePlanUseCase {
     constructor(private planRepository: IPlanRepository) { }

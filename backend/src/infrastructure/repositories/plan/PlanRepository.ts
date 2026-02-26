@@ -1,8 +1,8 @@
-import { IPlanRepository } from "../../../domain/repositories/admin/IPlanRepository";
-import { Plan } from "../../../domain/entities/admin/Plan";
+import { IPlanRepository } from "../../../domain/repositories/plan/IPlanRepository";
+import { Plan } from "../../../domain/entities/plan/Plan";
 import { PlanModel } from "../../database/models/admin/PlanModel";
 import { Types } from "mongoose";
-import { PlanMapper } from "../../../application/mappers/admin/PlanMapper";
+import { PlanMapper } from "../../../application/mappers/PlanMapper";
 
 export class PlanRepository implements IPlanRepository {
     async create(plan: Plan): Promise<Plan> {

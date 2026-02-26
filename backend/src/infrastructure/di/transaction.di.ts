@@ -1,6 +1,6 @@
 import { TransactionController } from "../../presentation/controllers/transaction.controller";
-import { TransactionRepository } from "../repositories/admin/TransactionRepository";
-import { GetTransactionsUseCase } from "../../application/use-cases/admin/transactions/GetTransactionsUseCase";
+import { TransactionRepository } from "../repositories/transaction/TransactionRepository";
+import { GetTransactionsUseCase } from "../../application/use-cases/transaction/GetTransactionsUseCase";
 import { WinstonLogger } from "../services/logger";
 
 // Shared services

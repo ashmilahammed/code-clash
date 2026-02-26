@@ -1,9 +1,8 @@
 import { Router } from "express";
-import { ChatController } from "../controllers/chat.controller";
 import { authMiddleware } from "../../infrastructure/di/auth.di";
+import { chatController } from "../../infrastructure/di/chat.di";
 
 const router = Router();
-const chatController = new ChatController();
 
 router.use(authMiddleware);
 

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { GetTransactionsUseCase } from "../../application/use-cases/admin/transactions/GetTransactionsUseCase";
+import { GetTransactionsUseCase } from "../../application/use-cases/transaction/GetTransactionsUseCase";
 // Assume generic logger exists or try to fetch it from DI
 import { WinstonLogger } from "../../infrastructure/services/logger";
 

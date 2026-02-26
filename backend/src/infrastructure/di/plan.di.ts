@@ -1,9 +1,9 @@
-import { CreatePlanUseCase } from "../../application/use-cases/admin/plans/CreatePlanUseCase";
-import { GetPlansUseCase } from "../../application/use-cases/admin/plans/GetPlansUseCase";
-import { UpdatePlanUseCase } from "../../application/use-cases/admin/plans/UpdatePlanUseCase";
-import { DeletePlanUseCase } from "../../application/use-cases/admin/plans/DeletePlanUseCase";
+import { CreatePlanUseCase } from "../../application/use-cases/plans/admin/CreatePlanUseCase";
+import { GetPlansUseCase } from "../../application/use-cases/plans/admin/GetPlansUseCase";
+import { UpdatePlanUseCase } from "../../application/use-cases/plans/admin/UpdatePlanUseCase";
+import { DeletePlanUseCase } from "../../application/use-cases/plans/admin/DeletePlanUseCase";
 import { PlanController } from "../../presentation/controllers/plan.controller";
-import { PlanRepository } from "../repositories/admin/PlanRepository";
+import { PlanRepository } from "../repositories/plan/PlanRepository";
 import { WinstonLogger } from "../services/logger";
 
 // Shared services

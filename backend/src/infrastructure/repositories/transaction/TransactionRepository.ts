@@ -1,7 +1,7 @@
-import { ITransactionRepository } from "../../../domain/repositories/admin/ITransactionRepository";
-import { Transaction } from "../../../domain/entities/admin/Transaction";
+import { ITransactionRepository } from "../../../domain/repositories/transaction/ITransactionRepository";
+import { Transaction } from "../../../domain/entities/transaction/Transaction";
 import { TransactionModel } from "../../database/models/admin/TransactionModel";
-import { TransactionMapper } from "../../../application/mappers/admin/TransactionMapper";
+import { TransactionMapper } from "../../../application/mappers/TransactionMapper";
 
 export class TransactionRepository implements ITransactionRepository {
     async create(transaction: Transaction): Promise<Transaction> {

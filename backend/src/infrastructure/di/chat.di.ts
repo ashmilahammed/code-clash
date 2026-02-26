@@ -25,3 +25,15 @@ export const getOrCreateDirectConversationUseCase = new GetOrCreateDirectConvers
 export const getPublicConversationsUseCase = new GetPublicConversationsUseCase(conversationRepository);
 export const leaveGroupUseCase = new LeaveGroupUseCase(conversationRepository);
 export const addParticipantsUseCase = new AddParticipantsUseCase(conversationRepository);
+
+import { ChatController } from "../../presentation/controllers/chat.controller";
+export const chatController = new ChatController(
+    createGroupUseCase,
+    joinGroupUseCase,
+    getConversationsUseCase,
+    getMessagesUseCase,
+    getOrCreateDirectConversationUseCase,
+    getPublicConversationsUseCase,
+    leaveGroupUseCase,
+    addParticipantsUseCase
+);

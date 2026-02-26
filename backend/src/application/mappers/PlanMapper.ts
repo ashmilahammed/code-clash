@@ -1,5 +1,5 @@
-import { Plan } from "../../../domain/entities/admin/Plan";
-import { IPlanDoc } from "../../../infrastructure/database/models/admin/PlanModel";
+import { Plan } from "../../domain/entities/plan/Plan";
+import { IPlanDoc } from "../../infrastructure/database/models/admin/PlanModel";
 
 export class PlanMapper {
     static toDomain(doc: IPlanDoc): Plan {

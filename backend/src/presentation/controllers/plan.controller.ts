@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { CreatePlanUseCase } from "../../application/use-cases/admin/plans/CreatePlanUseCase";
-import { GetPlansUseCase } from "../../application/use-cases/admin/plans/GetPlansUseCase";
-import { UpdatePlanUseCase } from "../../application/use-cases/admin/plans/UpdatePlanUseCase";
-import { DeletePlanUseCase } from "../../application/use-cases/admin/plans/DeletePlanUseCase";
+import { CreatePlanUseCase } from "../../application/use-cases/plans/admin/CreatePlanUseCase";
+import { GetPlansUseCase } from "../../application/use-cases/plans/admin/GetPlansUseCase";
+import { UpdatePlanUseCase } from "../../application/use-cases/plans/admin/UpdatePlanUseCase";
+import { DeletePlanUseCase } from "../../application/use-cases/plans/admin/DeletePlanUseCase";
 import { WinstonLogger } from "../../infrastructure/services/logger";
 
 export class PlanController {

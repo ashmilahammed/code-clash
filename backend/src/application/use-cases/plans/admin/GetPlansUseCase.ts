@@ -1,5 +1,5 @@
-import { IPlanRepository } from "../../../../domain/repositories/admin/IPlanRepository";
-import { Plan } from "../../../../domain/entities/admin/Plan";
+import { IPlanRepository } from "../../../../domain/repositories/plan/IPlanRepository";
+import { Plan } from "../../../../domain/entities/plan/Plan";
 
 export class GetPlansUseCase {
     constructor(private planRepository: IPlanRepository) { }

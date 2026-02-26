@@ -1,16 +1,24 @@
 import { Request, Response } from "express";
-import {
-    createGroupUseCase,
-    joinGroupUseCase,
-    getConversationsUseCase,
-    getMessagesUseCase,
-    getOrCreateDirectConversationUseCase,
-    getPublicConversationsUseCase,
-    leaveGroupUseCase,
-    addParticipantsUseCase
-} from "../../infrastructure/di/chat.di";
+import { CreateGroupUseCase } from "../../application/use-cases/chat/CreateGroupUseCase";
+import { JoinGroupUseCase } from "../../application/use-cases/chat/JoinGroupUseCase";
+import { GetConversationsUseCase } from "../../application/use-cases/chat/GetConversationsUseCase";
+import { GetMessagesUseCase } from "../../application/use-cases/chat/GetMessagesUseCase";
+import { GetOrCreateDirectConversationUseCase } from "../../application/use-cases/chat/GetOrCreateDirectConversationUseCase";
+import { GetPublicConversationsUseCase } from "../../application/use-cases/chat/GetPublicConversationsUseCase";
+import { LeaveGroupUseCase } from "../../application/use-cases/chat/LeaveGroupUseCase";
+import { AddParticipantsUseCase } from "../../application/use-cases/chat/AddParticipantsUseCase";
 
 export class ChatController {
+    constructor(
+        private createGroupUseCase: CreateGroupUseCase,
+        private joinGroupUseCase: JoinGroupUseCase,
+        private getConversationsUseCase: GetConversationsUseCase,
+        private getMessagesUseCase: GetMessagesUseCase,
+        private getOrCreateDirectConversationUseCase: GetOrCreateDirectConversationUseCase,
+        private getPublicConversationsUseCase: GetPublicConversationsUseCase,
+        private leaveGroupUseCase: LeaveGroupUseCase,
+        private addParticipantsUseCase: AddParticipantsUseCase
+    ) { }
 
     async createGroup(req: Request, res: Response): Promise<void> {
         try {
@@ -22,7 +30,7 @@ export class ChatController {
                 return;
             }
 
-            const group = await createGroupUseCase.execute({
+            const group = await this.createGroupUseCase.execute({
                 adminId,
                 name,
                 description,
@@ -39,7 +47,7 @@ export class ChatController {
 
     async getPublicGroups(req: Request, res: Response): Promise<void> {
         try {
-            const groups = await getPublicConversationsUseCase.execute();
+            const groups = await this.getPublicConversationsUseCase.execute();
             res.status(200).json(groups);
         } catch (error: any) {
             res.status(500).json({ message: error.message });
@@ -63,7 +71,7 @@ export class ChatController {
                 return;
             }
 
-            const group = await joinGroupUseCase.execute(conversationId, userId);
+            const group = await this.joinGroupUseCase.execute(conversationId, userId);
             res.status(200).json(group);
         } catch (error: any) {
             res.status(400).json({ message: error.message });
@@ -79,7 +87,7 @@ export class ChatController {
                 return;
             }
 
-            const conversations = await getConversationsUseCase.execute(userId);
+            const conversations = await this.getConversationsUseCase.execute(userId);
             res.status(200).json(conversations);
         } catch (error: any) {
             res.status(400).json({ message: error.message });
@@ -106,7 +114,7 @@ export class ChatController {
                 return;
             }
 
-            const messages = await getMessagesUseCase.execute(conversationId, userId, limit, skip);
+            const messages = await this.getMessagesUseCase.execute(conversationId, userId, limit, skip);
             res.status(200).json(messages);
         } catch (error: any) {
             res.status(400).json({ message: error.message });
@@ -123,7 +131,7 @@ export class ChatController {
                 return;
             }
 
-            const conversation = await getOrCreateDirectConversationUseCase.execute(userId, receiverId);
+            const conversation = await this.getOrCreateDirectConversationUseCase.execute(userId, receiverId);
             res.status(200).json(conversation);
         } catch (error: any) {
             res.status(400).json({ message: error.message });
@@ -145,7 +153,7 @@ export class ChatController {
                 return;
             }
 
-            const group = await leaveGroupUseCase.execute(conversationId, userId);
+            const group = await this.leaveGroupUseCase.execute(conversationId, userId);
             res.status(200).json(group);
         } catch (error: any) {
             res.status(400).json({ message: error.message });
@@ -173,7 +181,7 @@ export class ChatController {
                 return;
             }
 
-            const group = await addParticipantsUseCase.execute(conversationId, adderId, participants);
+            const group = await this.addParticipantsUseCase.execute(conversationId, adderId, participants);
             res.status(200).json(group);
         } catch (error: any) {
             res.status(400).json({ message: error.message });

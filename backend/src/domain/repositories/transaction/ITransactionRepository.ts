@@ -1,4 +1,4 @@
-import { Transaction } from "../../../domain/entities/admin/Transaction";
+import { Transaction } from "../../entities/transaction/Transaction";
 
 export interface ITransactionRepository {
     create(transaction: Transaction): Promise<Transaction>;
