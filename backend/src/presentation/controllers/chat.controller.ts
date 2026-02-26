@@ -7,6 +7,7 @@ import { GetOrCreateDirectConversationUseCase } from "../../application/use-case
 import { GetPublicConversationsUseCase } from "../../application/use-cases/chat/GetPublicConversationsUseCase";
 import { LeaveGroupUseCase } from "../../application/use-cases/chat/LeaveGroupUseCase";
 import { AddParticipantsUseCase } from "../../application/use-cases/chat/AddParticipantsUseCase";
+import { UploadChatImageUseCase } from "../../application/use-cases/chat/UploadChatImageUseCase";
 
 export class ChatController {
     constructor(
@@ -17,7 +18,8 @@ export class ChatController {
         private getOrCreateDirectConversationUseCase: GetOrCreateDirectConversationUseCase,
         private getPublicConversationsUseCase: GetPublicConversationsUseCase,
         private leaveGroupUseCase: LeaveGroupUseCase,
-        private addParticipantsUseCase: AddParticipantsUseCase
+        private addParticipantsUseCase: AddParticipantsUseCase,
+        private uploadChatImageUseCase: UploadChatImageUseCase
     ) { }
 
     async createGroup(req: Request, res: Response): Promise<void> {
@@ -183,6 +185,30 @@ export class ChatController {
 
             const group = await this.addParticipantsUseCase.execute(conversationId, adderId, participants);
             res.status(200).json(group);
+        } catch (error: any) {
+            res.status(400).json({ message: error.message });
+        }
+    }
+
+    async uploadChatImage(req: Request, res: Response): Promise<void> {
+        try {
+            const conversationId = req.params.conversationId;
+            const file = req.file;
+
+            if (!conversationId) {
+                res.status(400).json({ message: "Conversation ID is required" });
+                return;
+            }
+
+            if (!file) {
+                res.status(400).json({ message: "Image file is required" });
+                return;
+            }
+
+            // Execute the use case
+            const url = await this.uploadChatImageUseCase.execute(file.buffer, conversationId);
+
+            res.status(200).json({ url });
         } catch (error: any) {
             res.status(400).json({ message: error.message });
         }

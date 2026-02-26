@@ -17,6 +17,7 @@ export interface UserResponseDTO {
   longest_streak: number;
 
   is_premium: boolean;
+  premium_expiry_date: Date | null;
 
   role: "user" | "admin";
   status: "active" | "blocked";

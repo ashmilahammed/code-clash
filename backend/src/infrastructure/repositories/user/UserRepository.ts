@@ -190,7 +190,7 @@ export class UserRepository
     }
 
 
-    
+
     async save(user: User): Promise<void> {
         const snapshot = user.snapshot();
 
@@ -201,7 +201,7 @@ export class UserRepository
                     username: snapshot.username,
                     email: snapshot.email,
                     avatar: snapshot.avatar,
-                    avatarPublicId: user.avatarPublicId, 
+                    avatarPublicId: user.avatarPublicId,
                     about: snapshot.about,
                     github_url: snapshot.github_url,
                     linkedin_url: snapshot.linkedin_url,
@@ -211,6 +211,7 @@ export class UserRepository
                     current_streak: snapshot.current_streak,
                     longest_streak: snapshot.longest_streak,
                     is_premium: snapshot.is_premium,
+                    premium_expiry_date: snapshot.premium_expiry_date,
                     role: snapshot.role,
                     status: snapshot.status,
                     isVerified: snapshot.isVerified,

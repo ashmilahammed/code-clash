@@ -3,7 +3,10 @@ export class Message {
         public readonly id: string | undefined,
         public readonly conversationId: string,
         public readonly senderId: string,
-        public readonly content: string,
+        public content: string,
+        public isDeleted: boolean = false,
+        public readonly messageType: 'text' | 'image' = 'text',
+        public readonly mediaUrl: string | null = null,
         public readonly readBy: string[], // Array of user IDs who have read the message
         public readonly createdAt?: Date,
         public readonly updatedAt?: Date,
@@ -19,8 +22,16 @@ export class Message {
         if (!this.senderId) {
             throw new Error("Message must have a sender");
         }
-        if (!this.content || this.content.trim().length === 0) {
-            throw new Error("Message content cannot be empty");
+        if (this.messageType === 'text' && (!this.content || this.content.trim().length === 0)) {
+            throw new Error("Text message content cannot be empty");
         }
+        if (this.messageType === 'image' && !this.mediaUrl) {
+            throw new Error("Image message must have a mediaUrl");
+        }
+    }
+
+    markAsDeleted() {
+        this.isDeleted = true;
+        this.content = "This message was deleted";
     }
 }

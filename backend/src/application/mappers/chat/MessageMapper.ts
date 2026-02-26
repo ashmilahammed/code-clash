@@ -18,6 +18,9 @@ export class MessageMapper {
             doc.conversationId.toString(),
             senderIdStr,
             doc.content,
+            doc.isDeleted,
+            doc.messageType,
+            doc.mediaUrl,
             doc.readBy.map(userId => userId.toString()),
             doc.createdAt,
             doc.updatedAt,
@@ -30,6 +33,9 @@ export class MessageMapper {
             conversationId: new Types.ObjectId(message.conversationId),
             senderId: new Types.ObjectId(message.senderId),
             content: message.content,
+            isDeleted: message.isDeleted,
+            messageType: message.messageType,
+            mediaUrl: message.mediaUrl,
             readBy: message.readBy.map(id => new Types.ObjectId(id))
         };
     }

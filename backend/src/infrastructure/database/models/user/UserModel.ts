@@ -24,6 +24,7 @@ export interface IUserDoc extends Document {
 
 
   is_premium: boolean;
+  premium_expiry_date?: Date | null;
 
   date_joined: Date;
 
@@ -68,6 +69,7 @@ const UserSchema = new Schema<IUserDoc>(
     last_login_date: { type: Date, default: null },
 
     is_premium: { type: Boolean, default: false },
+    premium_expiry_date: { type: Date, default: null },
 
     date_joined: { type: Date, default: Date.now },
 

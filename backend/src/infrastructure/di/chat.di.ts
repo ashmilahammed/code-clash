@@ -10,6 +10,9 @@ import { GetOrCreateDirectConversationUseCase } from "../../application/use-case
 import { GetPublicConversationsUseCase } from "../../application/use-cases/chat/GetPublicConversationsUseCase";
 import { LeaveGroupUseCase } from "../../application/use-cases/chat/LeaveGroupUseCase";
 import { AddParticipantsUseCase } from "../../application/use-cases/chat/AddParticipantsUseCase";
+import { UploadChatImageUseCase } from "../../application/use-cases/chat/UploadChatImageUseCase";
+import { DeleteMessageUseCase } from "../../application/use-cases/chat/DeleteMessageUseCase";
+import { CloudinaryStorageService } from "../adapters/fileStorage/CloudinaryStorageService";
 
 // Repositories
 export const conversationRepository = new ConversationRepository();
@@ -23,8 +26,12 @@ export const sendMessageUseCase = new SendMessageUseCase(messageRepository, conv
 export const getMessagesUseCase = new GetMessagesUseCase(messageRepository, conversationRepository);
 export const getOrCreateDirectConversationUseCase = new GetOrCreateDirectConversationUseCase(conversationRepository);
 export const getPublicConversationsUseCase = new GetPublicConversationsUseCase(conversationRepository);
+
+const cloudinaryService = new CloudinaryStorageService();
+export const uploadChatImageUseCase = new UploadChatImageUseCase(cloudinaryService);
 export const leaveGroupUseCase = new LeaveGroupUseCase(conversationRepository);
 export const addParticipantsUseCase = new AddParticipantsUseCase(conversationRepository);
+export const deleteMessageUseCase = new DeleteMessageUseCase(messageRepository);
 
 import { ChatController } from "../../presentation/controllers/chat.controller";
 export const chatController = new ChatController(
@@ -35,5 +42,6 @@ export const chatController = new ChatController(
     getOrCreateDirectConversationUseCase,
     getPublicConversationsUseCase,
     leaveGroupUseCase,
-    addParticipantsUseCase
+    addParticipantsUseCase,
+    uploadChatImageUseCase
 );

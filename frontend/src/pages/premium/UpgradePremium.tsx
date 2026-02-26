@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { Lock, Crown, Zap, Shield, Gift, Headphones, CreditCard, ArrowLeft } from "lucide-react";
+import { Lock, Zap, CreditCard, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getPublicPlansApi } from "../../api/planApi";
+import { createOrderApi, verifyPaymentApi } from "../../api/transactionApi";
 import type { Plan } from "../../api/planApi";
 import { useAuthStore } from "../../store/useAuthStore";
 import toast from "react-hot-toast";
@@ -33,13 +34,70 @@ const UpgradePremium = () => {
 
     const selectedPlan = plans.find((p) => p.id === selectedPlanId);
 
-    const handlePayment = () => {
+    const handlePayment = async () => {
         if (!selectedPlan) return;
-        toast.success("Redirecting to Razorpay checkout soon!");
-        console.log("Init razorpay checkout for:", selectedPlan);
+
+        try {
+            setLoading(true);
+
+            // 1. Create Order
+            const orderRes = await createOrderApi(selectedPlan.id);
+            const order = orderRes.data;
+
+            // 2. Initialize Razorpay options
+            const options = {
+                key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+                amount: order.amount,
+                currency: order.currency,
+                name: "Code-Clash Premium",
+                description: `Upgrade to ${selectedPlan.name}`,
+                order_id: order.id,
+                handler: async function (response: any) {
+                    try {
+                        const verifyRes = await verifyPaymentApi({
+                            razorpayOrderId: response.razorpay_order_id,
+                            razorpayPaymentId: response.razorpay_payment_id,
+                            razorpaySignature: response.razorpay_signature,
+                            planId: selectedPlan.id
+                        });
+
+                        if (verifyRes.data.success) {
+                            toast.success("Payment Successful! Welcome to Premium.");
+                            // Elevate user state immediately
+                            useAuthStore.getState().updateUser({ is_premium: true });
+                            // Optionally navigate back to dashboard
+                            navigate("/dashboard");
+                        }
+                    } catch (error: any) {
+                        toast.error(error.response?.data?.message || "Payment verification failed.");
+                    }
+                },
+                prefill: {
+                    name: user?.username || "",
+                    email: user?.email || "",
+                },
+                theme: {
+                    color: "#3399cc"
+                }
+            };
+
+            // 3. Open Razorpay Window
+            const rzp = new window.Razorpay(options);
+
+            rzp.on("payment.failed", function (response: any) {
+                toast.error(`Payment failed: ${response.error.description}`);
+            });
+
+            rzp.open();
+
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Failed to initialize payment");
+        } finally {
+            setLoading(false);
+        }
     };
 
-    if (loading) {
+    if (loading && plans.length === 0) {
         return (
             <div className="min-h-screen bg-[#0f172a] flex items-center justify-center">
                 <p className="text-slate-400 text-sm animate-pulse">Loading Plans...</p>
@@ -124,43 +182,20 @@ const UpgradePremium = () => {
 
                         {/* Premium Benefits List */}
                         <div>
-                            <h2 className="text-xl font-bold text-slate-200 mb-6">Premium Benefits</h2>
+                            <h2 className="text-xl font-bold text-slate-200 mb-6">Plan Features</h2>
                             <div className="space-y-6">
-                                <div className="flex gap-4">
-                                    <Crown className="text-indigo-400 mt-0.5" size={20} />
-                                    <div>
-                                        <h4 className="text-white text-sm font-semibold mb-1">Exclusive Access</h4>
-                                        <p className="text-slate-400 text-xs">Unlock premium content and domains instantly</p>
-                                    </div>
-                                </div>
-                                <div className="flex gap-4">
-                                    <Shield className="text-purple-400 mt-0.5" size={20} />
-                                    <div>
-                                        <h4 className="text-white text-sm font-semibold mb-1">Premium Badge</h4>
-                                        <p className="text-slate-400 text-xs">Showcase your elite premium status globally</p>
-                                    </div>
-                                </div>
-                                <div className="flex gap-4">
-                                    <Gift className="text-pink-400 mt-0.5" size={20} />
-                                    <div>
-                                        <h4 className="text-white text-sm font-semibold mb-1">Special Rewards</h4>
-                                        <p className="text-slate-400 text-xs">Gain extra experience modifiers and bonus drops</p>
-                                    </div>
-                                </div>
-                                <div className="flex gap-4">
-                                    <Headphones className="text-cyan-400 mt-0.5" size={20} />
-                                    <div>
-                                        <h4 className="text-white text-sm font-semibold mb-1">Priority Support</h4>
-                                        <p className="text-slate-400 text-xs">Faster assistance and dedicated attention automatically</p>
-                                    </div>
-                                </div>
-                                <div className="flex gap-4">
-                                    <Zap className="text-yellow-400 mt-0.5" size={20} />
-                                    <div>
-                                        <h4 className="text-white text-sm font-semibold mb-1">Performance Boost</h4>
-                                        <p className="text-slate-400 text-xs">10% extra speed bonus on code validations</p>
-                                    </div>
-                                </div>
+                                {selectedPlan?.features && selectedPlan.features.length > 0 ? (
+                                    selectedPlan.features.map((feature, idx) => (
+                                        <div key={idx} className="flex gap-4">
+                                            <Zap className="text-indigo-400 mt-0.5 shrink-0" size={20} />
+                                            <div>
+                                                <h4 className="text-white text-sm font-semibold mb-1">{feature}</h4>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-slate-400 text-sm">No specific features listed for this plan.</p>
+                                )}
                             </div>
                         </div>
 

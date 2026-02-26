@@ -18,6 +18,9 @@ export interface Message {
     conversationId: string;
     senderId: string;
     content: string;
+    isDeleted: boolean;
+    messageType: 'text' | 'image';
+    mediaUrl: string | null;
     readBy: string[];
     createdAt: Date;
     sender?: {
@@ -40,6 +43,17 @@ export const chatApi = {
 
     getMessages: async (conversationId: string, skip: number = 0, limit: number = 50): Promise<Message[]> => {
         const response = await api.get(`/chat/conversations/${conversationId}/messages?skip=${skip}&limit=${limit}`);
+        return response.data;
+    },
+
+    uploadChatImage: async (conversationId: string, file: File): Promise<{ url: string }> => {
+        const formData = new FormData();
+        formData.append('image', file);
+        const response = await api.post(`/chat/conversations/${conversationId}/image`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
         return response.data;
     },
 

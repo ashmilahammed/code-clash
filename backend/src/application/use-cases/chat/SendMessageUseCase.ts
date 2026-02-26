@@ -8,6 +8,8 @@ interface SendMessageDto {
     conversationId: string;
     senderId: string;
     content: string;
+    messageType?: 'text' | 'image';
+    mediaUrl?: string | null;
 }
 
 export class SendMessageUseCase {
@@ -32,6 +34,9 @@ export class SendMessageUseCase {
             dto.conversationId,
             dto.senderId,
             dto.content,
+            false,
+            dto.messageType || 'text',
+            dto.mediaUrl || null,
             [dto.senderId] // sender has read it
         );
 

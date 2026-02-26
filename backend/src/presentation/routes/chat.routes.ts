@@ -1,6 +1,9 @@
 import { Router } from "express";
 import { authMiddleware } from "../../infrastructure/di/auth.di";
 import { chatController } from "../../infrastructure/di/chat.di";
+import multer from "multer";
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router();
 
@@ -15,5 +18,6 @@ router.post("/groups/:conversationId/invite", chatController.addParticipants.bin
 router.get("/conversations", chatController.getConversations.bind(chatController));
 router.post("/conversations/direct", chatController.getOrCreateDirectConversation.bind(chatController));
 router.get("/conversations/:conversationId/messages", chatController.getMessages.bind(chatController));
+router.post("/conversations/:conversationId/image", upload.single("image"), chatController.uploadChatImage.bind(chatController));
 
 export default router;

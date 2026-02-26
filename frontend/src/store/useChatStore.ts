@@ -18,7 +18,8 @@ interface ChatState {
     fetchPublicGroups: () => Promise<void>;
     setActiveConversation: (conversation: Conversation | null) => void;
     fetchMessages: (conversationId: string) => Promise<void>;
-    sendMessage: (content: string) => void;
+    sendMessage: (content: string, messageType?: 'text' | 'image', mediaUrl?: string) => void;
+    deleteMessage: (messageId: string) => void;
     receiveMessage: (message: Message) => void;
     createGroup: (name: string, description?: string, memberLimit?: number, isPrivate?: boolean, participants?: string[]) => Promise<void>;
     joinGroup: (conversationId: string) => Promise<void>;
@@ -52,7 +53,17 @@ export const useChatStore = create<ChatState>((set, get) => ({
             get().receiveMessage(message);
         });
 
-        socket.on('conversation_list_updated', (data) => {
+        socket.on('message_deleted', (deletedMessage: Message) => {
+            const { activeConversation, messages } = get();
+            if (activeConversation && activeConversation.id === deletedMessage.conversationId) {
+                const updatedMessages = messages.map(msg =>
+                    msg.id === deletedMessage.id ? deletedMessage : msg
+                );
+                set({ messages: updatedMessages });
+            }
+        });
+
+        socket.on('conversation_list_updated', () => {
             // Trigger a re-fetch of conversations to get latest sorting/state
             get().fetchConversations();
         });
@@ -102,13 +113,25 @@ export const useChatStore = create<ChatState>((set, get) => ({
         }
     },
 
-    sendMessage: (content: string) => {
+    sendMessage: (content: string, messageType: 'text' | 'image' = 'text', mediaUrl?: string) => {
         const { socket, activeConversation } = get();
         if (!socket || !activeConversation) return;
 
         socket.emit('send_message', {
             conversationId: activeConversation.id,
             content,
+            messageType,
+            mediaUrl
+        });
+    },
+
+    deleteMessage: (messageId: string) => {
+        const { socket, activeConversation } = get();
+        if (!socket || !activeConversation) return;
+
+        socket.emit('delete_message', {
+            messageId,
+            conversationId: activeConversation.id
         });
     },
 

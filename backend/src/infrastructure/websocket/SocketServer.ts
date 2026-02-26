@@ -3,7 +3,7 @@ import { Server as HttpServer } from "http";
 import { JwtService } from "../services/security/jwtService";
 import { UserRepository } from "../repositories/user/UserRepository";
 import { WinstonLogger } from "../services/logger";
-import { sendMessageUseCase, getConversationsUseCase } from "../di/chat.di";
+import { sendMessageUseCase, getConversationsUseCase, deleteMessageUseCase } from "../di/chat.di";
 
 export class SocketServer {
     private io: SocketIOServer;
@@ -77,12 +77,14 @@ export class SocketServer {
                 socket.join(conversationId);
             });
 
-            socket.on("send_message", async (data: { conversationId: string; content: string }) => {
+            socket.on("send_message", async (data: { conversationId: string; content: string; messageType?: 'text' | 'image'; mediaUrl?: string }) => {
                 try {
                     const message = await sendMessageUseCase.execute({
                         conversationId: data.conversationId,
                         senderId: userId,
                         content: data.content,
+                        ...(data.messageType ? { messageType: data.messageType } : {}),
+                        ...(data.mediaUrl ? { mediaUrl: data.mediaUrl } : {})
                     });
 
                     // Emit to all users in the conversation
@@ -97,6 +99,18 @@ export class SocketServer {
                 } catch (error) {
                     this.logger.error("Error sending message via socket", error);
                     socket.emit("error", { message: "Failed to send message" });
+                }
+            });
+
+            socket.on("delete_message", async (data: { messageId: string; conversationId: string }) => {
+                try {
+                    const deletedMessage = await deleteMessageUseCase.execute(data.messageId, userId);
+
+                    // Emit deletion to all users in the conversation
+                    this.io.to(data.conversationId).emit("message_deleted", deletedMessage);
+                } catch (error) {
+                    this.logger.error("Error deleting message via socket", error);
+                    socket.emit("error", { message: "Failed to delete message" });
                 }
             });
 

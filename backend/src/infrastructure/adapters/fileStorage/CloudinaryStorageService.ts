@@ -34,6 +34,28 @@ export class CloudinaryStorageService implements IFileStorageService {
     };
   }
 
+  async uploadChatImage(file: Buffer, conversationId: string) {
+    const result = await new Promise<any>((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: `chat/${conversationId}`,
+          transformation: [{ width: 1080, crop: "limit" }],
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+
+      stream.end(file);
+    });
+
+    return {
+      url: result.secure_url,
+      publicId: result.public_id,
+    };
+  }
+
   async deleteFile(publicId: string) {
     await cloudinary.uploader.destroy(publicId);
   }

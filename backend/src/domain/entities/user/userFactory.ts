@@ -30,6 +30,7 @@ export class UserFactory {
             0,                         // longest_streak
             null,                      // last_login_date
             false,                     // is_premium
+            null,                      // premium_expiry_date
             new Date(),                // date_joined
             "user",                    // role
             "active",                  // status
@@ -69,6 +70,7 @@ export class UserFactory {
             0,                         // longest_streak
             null,                      // last_login_date
             false,                     // is_premium
+            null,                      // premium_expiry_date
             new Date(),                // date_joined
             "user",                    // role
             "active",                  // status

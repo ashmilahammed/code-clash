@@ -11,8 +11,10 @@ import submissionRoutes from "./presentation/routes/submission.routes";
 import levelRoutes from "./presentation/routes/level.routes";
 import badgeRoutes from "./presentation/routes/badge.routes";
 import chatRoutes from "./presentation/routes/chat.routes";
+import transactionRoutes from "./presentation/routes/transaction.routes";
 
 import { WinstonLogger } from "./infrastructure/services/logger";
+import { startPremiumExpirationJob } from "./infrastructure/services/scheduler/PremiumSchedulerService";
 
 dotenv.config();
 
@@ -34,6 +36,7 @@ app.use("/api/submissions", submissionRoutes);
 app.use("/api/levels", levelRoutes);
 app.use("/api/badges", badgeRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/transactions", transactionRoutes);
 
 
 
@@ -49,6 +52,9 @@ connectDB()
 
     // Initialize Socket Server
     new SocketServer(httpServer);
+
+    // Start Premium Expiration Job
+    startPremiumExpirationJob();
 
     httpServer.listen(PORT, () => {
       console.log("Server running on port", PORT);

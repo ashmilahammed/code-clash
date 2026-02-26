@@ -28,6 +28,7 @@ export class User {
     private last_login_date: Date | null,
 
     public is_premium: boolean,
+    public premium_expiry_date: Date | null,
     public date_joined: Date,
 
     public role: UserRole,
@@ -214,6 +215,7 @@ export class User {
       current_streak: this.current_streak,
       longest_streak: this.longest_streak,
       is_premium: this.is_premium,
+      premium_expiry_date: this.premium_expiry_date,
       role: this.role,
       status: this.status,
       isVerified: this.isVerified,

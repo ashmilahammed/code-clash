@@ -31,6 +31,15 @@ export class MessageRepository implements IMessageRepository {
         return MessageMapper.toDomain(created);
     }
 
+    async update(message: Message): Promise<Message> {
+        if (!message.id || !Types.ObjectId.isValid(message.id)) throw new Error('Invalid message id');
+        const persistenceData = MessageMapper.toPersistence(message);
+        const updated = await MessageModel.findByIdAndUpdate(message.id, persistenceData, { new: true });
+        if (!updated) throw new Error('Message not found');
+        await updated.populate('senderId', 'username profilePic');
+        return MessageMapper.toDomain(updated);
+    }
+
     async markAsRead(messageId: string, userId: string): Promise<void> {
         if (!Types.ObjectId.isValid(messageId) || !Types.ObjectId.isValid(userId)) return;
 
