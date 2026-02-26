@@ -40,6 +40,7 @@ import CodeTemplates from "./pages/admin/challenges/CreateChallenge/CodeTemplate
 import LevelManagement from "./pages/admin/levels/LevelManagement";
 import BadgeManagement from "./pages/admin/badges/BadgeManagement";
 import PlanManagement from "./pages/admin/plans/PlanManagement";
+import GroupManagement from "./pages/admin/GroupManagement";
 
 import SolveChallenge from "./pages/challenges/SolveChallenge";
 
@@ -164,6 +165,7 @@ function App() {
           <Route path="/admin/levels" element={<LevelManagement />} />
           <Route path="/admin/badges" element={<BadgeManagement />} />
           <Route path="/admin/plans" element={<PlanManagement />} />
+          <Route path="/admin/groups" element={<GroupManagement />} />
 
           {/* wizard */}
           <Route

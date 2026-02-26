@@ -8,6 +8,7 @@ export interface IConversationDoc extends Document {
     description?: string;
     memberLimit?: number;
     isPrivate?: boolean;
+    status: 'active' | 'inactive';
     lastMessageAt?: Date;
     createdAt: Date;
     updatedAt: Date;
@@ -22,6 +23,7 @@ const ConversationSchema = new Schema<IConversationDoc>(
         description: { type: String, default: null },
         memberLimit: { type: Number, default: 50 },
         isPrivate: { type: Boolean, default: false },
+        status: { type: String, enum: ['active', 'inactive'], default: 'active' },
         lastMessageAt: { type: Date, default: null }
     },
     { timestamps: true }

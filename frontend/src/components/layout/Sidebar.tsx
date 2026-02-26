@@ -121,6 +121,19 @@ const Sidebar = () => {
           <CreditCard size={18} />
           Plans Management
         </NavLink>
+
+        <NavLink
+          to="/admin/groups"
+          className={({ isActive }) =>
+            `${linkBase} ${isActive
+              ? "bg-slate-800 text-white shadow-md"
+              : "text-slate-400 hover:bg-slate-800 hover:text-white"
+            }`
+          }
+        >
+          <Users size={18} />
+          Group Management
+        </NavLink>
       </nav>
 
       {/* Footer */}

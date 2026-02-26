@@ -10,6 +10,7 @@ export class Conversation {
         public readonly description?: string | null, // for groups
         public readonly memberLimit?: number | null, // for groups
         public readonly isPrivate?: boolean, // for groups
+        public status: 'active' | 'inactive' = 'active', // for all conversations, primarily used by admin globally
         public readonly lastMessageAt?: Date | null,
         public readonly createdAt?: Date,
         public readonly updatedAt?: Date

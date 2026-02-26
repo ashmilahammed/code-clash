@@ -13,6 +13,7 @@ export class ConversationMapper {
             doc.description,
             doc.memberLimit,
             doc.isPrivate,
+            doc.status,
             doc.lastMessageAt,
             doc.createdAt,
             doc.updatedAt
@@ -29,6 +30,7 @@ export class ConversationMapper {
         if (entity.description !== undefined && entity.description !== null) doc.description = entity.description;
         if (entity.memberLimit !== undefined && entity.memberLimit !== null) doc.memberLimit = entity.memberLimit;
         if (entity.isPrivate !== undefined && entity.isPrivate !== null) doc.isPrivate = entity.isPrivate;
+        if (entity.status) doc.status = entity.status;
         if (entity.lastMessageAt) doc.lastMessageAt = entity.lastMessageAt;
         return doc;
     }

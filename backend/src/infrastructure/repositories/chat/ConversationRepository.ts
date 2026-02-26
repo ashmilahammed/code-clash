@@ -31,7 +31,8 @@ export class ConversationRepository implements IConversationRepository {
         if (!Types.ObjectId.isValid(userId)) return [];
 
         const docs = await ConversationModel.find({
-            participants: new Types.ObjectId(userId)
+            participants: new Types.ObjectId(userId),
+            status: { $ne: 'inactive' }
         }).sort({ lastMessageAt: -1, updatedAt: -1 });
 
         return docs.map(ConversationMapper.toDomain);
@@ -40,7 +41,8 @@ export class ConversationRepository implements IConversationRepository {
     async findPublicGroups(): Promise<Conversation[]> {
         const docs = await ConversationModel.find({
             type: 'group',
-            isPrivate: false
+            isPrivate: false,
+            status: 'active'
         }).sort({ createdAt: -1 });
 
         return docs.map(ConversationMapper.toDomain);
@@ -72,5 +74,52 @@ export class ConversationRepository implements IConversationRepository {
     async updateLastMessage(id: string, timestamp: Date): Promise<void> {
         if (!Types.ObjectId.isValid(id)) return;
         await ConversationModel.findByIdAndUpdate(id, { $set: { lastMessageAt: timestamp } });
+    }
+
+    async findAdminGroups(page: number, limit: number, search?: string): Promise<{ data: any[], total: number }> {
+        const query: any = { type: 'group' };
+
+        if (search) {
+            query.name = { $regex: search, $options: 'i' };
+        }
+
+        const skip = (page - 1) * limit;
+
+        const [results, total] = await Promise.all([
+            ConversationModel.aggregate([
+                { $match: query },
+                { $sort: { createdAt: -1 } },
+                { $skip: skip },
+                { $limit: limit },
+                {
+                    $project: {
+                        _id: 1,
+                        name: 1,
+                        isPrivate: 1,
+                        status: 1,
+                        memberCount: { $size: "$participants" },
+                        createdAt: 1
+                    }
+                }
+            ]),
+            ConversationModel.countDocuments(query)
+        ]);
+
+        return {
+            data: results.map(r => ({
+                id: r._id.toString(),
+                name: r.name,
+                isPrivate: r.isPrivate,
+                status: r.status,
+                memberCount: r.memberCount,
+                createdAt: r.createdAt
+            })),
+            total
+        };
+    }
+
+    async delete(id: string): Promise<void> {
+        if (!Types.ObjectId.isValid(id)) return;
+        await ConversationModel.findByIdAndDelete(id);
     }
 }

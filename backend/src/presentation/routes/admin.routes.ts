@@ -6,6 +6,7 @@ import { challengeController } from "../../infrastructure/di/challenge.di";
 // import { levelController } from "../../infrastructure/di/level.di";
 import planRoutes from "./plan.routes";
 import transactionRoutes from "./transaction.routes";
+import { adminChatController } from "../../infrastructure/di/chat.di";
 
 const router = Router();
 
@@ -42,6 +43,11 @@ router.get("/challenges/:id/code-templates", challengeController.getAdminTemplat
 // plan management
 router.use("/plans", planRoutes);
 router.use("/transactions", transactionRoutes);
+
+// group chat management
+router.get("/groups", adminChatController.getAdminGroups);
+router.patch("/groups/:id/status", adminChatController.updateGroupStatus);
+router.delete("/groups/:id", adminChatController.deleteGroup);
 
 export default router;
 

@@ -46,7 +46,27 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ onClose }) => {
     const handleNext = async () => {
         if (step === 1) {
             if (!name.trim()) return;
-            setStep(2);
+
+            if (!isPrivate) {
+                // Public groups skip the invite step
+                setIsSubmitting(true);
+                try {
+                    await createGroup(
+                        name.trim(),
+                        description.trim() || undefined,
+                        memberLimit,
+                        false, // isPrivate
+                        []
+                    );
+                    setStep(3);
+                } catch (error) {
+                    console.error(error);
+                } finally {
+                    setIsSubmitting(false);
+                }
+            } else {
+                setStep(2);
+            }
         } else if (step === 2) {
             setIsSubmitting(true);
             try {
@@ -257,7 +277,7 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ onClose }) => {
                         >
                             {isSubmitting ? (
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                            ) : step === 1 ? 'Next' : 'Create Group'}
+                            ) : step === 1 ? (!isPrivate ? 'Create Group' : 'Next') : 'Create Group'}
                         </button>
                     </div>
                 )}
