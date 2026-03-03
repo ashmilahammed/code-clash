@@ -38,6 +38,11 @@ export class SubmitSolutionUseCase {
             throw new Error("Challenge not found");
         }
 
+        const user = await this.userRepo.findById(userId);
+        if (challenge.isPremium && !user?.is_premium) {
+            throw new Error("Premium upgrade required to access this challenge");
+        }
+
 
         // Check allowed language
         const challengeWithLang =
