@@ -1,6 +1,7 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getChallengeByIdApi, getChallengeTemplatesApi, getChallengeHintsApi, getChallengeTestCasesApi } from "../../../api/challengeApi";
+import { useAuthStore } from "../../../store/useAuthStore";
 
 import EditorPanel from "./EditorPanel";
 import TestCasePanel from "./TestCasePanel";
@@ -10,6 +11,8 @@ import SuccessModal from "../../../components/modals/SuccessModal";
 
 const SolveChallenge = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const user = useAuthStore((s) => s.user);
 
   const [challenge, setChallenge] = useState<any>(null);
   const [templates, setTemplates] = useState<any[]>([]);
@@ -33,13 +36,17 @@ const SolveChallenge = () => {
       getChallengeTestCasesApi(id)
     ])
       .then(([challengeRes, templateRes, hintsRes, testCasesRes]) => {
+        if (challengeRes.isPremium && !user?.is_premium) {
+          navigate("/premium");
+          return;
+        }
         setChallenge(challengeRes);
         setTemplates(templateRes);
         setHints(hintsRes);
         setTestCases(testCasesRes);
       })
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, user, navigate]);
 
   const handleSuccess = (xp: number) => {
     setEarnedXp(xp);
