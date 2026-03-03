@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getChallengesApi } from "../../api/challengeApi";
 import type { Challenge, ChallengeDifficulty } from "../../types/Challenge";
+import { Lock } from "lucide-react";
+import { useAuthStore } from "../../store/useAuthStore";
 
 
 const difficultyColor: Record<ChallengeDifficulty, string> = {
@@ -19,6 +21,7 @@ const ChallengeList = () => {
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
+  const user = useAuthStore((s) => s.user);
 
 
   useEffect(() => {
@@ -92,16 +95,26 @@ const ChallengeList = () => {
           {/* Footer */}
           <div className="flex items-center justify-between text-xs text-slate-400">
             <span>XP: {challenge.xpReward}</span>
+            {challenge.timeLimitMinutes && (
+              <span>Time: {challenge.timeLimitMinutes} min</span>
+            )}
 
             <button
-              onClick={() =>
-                navigate(`/challenges/${challenge.id}`)
-                // navigate(`/challenges/${challenge.id}/solve`)
-
-              }
-              className="px-3 py-1 rounded bg-cyan-600 text-black hover:bg-cyan-500 transition"
+              onClick={() => {
+                if (challenge.isPremium && !user?.is_premium) {
+                  navigate(`/premium`);
+                } else {
+                  navigate(`/challenges/${challenge.id}`);
+                }
+              }}
+              className="px-3 py-1 rounded bg-cyan-600 text-black hover:bg-cyan-500 transition flex items-center justify-center gap-1 font-medium"
             >
-              Open
+              {challenge.isPremium ? (
+                <>
+                  <Lock size={12} />
+                  Premium
+                </>
+              ) : "Open"}
             </button>
           </div>
         </div>
