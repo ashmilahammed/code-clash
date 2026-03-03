@@ -24,16 +24,19 @@ const languages = [
     version: "17",
     isActive: true,
   },
-  {
-    key: "cpp",
-    name: "C++",
-    version: "17",
-    isActive: true,
-  },
+  // {
+  //   key: "cpp",
+  //   name: "C++",
+  //   version: "17",
+  //   isActive: true,
+  // },
 ];
 
 async function seed() {
   await connectDB();
+
+  await ProgrammingLanguageModel.deleteOne({ key: "cpp" });
+  await ProgrammingLanguageModel.deleteOne({ key: "c++" });
 
   for (const lang of languages) {
     await ProgrammingLanguageModel.updateOne(

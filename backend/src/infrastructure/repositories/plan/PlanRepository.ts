@@ -1,6 +1,6 @@
 import { IPlanRepository } from "../../../domain/repositories/plan/IPlanRepository";
 import { Plan } from "../../../domain/entities/plan/Plan";
-import { PlanModel } from "../../database/models/admin/PlanModel";
+import { PlanModel } from "../../database/models/plan/PlanModel";
 import { Types } from "mongoose";
 import { PlanMapper } from "../../../application/mappers/PlanMapper";
 

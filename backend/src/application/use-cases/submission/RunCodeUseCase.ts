@@ -4,11 +4,15 @@ import { ICodeExecutionService } from "../../../domain/services/ICodeExecutionSe
 export class RunCodeUseCase {
   constructor(
     private readonly executionService: ICodeExecutionService
-  ) {}
+  ) { }
 
   async execute(language: string, code: string, input: string) {
     if (!code || code.trim().length === 0) {
       throw new Error("Code cannot be empty");
+    }
+
+    if (!language) {
+      throw new Error("Language is required");
     }
 
     return this.executionService.execute(language, code, input);

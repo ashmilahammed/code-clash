@@ -1,5 +1,8 @@
 import React, { useEffect } from "react";
-import { Users, Activity } from "lucide-react";
+import {
+  Users,
+  // Activity
+} from "lucide-react";
 import { useChatStore } from "../../store/useChatStore";
 import { useNavigate } from "react-router-dom";
 
@@ -47,7 +50,7 @@ const ActiveGroups: React.FC = () => {
 
             <div className="flex items-center gap-2">
               <span className="flex items-center gap-1 text-xs text-green-400">
-                <Activity size={14} />
+                {/* <Activity size={14} /> */}
                 Active
               </span>
             </div>

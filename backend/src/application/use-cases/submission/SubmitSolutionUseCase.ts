@@ -83,7 +83,11 @@ export class SubmitSolutionUseCase {
                 testCase.input
             );
 
-            if (result.stderr && result.stderr.length > 0) {
+            // if (result.stderr && result.stderr.length > 0) {
+            //     finalStatus = "ERROR";
+            //     break;
+            // }
+            if (result.stderr && result.stderr.trim().length > 0 && !result.stdout) {
                 finalStatus = "ERROR";
                 break;
             }
@@ -104,8 +108,12 @@ export class SubmitSolutionUseCase {
                 break;
             }
 
-            if (result.runtime > maxRuntime) {
-                maxRuntime = result.runtime;
+            // if (result.runtime > maxRuntime) {
+            //     maxRuntime = result.runtime;
+            // }
+            const runtime = result.runtime ?? 0;
+            if (runtime > maxRuntime) {
+                maxRuntime = runtime;
             }
 
             // memoryUsed = result.memory;

@@ -1,5 +1,5 @@
 import { Transaction } from "../../domain/entities/transaction/Transaction";
-import { ITransactionDoc } from "../../infrastructure/database/models/admin/TransactionModel";
+import { ITransactionDoc } from "../../infrastructure/database/models/transactions/TransactionModel";
 
 export class TransactionMapper {
     static toDomain(doc: ITransactionDoc | any): Transaction {
