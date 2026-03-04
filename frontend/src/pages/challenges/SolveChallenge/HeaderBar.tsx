@@ -29,7 +29,8 @@ const HeaderBar = ({ challenge }: any) => {
       return;
     }
 
-    const timerKey = `challenge_timer_${user.id}_${challenge._id}`;
+    const challengeId = challenge.id || challenge._id;
+    const timerKey = `challenge_timer_${user.id}_${challengeId}`;
     const globalActiveKey = `active_challenge_${user.id}`;
     let expiryTime = parseInt(localStorage.getItem(timerKey) || "0", 10);
 
@@ -37,13 +38,13 @@ const HeaderBar = ({ challenge }: any) => {
       expiryTime = Date.now() + challenge.timeLimitMinutes * 60 * 1000;
       localStorage.setItem(timerKey, expiryTime.toString());
       localStorage.setItem(globalActiveKey, JSON.stringify({
-        challengeId: challenge._id,
+        challengeId: challengeId,
         expiryTime
       }));
     } else {
       // Ensure global active key is set even if refreshing an existing challenge
       localStorage.setItem(globalActiveKey, JSON.stringify({
-        challengeId: challenge._id,
+        challengeId: challengeId,
         expiryTime
       }));
     }
@@ -63,7 +64,7 @@ const HeaderBar = ({ challenge }: any) => {
     const interval = setInterval(updateTimer, 1000);
 
     return () => clearInterval(interval);
-  }, [challenge._id, challenge.timeLimitMinutes, user?.id]);
+  }, [challenge.id, challenge._id, challenge.timeLimitMinutes, user?.id]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);

@@ -93,7 +93,7 @@ api.interceptors.response.use(
         const refreshRes = await refreshTokenApi();
         const newAccessToken = refreshRes.data.data.accessToken;
 
-        // 🔥 Only update access token
+        //  Only update access token
         useAuthStore.getState().updateAccessToken(newAccessToken);
 
         // retry original request

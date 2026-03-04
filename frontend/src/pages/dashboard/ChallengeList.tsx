@@ -2,6 +2,7 @@
 
 
 
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getChallengesApi } from "../../api/challengeApi";
@@ -356,7 +357,3 @@ export default ChallengeList;
 // };
 
 // export default ChallengeList;
-
-
-
-
