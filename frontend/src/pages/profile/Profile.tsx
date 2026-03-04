@@ -11,8 +11,9 @@ import {
     Linkedin,
     Code2
 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../../api/axiosInstance";
+import { getUserProfileStatsApi } from "../../api/userApi";
 import ConfirmModal from "../../components/modals/ConfirmModal";
 
 
@@ -23,10 +24,33 @@ const Profile = () => {
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [loading, setLoading] = useState(false);
+    const [pageLoading, setPageLoading] = useState(true);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [profileData, setProfileData] = useState<any>(null);
+    const [activityPage, setActivityPage] = useState(1);
+    const activityLimit = 5;
 
+    useEffect(() => {
+        let mounted = true;
+        getUserProfileStatsApi()
+            .then((data) => {
+                if (mounted) {
+                    setProfileData(data);
+                    setPageLoading(false);
+                }
+            })
+            .catch((err) => {
+                console.error("Failed to load profile stats", err);
+                if (mounted) setPageLoading(false);
+            });
+        return () => { mounted = false; };
+    }, []);
 
-    if (!user) return null;
+    if (!user || pageLoading || !profileData) return (
+        <div className="min-h-screen bg-[#0B1221] flex items-center justify-center">
+            <p className="text-slate-400 animate-pulse text-sm">Loading profile...</p>
+        </div>
+    );
 
     const handleAvatarChange = async (
         e: React.ChangeEvent<HTMLInputElement>
@@ -135,7 +159,7 @@ const Profile = () => {
 
                         {/* Level Badge */}
                         <div className="absolute bottom-2 right-2 bg-blue-600 text-white text-xs font-bold w-9 h-9 flex items-center justify-center rounded-full border-4 border-[#0B1221] z-20 shadow-lg">
-                            32
+                            {profileData.level.level}
                         </div>
                     </div>
 
@@ -148,9 +172,8 @@ const Profile = () => {
                         </div>
 
                         <div className="text-slate-400 text-sm flex flex-wrap gap-x-6 gap-y-2 mb-4 font-medium">
-                            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>Rank 24</span>
-                            <span className="flex items-center gap-1.5"><Zap size={14} className="text-yellow-500" /> 7 day streak</span>
-                            <span className="flex items-center gap-1.5"><Users size={14} className="text-red-400" /> 436 followers</span>
+                            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>Rank {user.role === 'admin' ? 'Admin' : 'User'}</span>
+                            <span className="flex items-center gap-1.5"><Zap size={14} className="text-yellow-500" /> {profileData.streak.current} day streak</span>
                         </div>
 
                         <div className="flex gap-4">
@@ -179,16 +202,16 @@ const Profile = () => {
                         {/* Level Progress */}
                         <div className="bg-[#131B2D] border border-slate-800/60 rounded-xl p-6 shadow-sm">
                             <div className="flex justify-between items-center mb-3">
-                                <span className="font-bold text-lg text-white">Level 32</span>
-                                <span className="text-blue-400 text-sm font-semibold bg-blue-400/10 px-2 py-0.5 rounded">12850 XP</span>
+                                <span className="font-bold text-lg text-white">Level {profileData.level.level}</span>
+                                <span className="text-blue-400 text-sm font-semibold bg-blue-400/10 px-2 py-0.5 rounded">{profileData.level.currentXp} XP</span>
                             </div>
                             {/* Progress Bar */}
                             <div className="w-full bg-slate-800 h-3 rounded-full overflow-hidden mb-3">
-                                <div className="bg-linear-to-r from-blue-600 to-purple-600 h-full w-[70%] shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+                                <div className="bg-linear-to-r from-blue-600 to-purple-600 h-full shadow-[0_0_10px_rgba(59,130,246,0.5)]" style={{ width: `${Math.min((profileData.level.currentXp / profileData.level.nextLevelXp) * 100, 100)}%` }}></div>
                             </div>
                             <div className="flex justify-between text-xs font-medium text-slate-500">
                                 <span>Current Level</span>
-                                <span>350 / 500 XP to Level 33</span>
+                                <span>{Math.max(profileData.level.nextLevelXp - profileData.level.currentXp, 0)} XP to Level {profileData.level.level + 1}</span>
                             </div>
                         </div>
 
@@ -201,11 +224,11 @@ const Profile = () => {
 
                             <div className="flex justify-between py-3 border-b border-slate-800/50">
                                 <span className="text-slate-400 text-sm font-medium">Challenges Completed</span>
-                                <span className="font-bold text-white text-lg">247</span>
+                                <span className="font-bold text-white text-lg">{profileData.stats.stats.passedSubmissions}</span>
                             </div>
                             <div className="flex justify-between py-3 mb-5">
                                 <span className="text-slate-400 text-sm font-medium">Acceptance Rate</span>
-                                <span className="font-bold text-white text-lg">89.2%</span>
+                                <span className="font-bold text-white text-lg">{profileData.stats.stats.acceptanceRate.toFixed(1)}%</span>
                             </div>
 
                             <div className="space-y-4">
@@ -213,30 +236,30 @@ const Profile = () => {
                                 <div className="space-y-1.5">
                                     <div className="flex justify-between text-xs font-medium text-slate-400">
                                         <span>Easy</span>
-                                        <span className="text-slate-300">142/177</span>
+                                        <span className="text-slate-300">{profileData.stats.byDifficulty.find((d: any) => d.difficulty === 'easy')?.count || 0} Solved</span>
                                     </div>
                                     <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                                        <div className="bg-green-500 h-full w-[80%] rounded-full"></div>
+                                        <div className="bg-green-500 h-full rounded-full" style={{ width: `${Math.min(((profileData.stats.byDifficulty.find((d: any) => d.difficulty === 'easy')?.count || 0) / Math.max(profileData.stats.stats.passedSubmissions, 1)) * 100, 100)}%` }}></div>
                                     </div>
                                 </div>
                                 {/* Medium */}
                                 <div className="space-y-1.5">
                                     <div className="flex justify-between text-xs font-medium text-slate-400">
                                         <span>Medium</span>
-                                        <span className="text-slate-300">89/122</span>
+                                        <span className="text-slate-300">{profileData.stats.byDifficulty.find((d: any) => d.difficulty === 'medium')?.count || 0} Solved</span>
                                     </div>
                                     <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                                        <div className="bg-orange-500 h-full w-[72%] rounded-full"></div>
+                                        <div className="bg-orange-500 h-full rounded-full" style={{ width: `${Math.min(((profileData.stats.byDifficulty.find((d: any) => d.difficulty === 'medium')?.count || 0) / Math.max(profileData.stats.stats.passedSubmissions, 1)) * 100, 100)}%` }}></div>
                                     </div>
                                 </div>
                                 {/* Hard */}
                                 <div className="space-y-1.5">
                                     <div className="flex justify-between text-xs font-medium text-slate-400">
                                         <span>Hard</span>
-                                        <span className="text-slate-300">11/24</span>
+                                        <span className="text-slate-300">{profileData.stats.byDifficulty.find((d: any) => d.difficulty === 'hard')?.count || 0} Solved</span>
                                     </div>
                                     <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                                        <div className="bg-red-500 h-full w-[45%] rounded-full"></div>
+                                        <div className="bg-red-500 h-full rounded-full" style={{ width: `${Math.min(((profileData.stats.byDifficulty.find((d: any) => d.difficulty === 'hard')?.count || 0) / Math.max(profileData.stats.stats.passedSubmissions, 1)) * 100, 100)}%` }}></div>
                                     </div>
                                 </div>
                             </div>
@@ -303,36 +326,22 @@ const Profile = () => {
                                 Languages
                             </h3>
                             <div className="space-y-5">
-                                {/* JS */}
-                                <div className="space-y-2">
-                                    <div className="flex justify-between text-sm">
-                                        <span className="font-medium text-slate-200">Javascript</span>
-                                        <span className="text-slate-400 font-mono text-xs bg-slate-800 px-2 py-0.5 rounded">12 Solved</span>
-                                    </div>
-                                    <div className="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
-                                        <div className="bg-yellow-400 h-full w-[10%] rounded-full shadow-[0_0_8px_rgba(250,204,21,0.4)]"></div>
-                                    </div>
-                                </div>
-                                {/* Python */}
-                                <div className="space-y-2">
-                                    <div className="flex justify-between text-sm">
-                                        <span className="font-medium text-slate-200">Python</span>
-                                        <span className="text-slate-400 font-mono text-xs bg-slate-800 px-2 py-0.5 rounded">127 Solved</span>
-                                    </div>
-                                    <div className="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
-                                        <div className="bg-blue-500 h-full w-[70%] rounded-full shadow-[0_0_8px_rgba(59,130,246,0.4)]"></div>
-                                    </div>
-                                </div>
-                                {/* Java */}
-                                <div className="space-y-2">
-                                    <div className="flex justify-between text-sm">
-                                        <span className="font-medium text-slate-200">Java</span>
-                                        <span className="text-slate-400 font-mono text-xs bg-slate-800 px-2 py-0.5 rounded">44 Solved</span>
-                                    </div>
-                                    <div className="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
-                                        <div className="bg-orange-600 h-full w-[30%] rounded-full shadow-[0_0_8px_rgba(234,88,12,0.4)]"></div>
-                                    </div>
-                                </div>
+                                {profileData.stats.byLanguage.length === 0 && <p className="text-sm text-slate-400">No challenges solved yet.</p>}
+                                {profileData.stats.byLanguage.map((lang: any, idx: number) => {
+                                    const colors = ["bg-yellow-400", "bg-blue-500", "bg-orange-600", "bg-purple-500", "bg-green-500"];
+                                    const colorClass = colors[idx % colors.length];
+                                    return (
+                                        <div key={lang.language} className="space-y-2">
+                                            <div className="flex justify-between text-sm">
+                                                <span className="font-medium text-slate-200 capitalize">{lang.language}</span>
+                                                <span className="text-slate-400 font-mono text-xs bg-slate-800 px-2 py-0.5 rounded">{lang.count} Solved</span>
+                                            </div>
+                                            <div className="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                                                <div className={`${colorClass} h-full rounded-full`} style={{ width: `${Math.min((lang.count / Math.max(profileData.stats.stats.passedSubmissions, 1)) * 100, 100)}%` }}></div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
 
@@ -343,33 +352,38 @@ const Profile = () => {
                                 Recent Activity
                             </h3>
                             <div className="space-y-3">
-                                <div className="p-4 bg-[#1E293B]/50 border border-slate-800/50 rounded-xl flex justify-between items-center hover:bg-[#283548] transition cursor-pointer group">
-                                    <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-green-500/10 text-green-400 rounded-lg group-hover:bg-green-500/20 transition">
-                                            <Code2 size={18} />
+                                {profileData.recentActivity.length === 0 && <p className="text-sm text-slate-400">No recent activity.</p>}
+                                {profileData.recentActivity.slice((activityPage - 1) * activityLimit, activityPage * activityLimit).map((activity: any) => (
+                                    <div key={activity._id.toString()} className="p-4 bg-[#1E293B]/50 border border-slate-800/50 rounded-xl flex justify-between items-center hover:bg-[#283548] transition cursor-pointer group">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`p-2 rounded-lg transition ${activity.status === 'PASSED' ? 'bg-green-500/10 text-green-400 group-hover:bg-green-500/20' : 'bg-red-500/10 text-red-400 group-hover:bg-red-500/20'}`}>
+                                                <Code2 size={18} />
+                                            </div>
+                                            <span className="text-sm font-medium text-slate-200 line-clamp-1">{activity.challengeName}</span>
                                         </div>
-                                        <span className="text-sm font-medium text-slate-200">Longest SubString</span>
+                                        <span className="text-xs text-slate-400 font-medium whitespace-nowrap ml-2">{new Date(activity.submittedAt).toLocaleDateString()}</span>
                                     </div>
-                                    <span className="text-xs text-slate-400 font-medium">2 hours ago</span>
-                                </div>
-                                <div className="p-4 bg-[#1E293B]/50 border border-slate-800/50 rounded-xl flex justify-between items-center hover:bg-[#283548] transition cursor-pointer group">
-                                    <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-blue-500/10 text-blue-400 rounded-lg group-hover:bg-blue-500/20 transition">
-                                            <Code2 size={18} />
-                                        </div>
-                                        <span className="text-sm font-medium text-slate-200">Two Sum</span>
+                                ))}
+
+                                {Math.ceil(profileData.recentActivity.length / activityLimit) > 1 && (
+                                    <div className="flex justify-between items-center pt-2">
+                                        <button
+                                            disabled={activityPage === 1}
+                                            onClick={() => setActivityPage(prev => Math.max(prev - 1, 1))}
+                                            className="text-xs px-3 py-1.5 bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 disabled:opacity-50 transition"
+                                        >
+                                            Previous
+                                        </button>
+                                        <span className="text-xs text-slate-500 font-medium">Page {activityPage} of {Math.ceil(profileData.recentActivity.length / activityLimit)}</span>
+                                        <button
+                                            disabled={activityPage === Math.ceil(profileData.recentActivity.length / activityLimit)}
+                                            onClick={() => setActivityPage(prev => Math.min(prev + 1, Math.ceil(profileData.recentActivity.length / activityLimit)))}
+                                            className="text-xs px-3 py-1.5 bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 disabled:opacity-50 transition"
+                                        >
+                                            Next
+                                        </button>
                                     </div>
-                                    <span className="text-xs text-slate-400 font-medium">1 day ago</span>
-                                </div>
-                                <div className="p-4 bg-[#1E293B]/50 border border-slate-800/50 rounded-xl flex justify-between items-center hover:bg-[#283548] transition cursor-pointer group">
-                                    <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-purple-500/10 text-purple-400 rounded-lg group-hover:bg-purple-500/20 transition">
-                                            <Code2 size={18} />
-                                        </div>
-                                        <span className="text-sm font-medium text-slate-200">Remove nth node from linked list</span>
-                                    </div>
-                                    <span className="text-xs text-slate-400 font-medium">3 days ago</span>
-                                </div>
+                                )}
                             </div>
                         </div>
                     </div>

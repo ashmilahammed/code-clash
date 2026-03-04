@@ -15,4 +15,8 @@ export interface ISubmissionRepository {
   ): Promise<boolean>;
 
   countSolved(userId: string): Promise<number>;
+
+  getUserStats(userId: string): Promise<any>;
+
+  getRecentActivity(userId: string, limit: number): Promise<any[]>;
 }

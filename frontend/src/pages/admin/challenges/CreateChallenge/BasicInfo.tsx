@@ -136,88 +136,111 @@ const BasicInfo = () => {
       )}
 
       {/* Title */}
-      <input
-        className="w-full p-3 rounded bg-[#020617] text-white border border-slate-700 focus:ring-2 focus:ring-cyan-500"
-        placeholder="Challenge title"
-        value={form.title}
-        onChange={(e) =>
-          setForm({ ...form, title: e.target.value })
-        }
-      />
+      <div className="space-y-1">
+        <label className="text-sm text-slate-300">Title</label>
+        <input
+          className="w-full p-3 rounded bg-[#020617] text-white border border-slate-700 focus:ring-2 focus:ring-cyan-500"
+          placeholder="Enter challenge title"
+          value={form.title}
+          onChange={(e) =>
+            setForm({ ...form, title: e.target.value })
+          }
+        />
+      </div>
 
       {/* Description */}
-      <textarea
-        className="w-full p-3 rounded bg-[#020617] text-white border border-slate-700 min-h-[120px] focus:ring-2 focus:ring-cyan-500"
-        placeholder="Description"
-        value={form.description}
-        onChange={(e) =>
-          setForm({ ...form, description: e.target.value })
-        }
-      />
+      <div className="space-y-1">
+        <label className="text-sm text-slate-300">Description</label>
+        <textarea
+          className="w-full p-3 rounded bg-[#020617] text-white border border-slate-700 min-h-[120px] focus:ring-2 focus:ring-cyan-500"
+          placeholder="Enter problem description"
+          value={form.description}
+          onChange={(e) =>
+            setForm({ ...form, description: e.target.value })
+          }
+        />
+      </div>
+
 
       {/* Difficulty */}
-      <select
-        className="w-full p-3 rounded bg-[#020617] text-white border border-slate-700"
-        value={form.difficulty}
-        onChange={(e) =>
-          setForm({
-            ...form,
-            difficulty: e.target.value as Difficulty,
-          })
-        }
-      >
-        <option value="easy">Easy</option>
-        <option value="medium">Medium</option>
-        <option value="hard">Hard</option>
-      </select>
+      <div className="space-y-1">
+        <label className="text-sm text-slate-300">Difficulty</label>
+        <select
+          className="w-full p-3 rounded bg-[#020617] text-white border border-slate-700"
+          value={form.difficulty}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              difficulty: e.target.value as Difficulty,
+            })
+          }
+        >
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </div>
+
 
       {/* Domain */}
-      <select
-        className="w-full p-3 rounded bg-[#020617] text-white border border-slate-700"
-        value={form.domain}
-        onChange={(e) =>
-          setForm({ ...form, domain: e.target.value as Domain })
-        }
-      >
-        <option value="arrays">Arrays</option>
-        <option value="strings">Strings</option>
-        <option value="linked-list">Linked List</option>
-        <option value="stack">Stack</option>
-        <option value="queue">Queue</option>
-        <option value="tree">Tree</option>
-        <option value="graph">Graph</option>
-        <option value="dp">Dynamic Programming</option>
-        <option value="math">Math</option>
-        <option value="sql">SQL</option>
-      </select>
+      <div className="space-y-1">
+        <label className="text-sm text-slate-300">Domain</label>
+        <select
+          className="w-full p-3 rounded bg-[#020617] text-white border border-slate-700"
+          value={form.domain}
+          onChange={(e) =>
+            setForm({ ...form, domain: e.target.value as Domain })
+          }
+        >
+          <option value="arrays">Arrays</option>
+          <option value="strings">Strings</option>
+          <option value="linked-list">Linked List</option>
+          <option value="stack">Stack</option>
+          <option value="queue">Queue</option>
+          <option value="tree">Tree</option>
+          <option value="graph">Graph</option>
+          <option value="dp">Dynamic Programming</option>
+          <option value="math">Math</option>
+          <option value="sql">SQL</option>
+        </select>
+      </div>
+
 
       {/* XP Reward */}
-      <input
-        type="number"
-        min={1}
-        className="w-full p-3 rounded bg-[#020617] text-white border border-slate-700"
-        value={form.xpReward}
-        onChange={(e) =>
-          setForm({
-            ...form,
-            xpReward: Number(e.target.value),
-          })
-        }
-      />
+      <div className="space-y-1">
+        <label className="text-sm text-slate-300">XP Reward</label>
+        <input
+          type="number"
+          min={1}
+          className="w-full p-3 rounded bg-[#020617] text-white border border-slate-700"
+          value={form.xpReward}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              xpReward: Number(e.target.value),
+            })
+          }
+        />
+      </div>
 
       {/* Time Limit */}
-      <input
-        type="number"
-        min={1}
-        className="w-full p-3 rounded bg-[#020617] text-white border border-slate-700"
-        value={form.timeLimitMinutes}
-        onChange={(e) =>
-          setForm({
-            ...form,
-            timeLimitMinutes: Number(e.target.value),
-          })
-        }
-      />
+      <div className="space-y-1">
+        <label className="text-sm text-slate-300">
+          Time Limit (minutes)
+        </label>
+        <input
+          type="number"
+          min={1}
+          className="w-full p-3 rounded bg-[#020617] text-white border border-slate-700"
+          value={form.timeLimitMinutes}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              timeLimitMinutes: Number(e.target.value),
+            })
+          }
+        />
+      </div>
 
       {/* Premium */}
       <label className="flex items-center gap-2 text-slate-300">
@@ -240,7 +263,11 @@ const BasicInfo = () => {
           disabled={loading}
           className="px-5 py-2 rounded bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50"
         >
-          {loading ? "Saving..." : (id ? "Update & Continue" : "Save & Continue")}
+          {loading
+            ? "Saving..."
+            : id
+              ? "Update & Continue"
+              : "Save & Continue"}
         </button>
       </div>
     </div>

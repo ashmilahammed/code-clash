@@ -16,3 +16,8 @@ export const getSearchUsersApi = async (): Promise<User[]> => {
   const res = await axiosInstance.get("/user/leaderboard?limit=100");
   return res.data.data;
 };
+
+export const getUserProfileStatsApi = async (): Promise<any> => {
+  const res = await axiosInstance.get("/user/profile/stats");
+  return res.data.data;
+};

@@ -49,6 +49,12 @@ const SolveChallenge = () => {
   }, [id, user, navigate]);
 
   const handleSuccess = (xp: number) => {
+    // Clear the active timer and global challenge trackers so they aren't stuck locally
+    if (user?.id && challenge?._id) {
+      localStorage.removeItem(`active_challenge_${user.id}`);
+      localStorage.removeItem(`challenge_timer_${user.id}_${challenge._id}`);
+    }
+
     setEarnedXp(xp);
     setShowSuccessModal(true);
   };
@@ -72,7 +78,7 @@ const SolveChallenge = () => {
         />
       )}
 
-      <HeaderBar challenge={challenge} />
+      <HeaderBar key={challenge._id} challenge={challenge} />
 
       <div className="flex flex-1 overflow-hidden">
 

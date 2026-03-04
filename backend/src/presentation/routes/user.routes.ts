@@ -8,6 +8,7 @@ import { upload } from "../middlewares/upload.middleware";
 const router = Router();
 
 router.get("/dashboard", authMiddleware, userController.getDashboard);
+router.get("/profile/stats", authMiddleware, userController.getProfileStats);
 router.get("/leaderboard", authMiddleware, userController.getLeaderboard);
 
 
