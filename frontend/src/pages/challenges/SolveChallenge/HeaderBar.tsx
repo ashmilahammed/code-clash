@@ -19,19 +19,21 @@
 import { useState, useEffect } from "react";
 import { useAuthStore } from "../../../store/useAuthStore";
 
-const HeaderBar = ({ challenge }: any) => {
+const HeaderBar = ({ challenge, onTimeUp, isSuccess }: any) => {
   const user = useAuthStore((s) => s.user);
   const [timeLeft, setTimeLeft] = useState(0);
 
   useEffect(() => {
-    if (!challenge.timeLimitMinutes || !user?.id) {
+    // @ts-ignore
+    const userId = user?.id || user?._id;
+    if (!challenge.timeLimitMinutes || !userId) {
       setTimeLeft(0);
       return;
     }
 
     const challengeId = challenge.id || challenge._id;
-    const timerKey = `challenge_timer_${user.id}_${challengeId}`;
-    const globalActiveKey = `active_challenge_${user.id}`;
+    const timerKey = `challenge_timer_${userId}_${challengeId}`;
+    const globalActiveKey = `active_challenge_${userId}`;
     let expiryTime = parseInt(localStorage.getItem(timerKey) || "0", 10);
 
     if (!expiryTime || expiryTime <= Date.now()) {
@@ -49,22 +51,35 @@ const HeaderBar = ({ challenge }: any) => {
       }));
     }
 
+    let interval: ReturnType<typeof setInterval>;
+
     const updateTimer = () => {
       const remaining = Math.floor((expiryTime - Date.now()) / 1000);
       if (remaining <= 0) {
         setTimeLeft(0);
         localStorage.removeItem(timerKey);
         localStorage.removeItem(globalActiveKey);
+        if (onTimeUp) onTimeUp();
+        if (interval) clearInterval(interval);
       } else {
         setTimeLeft(remaining);
       }
     };
 
     updateTimer(); // Initial call before interval kicks in
-    const interval = setInterval(updateTimer, 1000);
 
-    return () => clearInterval(interval);
-  }, [challenge.id, challenge._id, challenge.timeLimitMinutes, user?.id]);
+    if (isSuccess) {
+      localStorage.removeItem(timerKey);
+      localStorage.removeItem(globalActiveKey);
+    } else {
+      interval = setInterval(updateTimer, 1000);
+    }
+
+    // @ts-ignore
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [challenge.id, challenge._id, challenge.timeLimitMinutes, user?.id, (user as any)?._id, isSuccess]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);

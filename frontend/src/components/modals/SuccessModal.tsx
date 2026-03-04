@@ -7,6 +7,7 @@ interface SuccessModalProps {
     difficulty?: string;
     timeTaken?: string;
     attempts?: number;
+    badge?: { name: string; iconUrl?: string } | null;
     nextChallengeId?: string;
 }
 
@@ -17,6 +18,7 @@ const SuccessModal = ({
     difficulty = "Medium",
     timeTaken = "0:00",
     attempts = 1,
+    badge = null,
     nextChallengeId
 }: SuccessModalProps) => {
     const navigate = useNavigate();
@@ -66,8 +68,8 @@ const SuccessModal = ({
                         <div className="w-full bg-slate-900/40 backdrop-blur p-3 rounded-lg border border-white/5">
                             <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">Difficulty</p>
                             <p className={`text-lg font-bold ${difficulty === 'Easy' ? 'text-green-400' :
-                                    difficulty === 'Medium' ? 'text-yellow-400' :
-                                        'text-red-400'
+                                difficulty === 'Medium' ? 'text-yellow-400' :
+                                    'text-red-400'
                                 }`}>{difficulty}</p>
                         </div>
 
@@ -98,23 +100,20 @@ const SuccessModal = ({
                             <p className="text-3xl font-bold text-white">+{xpEarned}</p>
                         </div>
 
-                        {/* Badge Reward (Mock) */}
-                        <div className="bg-linear-to-br from-purple-600 to-purple-700 rounded-xl p-4 flex flex-col items-center justify-center text-center shadow-lg shadow-purple-900/20 transform hover:-translate-y-1 transition-all duration-300 delay-75">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white mb-2" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.633-.241l-.262.524a1 1 0 01-1.787-.898l.262-.524a1 1 0 01-.633.241A3.989 3.989 0 018 14c-1.255 0-2.43.51-3.278 1.424a1 1 0 01-1.388-1.465A5.992 5.992 0 0110 12a5.992 5.992 0 011.05-.092L8.769 7.429l-1.233-.616a1 1 0 01.894-1.79l1.599.8L14 4.323V3a1 1 0 011-1h-5z" clipRule="evenodd" />
-                            </svg>
-                            <p className="text-xs text-purple-100 uppercase font-semibold mb-1">New Badge</p>
-                            <p className="text-sm font-bold text-white leading-tight">Code Master</p>
-                        </div>
-
-                        {/* Special Reward (Mock) */}
-                        <div className="bg-linear-to-br from-amber-600 to-amber-700 rounded-xl p-4 flex flex-col items-center justify-center text-center shadow-lg shadow-amber-900/20 transform hover:-translate-y-1 transition-all duration-300 delay-150">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white mb-2" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-5v5z" clipRule="evenodd" />
-                            </svg>
-                            <p className="text-xs text-amber-100 uppercase font-semibold mb-1">Special</p>
-                            <p className="text-sm font-bold text-white leading-tight">Avatar</p>
-                        </div>
+                        {/* Badge Reward */}
+                        {badge && (
+                            <div className="bg-linear-to-br from-purple-600 to-purple-700 rounded-xl p-4 flex flex-col items-center justify-center text-center shadow-lg shadow-purple-900/20 transform hover:-translate-y-1 transition-all duration-300 delay-75">
+                                {badge.iconUrl ? (
+                                    <img src={badge.iconUrl} alt={badge.name} className="w-8 h-8 mb-2 object-contain" />
+                                ) : (
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white mb-2" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.633-.241l-.262.524a1 1 0 01-1.787-.898l.262-.524a1 1 0 01-.633.241A3.989 3.989 0 018 14c-1.255 0-2.43.51-3.278 1.424a1 1 0 01-1.388-1.465A5.992 5.992 0 0110 12a5.992 5.992 0 011.05-.092L8.769 7.429l-1.233-.616a1 1 0 01.894-1.79l1.599.8L14 4.323V3a1 1 0 011-1h-5z" clipRule="evenodd" />
+                                    </svg>
+                                )}
+                                <p className="text-xs text-purple-100 uppercase font-semibold mb-1">New Badge</p>
+                                <p className="text-sm font-bold text-white leading-tight">{badge.name}</p>
+                            </div>
+                        )}
                     </div>
 
                     {/* Next Challenge Section */}

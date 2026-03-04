@@ -8,6 +8,7 @@ import TestCasePanel from "./TestCasePanel";
 import ProblemPanel from "./ProblemPanel";
 import HeaderBar from "./HeaderBar";
 import SuccessModal from "../../../components/modals/SuccessModal";
+import TimeUpModal from "../../../components/modals/TimeUpModal";
 
 const SolveChallenge = () => {
   const { id } = useParams();
@@ -24,7 +25,12 @@ const SolveChallenge = () => {
 
   // Success Modal State
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [earnedXp, setEarnedXp] = useState(0);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [successData, setSuccessData] = useState({ xpEarned: 0, timeTaken: "0:00", attempts: 1, badge: null });
+
+  // Time Up Modal State
+  const [isTimeUp, setIsTimeUp] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     if (!id) return;
@@ -48,7 +54,7 @@ const SolveChallenge = () => {
       .finally(() => setLoading(false));
   }, [id, user, navigate]);
 
-  const handleSuccess = (xp: number) => {
+  const handleSuccess = ({ xpEarned, timeTaken, attempts, badge }: any) => {
     // Clear the active timer and global challenge trackers so they aren't stuck locally
     const challengeId = challenge?._id || challenge?.id;
     if (user?.id && challengeId) {
@@ -56,8 +62,14 @@ const SolveChallenge = () => {
       localStorage.removeItem(`challenge_timer_${user.id}_${challengeId}`);
     }
 
-    setEarnedXp(xp);
+    setSuccessData({ xpEarned, timeTaken, attempts, badge });
+    setIsSuccess(true);
     setShowSuccessModal(true);
+  };
+
+  const handleRetry = () => {
+    setIsTimeUp(false);
+    setRetryCount(c => c + 1);
   };
 
   if (loading) return <div>Loading...</div>;
@@ -69,17 +81,19 @@ const SolveChallenge = () => {
       {showSuccessModal && (
         <SuccessModal
           onClose={() => setShowSuccessModal(false)}
-          xpEarned={earnedXp}
+          xpEarned={successData.xpEarned}
           challengeTitle={challenge.title}
           difficulty={challenge.difficulty}
-          // Mock data for now, can be passed from result if available
-          timeTaken="5:24"
-          attempts={1}
+          timeTaken={successData.timeTaken}
+          attempts={successData.attempts}
+          badge={successData.badge}
         // nextChallengeId="next-id-here" // todo: implement fetch next challenge
         />
       )}
 
-      <HeaderBar key={challenge._id || challenge.id} challenge={challenge} />
+      {isTimeUp && <TimeUpModal onRetry={handleRetry} />}
+
+      <HeaderBar key={`${challenge._id || challenge.id}-${retryCount}`} challenge={challenge} onTimeUp={() => setIsTimeUp(true)} isSuccess={isSuccess} />
 
       <div className="flex flex-1 overflow-hidden">
 
@@ -100,6 +114,7 @@ const SolveChallenge = () => {
             testCases={testCases}
             setResult={setExecutionResult}
             onSuccess={handleSuccess}
+            isTimeUp={isTimeUp}
           />
           <TestCasePanel result={executionResult} />
         </div>

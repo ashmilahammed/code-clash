@@ -12,15 +12,14 @@ const NewLeaderboard = () => {
             .finally(() => setLoading(false));
     }, []);
 
-    // Mock stats for now
-    // const topGainer = users[0]; 
-    // const fastestSolver = users[1]; 
-    // const longestStreak = users.reduce((prev, current) => (prev.current_streak > current.current_streak) ? prev : current, users[0]);
+    // Top Performers Logic
+    const topXPGainer = users.length > 0 ? users[0] : null;
+    const topSolver = users.length > 0 ? users.reduce((prev, current) =>
+        ((prev.challengesSolved || 0) > (current.challengesSolved || 0)) ? prev : current, users[0]) : null;
 
-    // Use users in list if available, or placeholder
-    const longestStreakUser = users.length > 0 ? users.reduce((prev, current) => (prev.current_streak > current.current_streak) ? prev : current, users[0]) : null;
-
-
+    // Fix: check `longest_streak` instead of only `current_streak` for Longest Streak card
+    const longestStreakUser = users.length > 0 ? users.reduce((prev, current) =>
+        ((prev.longest_streak || prev.current_streak || 0) > (current.longest_streak || current.current_streak || 0)) ? prev : current, users[0]) : null;
     if (loading) return <div className="p-8 text-white">Loading leaderboard...</div>;
 
     return (
@@ -49,52 +48,62 @@ const NewLeaderboard = () => {
             <h2 className="text-lg font-semibold mb-4">Top Performers</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
 
-                {/* 1. Weekly XP Gainer - Mocked */}
+                {/* 1. Weekly XP Gainer - Dynamic */}
                 <div className="bg-linear-to-br from-indigo-900 to-indigo-800 rounded-xl p-6 relative overflow-hidden">
                     <div className="absolute top-4 right-4 bg-indigo-500/20 p-2 rounded-lg">
                         ⚡
                     </div>
-                    <div className="text-sm text-indigo-200 mb-1">Weekly XP Gainer</div>
-                    <div className="text-2xl font-bold mb-4">+5,423 XP</div>
+                    <div className="text-sm text-indigo-200 mb-1">Top XP Gainer</div>
+                    <div className="text-2xl font-bold mb-4">
+                        {topXPGainer ? `+${topXPGainer.xp.toLocaleString()} XP` : "0 XP"}
+                    </div>
                     <div className="flex items-center gap-3">
-                        {/* Avatar Placeholder */}
-                        <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs">
-                            🧙‍♂️
-                        </div>
-                        <span className="font-medium">Ashmil</span>
-                        {/* (Mock Name) */}
+                        {topXPGainer && (
+                            <>
+                                <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold uppercase text-white">
+                                    {topXPGainer.username[0]}
+                                </div>
+                                <span className="font-medium">{topXPGainer.username}</span>
+                            </>
+                        )}
                     </div>
                 </div>
 
-                {/* 2. Fastest Solver - Mocked */}
+                {/* 2. Top Solver - Replaces Fastest Solver */}
                 <div className="bg-linear-to-br from-orange-900 to-orange-800/80 rounded-xl p-6 relative overflow-hidden">
                     <div className="absolute top-4 right-4 bg-orange-500/20 p-2 rounded-lg">
-                        ⏱️
+                        🎯
                     </div>
-                    <div className="text-sm text-orange-200 mb-1">Fastest Solver</div>
-                    <div className="text-2xl font-bold mb-4">3m 42s avg</div>
+                    <div className="text-sm text-orange-200 mb-1">Top Solver</div>
+                    <div className="text-2xl font-bold mb-4">
+                        {topSolver ? `${topSolver.challengesSolved || 0} Solved` : "0 Solved"}
+                    </div>
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs">
-                            🧙‍♂️
-                        </div>
-                        <span className="font-medium">Ahammed</span>
+                        {topSolver && (
+                            <>
+                                <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold uppercase text-white">
+                                    {topSolver.username[0]}
+                                </div>
+                                <span className="font-medium">{topSolver.username}</span>
+                            </>
+                        )}
                     </div>
                 </div>
 
-                {/* 3. Longest Streak - Real Data */}
+                {/* 3. Longest Streak - Dynamic */}
                 <div className="bg-linear-to-br from-emerald-900 to-emerald-800/80 rounded-xl p-6 relative overflow-hidden">
                     <div className="absolute top-4 right-4 bg-emerald-500/20 p-2 rounded-lg">
                         🔥
                     </div>
                     <div className="text-sm text-emerald-200 mb-1">Longest Streak</div>
                     <div className="text-2xl font-bold mb-4">
-                        {longestStreakUser ? `${longestStreakUser.current_streak} days` : "0 days"}
+                        {longestStreakUser ? `${longestStreakUser.longest_streak || longestStreakUser.current_streak || 0} days` : "0 days"}
                     </div>
                     <div className="flex items-center gap-3">
                         {longestStreakUser && (
                             <>
-                                <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs">
-                                    🧙‍♂️
+                                <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold uppercase text-white">
+                                    {longestStreakUser.username[0]}
                                 </div>
                                 <span className="font-medium">{longestStreakUser.username}</span>
                             </>

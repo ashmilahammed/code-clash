@@ -102,14 +102,16 @@
 
 
 import Editor from "@monaco-editor/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { runCodeApi, submitSolutionApi } from "../../../api/submissionApi";
 
 
-const EditorPanel = ({ templates, challengeId, testCases, setResult, onSuccess }: any) => {
+const EditorPanel = ({ templates, challengeId, testCases, setResult, onSuccess, isTimeUp }: any) => {
   const [selectedLang, setSelectedLang] = useState(templates[0]?.language || "javascript");
   const [code, setCode] = useState(templates[0]?.starterCode || "");
   const [loading, setLoading] = useState(false);
+  const startTimeRef = useRef(Date.now());
+  const [attempts, setAttempts] = useState(0);
 
   // Update local state when templates prop changes (e.g. data fetched)
   useEffect(() => {
@@ -148,6 +150,7 @@ const EditorPanel = ({ templates, challengeId, testCases, setResult, onSuccess }
   //
   const handleSubmit = async () => {
     setLoading(true);
+    setAttempts(a => a + 1);
 
     try {
       const res = await submitSolutionApi({
@@ -160,7 +163,16 @@ const EditorPanel = ({ templates, challengeId, testCases, setResult, onSuccess }
 
       if (res.status === 'PASSED') {
         setTimeout(() => {
-          if (onSuccess) onSuccess(res.xpEarned || 0);
+          const timeTakenMs = Date.now() - startTimeRef.current;
+          const mins = Math.floor(timeTakenMs / 60000);
+          const secs = Math.floor((timeTakenMs % 60000) / 1000);
+          const timeTaken = `${mins}:${secs.toString().padStart(2, '0')}`;
+
+          if (onSuccess) onSuccess({
+            xpEarned: res.xpEarned || 0,
+            timeTaken,
+            attempts: attempts + 1
+          });
         }, 1000);
       }
     } catch (err: any) {
@@ -186,6 +198,7 @@ const EditorPanel = ({ templates, challengeId, testCases, setResult, onSuccess }
       {/* Top Bar */}
       <div className="flex items-center justify-between px-4 py-2 border-b border-slate-800 bg-[#0f172a]">
         <select
+          disabled={isTimeUp}
           value={selectedLang}
           onChange={(e) => {
             const newLang = e.target.value;
@@ -197,7 +210,7 @@ const EditorPanel = ({ templates, challengeId, testCases, setResult, onSuccess }
               setCode(template.starterCode);
             }
           }}
-          className="bg-slate-900 px-2 py-1 rounded"
+          className="bg-slate-900 px-2 py-1 rounded disabled:opacity-50"
         >
           {templates.map((t: any) => (
             <option key={t.language} value={t.language}>
@@ -210,8 +223,8 @@ const EditorPanel = ({ templates, challengeId, testCases, setResult, onSuccess }
         <div className="flex gap-2">
           <button
             onClick={handleRun}
-            disabled={loading}
-            className={`px-3 py-1 rounded transition ${loading ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-slate-700 hover:bg-slate-600'}`}
+            disabled={loading || isTimeUp}
+            className={`px-3 py-1 rounded transition ${(loading || isTimeUp) ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-slate-700 hover:bg-slate-600'}`}
           >
             {loading ? 'Running...' : 'Run'}
           </button>
@@ -219,8 +232,8 @@ const EditorPanel = ({ templates, challengeId, testCases, setResult, onSuccess }
 
           <button
             onClick={handleSubmit}
-            disabled={loading}
-            className={`px-4 py-1 rounded transition ${loading ? 'bg-green-900/50 text-green-500 cursor-not-allowed' : 'bg-green-600 hover:bg-green-500'}`}
+            disabled={loading || isTimeUp}
+            className={`px-4 py-1 rounded transition ${(loading || isTimeUp) ? 'bg-green-900/50 text-green-500 cursor-not-allowed' : 'bg-green-600 hover:bg-green-500'}`}
 
           >
             {loading ? 'Submitting...' : 'Submit'}
@@ -241,7 +254,8 @@ const EditorPanel = ({ templates, challengeId, testCases, setResult, onSuccess }
           options={{
             fontSize: 14,
             minimap: { enabled: false },
-            scrollBeyondLastLine: false
+            scrollBeyondLastLine: false,
+            readOnly: isTimeUp
           }}
         />
       </div>

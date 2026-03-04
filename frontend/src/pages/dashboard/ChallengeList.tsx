@@ -114,8 +114,11 @@ const ChallengeList = () => {
                   }
 
                   // Check for global active challenge
-                  if (user?.id) {
-                    const globalActiveKey = `active_challenge_${user.id}`;
+                  // @ts-ignore
+                  if (user?.id || user?._id) {
+                    // @ts-ignore
+                    const userId = user.id || user._id;
+                    const globalActiveKey = `active_challenge_${userId}`;
                     const activeData = localStorage.getItem(globalActiveKey);
                     if (activeData) {
                       try {
@@ -136,7 +139,7 @@ const ChallengeList = () => {
                         } else {
                           // Timer naturally expired but wasn't cleared yet, clear it
                           localStorage.removeItem(globalActiveKey);
-                          localStorage.removeItem(`challenge_timer_${user.id}_${parsedData.challengeId}`);
+                          localStorage.removeItem(`challenge_timer_${userId}_${parsedData.challengeId}`);
                         }
                       } catch (e) {
                         localStorage.removeItem(globalActiveKey);
@@ -186,9 +189,12 @@ const ChallengeList = () => {
               <button
                 onClick={() => {
                   // Forcibly clear old trackers explicitly
-                  if (user?.id) {
-                    localStorage.removeItem(`active_challenge_${user.id}`);
-                    localStorage.removeItem(`challenge_timer_${user.id}_${activeChallengeData.challengeId}`);
+                  // @ts-ignore
+                  if (user?.id || user?._id) {
+                    // @ts-ignore
+                    const userId = user.id || user._id;
+                    localStorage.removeItem(`active_challenge_${userId}`);
+                    localStorage.removeItem(`challenge_timer_${userId}_${activeChallengeData.challengeId}`);
                   }
                   navigate(`/challenges/${pendingChallenge.id}`);
                 }}
