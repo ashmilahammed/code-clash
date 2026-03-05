@@ -8,6 +8,7 @@ import { HttpStatus } from "../constants/httpStatus";
 import { MESSAGES } from "../constants/messages";
 
 
+
 export class LevelController {
   constructor(
     private readonly _createLevel: CreateLevelUseCase,
@@ -15,6 +16,7 @@ export class LevelController {
     private readonly _updateLevel: UpdateLevelUseCase,
     private readonly _deleteLevel: DeleteLevelUseCase
   ) { }
+
 
   getAll = async (req: Request, res: Response) => {
     try {
@@ -25,6 +27,7 @@ export class LevelController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(ApiResponse.error(message));
     }
   };
+
 
   create = async (req: Request, res: Response) => {
     try {
@@ -59,6 +62,7 @@ export class LevelController {
     }
   };
 
+  
   update = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
@@ -76,6 +80,7 @@ export class LevelController {
       return res.status(HttpStatus.BAD_REQUEST).json(ApiResponse.error(message));
     }
   };
+  
 
   delete = async (req: Request, res: Response) => {
     try {

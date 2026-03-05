@@ -4,7 +4,7 @@ export interface IPlanDoc extends Document {
     name: string;
     description: string;
     price: number;
-    duration: number; // in days typically
+    duration: number; // in days 
     features: string[];
     status: 'Active' | 'Inactive';
     createdAt: Date;

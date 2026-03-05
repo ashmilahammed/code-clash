@@ -5,6 +5,7 @@ import { Send, Hash, Settings, LogOut, Paperclip, Smile, UserPlus, Trash2, Image
 import InviteModal from './InviteModal';
 import { chatApi } from '../../api/chatApi';
 
+
 const ChatWindow = () => {
     const { activeConversation, messages, sendMessage, deleteMessage, leaveGroup } = useChatStore();
     const { user } = useAuthStore();
@@ -143,7 +144,7 @@ const ChatWindow = () => {
                                 className={`px-4 py-2 rounded-2xl text-sm ${isMine
                                     ? 'bg-blue-600 text-white rounded-tr-none'
                                     : 'bg-[#1A2338] text-slate-200 rounded-tl-none border border-slate-800'
-                                    } ${message.isDeleted ? 'italic text-opacity-70 bg-transparent border border-slate-700 !text-slate-500' : ''}`}
+                                    } ${message.isDeleted ? 'italic text-opacity-70 bg-transparent border border-slate-700 text-slate-500' : ''}`}
                             >
                                 {message.isDeleted ? (
                                     <span className="flex items-center gap-2"><Trash2 size={14} className="opacity-50" /> {message.content}</span>

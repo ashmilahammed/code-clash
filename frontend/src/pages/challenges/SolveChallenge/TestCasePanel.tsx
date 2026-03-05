@@ -11,28 +11,6 @@ const TestCasePanel = ({ result }: any) => {
   return (
     <div className="h-40 border-t border-slate-800 p-4 bg-[#0f172a]">
 
-      {/* <div className="text-sm mb-2">
-        Status:{" "}
-        <span
-          className={
-            result.status === "PASSED"
-              ? "text-green-400"
-              : "text-red-400"
-          }
-        >
-          {result.status}
-        </span>
-      </div> */}
-
-      {/* status */}
-      {/* <div className="text-lg font-semibold">
-        {result.status === "PASSED" ? (
-          <span className="text-green-400">PASSED 🎉</span>
-        ) : (
-          <span className="text-red-400">FAILED ❌</span>
-        )}
-      </div> */}
-
       {/* status */}
       <div className="text-lg font-semibold">
         {result.status === "PASSED" && (

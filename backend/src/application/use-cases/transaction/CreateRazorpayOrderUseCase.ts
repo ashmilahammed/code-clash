@@ -25,12 +25,10 @@ export class CreateRazorpayOrderUseCase {
             throw new Error("Cannot subscribe to an inactive plan");
         }
 
-        // Razorpay requires amount in subunits (e.g. paise for INR)
-        // Ensure price is parsed as a number. In plan pricing we might have integers or decimals.
-        // Assuming price is in INR (base unit).
+        // 
         const amountInPaise = Math.round(plan.price * 100);
 
-        // Receipt id can be anything unique. Using combination of userId and timestamp.
+        // Receipt id 
         const receiptId = `rcpt_${Date.now()}`;
         // const receiptId = `receipt_${dto.userId}_${Date.now()}`;
 

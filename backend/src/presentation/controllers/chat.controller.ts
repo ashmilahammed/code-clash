@@ -9,6 +9,7 @@ import { LeaveGroupUseCase } from "../../application/use-cases/chat/LeaveGroupUs
 import { AddParticipantsUseCase } from "../../application/use-cases/chat/AddParticipantsUseCase";
 import { UploadChatImageUseCase } from "../../application/use-cases/chat/UploadChatImageUseCase";
 
+
 export class ChatController {
     constructor(
         private createGroupUseCase: CreateGroupUseCase,
@@ -21,6 +22,7 @@ export class ChatController {
         private addParticipantsUseCase: AddParticipantsUseCase,
         private uploadChatImageUseCase: UploadChatImageUseCase
     ) { }
+
 
     async createGroup(req: Request, res: Response): Promise<void> {
         try {
@@ -46,6 +48,7 @@ export class ChatController {
             res.status(400).json({ message: error.message });
         }
     }
+
 
     async getPublicGroups(req: Request, res: Response): Promise<void> {
         try {
@@ -80,6 +83,7 @@ export class ChatController {
         }
     }
 
+
     async getConversations(req: Request, res: Response): Promise<void> {
         try {
             const userId = res.locals.user?.userId;
@@ -95,6 +99,7 @@ export class ChatController {
             res.status(400).json({ message: error.message });
         }
     }
+
 
     async getMessages(req: Request, res: Response): Promise<void> {
         try {
@@ -122,6 +127,7 @@ export class ChatController {
             res.status(400).json({ message: error.message });
         }
     }
+    
 
     async getOrCreateDirectConversation(req: Request, res: Response): Promise<void> {
         try {

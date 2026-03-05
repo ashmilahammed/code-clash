@@ -14,7 +14,8 @@ type DashboardData = {
   level: {
     level: number;
     currentXp: number;
-    nextLevelXp: number;
+    minXp: number;
+    maxXp: number;
   };
   streak: {
     current: number;
@@ -90,7 +91,8 @@ const Dashboard = () => {
       <LevelProgress
         level={dashboard.level.level}
         currentXp={dashboard.level.currentXp}
-        nextLevelXp={dashboard.level.nextLevelXp}
+        minXp={dashboard.level.minXp}
+        maxXp={dashboard.level.maxXp}
       />
 
       {/* Main grid */}

@@ -3,6 +3,7 @@ import { Transaction } from "../../../domain/entities/transaction/Transaction";
 import { TransactionModel } from "../../database/models/transactions/TransactionModel";
 import { TransactionMapper } from "../../../application/mappers/TransactionMapper";
 
+
 export class TransactionRepository implements ITransactionRepository {
     async create(transaction: Transaction): Promise<Transaction> {
         const persistenceData = TransactionMapper.toPersistence(transaction);

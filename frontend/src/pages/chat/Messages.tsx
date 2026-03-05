@@ -15,9 +15,6 @@ const Messages = () => {
         }
 
         return () => {
-            // We might want to keep the socket alive across page navigations in a real app,
-            // but for this specific page, we can disconnect if it unmounts, OR keep it alive in an app-level useEffect.
-            // Assuming we keep it contained to this page for now:
             disconnectSocket();
         };
     }, [accessToken, initializeSocket, fetchConversations, disconnectSocket]);

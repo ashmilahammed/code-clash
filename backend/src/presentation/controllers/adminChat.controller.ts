@@ -3,12 +3,14 @@ import { GetAdminGroupsUseCase } from "../../application/use-cases/chat/GetAdmin
 import { UpdateGroupStatusUseCase } from "../../application/use-cases/chat/UpdateGroupStatusUseCase";
 import { DeleteGroupUseCase } from "../../application/use-cases/chat/DeleteGroupUseCase";
 
+
 export class AdminChatController {
     constructor(
         private getAdminGroupsUseCase: GetAdminGroupsUseCase,
         private updateGroupStatusUseCase: UpdateGroupStatusUseCase,
         private deleteGroupUseCase: DeleteGroupUseCase
     ) { }
+
 
     getAdminGroups = async (req: Request, res: Response) => {
         try {
@@ -23,6 +25,7 @@ export class AdminChatController {
             res.status(400).json({ success: false, message: error.message });
         }
     };
+
 
     updateGroupStatus = async (req: Request, res: Response) => {
         try {
@@ -44,6 +47,7 @@ export class AdminChatController {
             res.status(400).json({ success: false, message: error.message });
         }
     };
+    
 
     deleteGroup = async (req: Request, res: Response) => {
         try {

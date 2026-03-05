@@ -8,6 +8,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET!,
 });
 
+
 export class CloudinaryStorageService implements IFileStorageService {
 
   async uploadAvatar(file: Buffer, userId: string) {

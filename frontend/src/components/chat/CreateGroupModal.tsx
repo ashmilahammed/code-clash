@@ -8,6 +8,7 @@ interface CreateGroupModalProps {
     onClose: () => void;
 }
 
+
 const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ onClose }) => {
     const { createGroup } = useChatStore();
     const [step, setStep] = useState(1);

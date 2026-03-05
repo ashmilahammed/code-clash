@@ -10,7 +10,8 @@ const MOCK_DATA = {
     level: {
         level: 1,
         currentXp: 120,
-        nextLevelXp: 500,
+        minXp: 0,
+        maxXp: 499,
     },
     streak: {
         current: 0,
@@ -80,7 +81,8 @@ const LandingPage = () => {
                 <LevelProgress
                     level={MOCK_DATA.level.level}
                     currentXp={MOCK_DATA.level.currentXp}
-                    nextLevelXp={MOCK_DATA.level.nextLevelXp}
+                    minXp={MOCK_DATA.level.minXp}
+                    maxXp={MOCK_DATA.level.maxXp}
                 />
             </div>
 

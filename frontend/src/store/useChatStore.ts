@@ -3,6 +3,7 @@ import type { Conversation, Message } from '../api/chatApi';
 import { chatApi } from '../api/chatApi';
 import { io, Socket } from 'socket.io-client';
 
+
 interface ChatState {
     conversations: Conversation[];
     publicGroups: Conversation[];
@@ -40,7 +41,11 @@ export const useChatStore = create<ChatState>((set, get) => ({
         const currentSocket = get().socket;
         if (currentSocket) return;
 
-        const socket = io('http://localhost:5000', {
+        // const socket = io('http://localhost:5000', {
+        //     auth: { token },
+        //     withCredentials: true,
+        // });
+        const socket = io(import.meta.env.VITE_SOCKET_URL, {
             auth: { token },
             withCredentials: true,
         });

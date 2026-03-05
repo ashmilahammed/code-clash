@@ -1,9 +1,3 @@
-// export interface IChallengeTag {
-//   id?: string;
-//   name: string;
-// }
-
-
 export class ChallengeTag {
   constructor(
     public readonly id: string | undefined,

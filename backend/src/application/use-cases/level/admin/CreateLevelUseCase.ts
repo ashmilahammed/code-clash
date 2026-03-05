@@ -19,7 +19,7 @@ export class CreateLevelUseCase {
       throw new Error(`Level ${levelNumber} already exists`);
     }
 
-    // Enforce sequential levels (no skipping)
+    // Enfo
     if (levelNumber > 1) {
       const previousLevel =
         await this.levelRepository.findByLevelNumber(levelNumber - 1);
@@ -31,7 +31,7 @@ export class CreateLevelUseCase {
       }
     }
 
-    // Prevent XP range overlap
+    // 
     const allLevels = await this.levelRepository.findAll();
 
     const hasOverlap = allLevels.some(
@@ -53,7 +53,7 @@ export class CreateLevelUseCase {
       title
     );
 
-    // Persist
+    //
     return this.levelRepository.create(level);
   }
 }

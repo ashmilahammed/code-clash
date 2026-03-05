@@ -1,17 +1,3 @@
-// const ProblemPanel = ({ challenge }: any) => {
-//   return (
-//     <div className="p-6 space-y-4">
-//       <p className="text-slate-300 whitespace-pre-line">
-//         {challenge.description}
-//       </p>
-//     </div>
-//   );
-// };
-
-// export default ProblemPanel;
-
-
-
 import { useState } from "react";
 
 const ProblemPanel = ({ challenge, hints, testCases }: any) => {

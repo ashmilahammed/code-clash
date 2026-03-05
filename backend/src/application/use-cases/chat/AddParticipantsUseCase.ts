@@ -1,6 +1,7 @@
 import { IConversationRepository } from "../../../domain/repositories/chat/IConversationRepository";
 import { Conversation } from "../../../domain/entities/chat/Conversation";
 
+
 export class AddParticipantsUseCase {
     constructor(private conversationRepository: IConversationRepository) { }
 
@@ -15,8 +16,6 @@ export class AddParticipantsUseCase {
             throw new Error("Cannot add participants to a direct message conversation");
         }
 
-        // For private groups, maybe only admin can invite, or any member. Let's allow any member for now, 
-        // or check if they are in the group.
         if (!conversation.participants.includes(adderId) && conversation.adminId !== adderId) {
             throw new Error("You do not have permission to add participants to this group");
         }

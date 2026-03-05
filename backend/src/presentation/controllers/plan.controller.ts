@@ -5,6 +5,7 @@ import { UpdatePlanUseCase } from "../../application/use-cases/plans/admin/Updat
 import { DeletePlanUseCase } from "../../application/use-cases/plans/admin/DeletePlanUseCase";
 import { WinstonLogger } from "../../infrastructure/services/logger";
 
+
 export class PlanController {
     constructor(
         private createPlanUseCase: CreatePlanUseCase,
@@ -14,6 +15,7 @@ export class PlanController {
         private logger: WinstonLogger
     ) { }
 
+    
     async createPlan(req: Request, res: Response) {
         try {
             const { name, description, price, duration, features, status } = req.body;
@@ -31,6 +33,7 @@ export class PlanController {
             return res.status(400).json({ message: error.message || "Failed to create plan" });
         }
     }
+
 
     async getPlans(req: Request, res: Response) {
         try {
@@ -53,6 +56,7 @@ export class PlanController {
         }
     }
 
+
     async updatePlan(req: Request, res: Response) {
         try {
             const { id } = req.params;
@@ -70,6 +74,7 @@ export class PlanController {
         }
     }
 
+    
     async deletePlan(req: Request, res: Response) {
         try {
             const { id } = req.params;

@@ -1,6 +1,7 @@
 import { Badge } from "../../../domain/entities/badge/Badge";
 import { IBadgeRepository } from "../../../domain/repositories/badge/IBadgeRepository";
 
+
 interface CreateBadgeDTO {
     name: string;
     description: string;

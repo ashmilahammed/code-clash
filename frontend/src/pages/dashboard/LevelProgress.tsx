@@ -1,16 +1,22 @@
 interface LevelProgressProps {
   level: number;
   currentXp: number;
-  nextLevelXp: number;
+  minXp: number;
+  maxXp: number;
 }
 
 const LevelProgress = ({
   level,
   currentXp,
-  nextLevelXp,
+  minXp,
+  maxXp,
 }: LevelProgressProps) => {
+  const xpInCurrentLevel = currentXp - minXp;
+  const xpRequiredForNextLevel = maxXp - minXp + 1;
+
+
   const progress = Math.min(
-    (currentXp / nextLevelXp) * 100,
+    (xpInCurrentLevel / xpRequiredForNextLevel) * 100,
     100
   );
 
@@ -24,7 +30,7 @@ const LevelProgress = ({
           </span>
         </div>
         <span className="text-xs text-slate-400">
-          {currentXp} / {nextLevelXp} XP
+          {xpInCurrentLevel} / {xpRequiredForNextLevel} XP
         </span>
       </div>
 
@@ -38,7 +44,7 @@ const LevelProgress = ({
 
       {/* Footer */}
       <p className="text-xs text-slate-400 mt-2">
-        {nextLevelXp - currentXp} XP to next level
+        {maxXp - currentXp + 1} XP to next level
       </p>
     </div>
   );

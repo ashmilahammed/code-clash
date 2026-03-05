@@ -23,7 +23,7 @@ export class VerifyRazorpayPaymentUseCase {
     async execute(dto: VerifyPaymentDTO): Promise<Transaction> {
         const { razorpayOrderId, razorpayPaymentId, razorpaySignature, userId, planId } = dto;
 
-        // 1. Verify Payment Signature
+        // Verify Payment Signature
         const isValid = this.razorpayService.verifyPaymentSignature(
             razorpayOrderId,
             razorpayPaymentId,
@@ -34,13 +34,13 @@ export class VerifyRazorpayPaymentUseCase {
             throw new Error("Invalid payment signature");
         }
 
-        // 2. Fetch Plan to define amount
+        // Fetch Plan to define amount
         const plan = await this.planRepository.findById(planId);
         if (!plan) {
             throw new Error("Plan not found");
         }
 
-        // 3. Create Transaction Record
+        // Create Transaction Record
         const transaction = new Transaction(
             undefined,
             userId,
@@ -53,7 +53,7 @@ export class VerifyRazorpayPaymentUseCase {
 
         const createdTransaction = await this.transactionRepository.create(transaction);
 
-        // 4. Update User Premium Status
+        // Update User Premium Status
         const user = await this.userRepository.findById(userId);
         if (user) {
             user.is_premium = true;

@@ -203,15 +203,15 @@ const Profile = () => {
                         <div className="bg-[#131B2D] border border-slate-800/60 rounded-xl p-6 shadow-sm">
                             <div className="flex justify-between items-center mb-3">
                                 <span className="font-bold text-lg text-white">Level {profileData.level.level}</span>
-                                <span className="text-blue-400 text-sm font-semibold bg-blue-400/10 px-2 py-0.5 rounded">{profileData.level.currentXp} XP</span>
+                                <span className="text-blue-400 text-sm font-semibold bg-blue-400/10 px-2 py-0.5 rounded">{profileData.level.currentXp - profileData.level.minXp} XP</span>
                             </div>
                             {/* Progress Bar */}
                             <div className="w-full bg-slate-800 h-3 rounded-full overflow-hidden mb-3">
-                                <div className="bg-linear-to-r from-blue-600 to-purple-600 h-full shadow-[0_0_10px_rgba(59,130,246,0.5)]" style={{ width: `${Math.min((profileData.level.currentXp / profileData.level.nextLevelXp) * 100, 100)}%` }}></div>
+                                <div className="bg-linear-to-r from-blue-600 to-purple-600 h-full shadow-[0_0_10px_rgba(59,130,246,0.5)]" style={{ width: `${Math.min(((profileData.level.currentXp - profileData.level.minXp) / (profileData.level.maxXp - profileData.level.minXp + 1)) * 100, 100)}%` }}></div>
                             </div>
                             <div className="flex justify-between text-xs font-medium text-slate-500">
                                 <span>Current Level</span>
-                                <span>{Math.max(profileData.level.nextLevelXp - profileData.level.currentXp, 0)} XP to Level {profileData.level.level + 1}</span>
+                                <span>{Math.max(profileData.level.maxXp - profileData.level.currentXp + 1, 0)} XP to Level {profileData.level.level + 1}</span>
                             </div>
                         </div>
 

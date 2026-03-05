@@ -19,12 +19,7 @@ const ChallengeTags = () => {
         try {
           const data = await getChallengeByIdApi(id);
           const challenge = data as unknown as ChallengeWithRelations;
-          // Assume challenge.tags is string[] or object[] with name/key?
-          // Based on types/Challenge.ts: ChallengeWithRelations has tags: string[]
-          // However, the backend populate might return objects if not handled by mapper.
-          // Let's assume the API returns what we need or check the Mapper.
-          // If it returns objects, we might need to map. 
-          // For now assuming the DTO has been mapped to strings or simple objects.
+
 
           if (challenge.tags && Array.isArray(challenge.tags)) {
             // Check if tags are strings or objects

@@ -5,11 +5,14 @@ import { UserRepository } from "../repositories/user/UserRepository";
 import { WinstonLogger } from "../services/logger";
 import { sendMessageUseCase, getConversationsUseCase, deleteMessageUseCase } from "../di/chat.di";
 
+
+
 export class SocketServer {
     private io: SocketIOServer;
     private jwtService: JwtService;
     private userRepository: UserRepository;
     private logger: WinstonLogger;
+
 
     constructor(server: HttpServer) {
         this.io = new SocketIOServer(server, {
@@ -27,6 +30,7 @@ export class SocketServer {
         this.setupEventHandlers();
     }
 
+    
     private setupMiddleware() {
         this.io.use(async (socket: Socket, next) => {
             try {

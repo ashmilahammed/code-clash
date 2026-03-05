@@ -34,6 +34,7 @@ export class BadgeController {
                 .json(ApiResponse.error(message));
         }
     };
+    
 
     create = async (req: Request, res: Response) => {
         try {

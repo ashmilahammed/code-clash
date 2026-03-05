@@ -34,7 +34,8 @@ const fileStorage = new CloudinaryStorageService();
 // user
 const getDashboardUseCase = new GetDashboardUseCase(
   userRepository,
-  xpService
+  xpService,
+  levelRepository
 );
 
 const getLeaderboardUseCase = new GetLeaderboardUseCase(
@@ -57,7 +58,8 @@ const removeUserAvatarUseCase = new RemoveUserAvatarUseCase(
 const getUserProfileStatsUseCase = new GetUserProfileStatsUseCase(
   userRepository,
   submissionRepository,
-  xpService
+  xpService,
+  levelRepository
 );
 
 

@@ -5,12 +5,12 @@ export class Conversation {
         public readonly id: string | undefined,
         public readonly type: ConversationType,
         public readonly participants: string[],
-        public readonly adminId?: string | null, // for groups
-        public readonly name?: string | null, // for groups
-        public readonly description?: string | null, // for groups
-        public readonly memberLimit?: number | null, // for groups
-        public readonly isPrivate?: boolean, // for groups
-        public status: 'active' | 'inactive' = 'active', // for all conversations, primarily used by admin globally
+        public readonly adminId?: string | null, 
+        public readonly name?: string | null, 
+        public readonly description?: string | null,
+        public readonly memberLimit?: number | null, 
+        public readonly isPrivate?: boolean, 
+        public status: 'active' | 'inactive' = 'active', // for all conversations,user by admin
         public readonly lastMessageAt?: Date | null,
         public readonly createdAt?: Date,
         public readonly updatedAt?: Date
@@ -18,15 +18,6 @@ export class Conversation {
         this.validate();
     }
 
-    // private validate() {
-    //     if (!this.participants || this.participants.length < 2) {
-    //         throw new Error("A conversation must have at least 2 participants");
-    //     }
-
-    //     if (this.type === 'group' && !this.name) {
-    //         throw new Error("Group conversations must have a name");
-    //     }
-    // }
 
 
     private validate() {

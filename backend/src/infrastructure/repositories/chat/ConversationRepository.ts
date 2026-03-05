@@ -4,6 +4,9 @@ import { ConversationModel } from "../../database/models/chat/ConversationModel"
 import { ConversationMapper } from "../../../application/mappers/chat/ConversationMapper";
 import { Types } from "mongoose";
 
+
+
+
 export class ConversationRepository implements IConversationRepository {
     async findById(id: string): Promise<Conversation | null> {
         if (!Types.ObjectId.isValid(id)) return null;
@@ -12,10 +15,10 @@ export class ConversationRepository implements IConversationRepository {
     }
 
     async findByParticipants(participants: string[]): Promise<Conversation | null> {
-        // Exact match for participants array regardless of order
+        // 
         const objectIds = participants.map(p => new Types.ObjectId(p));
 
-        // For direct messages, we look for a conversation with exactly these participants
+        // For direct messages
         const doc = await ConversationModel.findOne({
             type: 'direct',
             participants: {

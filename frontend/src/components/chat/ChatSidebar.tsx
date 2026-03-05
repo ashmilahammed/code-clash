@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Search, Lock, User as UserIcon, Hash } from 'lucide-react';
 import { useChatStore } from '../../store/useChatStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import CreateGroupModal from './CreateGroupModal';
+
 
 const ChatSidebar = () => {
     const { conversations, publicGroups, fetchPublicGroups, joinGroup, activeConversation, setActiveConversation } = useChatStore();

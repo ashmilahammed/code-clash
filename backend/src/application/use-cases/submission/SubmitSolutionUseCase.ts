@@ -5,7 +5,9 @@ import { ICodeExecutionService } from "../../../domain/services/ICodeExecutionSe
 import { Submission } from "../../../domain/entities/submission/Submission";
 
 import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
-import { ILevelCalculator } from "../../../domain/services/ILevelCalculator";
+import { ILevelRepository } from "../../../domain/repositories/level/ILevelRepository";
+
+
 
 export class SubmitSolutionUseCase {
     constructor(
@@ -15,7 +17,7 @@ export class SubmitSolutionUseCase {
         private readonly executionService: ICodeExecutionService,
 
         private readonly userRepo: IUserRepository,
-        private readonly levelCalculator: ILevelCalculator
+        private readonly levelRepo: ILevelRepository
 
     ) { }
 
@@ -66,9 +68,8 @@ export class SubmitSolutionUseCase {
             (tc) => !tc.isSample
         );
 
-        // Fallback: If no hidden cases, use sample cases (for testing purposes)
+        // 
         if (hiddenCases.length === 0) {
-            // throw new Error("No hidden test cases configured");
             hiddenCases = testCases;
         }
 
@@ -80,7 +81,8 @@ export class SubmitSolutionUseCase {
         let maxRuntime = 0;
         let memoryUsed = 0;
 
-        // Execute against each hidden test case
+
+        //
         for (const testCase of hiddenCases) {
             const result = await this.executionService.execute(
                 language,
@@ -153,7 +155,7 @@ export class SubmitSolutionUseCase {
             xpEarned
         );
 
-        // const saved = await this.submissionRepo.create(submission);
+        //
         await this.submissionRepo.create(submission);
 
 
@@ -162,31 +164,23 @@ export class SubmitSolutionUseCase {
 
             await this.userRepo.addXp(userId, xpEarned);
 
-            // Reload user to get updated XP
+            // 
             const updatedUser = await this.userRepo.findById(userId);
             if (!updatedUser) {
                 throw new Error("USER_NOT_FOUND_AFTER_XP_UPDATE");
             }
 
             // Resolve level
-            // const levelInfo = await this.levelCalculator.resolveLevel(updatedUser.getXp());
+            const level = await this.levelRepo.findByXp(updatedUser.getXp());
 
-            // // Update level in user
-            // await this.userRepo.updateLevel(
-            //     userId,
-            //     levelInfo.levelNumber
-            // );
-
-            const level = await this.levelCalculator.resolveLevel(updatedUser.getXp());
-
+            // update level in user
             if (level) {
-                // await this.userRepo.updateLevel(userId, level.id!);
                 if (level?.id) {
                     await this.userRepo.updateLevel(userId, level.id);
                 }
 
 
-                // optional: auto badge assignment
+                //
                 if (level.badgeId) {
                     await this.userRepo.updateBadge(userId, level.badgeId);
                 }
@@ -198,7 +192,7 @@ export class SubmitSolutionUseCase {
             runtime: maxRuntime,
             memory: memoryUsed,
             xpEarned,
-            newLevel: null // simplification, real level would need to be fetched if changed
+            newLevel: null // 
         };
     }
 }

@@ -5,7 +5,6 @@ import { planController } from "../../infrastructure/di/plan.di";
 
 const router = Router();
 
-// Apply auth middleware and limit to admin roles for administrative routes
 // router.use(authMiddleware);
 // router.use(requireAdminRole);
 

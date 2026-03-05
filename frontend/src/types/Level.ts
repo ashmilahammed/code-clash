@@ -1,5 +1,5 @@
 export interface Badge {
-    id: string; // The backend returns _id as id usually if mapped, but here it's likely _id. Let's assume standard
+    id: string; // 
     _id?: string;
     name: string;
     description: string;
@@ -17,6 +17,6 @@ export interface Level {
     minXp: number;
     maxXp: number;
     title?: string;
-    badgeId?: string; // We decided to send ID only
-    // badge?: Badge; // Optional if populated later
+    badgeId?: string; 
+    // badge?: Badge; // Optional 
 }

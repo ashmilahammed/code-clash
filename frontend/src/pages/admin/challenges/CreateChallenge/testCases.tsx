@@ -27,12 +27,7 @@ const ChallengeTestCases = () => {
       getAdminChallengeTestCasesApi(id)
         .then((data) => {
           if (data && data.length > 0) {
-            // map data to form format if needed (API returns {input, expectedOutput}, isSample might be missing in some DTOs but let's see)
-            // The API seems to just return input/output based on my previous read.
-            // Re-checking getChallengeTestCasesApi in challengeApi.ts: it returns { input: string; expectedOutput: string }[]
-            // Wait, the backend entity has isSample. I should check if the API returns it. 
-            // If not, I might lose that info. 
-            // Let's assume for now it returns it or I'll fix the API later.
+           
             setCases(data.map((c: any) => ({
               input: c.input,
               expectedOutput: c.expectedOutput,

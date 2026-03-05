@@ -1,106 +1,3 @@
-// import Editor from "@monaco-editor/react";
-// import { useState } from "react";
-// import { runCodeApi, submitSolutionApi } from "../../../api/submissionApi";
-// import { useParams } from "react-router-dom";
-
-// const EditorPanel = () => {
-//   const { id } = useParams<{ id: string }>();
-
-//   const [code, setCode] = useState("// Write your solution here");
-//   const [language, setLanguage] = useState("javascript");
-//   const [loading, setLoading] = useState(false);
-
-//   const handleRun = async () => {
-//     try {
-//       setLoading(true);
-
-//       const result = await runCodeApi({
-//         language,
-//         code,
-//         input: "", // later connect with custom input panel
-//       });
-
-//       console.log("Run result:", result);
-//       alert(result.stdout || result.stderr);
-//     } catch (err: any) {
-//       alert(err.response?.data?.message || "Run failed");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const handleSubmit = async () => {
-//     try {
-//       if (!id) return;
-
-//       setLoading(true);
-
-//       const result = await submitSolutionApi({
-//         challengeId: id,
-//         language,
-//         code,
-//       });
-
-//       alert(
-//         `Status: ${result.status}\nXP Earned: ${result.xpEarned}`
-//       );
-//     } catch (err: any) {
-//       alert(err.response?.data?.message || "Submit failed");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="flex-1">
-//       <div className="flex items-center justify-between px-4 py-2 border-b border-slate-800">
-//         <select
-//           value={language}
-//           onChange={(e) => setLanguage(e.target.value)}
-//           className="bg-slate-900 text-sm px-2 py-1 rounded"
-//         >
-//           <option value="javascript">JavaScript</option>
-//           <option value="python">Python</option>
-//         </select>
-
-//         <div className="flex gap-2">
-//           <button
-//             onClick={handleRun}
-//             disabled={loading}
-//             className="px-3 py-1 bg-slate-700 rounded text-sm"
-//           >
-//             Run
-//           </button>
-
-//           <button
-//             onClick={handleSubmit}
-//             disabled={loading}
-//             className="px-3 py-1 bg-green-600 rounded text-sm"
-//           >
-//             Submit
-//           </button>
-//         </div>
-//       </div>
-
-//       <Editor
-//         height="100%"
-//         theme="vs-dark"
-//         language={language}
-//         value={code}
-//         onChange={(v) => setCode(v || "")}
-//       />
-//     </div>
-//   );
-// };
-
-// export default EditorPanel;
-
-
-
-
-
-
-
 import Editor from "@monaco-editor/react";
 import { useState, useEffect, useRef } from "react";
 import { runCodeApi, submitSolutionApi } from "../../../api/submissionApi";
@@ -113,7 +10,7 @@ const EditorPanel = ({ templates, challengeId, testCases, setResult, onSuccess, 
   const startTimeRef = useRef(Date.now());
   const [attempts, setAttempts] = useState(0);
 
-  // Update local state when templates prop changes (e.g. data fetched)
+  // Update local state 
   useEffect(() => {
     if (templates.length > 0) {
       const initialLang = templates[0].language;
@@ -276,41 +173,3 @@ export default EditorPanel;
 
 
 
-
-
-// import Editor from "@monaco-editor/react";
-// import { useState } from "react";
-
-// const EditorPanel = () => {
-//   const [code, setCode] = useState("// Write your solution here");
-
-//   return (
-//     <div className="flex-1">
-//       <div className="flex items-center justify-between px-4 py-2 border-b border-slate-800">
-//         <select className="bg-slate-900 text-sm px-2 py-1 rounded">
-//           <option>JavaScript</option>
-//           <option>Python</option>
-//         </select>
-
-//         <div className="flex gap-2">
-//           <button className="px-3 py-1 bg-slate-700 rounded text-sm">
-//             Run
-//           </button>
-//           <button className="px-3 py-1 bg-green-600 rounded text-sm">
-//             Submit
-//           </button>
-//         </div>
-//       </div>
-
-//       <Editor
-//         height="100%"
-//         theme="vs-dark"
-//         language="javascript"
-//         value={code}
-//         onChange={(v) => setCode(v || "")}
-//       />
-//     </div>
-//   );
-// };
-
-// export default EditorPanel;

@@ -1,11 +1,13 @@
 import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
 import { IXpService } from "../../../../domain/services/IXpService";
+import { ILevelRepository } from "../../../../domain/repositories/level/ILevelRepository";
 
 
 export class GetDashboardUseCase {
     constructor(
         private readonly _userRepo: IUserRepository,
-        private readonly _xpService: IXpService
+        private readonly _xpService: IXpService,
+        private readonly _levelRepo: ILevelRepository
     ) { }
 
     async execute(userId: string) {
@@ -39,7 +41,7 @@ export class GetDashboardUseCase {
         const xp = user.getXp();
         const streak = user.getStreaks();
 
-        const levelInfo = this._xpService.getLevelInfo(xp);
+        const levelInfo = await this._levelRepo.findByXp(xp);
 
         // Build streak dates
         const streakDates = this.buildStreakDates(
@@ -52,9 +54,11 @@ export class GetDashboardUseCase {
             user: user.snapshot(),
 
             level: {
-                level: levelInfo.level,
+                level: levelInfo ? levelInfo.levelNumber : 1,
                 currentXp: xp,
-                nextLevelXp: levelInfo.nextLevelXp,
+                minXp: levelInfo ? levelInfo.minXp : 0,
+                maxXp: levelInfo ? levelInfo.maxXp : 1000,
+                nextLevelXp: levelInfo ? levelInfo.maxXp + 1 : 1000,
             },
 
             streak: {
@@ -67,7 +71,7 @@ export class GetDashboardUseCase {
     }
 
 
-    // PURE helper (no side effects)
+    // PURE helper 
     private buildStreakDates(
         currentStreak: number,
         lastLoginDate?: Date | null

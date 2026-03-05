@@ -36,6 +36,7 @@ const HeaderBar = ({ challenge, onTimeUp, isSuccess }: any) => {
     const globalActiveKey = `active_challenge_${userId}`;
     let expiryTime = parseInt(localStorage.getItem(timerKey) || "0", 10);
 
+
     if (!expiryTime || expiryTime <= Date.now()) {
       expiryTime = Date.now() + challenge.timeLimitMinutes * 60 * 1000;
       localStorage.setItem(timerKey, expiryTime.toString());
@@ -109,12 +110,9 @@ const HeaderBar = ({ challenge, onTimeUp, isSuccess }: any) => {
 
       {/* RIGHT SIDE */}
       <div className="flex items-center gap-6 text-sm text-slate-400">
-        <span>👥 215 Solvers</span>
-        <span>📊 41% Success</span>
+        {/* <span>👥 215 Solvers</span>
+        <span>📊 41% Success</span> */}
 
-        {/* <button className="bg-indigo-600 hover:bg-indigo-500 transition px-3 py-1 rounded text-white">
-          Hint
-        </button> */}
       </div>
 
     </div>

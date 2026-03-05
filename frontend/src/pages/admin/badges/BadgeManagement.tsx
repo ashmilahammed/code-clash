@@ -4,8 +4,7 @@ import { getAllBadges, createBadge, updateBadge, deleteBadge } from "../../../ap
 import BadgeModal from "../../../components/modals/BadgeModal";
 import ConfirmModal from "../../../components/modals/ConfirmModal";
 import type { Badge } from "../../../types/Level";
-
-
+import { useDebounce } from "../../../hooks/useDebounce";
 
 const BadgeManagement = () => {
 
@@ -15,6 +14,7 @@ const BadgeManagement = () => {
     const [currentBadge, setCurrentBadge] = useState<Badge | null>(null);
     const [badgeToDelete, setBadgeToDelete] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
+    const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
     const fetchData = async () => {
         try {
@@ -63,10 +63,13 @@ const BadgeManagement = () => {
         }
     };
 
-    const filteredBadges = badges.filter(badge =>
-        badge.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        badge.category.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredBadges = badges.filter(badge => {
+        const query = (debouncedSearchQuery || "").toLowerCase();
+        return (
+            (badge.name?.toLowerCase().includes(query)) ||
+            (badge.category?.toLowerCase().includes(query))
+        );
+    });
 
     return (
         <div className="p-6">

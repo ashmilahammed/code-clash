@@ -7,6 +7,8 @@ import type { Plan } from "../../api/planApi";
 import { useAuthStore } from "../../store/useAuthStore";
 import toast from "react-hot-toast";
 
+
+
 const UpgradePremium = () => {
     const { user } = useAuthStore();
     const navigate = useNavigate();
@@ -34,17 +36,18 @@ const UpgradePremium = () => {
 
     const selectedPlan = plans.find((p) => p.id === selectedPlanId);
 
+
     const handlePayment = async () => {
         if (!selectedPlan) return;
 
         try {
             setLoading(true);
 
-            // 1. Create Order
+            // Create Order
             const orderRes = await createOrderApi(selectedPlan.id);
             const order = orderRes.data;
 
-            // 2. Initialize Razorpay options
+            // Initialize Razorpay options
             const options = {
                 key: import.meta.env.VITE_RAZORPAY_KEY_ID,
                 amount: order.amount,
@@ -81,7 +84,7 @@ const UpgradePremium = () => {
                 }
             };
 
-            // 3. Open Razorpay Window
+            // Open Razorpay Window
             const rzp = new window.Razorpay(options);
 
             rzp.on("payment.failed", function (response: any) {
