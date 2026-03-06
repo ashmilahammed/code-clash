@@ -1,16 +1,36 @@
 import { useEffect, useState } from "react";
 import { getLeaderboardApi } from "../../api/userApi";
 import type { User } from "../../types/User";
+import { useDebounce } from "../../hooks/useDebounce";
 
 const NewLeaderboard = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
 
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalUsers, setTotalUsers] = useState(0);
+    const [search, setSearch] = useState("");
+
+    const debouncedSearch = useDebounce(search, 500);
+
+    const LIMIT = 10;
+
     useEffect(() => {
-        getLeaderboardApi(50) // fetch top 50
-            .then(setUsers)
+        setLoading(true);
+        getLeaderboardApi(page, LIMIT, debouncedSearch)
+            .then((res) => {
+                setUsers(res.data);
+                setTotalUsers(res.total);
+                setTotalPages(Math.ceil(res.total / LIMIT));
+            })
             .finally(() => setLoading(false));
-    }, []);
+    }, [page, debouncedSearch]);
+
+    // Reset pagination when search changes
+    useEffect(() => {
+        setPage(1);
+    }, [debouncedSearch]);
 
     // Top Performers Logic
     const topXPGainer = users.length > 0 ? users[0] : null;
@@ -20,7 +40,6 @@ const NewLeaderboard = () => {
     // Fix: check `longest_streak` instead of only `current_streak` for Longest Streak card
     const longestStreakUser = users.length > 0 ? users.reduce((prev, current) =>
         ((prev.longest_streak || prev.current_streak || 0) > (current.longest_streak || current.current_streak || 0)) ? prev : current, users[0]) : null;
-    if (loading) return <div className="p-8 text-white">Loading leaderboard...</div>;
 
     return (
         <div className="min-h-screen bg-[#0B1220] px-8 py-8 text-white font-sans">
@@ -35,11 +54,13 @@ const NewLeaderboard = () => {
                     <input
                         type="text"
                         placeholder="Search escapers..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
                         className="bg-[#1e293b] border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-300 focus:outline-none focus:border-indigo-500"
                     />
-                    <button className="bg-[#1e293b] border border-slate-700 rounded-lg px-4 py-2 text-sm flex items-center gap-2 hover:bg-slate-800 transition">
+                    {/* <button className="bg-[#1e293b] border border-slate-700 rounded-lg px-4 py-2 text-sm flex items-center gap-2 hover:bg-slate-800 transition">
                         <span>Filter</span>
-                    </button>
+                    </button> */}
                 </div>
             </div>
 
@@ -142,10 +163,10 @@ const NewLeaderboard = () => {
 
                                 {/* Rank */}
                                 <td className="py-4 px-6 font-medium">
-                                    {index === 0 && <span className="text-yellow-400 text-lg">🥇</span>}
-                                    {index === 1 && <span className="text-slate-300 text-lg">🥈</span>}
-                                    {index === 2 && <span className="text-amber-600 text-lg">🥉</span>}
-                                    {index > 2 && <span className="text-slate-500 ml-2">{index + 1}</span>}
+                                    {page === 1 && index === 0 && <span className="text-yellow-400 text-lg">🥇</span>}
+                                    {page === 1 && index === 1 && <span className="text-slate-300 text-lg">🥈</span>}
+                                    {page === 1 && index === 2 && <span className="text-amber-600 text-lg">🥉</span>}
+                                    {(page > 1 || index > 2) && <span className="text-slate-500 ml-2">{(page - 1) * LIMIT + index + 1}</span>}
                                 </td>
 
                                 {/* Escaper */}
@@ -189,10 +210,47 @@ const NewLeaderboard = () => {
                         ))}
                     </tbody>
                 </table>
+
+                {(!loading && users.length === 0) && (
+                    <div className="text-center py-8 text-slate-400 text-sm border-t border-slate-800">
+                        No escapers found for your search.
+                    </div>
+                )}
+
+                {(loading && users.length === 0) && (
+                    <div className="text-center py-8 text-slate-400 text-sm border-t border-slate-800">
+                        Loading leaderboard...
+                    </div>
+                )}
             </div>
 
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex justify-end items-center gap-3 mt-6">
+                    <button
+                        disabled={page === 1}
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        className="px-3 py-1 bg-slate-800 text-slate-300 rounded disabled:opacity-40 hover:bg-slate-700 transition font-medium"
+                    >
+                        Prev
+                    </button>
+
+                    <span className="text-slate-400 text-sm">
+                        Page {page} of {totalPages}
+                    </span>
+
+                    <button
+                        disabled={page === totalPages || totalPages === 0}
+                        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                        className="px-3 py-1 bg-slate-800 text-slate-300 rounded disabled:opacity-40 hover:bg-slate-700 transition font-medium"
+                    >
+                        Next
+                    </button>
+                </div>
+            )}
+
             <div className="mt-4 text-xs text-slate-500 text-right">
-                Showing {users.length} results
+                Showing {users.length} of {totalUsers} results
             </div>
 
         </div>

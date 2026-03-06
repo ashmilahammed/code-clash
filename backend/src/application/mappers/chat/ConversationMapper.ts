@@ -1,5 +1,8 @@
 import { Types } from "mongoose";
-import { Conversation, ConversationType } from "../../../domain/entities/chat/Conversation";
+import {
+    Conversation,
+    // ConversationType
+} from "../../../domain/entities/chat/Conversation";
 import { IConversationDoc } from "../../../infrastructure/database/models/chat/ConversationModel";
 
 export class ConversationMapper {

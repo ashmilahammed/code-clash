@@ -1,5 +1,8 @@
 import { IConversationRepository } from "../../../domain/repositories/chat/IConversationRepository";
-import { Conversation, ConversationType } from "../../../domain/entities/chat/Conversation";
+import {
+    Conversation,
+    //  ConversationType 
+} from "../../../domain/entities/chat/Conversation";
 
 
 

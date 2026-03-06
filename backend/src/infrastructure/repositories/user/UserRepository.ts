@@ -178,15 +178,31 @@ export class UserRepository
     }
 
 
-    async getLeaderboard(limit = 10): Promise<User[]> {
-        const docs = await UserModel.find({
-            role: "user",
-            status: "active",
-        })
-            .sort({ xp: -1 })
-            .limit(limit);
+    async getLeaderboard(
+        page: number = 1,
+        limit: number = 10,
+        search: string = ""
+    ): Promise<{ data: User[]; total: number }> {
+        const filter: any = { role: "user", status: "active" };
 
-        return docs.map(UserMapper.toDomain);
+        if (search) {
+            filter.username = { $regex: search, $options: "i" };
+        }
+
+        const skip = (page - 1) * limit;
+
+        const [docs, total] = await Promise.all([
+            UserModel.find(filter)
+                .sort({ xp: -1 })
+                .skip(skip)
+                .limit(limit),
+            UserModel.countDocuments(filter),
+        ]);
+
+        return {
+            data: docs.map(UserMapper.toDomain),
+            total,
+        };
     }
 
 

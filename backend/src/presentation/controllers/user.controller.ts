@@ -53,8 +53,11 @@ export class UserController {
 
   getLeaderboard = async (req: Request, res: Response) => {
     try {
-      const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
-      const users = await this._getLeaderboardUseCase.execute(limit);
+      const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
+      const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 10;
+      const search = req.query.search ? (req.query.search as string) : "";
+
+      const users = await this._getLeaderboardUseCase.execute(page, limit, search);
 
       return res
         .status(HttpStatus.OK)

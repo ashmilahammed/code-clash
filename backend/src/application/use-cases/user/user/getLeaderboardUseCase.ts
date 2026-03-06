@@ -10,8 +10,12 @@ export class GetLeaderboardUseCase {
         private readonly levelRepo: ILevelRepository
     ) { }
 
-    async execute(limit = 10): Promise<any[]> {
-        const users = await this.userRepo.getLeaderboard(limit);
+    async execute(
+        page: number = 1,
+        limit: number = 10,
+        search: string = ""
+    ): Promise<{ data: any[]; total: number }> {
+        const { data: users, total } = await this.userRepo.getLeaderboard(page, limit, search);
 
         const enrichedUsers = await Promise.all(users.map(async (user) => {
             const [challengesSolved, level] = await Promise.all([
@@ -20,13 +24,16 @@ export class GetLeaderboardUseCase {
             ]);
 
             return {
-                ...user.snapshot(), 
+                ...user.snapshot(),
                 challengesSolved,
                 levelNumber: level ? level.levelNumber : 0,
                 badgesCount: 0 // placeholder
             };
         }));
 
-        return enrichedUsers;
+        return {
+            data: enrichedUsers,
+            total,
+        };
     }
 }

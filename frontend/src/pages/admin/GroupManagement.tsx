@@ -6,6 +6,7 @@ import {
     deleteAdminGroupApi
 } from "../../api/adminApi";
 import type { AdminGroup } from "../../api/adminApi";
+import ConfirmModal from "../../components/modals/ConfirmModal";
 import toast from "react-hot-toast";
 
 const GroupManagement = () => {
@@ -16,6 +17,10 @@ const GroupManagement = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalGroups, setTotalGroups] = useState(0);
+
+    // Status Toggle confirm modal state
+    const [isToggleModalOpen, setIsToggleModalOpen] = useState(false);
+    const [groupToToggle, setGroupToToggle] = useState<{ id: string, currentStatus: string } | null>(null);
 
     const LIMIT = 10;
 
@@ -37,15 +42,32 @@ const GroupManagement = () => {
         fetchGroups();
     }, [currentPage, searchQuery]);
 
-    const handleToggleStatus = async (groupId: string, currentStatus: string) => {
+    const handleToggleClick = (groupId: string, currentStatus: string) => {
+        setGroupToToggle({ id: groupId, currentStatus });
+        setIsToggleModalOpen(true);
+    };
+
+    const confirmToggleStatus = async () => {
+        if (!groupToToggle) return;
+
+        const { id, currentStatus } = groupToToggle;
+
         try {
             const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-            await updateAdminGroupStatusApi(groupId, newStatus);
+            await updateAdminGroupStatusApi(id, newStatus);
             toast.success(`Group ${newStatus === 'active' ? 'activated' : 'deactivated'} successfully`);
             fetchGroups();
         } catch (error: any) {
             toast.error(error.response?.data?.message || "Failed to update status");
+        } finally {
+            setIsToggleModalOpen(false);
+            setGroupToToggle(null);
         }
+    };
+
+    const cancelToggleStatus = () => {
+        setIsToggleModalOpen(false);
+        setGroupToToggle(null);
     };
 
     const handleDelete = (groupId: string) => {
@@ -178,7 +200,7 @@ const GroupManagement = () => {
                                         </td>
                                         <td className="px-6 py-4 text-right space-x-2">
                                             <button
-                                                onClick={() => handleToggleStatus(group.id, group.status)}
+                                                onClick={() => handleToggleClick(group.id, group.status)}
                                                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${group.status === 'active'
                                                     ? 'bg-amber-500/10 text-amber-500 hover:bg-amber-500/20'
                                                     : 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'
@@ -254,6 +276,20 @@ const GroupManagement = () => {
                     </div>
                 </div>
             )}
+
+            {/* Toggle Status Modal */}
+            <ConfirmModal
+                open={isToggleModalOpen}
+                title={groupToToggle?.currentStatus === 'active' ? "Deactivate Group" : "Activate Group"}
+                message={
+                    groupToToggle?.currentStatus === 'active'
+                        ? "Are you sure you want to deactivate this group? Members may not be able to interact within it."
+                        : "Are you sure you want to activate this group? It will become fully operational."
+                }
+                confirmText={groupToToggle?.currentStatus === 'active' ? "Deactivate" : "Activate"}
+                onConfirm={confirmToggleStatus}
+                onCancel={cancelToggleStatus}
+            />
         </div>
     );
 };

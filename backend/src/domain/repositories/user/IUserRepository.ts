@@ -64,7 +64,11 @@ export interface IUserRepository {
 
   updateBadge(userId: string, badgeId: string): Promise<void>;
 
-  getLeaderboard(limit?: number): Promise<User[]>;
+  getLeaderboard(
+    page?: number,
+    limit?: number,
+    search?: string
+  ): Promise<{ data: User[]; total: number }>;
 
   save(user: User): Promise<void>;
 

@@ -4,6 +4,7 @@ import {
   getAdminChallengesApi,
   toggleChallengeStatusApi,
 } from "../../../api/challengeApi";
+import ConfirmModal from "../../../components/modals/ConfirmModal";
 
 import type { Challenge } from "../../../types/Challenge";
 
@@ -13,6 +14,8 @@ const ChallengeManagement = () => {
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [loading, setLoading] = useState(true);
   const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [challengeToToggle, setChallengeToToggle] = useState<{ id: string; isActive: boolean } | null>(null);
 
   // pagination 
   const [page, setPage] = useState(1);
@@ -42,7 +45,16 @@ const ChallengeManagement = () => {
     fetchChallenges();
   }, [page]);
 
-  const toggleStatus = async (id: string, isActive: boolean) => {
+  const handleToggleClick = (id: string, isActive: boolean) => {
+    setChallengeToToggle({ id, isActive });
+    setIsConfirmModalOpen(true);
+  };
+
+  const confirmToggleStatus = async () => {
+    if (!challengeToToggle) return;
+
+    const { id, isActive } = challengeToToggle;
+
     try {
       setTogglingId(id);
       await toggleChallengeStatusApi(id, !isActive);
@@ -51,7 +63,14 @@ const ChallengeManagement = () => {
       console.error("Failed to toggle challenge status", err);
     } finally {
       setTogglingId(null);
+      setIsConfirmModalOpen(false);
+      setChallengeToToggle(null);
     }
+  };
+
+  const cancelToggleStatus = () => {
+    setIsConfirmModalOpen(false);
+    setChallengeToToggle(null);
   };
 
 
@@ -129,8 +148,8 @@ const ChallengeManagement = () => {
                         navigate(`/admin/challenges/edit/${c.id}`)
                       }
                       className={`px-3 py-1 rounded text-sm transition ${c.status === 'draft'
-                          ? 'bg-amber-600 hover:bg-amber-700 text-white'
-                          : 'bg-slate-700 hover:bg-slate-600'
+                        ? 'bg-amber-600 hover:bg-amber-700 text-white'
+                        : 'bg-slate-700 hover:bg-slate-600'
                         }`}
                     >
                       {c.status === 'draft' ? "Resume Draft" : "Edit"}
@@ -138,7 +157,7 @@ const ChallengeManagement = () => {
 
                     <button
                       disabled={togglingId === c.id}
-                      onClick={() => toggleStatus(c.id!, c.isActive)}
+                      onClick={() => handleToggleClick(c.id!, c.isActive)}
                       className="px-3 py-1 rounded bg-slate-800 hover:bg-slate-700 text-sm disabled:opacity-50"
                     >
                       {c.isActive ? "Deactivate" : "Activate"}
@@ -184,6 +203,19 @@ const ChallengeManagement = () => {
           Next
         </button>
       </div>
+
+      <ConfirmModal
+        open={isConfirmModalOpen}
+        title={challengeToToggle?.isActive ? "Deactivate Challenge" : "Activate Challenge"}
+        message={
+          challengeToToggle?.isActive
+            ? "Are you sure you want to deactivate this challenge? Users will no longer be able to see or attempt it."
+            : "Are you sure you want to activate this challenge? It will become visible to all users."
+        }
+        confirmText={challengeToToggle?.isActive ? "Deactivate" : "Activate"}
+        onConfirm={confirmToggleStatus}
+        onCancel={cancelToggleStatus}
+      />
     </div>
   );
 };
