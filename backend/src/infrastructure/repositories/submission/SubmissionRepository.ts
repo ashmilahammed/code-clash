@@ -182,4 +182,108 @@ export class SubmissionRepository implements ISubmissionRepository {
 
     return activity;
   }
+
+
+  async getLeaderboardByTimeframe(
+    page: number,
+    limit: number,
+    timeframe: "weekly" | "monthly",
+    search: string
+  ): Promise<{ data: any[]; total: number }> {
+    const skip = (page - 1) * limit;
+
+    const startDate = new Date();
+    if (timeframe === "weekly") {
+      startDate.setDate(startDate.getDate() - 7);
+    } else if (timeframe === "monthly") {
+      startDate.setDate(startDate.getDate() - 30);
+    }
+    startDate.setHours(0, 0, 0, 0);
+
+    const matchStage: any = {
+      submittedAt: { $gte: startDate },
+      // finalStatus: "PASSED", // We might want only passed submissions to count for XP, but it depends on logic. Assuming we want to aggregate xpEarned.
+    };
+
+    const pipeline: any[] = [
+      { $match: matchStage },
+      {
+        $group: {
+          _id: "$userId",
+          xpEarned: { $sum: "$xpEarned" },
+          // Count distinct challenges solved (approximate without adding sub-pipelines, assuming PASSED logic handles this or we just count all submissions if it's simplified here). Let's do distinct:
+          uniqueChallenges: { $addToSet: { $cond: [{ $eq: ["$finalStatus", "PASSED"] }, "$challengeId", null] } }
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          userId: "$_id",
+          xp: "$xpEarned",
+          challengesSolved: {
+            $size: {
+              $filter: {
+                input: "$uniqueChallenges",
+                as: "challenge",
+                cond: { $ne: ["$$challenge", null] }
+              }
+            }
+          }
+        }
+      },
+      // Lookup the user details
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "user"
+        }
+      },
+      { $unwind: "$user" },
+      {
+        $match: {
+          "user.role": "user",
+          "user.status": "active"
+        }
+      }
+    ];
+
+    if (search) {
+      pipeline.push({
+        $match: { "user.username": { $regex: search, $options: "i" } }
+      });
+    }
+
+    const sortStage = { $sort: { xp: -1 } };
+
+    const facetStage = {
+      $facet: {
+        data: [sortStage, { $skip: skip }, { $limit: limit }],
+        totalCount: [{ $count: "count" }]
+      }
+    };
+
+    pipeline.push(facetStage);
+
+    const result = await SubmissionModel.aggregate(pipeline);
+
+    const data = result[0]?.data || [];
+    const total = result[0]?.totalCount[0]?.count || 0;
+
+    // Map the result to resemble the existing user snapshot with calculated XP
+    const mappedData = data.map((item: any) => ({
+      ...item.user, // spread the user properties
+      id: item.user._id.toString(),
+      xp: item.xp, // override with the timeframe XP
+      challengesSolved: item.challengesSolved,
+      // For levelNumber we might not have it directly here, it will be enriched by the UseCase
+    }));
+
+    return {
+      data: mappedData,
+      total,
+    };
+  }
+
 }

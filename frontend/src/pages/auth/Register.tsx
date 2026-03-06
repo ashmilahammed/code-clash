@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 import { registerApi } from "../../api/authApi";
 
 import { getAuthErrorMessage } from "../../utils/getAuthErrorMessage";
@@ -13,6 +14,8 @@ const Register: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -146,22 +149,40 @@ const Register: React.FC = () => {
           />
 
           {/* Password */}
-          <input
-            type="password"
-            className="w-full rounded-lg bg-white/10 border border-white/30 px-4 py-2.5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password "
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              className="w-full rounded-lg bg-white/10 border border-white/30 px-4 py-2.5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 pr-12"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password "
+            />
+            <button
+              type="button"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
 
           {/* Confirm Password */}
-          <input
-            type="password"
-            className="w-full rounded-lg bg-white/10 border border-white/30 px-4 py-2.5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-            placeholder="Confirm password"
-          />
+          <div className="relative">
+            <input
+              type={showConfirm ? "text" : "password"}
+              className="w-full rounded-lg bg-white/10 border border-white/30 px-4 py-2.5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 pr-12"
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              placeholder="Confirm password"
+            />
+            <button
+              type="button"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition"
+              onClick={() => setShowConfirm(!showConfirm)}
+            >
+              {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
 
           {/* Submit */}
           <button

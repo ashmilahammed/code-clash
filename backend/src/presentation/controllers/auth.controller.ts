@@ -11,6 +11,7 @@ import { ResetPasswordUseCase } from "../../application/use-cases/auth/resetPass
 import { GoogleLoginUseCase } from "../../application/use-cases/auth/googleLoginUseCase";
 import { RefreshSessionUseCase } from "../../application/use-cases/auth/refreshSessionUseCase";
 import { GetCurrentUserUseCase } from "../../application/use-cases/auth/getCurrentUserUseCase";
+import { ChangePasswordUseCase } from "../../application/use-cases/auth/changePasswordUseCase";
 
 import { UserMapper } from "../../application/mappers/UserMapper";
 
@@ -32,7 +33,8 @@ export class AuthController {
     private readonly _resetPasswordUseCase: ResetPasswordUseCase,
     private readonly _googleLoginUseCase: GoogleLoginUseCase,
     private readonly _refreshSessionUseCase: RefreshSessionUseCase,
-    private readonly _getCurrentUserUseCase: GetCurrentUserUseCase
+    private readonly _getCurrentUserUseCase: GetCurrentUserUseCase,
+    private readonly _changePasswordUseCase: ChangePasswordUseCase
   ) { }
 
 
@@ -180,35 +182,6 @@ export class AuthController {
 
 
   ///
-  // logout = async (req: any, res: Response) => {
-  //   try {
-  //     const userId = req.user?.userId;
-
-  //     if (!userId) {
-  //       return res
-  //         .status(HttpStatus.UNAUTHORIZED)
-  //         .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-  //     }
-
-  //     await this.logoutUseCase.execute(userId);
-
-  //     res.clearCookie("refreshToken", {
-  //       httpOnly: true,
-  //       secure: process.env.NODE_ENV === "production",
-  //       sameSite: "lax",
-  //     });
-
-  //     return res
-  //       .status(HttpStatus.OK)
-  //       .json(ApiResponse.success(MESSAGES.AUTH.LOGOUT_SUCCESS));
-  //   } catch {
-  //     return res
-  //       .status(HttpStatus.INTERNAL_SERVER_ERROR)
-  //       .json(ApiResponse.error(MESSAGES.COMMON.INTERNAL_ERROR));
-  //   }
-  // };
-
-  // 
   logout = async (req: Request, res: Response) => {
     try {
       const user = res.locals.user as { userId: string; role: "user" | "admin" } | undefined;
@@ -440,6 +413,47 @@ export class AuthController {
 
       return res
         .status(HttpStatus.BAD_REQUEST)
+        .json(ApiResponse.error(message));
+    }
+  };
+
+
+  ///
+  changePassword = async (req: Request, res: Response) => {
+    try {
+      const userContext = res.locals.user as { userId: string; role: "user" | "admin" } | undefined;
+
+      if (!userContext) {
+        return res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
+      }
+
+      const { currentPassword, newPassword } = req.body;
+
+      if (!currentPassword || !newPassword) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(ApiResponse.error("Current password and new password are required"));
+      }
+
+      await this._changePasswordUseCase.execute(userContext.userId, currentPassword, newPassword);
+
+      return res
+        .status(HttpStatus.OK)
+        .json(ApiResponse.success(MESSAGES.USER.UPDATE_SUCCESS));
+
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST;
+      
+      let statusCode = HttpStatus.BAD_REQUEST;
+      if (message === "CURRENT_PASSWORD_INCORRECT") {
+        statusCode = HttpStatus.UNAUTHORIZED;
+      }
+
+      return res
+        .status(statusCode)
         .json(ApiResponse.error(message));
     }
   };

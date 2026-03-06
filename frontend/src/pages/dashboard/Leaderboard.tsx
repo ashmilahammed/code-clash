@@ -11,6 +11,7 @@ const NewLeaderboard = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [totalUsers, setTotalUsers] = useState(0);
     const [search, setSearch] = useState("");
+    const [timeframe, setTimeframe] = useState<"all-time" | "weekly" | "monthly">("weekly");
 
     const debouncedSearch = useDebounce(search, 500);
 
@@ -18,19 +19,19 @@ const NewLeaderboard = () => {
 
     useEffect(() => {
         setLoading(true);
-        getLeaderboardApi(page, LIMIT, debouncedSearch)
+        getLeaderboardApi(page, LIMIT, debouncedSearch, timeframe)
             .then((res) => {
                 setUsers(res.data);
                 setTotalUsers(res.total);
                 setTotalPages(Math.ceil(res.total / LIMIT));
             })
             .finally(() => setLoading(false));
-    }, [page, debouncedSearch]);
+    }, [page, debouncedSearch, timeframe]);
 
-    // Reset pagination when search changes
+    // Reset pagination when search or timeframe changes
     useEffect(() => {
         setPage(1);
-    }, [debouncedSearch]);
+    }, [debouncedSearch, timeframe]);
 
     // Top Performers Logic
     const topXPGainer = users.length > 0 ? users[0] : null;
@@ -41,6 +42,8 @@ const NewLeaderboard = () => {
     const longestStreakUser = users.length > 0 ? users.reduce((prev, current) =>
         ((prev.longest_streak || prev.current_streak || 0) > (current.longest_streak || current.current_streak || 0)) ? prev : current, users[0]) : null;
 
+
+    
     return (
         <div className="min-h-screen bg-[#0B1220] px-8 py-8 text-white font-sans">
 
@@ -67,14 +70,17 @@ const NewLeaderboard = () => {
 
             {/* Top Performers Cards */}
             <h2 className="text-lg font-semibold mb-4">Top Performers</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
 
-                {/* 1. Weekly XP Gainer - Dynamic */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+
+                {/* 1. XP Gainer - Dynamic */}
                 <div className="bg-linear-to-br from-indigo-900 to-indigo-800 rounded-xl p-6 relative overflow-hidden">
                     <div className="absolute top-4 right-4 bg-indigo-500/20 p-2 rounded-lg">
                         ⚡
                     </div>
-                    <div className="text-sm text-indigo-200 mb-1">Top XP Gainer</div>
+                    <div className="text-sm text-indigo-200 mb-1">
+                        {timeframe === "weekly" ? "Weekly" : timeframe === "monthly" ? "Monthly" : "All Time"} XP Gainer
+                    </div>
                     <div className="text-2xl font-bold mb-4">
                         {topXPGainer ? `+${topXPGainer.xp.toLocaleString()} XP` : "0 XP"}
                     </div>
@@ -137,9 +143,24 @@ const NewLeaderboard = () => {
 
             {/* Tabs */}
             <div className="flex gap-8 border-b border-slate-800 text-sm text-slate-400 mb-6">
-                <button className="pb-3 border-b-2 border-indigo-500 text-white font-medium">Weekly</button>
-                <button className="pb-3 hover:text-slate-300">Monthly</button>
-                <button className="pb-3 hover:text-slate-300">All Time</button>
+                <button
+                    onClick={() => setTimeframe("weekly")}
+                    className={`pb-3 ${timeframe === "weekly" ? "border-b-2 border-indigo-500 text-white font-medium" : "hover:text-slate-300"}`}
+                >
+                    Weekly
+                </button>
+                <button
+                    onClick={() => setTimeframe("monthly")}
+                    className={`pb-3 ${timeframe === "monthly" ? "border-b-2 border-indigo-500 text-white font-medium" : "hover:text-slate-300"}`}
+                >
+                    Monthly
+                </button>
+                <button
+                    onClick={() => setTimeframe("all-time")}
+                    className={`pb-3 ${timeframe === "all-time" ? "border-b-2 border-indigo-500 text-white font-medium" : "hover:text-slate-300"}`}
+                >
+                    All Time
+                </button>
             </div>
 
 

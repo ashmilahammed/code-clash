@@ -29,6 +29,7 @@ router.get("/refresh-session", authController.refreshSession);
 
 //protected
 router.post("/logout", authMiddleware, authController.logout);
+router.post("/change-password", authMiddleware, authController.changePassword);
 router.get("/me", authMiddleware, authController.me);
 
 export default router;

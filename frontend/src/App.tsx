@@ -19,12 +19,13 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import UserLayout from "./components/layout/UserLayout";
 // import Badges from "./pages/profile/Badges";
 import Profile from "./pages/profile/Profile";
+import Settings from "./pages/settings";
 import Leaderboard from "./pages/dashboard/Leaderboard";
 import Messages from "./pages/chat/Messages";
 import UpgradePremium from "./pages/premium/UpgradePremium";
 
 import AdminLayout from "./components/layout/AdminLayout";
-import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminDashboard from "./pages/admin/dashboard/AdminDashboard";
 import UserManagement from "./pages/admin/userManagement/UserManagement";
 import ChallengeManagement from "./pages/admin/challenges/ChallengeManagement"
 // import ChallengeDetails from "./pages/dashboard/ChallengeDetails";
@@ -40,7 +41,7 @@ import CodeTemplates from "./pages/admin/challenges/CreateChallenge/CodeTemplate
 import LevelManagement from "./pages/admin/levels/LevelManagement";
 import BadgeManagement from "./pages/admin/badges/BadgeManagement";
 import PlanManagement from "./pages/admin/plans/PlanManagement";
-import GroupManagement from "./pages/admin/GroupManagement";
+import GroupManagement from "./pages/admin/group/GroupManagement";
 
 import SolveChallenge from "./pages/challenges/SolveChallenge";
 
@@ -54,7 +55,7 @@ import NotFound from "./pages/errors/NotFound";
 
 
 import "./App.css";
-
+import { Toaster } from "react-hot-toast";
 
 
 
@@ -111,98 +112,104 @@ function App() {
 
 
   return (
-    <Routes>
 
-      {/* Landing Page */}
-      <Route element={<LandingLayout />}>
-        {/* <Route path="/" element={<LandingPage />} /> */}
-        <Route
-          path="/"
-          element={
-            user ? <Navigate to="/dashboard" replace /> : <LandingPage />
-          }
-        />
-      </Route>
+    <>
+      <Toaster position="top-right" />
 
+      <Routes>
 
-
-      {/* Guest-only routes */}
-      <Route element={<GuestRoute />}>
-        <Route path="/auth/login" element={<Login />} />
-        <Route path="/auth/register" element={<Register />} />
-        <Route path="/auth/verify-otp" element={<VerifyOtp />} />
-        <Route path="/auth/forgot-password" element={<ForgotPassword />} />
-        <Route path="/auth/forgot-verify-otp" element={<ForgotVerifyOtp />} />
-        <Route path="/auth/reset-password" element={<ResetPassword />} />
-      </Route>
-
-
-
-      {/* User protected */}
-      <Route element={<ProtectedRoute />}>
-        <Route element={<UserLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/leaderboard" element={<Leaderboard />} />
-          {/* <Route path="/challenges/:id" element={<ChallengeDetails />} /> */}
-
-          <Route path="/challenges/:id" element={<SolveChallenge />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/messages" element={<Messages />} />
-          <Route path="/premium" element={<UpgradePremium />} />
-
-        </Route>
-      </Route>
-
-
-
-      {/* Admin protected */}
-      <Route element={<AdminRoute />}>
-        <Route element={<AdminLayout />}>
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/users" element={<UserManagement />} />
-          <Route path="/admin/challenges" element={<ChallengeManagement />} />
-
-          <Route path="/admin/levels" element={<LevelManagement />} />
-          <Route path="/admin/badges" element={<BadgeManagement />} />
-          <Route path="/admin/plans" element={<PlanManagement />} />
-          <Route path="/admin/groups" element={<GroupManagement />} />
-
-          {/* wizard */}
+        {/* Landing Page */}
+        <Route element={<LandingLayout />}>
+          {/* <Route path="/" element={<LandingPage />} /> */}
           <Route
-            path="/admin/challenges/create" element={<CreateChallengeWizard />}>
-            {/* Step 1 */}
-            <Route index element={<BasicInfo />} />
+            path="/"
+            element={
+              user ? <Navigate to="/dashboard" replace /> : <LandingPage />
+            }
+          />
+        </Route>
 
-            {/* Step 2 (need challengeId) */}
-            <Route path=":id/tags" element={<ChallengeTags />} />
-            <Route path=":id/languages" element={<ChallengeLanguages />} />
-            <Route path=":id/test-cases" element={<ChallengeTestCases />} />
-            <Route path=":id/hints" element={<ChallengeHintsAndSchedule />} />
-            <Route path=":id/templates" element={<CodeTemplates />} />
-          </Route>
 
-          {/* Edit / Resume Draft Routes */}
-          <Route path="/admin/challenges/edit/:id" element={<CreateChallengeWizard />}>
-            <Route index element={<BasicInfo />} />
-            <Route path="tags" element={<ChallengeTags />} />
-            <Route path="languages" element={<ChallengeLanguages />} />
-            <Route path="test-cases" element={<ChallengeTestCases />} />
-            <Route path="hints" element={<ChallengeHintsAndSchedule />} />
-            <Route path="templates" element={<CodeTemplates />} />
+
+        {/* Guest-only routes */}
+        <Route element={<GuestRoute />}>
+          <Route path="/auth/login" element={<Login />} />
+          <Route path="/auth/register" element={<Register />} />
+          <Route path="/auth/verify-otp" element={<VerifyOtp />} />
+          <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+          <Route path="/auth/forgot-verify-otp" element={<ForgotVerifyOtp />} />
+          <Route path="/auth/reset-password" element={<ResetPassword />} />
+        </Route>
+
+
+
+        {/* User protected */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<UserLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            {/* <Route path="/challenges/:id" element={<ChallengeDetails />} /> */}
+
+            <Route path="/challenges/:id" element={<SolveChallenge />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/premium" element={<UpgradePremium />} />
+
           </Route>
         </Route>
-      </Route>
+
+
+
+        {/* Admin protected */}
+        <Route element={<AdminRoute />}>
+          <Route element={<AdminLayout />}>
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/users" element={<UserManagement />} />
+            <Route path="/admin/challenges" element={<ChallengeManagement />} />
+
+            <Route path="/admin/levels" element={<LevelManagement />} />
+            <Route path="/admin/badges" element={<BadgeManagement />} />
+            <Route path="/admin/plans" element={<PlanManagement />} />
+            <Route path="/admin/groups" element={<GroupManagement />} />
+
+            {/* wizard */}
+            <Route
+              path="/admin/challenges/create" element={<CreateChallengeWizard />}>
+              {/* Step 1 */}
+              <Route index element={<BasicInfo />} />
+
+              {/* Step 2 (need challengeId) */}
+              <Route path=":id/tags" element={<ChallengeTags />} />
+              <Route path=":id/languages" element={<ChallengeLanguages />} />
+              <Route path=":id/test-cases" element={<ChallengeTestCases />} />
+              <Route path=":id/hints" element={<ChallengeHintsAndSchedule />} />
+              <Route path=":id/templates" element={<CodeTemplates />} />
+            </Route>
+
+            {/* Edit / Resume Draft Routes */}
+            <Route path="/admin/challenges/edit/:id" element={<CreateChallengeWizard />}>
+              <Route index element={<BasicInfo />} />
+              <Route path="tags" element={<ChallengeTags />} />
+              <Route path="languages" element={<ChallengeLanguages />} />
+              <Route path="test-cases" element={<ChallengeTestCases />} />
+              <Route path="hints" element={<ChallengeHintsAndSchedule />} />
+              <Route path="templates" element={<CodeTemplates />} />
+            </Route>
+          </Route>
+        </Route>
 
 
 
 
+        {/* Errors */}
+        <Route path="/403" element={<Forbidden />} />
+        <Route path="*" element={<NotFound />} />
 
-      {/* Errors */}
-      <Route path="/403" element={<Forbidden />} />
-      <Route path="*" element={<NotFound />} />
 
+      </Routes>
 
-    </Routes>
+    </>
   );
 }
 

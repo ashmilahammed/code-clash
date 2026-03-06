@@ -112,17 +112,29 @@ function UserNavbar() {
           <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />
         </button>
 
-        {/* User name */}
+        {/* User Info */}
         <div
-          className="flex flex-col leading-tight text-right cursor-pointer hover:opacity-80 transition"
+          className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition"
           onClick={() => navigate("/profile")}
         >
-          <span className="text-sm font-medium">
-            {user?.username}
-          </span>
-          <span className="text-xs text-slate-400">
-            Rank -
-          </span>
+          {/* Avatar */}
+          <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 overflow-hidden shrink-0">
+              <img 
+                src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.username || 'User'}&background=random`}
+                alt={user?.username || "User"} 
+                className="w-full h-full object-cover"
+              />
+          </div>
+          
+          {/* User Name & Rank */}
+          <div className="flex flex-col leading-tight text-right">
+            <span className="text-sm font-medium">
+              {user?.username}
+            </span>
+            <span className="text-xs text-slate-400">
+              Rank -
+            </span>
+          </div>
         </div>
 
         {/* Logout */}

@@ -29,7 +29,6 @@ export const resetPasswordApi = (data: { userId: string; password: string }) =>
   api.post("/auth/reset-password", data);
 
 
-// google
 export const googleLoginApi = (data: { googleToken: string }) =>
   api.post("/auth/google", data);
 
@@ -37,4 +36,5 @@ export const googleLoginApi = (data: { googleToken: string }) =>
 export const meApi = () =>
   api.get("/auth/me");
 
-
+export const changePasswordApi = (data: { currentPassword: string; newPassword: string }) =>
+  api.post("/auth/change-password", data);

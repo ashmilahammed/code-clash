@@ -17,6 +17,7 @@ export interface AdminUser {
     id: string;
     username: string;
     email: string;
+    avatar: string | null;
     status: UserStatus;
 }
 
@@ -87,9 +88,3 @@ export const deleteAdminGroupApi = async (
 //   const res = await api.post("/challenges", payload);
 //   return res.data.challenge;
 // };
-
-
-
-
-
-

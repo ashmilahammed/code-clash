@@ -4,9 +4,9 @@ import {
     getAdminGroupsApi,
     updateAdminGroupStatusApi,
     deleteAdminGroupApi
-} from "../../api/adminApi";
-import type { AdminGroup } from "../../api/adminApi";
-import ConfirmModal from "../../components/modals/ConfirmModal";
+} from "../../../api/adminApi";
+import type { AdminGroup } from "../../../api/adminApi";
+import ConfirmModal from "../../../components/modals/ConfirmModal";
 import toast from "react-hot-toast";
 
 const GroupManagement = () => {

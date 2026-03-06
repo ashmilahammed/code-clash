@@ -19,4 +19,11 @@ export interface ISubmissionRepository {
   getUserStats(userId: string): Promise<any>;
 
   getRecentActivity(userId: string, limit: number): Promise<any[]>;
+
+  getLeaderboardByTimeframe(
+    page: number,
+    limit: number,
+    timeframe: "weekly" | "monthly",
+    search: string
+  ): Promise<{ data: any[]; total: number }>;
 }

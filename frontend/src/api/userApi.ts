@@ -1,8 +1,8 @@
 import axiosInstance from "./axiosInstance";
 import type { User } from "../types/User";
 
-export const getLeaderboardApi = async (page = 1, limit = 10, search = ""): Promise<{ data: User[], total: number }> => {
-  const res = await axiosInstance.get(`/user/leaderboard?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`);
+export const getLeaderboardApi = async (page = 1, limit = 10, search = "", timeframe = "all-time"): Promise<{ data: User[], total: number }> => {
+  const res = await axiosInstance.get(`/user/leaderboard?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}&timeframe=${timeframe}`);
   return res.data.data;
 };
 

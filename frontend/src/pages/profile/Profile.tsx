@@ -89,7 +89,10 @@ const Profile = () => {
 
                 {/* Settings Button */}
                 <div className="absolute top-4 right-4 z-10">
-                    <button className="p-2 bg-black/30 hover:bg-black/50 rounded-full transition text-white backdrop-blur-sm border border-white/10">
+                    <button
+                        onClick={() => window.location.href = '/settings'}
+                        className="p-2 bg-black/30 hover:bg-black/50 rounded-full transition transform hover:scale-110 hover:rotate-45 text-white hover:text-indigo-400 backdrop-blur-sm border border-white/10"
+                    >
                         <Settings size={20} />
                     </button>
                 </div>

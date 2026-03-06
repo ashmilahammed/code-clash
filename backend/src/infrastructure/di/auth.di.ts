@@ -17,6 +17,7 @@ import { LogoutUseCase } from "../../application/use-cases/auth/logoutUseCase";
 import { RefreshSessionUseCase } from "../../application/use-cases/auth/refreshSessionUseCase";
 import { GetCurrentUserUseCase } from "../../application/use-cases/auth/getCurrentUserUseCase";
 import { GoogleLoginUseCase } from "../../application/use-cases/auth/googleLoginUseCase";
+import { ChangePasswordUseCase } from "../../application/use-cases/auth/changePasswordUseCase";
 
 import { UpdateLoginStreakUseCase } from "../../application/use-cases/user/user/updateLoginStreakUseCase";
 
@@ -74,6 +75,8 @@ const googleLoginUseCase = new GoogleLoginUseCase(
     googleClientId
 );
 
+const changePasswordUseCase = new ChangePasswordUseCase(userRepository, passwordService);
+
 //middleware
 export const authMiddleware = createAuthMiddleware(
     userRepository,
@@ -93,7 +96,8 @@ export const authController = new AuthController(
     resetPasswordUseCase,
     googleLoginUseCase,
     refreshSessionUseCase,
-    getCurrentUserUseCase
+    getCurrentUserUseCase,
+    changePasswordUseCase
 );
 
 

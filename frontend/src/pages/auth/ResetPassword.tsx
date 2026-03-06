@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 import { resetPasswordApi } from "../../api/authApi";
+import toast from "react-hot-toast";
 
 import { getAuthErrorMessage } from "../../utils/getAuthErrorMessage";
 
@@ -8,6 +10,8 @@ import { getAuthErrorMessage } from "../../utils/getAuthErrorMessage";
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -26,30 +30,50 @@ const ResetPassword = () => {
     );
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-
+  const validate = () => {
     if (!password.trim() || !confirm.trim()) {
       setError("Please fill all fields.");
-      return;
+      return false;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
-      return;
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return false;
+    }
+
+    if (!/[a-z]/.test(password)) {
+      setError("Password must contain at least one lowercase letter.");
+      return false;
+    }
+
+    if (!/[A-Z]/.test(password)) {
+      setError("Password must contain at least one uppercase letter.");
+      return false;
+    }
+
+    if (!/\d/.test(password)) {
+      setError("Password must contain at least one number.");
+      return false;
     }
 
     if (password !== confirm) {
       setError("Passwords do not match.");
-      return;
+      return false;
     }
+    return true;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    if (!validate()) return;
 
     try {
       setLoading(true);
       await resetPasswordApi({ userId, password });
 
-      alert("Password reset successful!");
+      toast.success("Password reset successful!");
       
       navigate("/auth/login");
     } catch (err: any) {
@@ -84,21 +108,39 @@ const ResetPassword = () => {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
 
-          <input
-            type="password"
-            value={password}
-            placeholder="New password"
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-lg bg-white/10 border border-white/30 px-4 py-2.5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              value={password}
+              placeholder="New password"
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-lg bg-white/10 border border-white/30 px-4 py-2.5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 pr-12"
+            />
+            <button
+              type="button"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
 
-          <input
-            type="password"
-            value={confirm}
-            placeholder="Confirm new password"
-            onChange={(e) => setConfirm(e.target.value)}
-            className="w-full rounded-lg bg-white/10 border border-white/30 px-4 py-2.5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
+          <div className="relative">
+            <input
+              type={showConfirm ? "text" : "password"}
+              value={confirm}
+              placeholder="Confirm new password"
+              onChange={(e) => setConfirm(e.target.value)}
+              className="w-full rounded-lg bg-white/10 border border-white/30 px-4 py-2.5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 pr-12"
+            />
+            <button
+              type="button"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition"
+              onClick={() => setShowConfirm(!showConfirm)}
+            >
+              {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
 
           <button
             disabled={loading}
