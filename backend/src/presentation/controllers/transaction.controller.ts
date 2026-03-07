@@ -3,15 +3,17 @@ import { GetTransactionsUseCase } from "../../application/use-cases/transaction/
 import { CreateRazorpayOrderUseCase } from "../../application/use-cases/transaction/CreateRazorpayOrderUseCase";
 import { VerifyRazorpayPaymentUseCase } from "../../application/use-cases/transaction/VerifyRazorpayPaymentUseCase";
 
+import { GetUserTransactionsUseCase } from "../../application/use-cases/transaction/GetUserTransactionsUseCase";
+import { GetCurrentPremiumPlanUseCase } from "../../application/use-cases/transaction/GetCurrentPremiumPlanUseCase";
 import { WinstonLogger } from "../../infrastructure/services/logger";
-
-
 
 export class TransactionController {
     constructor(
         private getTransactionsUseCase: GetTransactionsUseCase,
         private createRazorpayOrderUseCase: CreateRazorpayOrderUseCase,
         private verifyRazorpayPaymentUseCase: VerifyRazorpayPaymentUseCase,
+        private getUserTransactionsUseCase: GetUserTransactionsUseCase,
+        private getCurrentPremiumPlanUseCase: GetCurrentPremiumPlanUseCase,
         private logger: WinstonLogger
     ) { }
 
@@ -22,6 +24,34 @@ export class TransactionController {
         } catch (error: any) {
             this.logger.error("Error fetching transactions", error);
             return res.status(500).json({ message: "Failed to fetch transactions" });
+        }
+    }
+
+    async getMyTransactions(req: Request, res: Response) {
+        try {
+            const userId = res.locals.user?.userId;
+            if (!userId) {
+                return res.status(401).json({ message: "Unauthorized" });
+            }
+            const transactions = await this.getUserTransactionsUseCase.execute(userId);
+            return res.status(200).json(transactions);
+        } catch (error: any) {
+            this.logger.error("Error fetching user transactions", error);
+            return res.status(500).json({ message: "Failed to fetch transactions" });
+        }
+    }
+
+    async getCurrentPlan(req: Request, res: Response) {
+        try {
+            const userId = res.locals.user?.userId;
+            if (!userId) {
+                return res.status(401).json({ message: "Unauthorized" });
+            }
+            const plan = await this.getCurrentPremiumPlanUseCase.execute(userId);
+            return res.status(200).json(plan);
+        } catch (error: any) {
+            this.logger.error("Error fetching current plan", error);
+            return res.status(500).json({ message: "Failed to fetch current plan" });
         }
     }
 

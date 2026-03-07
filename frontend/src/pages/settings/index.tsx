@@ -4,6 +4,8 @@ import { ChevronLeft, Lock, Bell, CreditCard, LogOut } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
 import SecuritySettings from "./SecuritySettings";
 
+import PremiumManagement from "./PremiumManagement";
+
 const Settings = () => {
   const navigate = useNavigate();
   const logoutUser = useAuthStore((s) => s.logoutUser);
@@ -99,13 +101,7 @@ const Settings = () => {
               <p>Coming soon...</p>
             </div>
           )}
-          {activeTab === "premium" && (
-            <div className="flex flex-col items-center justify-center h-64 text-slate-400">
-              <CreditCard size={48} className="mb-4 opacity-50" />
-              <h2 className="text-xl font-semibold mb-2 text-white">Premium Management</h2>
-              <p>Coming soon...</p>
-            </div>
-          )}
+          {activeTab === "premium" && <PremiumManagement />}
         </div>
 
       </div>

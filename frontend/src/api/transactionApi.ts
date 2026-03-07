@@ -18,3 +18,13 @@ export const verifyPaymentApi = (data: {
         data
     );
 };
+
+export const getMyTransactionsApi = async () => {
+    const res = await axiosInstance.get("/transactions/my-history");
+    return res.data;
+};
+
+export const getCurrentPlanApi = async () => {
+    const res = await axiosInstance.get("/transactions/current-plan");
+    return res.data;
+};

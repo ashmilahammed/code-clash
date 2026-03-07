@@ -57,7 +57,17 @@ export class VerifyRazorpayPaymentUseCase {
         const user = await this.userRepository.findById(userId);
         if (user) {
             user.is_premium = true;
-            user.premium_expiry_date = new Date(Date.now() + plan.duration * 24 * 60 * 60 * 1000);
+
+            const now = new Date();
+            let baseDate = now;
+
+            // If user already has an active premium until a future date, extend from that date.
+            if (user.premium_expiry_date && user.premium_expiry_date > now) {
+                baseDate = new Date(user.premium_expiry_date);
+            }
+
+            user.premium_expiry_date = new Date(baseDate.getTime() + plan.duration * 24 * 60 * 60 * 1000);
+            
             await this.userRepository.save(user);
         } else {
             throw new Error("User not found after successful payment");

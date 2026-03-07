@@ -25,7 +25,12 @@ router.delete(
   userController.removeAvatar
 );
 
-router.get("/plans", authMiddleware, planController.getPublicPlans.bind(planController));
+router.put(
+  "/premium/cancel",
+  authMiddleware,
+  userController.cancelPremium
+);
 
+router.get("/plans", authMiddleware, planController.getPublicPlans.bind(planController));
 
 export default router;

@@ -1,6 +1,7 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { logoutApi } from "../../api/authApi";
 import { useAuthStore } from "../../store/useAuthStore";
+import { useSearchStore } from "../../store/useSearchStore";
 
 import {
   Search,
@@ -16,6 +17,10 @@ function UserNavbar() {
 
   const user = useAuthStore((state) => state.user);
   const logoutUser = useAuthStore((state) => state.logoutUser);
+  const location = useLocation();
+  const { searchQuery, setSearchQuery } = useSearchStore();
+
+  const isDashboard = location.pathname === "/dashboard";
 
 
 
@@ -60,27 +65,31 @@ function UserNavbar() {
       </div>
 
       {/* Center: Search */}
-      <div className="hidden md:flex flex-1 justify-center px-6">
-        <div className="relative w-full max-w-md">
-          <Search
-            size={16}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-          />
-          <input
-            placeholder="Search domains..."
-            className="
-              w-full pl-9 pr-4 py-2
-              rounded-full
-              bg-slate-800/70
-              border border-slate-700
-              text-sm text-white
-              placeholder:text-slate-400
-              focus:outline-none
-              focus:ring-2 focus:ring-blue-500/40
-            "
-          />
+      {isDashboard && (
+        <div className="hidden md:flex flex-1 justify-center px-6">
+          <div className="relative w-full max-w-md">
+            <Search
+              size={16}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+            />
+            <input
+              placeholder="Search challenges..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="
+                w-full pl-9 pr-4 py-2
+                rounded-full
+                bg-slate-800/70
+                border border-slate-700
+                text-sm text-white
+                placeholder:text-slate-400
+                focus:outline-none
+                focus:ring-2 focus:ring-blue-500/40
+              "
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Right: Icons + user */}
       <div className="flex items-center gap-4">

@@ -4,6 +4,7 @@ import { GetLeaderboardUseCase } from "../../application/use-cases/user/user/get
 import { UpdateUserAvatarUseCase } from "../../application/use-cases/user/user/updateUserAvatarUseCase";
 import { RemoveUserAvatarUseCase } from "../../application/use-cases/user/user/removeUserAvatarUseCase";
 import { GetUserProfileStatsUseCase } from "../../application/use-cases/user/user/getUserProfileStatsUseCase";
+import { CancelPremiumUseCase } from "../../application/use-cases/user/user/CancelPremiumUseCase";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
@@ -16,7 +17,8 @@ export class UserController {
     private readonly _getLeaderboardUseCase: GetLeaderboardUseCase,
     private readonly _updateUserAvatarUseCase: UpdateUserAvatarUseCase,
     private readonly _removeUserAvatarUseCase: RemoveUserAvatarUseCase,
-    private readonly _getUserProfileStatsUseCase: GetUserProfileStatsUseCase
+    private readonly _getUserProfileStatsUseCase: GetUserProfileStatsUseCase,
+    private readonly _cancelPremiumUseCase: CancelPremiumUseCase
   ) { }
 
 
@@ -169,6 +171,34 @@ export class UserController {
         .json(
           ApiResponse.success("Profile stats fetched successfully", data)
         );
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : MESSAGES.COMMON.INTERNAL_ERROR;
+
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(ApiResponse.error(message));
+    }
+  };
+
+  cancelPremium = async (req: Request, res: Response) => {
+    try {
+      const authUser = res.locals.user as { userId: string };
+
+      if (!authUser?.userId) {
+        return res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
+      }
+
+      await this._cancelPremiumUseCase.execute(authUser.userId);
+
+      return res
+        .status(HttpStatus.OK)
+        .json(ApiResponse.success("Premium membership cancelled successfully"));
+
     } catch (err: unknown) {
       const message =
         err instanceof Error

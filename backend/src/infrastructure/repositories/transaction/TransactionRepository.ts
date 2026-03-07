@@ -34,4 +34,55 @@ export class TransactionRepository implements ITransactionRepository {
             date: doc.date || doc.createdAt
         }));
     }
+
+    async findUserTransactions(userId: string): Promise<any[]> {
+        const docs = await TransactionModel.find({ userId })
+            .populate('planId', 'name features duration price')
+            .sort({ createdAt: -1 })
+            .lean();
+
+        return docs.map((doc: any) => {
+            const planDoc = doc.planId as any;
+            return {
+                id: doc._id.toString(),
+                plan: planDoc ? {
+                    id: planDoc._id?.toString(),
+                    name: planDoc.name,
+                    features: planDoc.features,
+                    duration: planDoc.duration,
+                    price: planDoc.price
+                } : null,
+                amount: doc.amount,
+                paymentMethod: doc.paymentMethod,
+                status: doc.status,
+                date: doc.date || doc.createdAt
+            };
+        });
+    }
+
+    async findLatestSuccessfulTransaction(userId: string): Promise<any> {
+        const doc = await TransactionModel.findOne({ userId, status: 'Completed' })
+            .populate('planId', 'name features duration price')
+            .sort({ createdAt: -1 })
+            .lean();
+
+        if (!doc) return null;
+
+        const planDoc = doc.planId as any;
+
+        return {
+            id: doc._id.toString(),
+            plan: planDoc ? {
+                id: planDoc._id?.toString(),
+                name: planDoc.name,
+                features: planDoc.features,
+                duration: planDoc.duration,
+                price: planDoc.price
+            } : null,
+            amount: doc.amount,
+            paymentMethod: doc.paymentMethod,
+            status: doc.status,
+            date: doc.date || doc.createdAt
+        };
+    }
 }

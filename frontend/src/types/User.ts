@@ -19,6 +19,7 @@ export interface User {
   longest_streak: number;
 
   is_premium: boolean;
+  premium_expiry_date: string | null;
 
   role: "user" | "admin";
   status: "active" | "blocked";

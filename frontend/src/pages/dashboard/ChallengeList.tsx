@@ -9,6 +9,7 @@ import { getChallengesApi } from "../../api/challengeApi";
 import type { Challenge, ChallengeDifficulty } from "../../types/Challenge";
 import { Lock } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
+import { useSearchStore } from "../../store/useSearchStore";
 
 
 const difficultyColor: Record<ChallengeDifficulty, string> = {
@@ -28,6 +29,13 @@ const ChallengeList = () => {
   const [showWarningModal, setShowWarningModal] = useState(false);
   const [pendingChallenge, setPendingChallenge] = useState<Challenge | null>(null);
   const [activeChallengeData, setActiveChallengeData] = useState<{ challengeId: string, expiryTime: number } | null>(null);
+
+  const { searchQuery } = useSearchStore();
+
+  const filteredChallenges = challenges.filter((challenge) =>
+    challenge.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    challenge.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
 
   useEffect(() => {
@@ -69,13 +77,13 @@ const ChallengeList = () => {
           Available Challenges
         </h2>
 
-        {challenges.length === 0 && (
+        {filteredChallenges.length === 0 && (
           <p className="text-slate-400 text-sm">
-            No challenges available yet.
+            {searchQuery ? "No challenges match your search." : "No challenges available yet."}
           </p>
         )}
 
-        {challenges.map((challenge) => (
+        {filteredChallenges.map((challenge) => (
           <div
             key={challenge.id}
             className="p-4 rounded-lg bg-[#0F172A] border border-slate-800 hover:border-slate-700 transition"

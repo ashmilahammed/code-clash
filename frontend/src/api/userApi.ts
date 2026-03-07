@@ -21,3 +21,8 @@ export const getUserProfileStatsApi = async (): Promise<any> => {
   const res = await axiosInstance.get("/user/profile/stats");
   return res.data.data;
 };
+
+export const cancelPremiumApi = async (): Promise<any> => {
+  const res = await axiosInstance.put("/user/premium/cancel");
+  return res.data;
+};
