@@ -21,6 +21,7 @@ import { GetChallengeCodeTemplatesUseCase } from "../../application/use-cases/ch
 import { GetChallengeHintsUseCase } from "../../application/use-cases/challenge/user/getChallengeHintsUseCase";
 import { GetChallengeTestCasesUseCase } from "../../application/use-cases/challenge/user/getChallengeTestCasesUseCase";
 
+
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
 import { MESSAGES } from "../constants/messages";
@@ -47,7 +48,7 @@ export class ChallengeController {
         private readonly _getTestCases: GetChallengeTestCasesUseCase,
         private readonly _updateChallenge: UpdateChallengeUseCase,
         private readonly _getAdminChallengeCodeTemplates: GetAdminChallengeCodeTemplatesUseCase,
-        private readonly _getAdminChallengeTestCases: GetAdminChallengeTestCasesUseCase
+        private readonly _getAdminChallengeTestCases: GetAdminChallengeTestCasesUseCase,
     ) { }
 
 

@@ -157,14 +157,15 @@ export class UserController {
   getProfileStats = async (req: Request, res: Response) => {
     try {
       const authUser = res.locals.user as { userId: string };
+      const targetUserId = (req.query.userId as string) || authUser?.userId;
 
-      if (!authUser?.userId) {
+      if (!targetUserId) {
         return res
           .status(HttpStatus.UNAUTHORIZED)
           .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
       }
 
-      const data = await this._getUserProfileStatsUseCase.execute(authUser.userId);
+      const data = await this._getUserProfileStatsUseCase.execute(targetUserId);
 
       return res
         .status(HttpStatus.OK)

@@ -110,8 +110,8 @@ const HeaderBar = ({ challenge, onTimeUp, isSuccess }: any) => {
 
       {/* RIGHT SIDE */}
       <div className="flex items-center gap-6 text-sm text-slate-400">
-        <span>👥 215 Solvers</span>
-        <span>📊 41% Success</span>
+        {/* <span>👥 215 Solvers</span>
+        <span>📊 41% Success</span> */}
 
       </div>
 

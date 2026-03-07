@@ -11,6 +11,7 @@ export interface Conversation {
     isPrivate?: boolean;
     lastMessageAt?: Date;
     updatedAt: Date;
+    participantDetails?: { id: string; username: string; avatar?: string }[];
 }
 
 export interface Message {

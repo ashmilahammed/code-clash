@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getLeaderboardApi } from "../../api/userApi";
 import type { User } from "../../types/User";
 import { useDebounce } from "../../hooks/useDebounce";
+import UserProfileCard from "../../components/chat/UserProfileCard";
 
 const NewLeaderboard = () => {
     const [users, setUsers] = useState<User[]>([]);
@@ -12,6 +13,7 @@ const NewLeaderboard = () => {
     const [totalUsers, setTotalUsers] = useState(0);
     const [search, setSearch] = useState("");
     const [timeframe, setTimeframe] = useState<"all-time" | "weekly" | "monthly">("weekly");
+    const [selectedProfileUserId, setSelectedProfileUserId] = useState<string | null>(null);
 
     const debouncedSearch = useDebounce(search, 500);
 
@@ -192,11 +194,14 @@ const NewLeaderboard = () => {
 
                                 {/* Escaper */}
                                 <td className="py-4 px-6">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white uppercase">
+                                    <div 
+                                        className="flex items-center gap-3 cursor-pointer group/user"
+                                        onClick={() => setSelectedProfileUserId(user.id)}
+                                    >
+                                        <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white uppercase group-hover/user:ring-2 group-hover/user:ring-indigo-400 transition-all">
                                             {user.username[0]}
                                         </div>
-                                        <span className="font-medium text-white">{user.username}</span>
+                                        <span className="font-medium text-white group-hover/user:text-indigo-300 transition-colors">{user.username}</span>
                                         {/* {user.is_premium && <span className="text-yellow-500 text-xs">⭐</span>} */}
                                     </div>
                                 </td>
@@ -273,6 +278,14 @@ const NewLeaderboard = () => {
             <div className="mt-4 text-xs text-slate-500 text-right">
                 Showing {users.length} of {totalUsers} results
             </div>
+
+            {/* User Profile Card */}
+            {selectedProfileUserId && (
+                <UserProfileCard 
+                    userId={selectedProfileUserId} 
+                    onClose={() => setSelectedProfileUserId(null)} 
+                />
+            )}
 
         </div>
     );

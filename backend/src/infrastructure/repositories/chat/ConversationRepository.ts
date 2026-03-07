@@ -10,7 +10,7 @@ import { Types } from "mongoose";
 export class ConversationRepository implements IConversationRepository {
     async findById(id: string): Promise<Conversation | null> {
         if (!Types.ObjectId.isValid(id)) return null;
-        const doc = await ConversationModel.findById(id);
+        const doc = await ConversationModel.findById(id).populate('participants', 'username avatar');
         return doc ? ConversationMapper.toDomain(doc) : null;
     }
 
@@ -36,7 +36,7 @@ export class ConversationRepository implements IConversationRepository {
         const docs = await ConversationModel.find({
             participants: new Types.ObjectId(userId),
             status: { $ne: 'inactive' }
-        }).sort({ lastMessageAt: -1, updatedAt: -1 });
+        }).populate('participants', 'username avatar').sort({ lastMessageAt: -1, updatedAt: -1 });
 
         return docs.map(ConversationMapper.toDomain);
     }
@@ -46,7 +46,7 @@ export class ConversationRepository implements IConversationRepository {
             type: 'group',
             isPrivate: false,
             status: 'active'
-        }).sort({ createdAt: -1 });
+        }).populate('participants', 'username avatar').sort({ createdAt: -1 });
 
         return docs.map(ConversationMapper.toDomain);
     }

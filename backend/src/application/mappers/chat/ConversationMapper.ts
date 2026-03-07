@@ -7,10 +7,22 @@ import { IConversationDoc } from "../../../infrastructure/database/models/chat/C
 
 export class ConversationMapper {
     static toDomain(doc: IConversationDoc): Conversation {
+        const isPopulated = doc.participants && doc.participants.length > 0 && typeof doc.participants[0] === 'object';
+        
+        const participantDetails = isPopulated ? (doc.participants as any[]).map(p => ({
+            id: p._id.toString(),
+            username: p.username,
+            avatar: p.avatar
+        })) : undefined;
+
+        const participantIds = isPopulated 
+            ? (doc.participants as any[]).map(p => p._id.toString())
+            : doc.participants.map(p => p.toString());
+
         return new Conversation(
             doc._id.toString(),
             doc.type as 'direct' | 'group',
-            doc.participants.map(p => p.toString()),
+            participantIds,
             doc.adminId?.toString(),
             doc.name,
             doc.description,
@@ -19,7 +31,8 @@ export class ConversationMapper {
             doc.status,
             doc.lastMessageAt,
             doc.createdAt,
-            doc.updatedAt
+            doc.updatedAt,
+            participantDetails
         );
     }
 

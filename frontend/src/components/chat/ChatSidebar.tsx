@@ -113,9 +113,9 @@ const ChatSidebar = () => {
                     <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider px-2 mb-2">Direct Messages</h3>
                     <div className="space-y-1">
                         {dms.map((dm) => {
-                            // Very simple fallback logic: we don't have user profiles populated here right now 
-                            // except standard user IDs. Ideally, we need participant profiles to show names.
-                            const otherUserId = dm.participants.find(p => p !== user?.id) || 'Unknown User';
+                            const otherUser = dm.participantDetails?.find(p => p.id !== user?.id);
+                            const otherUserName = otherUser?.username || 'Unknown User';
+                            const otherUserAvatar = otherUser?.avatar;
 
                             return (
                                 <button
@@ -126,11 +126,15 @@ const ChatSidebar = () => {
                                         : 'text-slate-300 hover:bg-[#1A2338]'
                                         }`}
                                 >
-                                    <div className="w-8 h-8 rounded-full bg-slate-700 flex shrink-0 items-center justify-center">
-                                        <UserIcon size={16} className="text-slate-400" />
+                                    <div className="w-8 h-8 rounded-full bg-slate-700 flex shrink-0 items-center justify-center overflow-hidden">
+                                        {otherUserAvatar ? (
+                                            <img src={otherUserAvatar} alt={otherUserName} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <UserIcon size={16} className="text-slate-400" />
+                                        )}
                                     </div>
                                     <div className="flex-1 truncate">
-                                        <span className="font-medium">User {otherUserId.slice(0, 4)}</span>
+                                        <span className="font-medium">{otherUserName}</span>
                                     </div>
                                 </button>
                             );

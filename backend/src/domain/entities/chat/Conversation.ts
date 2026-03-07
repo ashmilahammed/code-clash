@@ -13,7 +13,8 @@ export class Conversation {
         public status: 'active' | 'inactive' = 'active', // for all conversations,user by admin
         public readonly lastMessageAt?: Date | null,
         public readonly createdAt?: Date,
-        public readonly updatedAt?: Date
+        public readonly updatedAt?: Date,
+        public readonly participantDetails?: { id: string; username: string; avatar?: string }[]
     ) {
         this.validate();
     }

@@ -17,8 +17,9 @@ export const getSearchUsersApi = async (): Promise<User[]> => {
   return res.data;
 };
 
-export const getUserProfileStatsApi = async (): Promise<any> => {
-  const res = await axiosInstance.get("/user/profile/stats");
+export const getUserProfileStatsApi = async (userId?: string): Promise<any> => {
+  const url = userId ? `/user/profile/stats?userId=${userId}` : "/user/profile/stats";
+  const res = await axiosInstance.get(url);
   return res.data.data;
 };
 

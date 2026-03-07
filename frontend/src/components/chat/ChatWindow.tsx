@@ -3,7 +3,10 @@ import { useChatStore } from '../../store/useChatStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Send, Hash, Settings, LogOut, Paperclip, Smile, UserPlus, Trash2, Image as ImageIcon } from 'lucide-react';
 import InviteModal from './InviteModal';
+import UserProfileCard from './UserProfileCard';
 import { chatApi } from '../../api/chatApi';
+import EmojiPicker, { Theme, type EmojiClickData } from 'emoji-picker-react';
+
 
 
 const ChatWindow = () => {
@@ -14,8 +17,31 @@ const ChatWindow = () => {
     const [showLeaveModal, setShowLeaveModal] = useState(false);
     const [messageToDelete, setMessageToDelete] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState(false);
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [showMemberList, setShowMemberList] = useState(false);
+    const [selectedProfileUserId, setSelectedProfileUserId] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const emojiPickerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
+                setShowEmojiPicker(false);
+            }
+        };
+
+        if (showEmojiPicker) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showEmojiPicker]);
+
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -68,6 +94,11 @@ const ChatWindow = () => {
         setShowLeaveModal(false);
     };
 
+    const onEmojiClick = (emojiData: EmojiClickData) => {
+        setInputText((prev) => prev + emojiData.emoji);
+    };
+
+
     if (!activeConversation) {
         return (
             <div className="flex-1 flex flex-col items-center justify-center bg-[#0B1220] text-slate-500 h-full">
@@ -90,7 +121,12 @@ const ChatWindow = () => {
                         {activeConversation.name || 'Direct Message'}
                     </h2>
                     {isGroup && (
-                        <p className="text-xs text-slate-400">{activeConversation.participants.length} members</p>
+                        <button 
+                            onClick={() => setShowMemberList(!showMemberList)}
+                            className="text-xs text-slate-400 hover:text-blue-400 transition-colors"
+                        >
+                            {activeConversation.participants.length} members
+                        </button>
                     )}
                 </div>
                 <div className="flex items-center gap-3 text-slate-400">
@@ -116,91 +152,164 @@ const ChatWindow = () => {
                 </div>
             </div>
 
-            {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
-                {messages.map((message) => {
-                    const isMine = message.senderId === user?.id;
+            {/* Messages Area & Member Sidebar */}
+            <div className="flex-1 flex overflow-hidden">
+                <div className="flex-1 flex flex-col min-w-0">
+                    <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
+                        {messages.map((message) => {
+                            const isMine = message.senderId === user?.id;
 
-                    return (
-                        <div key={message.id} className={`group flex flex-col max-w-[75%] ${isMine ? 'ml-auto items-end' : 'mr-auto items-start'}`}>
-                            <div className="flex items-center gap-2 mb-1">
-                                <span className="text-xs font-semibold text-slate-300">
-                                    {isMine ? 'You' : (message.sender?.username || `User ${message.senderId.slice(0, 4)}`)}
-                                </span>
-                                <span className="text-[10px] text-slate-500">
-                                    {new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                </span>
-                                {isMine && !message.isDeleted && (
-                                    <button
-                                        onClick={() => handleDeleteMessage(message.id)}
-                                        className="text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity ml-2"
-                                        title="Delete Message"
-                                    >
-                                        <Trash2 size={12} />
-                                    </button>
-                                )}
-                            </div>
-                            <div
-                                className={`px-4 py-2 rounded-2xl text-sm ${isMine
-                                    ? 'bg-blue-600 text-white rounded-tr-none'
-                                    : 'bg-[#1A2338] text-slate-200 rounded-tl-none border border-slate-800'
-                                    } ${message.isDeleted ? 'italic text-opacity-70 bg-transparent border border-slate-700 text-slate-500' : ''}`}
-                            >
-                                {message.isDeleted ? (
-                                    <span className="flex items-center gap-2"><Trash2 size={14} className="opacity-50" /> {message.content}</span>
-                                ) : message.messageType === 'image' && message.mediaUrl ? (
-                                    <div className="flex flex-col gap-2">
-                                        <a href={message.mediaUrl} target="_blank" rel="noopener noreferrer">
-                                            <img src={message.mediaUrl} alt="Chat attachment" className="max-w-[250px] max-h-[250px] rounded-lg object-cover bg-slate-800" />
-                                        </a>
+                            return (
+                                <div key={message.id} className={`group flex flex-col max-w-[75%] ${isMine ? 'ml-auto items-end' : 'mr-auto items-start'}`}>
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <button 
+                                            onClick={() => !isMine && setSelectedProfileUserId(message.senderId)}
+                                            className={`text-xs font-semibold transition-colors ${isMine ? 'text-slate-300' : 'text-blue-400 hover:text-blue-300'}`}
+                                            disabled={isMine}
+                                        >
+                                            {isMine ? 'You' : (message.sender?.username || `User ${message.senderId.slice(0, 4)}`)}
+                                        </button>
+                                        <span className="text-[10px] text-slate-500">
+                                            {new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        </span>
+                                        {isMine && !message.isDeleted && (
+                                            <button
+                                                onClick={() => handleDeleteMessage(message.id)}
+                                                className="text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity ml-2"
+                                                title="Delete Message"
+                                            >
+                                                <Trash2 size={12} />
+                                            </button>
+                                        )}
                                     </div>
-                                ) : (
-                                    message.content
+                                    <div
+                                        className={`px-4 py-2 rounded-2xl text-sm ${isMine
+                                            ? 'bg-blue-600 text-white rounded-tr-none'
+                                            : 'bg-[#1A2338] text-slate-200 rounded-tl-none border border-slate-800'
+                                            } ${message.isDeleted ? 'italic text-opacity-70 bg-transparent border border-slate-700 text-slate-500' : ''}`}
+                                    >
+                                        {message.isDeleted ? (
+                                            <span className="flex items-center gap-2"><Trash2 size={14} className="opacity-50" /> {message.content}</span>
+                                        ) : message.messageType === 'image' && message.mediaUrl ? (
+                                            <div className="flex flex-col gap-2">
+                                                <a href={message.mediaUrl} target="_blank" rel="noopener noreferrer">
+                                                    <img src={message.mediaUrl} alt="Chat attachment" className="max-w-[250px] max-h-[250px] rounded-lg object-cover bg-slate-800" />
+                                                </a>
+                                            </div>
+                                        ) : (
+                                            message.content
+                                        )}
+                                    </div>
+                                </div>
+                            )
+                        })}
+                        <div ref={messagesEndRef} />
+                    </div>
+
+                    <div className="p-4 bg-[#141C2F] border-t border-slate-800">
+                        <form onSubmit={handleSend} className="flex items-center gap-2 bg-[#0B1220] rounded-full border border-slate-700 px-4 py-2 relative">
+                            <div ref={emojiPickerRef} className="relative flex items-center">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                                    className="text-slate-400 hover:text-white transition"
+                                >
+                                    <Smile size={20} />
+                                </button>
+
+                                {showEmojiPicker && (
+                                    <div className="absolute bottom-full left-0 mb-4 z-50">
+                                        <EmojiPicker
+                                            theme={Theme.DARK}
+                                            onEmojiClick={onEmojiClick}
+                                            lazyLoadEmojis={true}
+                                        />
+                                    </div>
                                 )}
                             </div>
+
+
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleImageUpload}
+                                accept="image/*"
+                                className="hidden"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => fileInputRef.current?.click()}
+                                disabled={isUploading}
+                                className={`text-slate-400 hover:text-white transition ${isUploading ? 'opacity-50 animate-pulse' : ''}`}
+                            >
+                                {isUploading ? <ImageIcon size={20} /> : <Paperclip size={20} />}
+                            </button>
+
+                            <input
+                                type="text"
+                                value={inputText}
+                                onChange={(e) => setInputText(e.target.value)}
+                                placeholder={`Message ${activeConversation.name || 'user'}`}
+                                className="flex-1 bg-transparent text-sm text-white placeholder:text-slate-500 focus:outline-none px-2"
+                            />
+                            <button
+                                type="submit"
+                                disabled={!inputText.trim()}
+                                className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:hover:bg-blue-600 text-white p-2 rounded-full transition flex items-center justify-center h-8 w-8"
+                            >
+                                <Send size={14} className={inputText.trim() ? "translate-x-px" : ""} />
+                            </button>
+                        </form>
+                        <p className="text-center text-[10px] text-slate-500 mt-2">Messages are encrypted end-to-end</p>
+                    </div>
+                </div>
+
+                {isGroup && showMemberList && (
+                    <div className="w-64 border-l border-slate-800 bg-[#141C2F] flex flex-col animate-in slide-in-from-right duration-300">
+                        <div className="p-4 border-b border-slate-800 flex items-center justify-between">
+                            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                                <UserPlus size={16} className="text-blue-500" />
+                                Members
+                            </h3>
+                            <span className="text-xs text-slate-500 bg-slate-800 px-2 py-0.5 rounded-full">
+                                {activeConversation.participants.length}
+                            </span>
                         </div>
-                    )
-                })}
-                <div ref={messagesEndRef} />
-            </div>
-
-            {/* Message Input */}
-            <div className="p-4 bg-[#141C2F] border-t border-slate-800">
-                <form onSubmit={handleSend} className="flex items-center gap-2 bg-[#0B1220] rounded-full border border-slate-700 px-4 py-2">
-                    <button type="button" className="text-slate-400 hover:text-white transition"><Smile size={20} /></button>
-
-                    <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleImageUpload}
-                        accept="image/*"
-                        className="hidden"
-                    />
-                    <button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        disabled={isUploading}
-                        className={`text-slate-400 hover:text-white transition ${isUploading ? 'opacity-50 animate-pulse' : ''}`}
-                    >
-                        {isUploading ? <ImageIcon size={20} /> : <Paperclip size={20} />}
-                    </button>
-
-                    <input
-                        type="text"
-                        value={inputText}
-                        onChange={(e) => setInputText(e.target.value)}
-                        placeholder={`Message ${activeConversation.name || 'user'}`}
-                        className="flex-1 bg-transparent text-sm text-white placeholder:text-slate-500 focus:outline-none px-2"
-                    />
-                    <button
-                        type="submit"
-                        disabled={!inputText.trim()}
-                        className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:hover:bg-blue-600 text-white p-2 rounded-full transition flex items-center justify-center h-8 w-8"
-                    >
-                        <Send size={14} className={inputText.trim() ? "translate-x-px" : ""} />
-                    </button>
-                </form>
-                <p className="text-center text-[10px] text-slate-500 mt-2">Messages are encrypted end-to-end</p>
+                        <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
+                            {activeConversation.participantDetails?.map((member) => (
+                                <div 
+                                    key={member.id} 
+                                    className="flex items-center gap-3 group cursor-pointer hover:bg-slate-800/50 p-2 rounded-xl transition-colors"
+                                    onClick={() => member.id !== user?.id && setSelectedProfileUserId(member.id)}
+                                >
+                                    <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 shrink-0 flex items-center justify-center overflow-hidden">
+                                        {member.avatar ? (
+                                            <img src={member.avatar} alt={member.username} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center bg-blue-600/10 text-blue-400 text-xs font-bold">
+                                                {member.username[0].toUpperCase()}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium text-slate-200 truncate group-hover:text-white transition-colors">
+                                            {member.username}
+                                            {member.id === activeConversation.adminId && (
+                                                <span className="ml-2 text-[10px] text-blue-400 bg-blue-400/10 px-1.5 py-0.5 rounded-md font-bold uppercase tracking-wider">Admin</span>
+                                            )}
+                                            {member.id === user?.id && (
+                                                <span className="ml-2 text-[10px] text-slate-500 font-normal italic">(You)</span>
+                                            )}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                            {!activeConversation.participantDetails && (
+                                <p className="text-xs text-slate-500 text-center py-4 italic">Loading members...</p>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Leave Group Modal */}
@@ -263,6 +372,13 @@ const ChatWindow = () => {
                         </div>
                     </div>
                 </div>
+            )}
+            {/* User Profile Card */}
+            {selectedProfileUserId && (
+                <UserProfileCard 
+                    userId={selectedProfileUserId} 
+                    onClose={() => setSelectedProfileUserId(null)} 
+                />
             )}
         </div>
     );
