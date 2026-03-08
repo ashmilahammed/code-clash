@@ -5,6 +5,7 @@ import { UpdateUserAvatarUseCase } from "../../application/use-cases/user/user/u
 import { RemoveUserAvatarUseCase } from "../../application/use-cases/user/user/removeUserAvatarUseCase";
 import { GetUserProfileStatsUseCase } from "../../application/use-cases/user/user/getUserProfileStatsUseCase";
 import { CancelPremiumUseCase } from "../../application/use-cases/user/user/CancelPremiumUseCase";
+import { UpdateUserProfileUseCase } from "../../application/use-cases/user/user/UpdateUserProfileUseCase";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
@@ -18,7 +19,8 @@ export class UserController {
     private readonly _updateUserAvatarUseCase: UpdateUserAvatarUseCase,
     private readonly _removeUserAvatarUseCase: RemoveUserAvatarUseCase,
     private readonly _getUserProfileStatsUseCase: GetUserProfileStatsUseCase,
-    private readonly _cancelPremiumUseCase: CancelPremiumUseCase
+    private readonly _cancelPremiumUseCase: CancelPremiumUseCase,
+    private readonly _updateUserProfileUseCase: UpdateUserProfileUseCase
   ) { }
 
 
@@ -199,6 +201,42 @@ export class UserController {
       return res
         .status(HttpStatus.OK)
         .json(ApiResponse.success("Premium membership cancelled successfully"));
+
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : MESSAGES.COMMON.INTERNAL_ERROR;
+
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(ApiResponse.error(message));
+    }
+  };
+
+
+  updateProfile = async (req: Request, res: Response) => {
+    try {
+      const authUser = res.locals.user as { userId: string };
+
+      if (!authUser?.userId) {
+        return res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
+      }
+
+      const { username, about, github_url, linkedin_url } = req.body;
+
+      const updatedUser = await this._updateUserProfileUseCase.execute(authUser.userId, {
+        username,
+        about,
+        github_url,
+        linkedin_url
+      });
+
+      return res
+        .status(HttpStatus.OK)
+        .json(ApiResponse.success(MESSAGES.USER.UPDATE_SUCCESS, updatedUser.snapshot()));
 
     } catch (err: unknown) {
       const message =

@@ -31,6 +31,9 @@ router.put(
   userController.cancelPremium
 );
 
+router.put("/profile", authMiddleware, userController.updateProfile);
+
 router.get("/plans", authMiddleware, planController.getPublicPlans.bind(planController));
+
 
 export default router;

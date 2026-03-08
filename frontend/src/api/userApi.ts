@@ -27,3 +27,13 @@ export const cancelPremiumApi = async (): Promise<any> => {
   const res = await axiosInstance.put("/user/premium/cancel");
   return res.data;
 };
+
+export const updateUserProfileApi = async (data: {
+  username?: string;
+  about?: string;
+  github_url?: string;
+  linkedin_url?: string;
+}): Promise<any> => {
+  const res = await axiosInstance.put("/user/profile", data);
+  return res.data.data;
+};

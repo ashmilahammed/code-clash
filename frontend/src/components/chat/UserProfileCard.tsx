@@ -68,15 +68,15 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ userId, onClose }) =>
 
     return (
         <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
-            <div 
-                ref={cardRef} 
+            <div
+                ref={cardRef}
                 className="bg-[#141C2F] border border-slate-700 rounded-3xl p-8 shadow-2xl max-w-sm w-full relative overflow-hidden animate-in zoom-in-95 duration-300"
             >
                 {/* Background Decor */}
                 <div className="absolute top-0 left-0 w-full h-32 bg-linear-to-b from-blue-600/10 to-transparent pointer-events-none" />
-                
+
                 {/* Close Button */}
-                <button 
+                <button
                     onClick={onClose}
                     className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors p-1"
                 >
@@ -101,7 +101,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ userId, onClose }) =>
                             </div>
                         )}
                     </div>
-                    
+
                     <div>
                         <h2 className="text-2xl font-bold text-white mb-1">{user.username}</h2>
                         <div className="flex items-center gap-3 text-sm">
@@ -134,14 +134,19 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ userId, onClose }) =>
 
                 {/* Actions */}
                 <div className="space-y-3">
-                    <button 
+                    <button
                         onClick={handleSendMessage}
                         className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all shadow-lg shadow-blue-900/40 active:scale-[0.98]"
                     >
                         <MessageSquare size={20} fill="currentColor" />
                         Send Message
                     </button>
-                    <button 
+                    <button
+                        onClick={() => {
+                            onClose();
+                            // navigate(`/profile?id=${userId}`);
+                            navigate(`/profile?id=${userId}&view=info`);
+                        }}
                         className="w-full py-4 bg-slate-800/50 hover:bg-slate-800 text-slate-300 hover:text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all border border-slate-700/50 active:scale-[0.98]"
                     >
                         <User size={20} />
