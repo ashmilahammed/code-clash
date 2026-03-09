@@ -38,7 +38,9 @@ export class User {
 
     public isVerified: boolean,
     private otp: string | null,
-    private otpExpires: Date | null
+    private otpExpires: Date | null,
+    public banned_until: Date | null = null,
+    public ban_reason: string | null = null
   ) {
     this.validate();
   }
@@ -187,6 +189,21 @@ export class User {
     this.status = "active";
   }
 
+  isBanned(): boolean {
+    if (!this.banned_until) return false;
+    return new Date() < new Date(this.banned_until);
+  }
+
+  ban(until: Date, reason: string) {
+    this.banned_until = until;
+    this.ban_reason = reason;
+  }
+
+  unban() {
+    this.banned_until = null;
+    this.ban_reason = null;
+  }
+
 
 
 
@@ -219,6 +236,9 @@ export class User {
       role: this.role,
       status: this.status,
       isVerified: this.isVerified,
+      banned_until: this.banned_until,
+      ban_reason: this.ban_reason,
+      isBanned: this.isBanned()
     };
   }
 }

@@ -37,6 +37,9 @@ export interface IUserDoc extends Document {
   otp?: string | null;
   otpExpires?: Date | null;
 
+  banned_until?: Date | null;
+  ban_reason?: string | null;
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -81,6 +84,8 @@ const UserSchema = new Schema<IUserDoc>(
     isVerified: { type: Boolean, default: false },
     otp: { type: String, default: null },
     otpExpires: { type: Date, default: null },
+    banned_until: { type: Date, default: null },
+    ban_reason: { type: String, default: null },
   },
   { timestamps: true }
 );

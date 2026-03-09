@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { Conversation, Message } from '../api/chatApi';
 import { chatApi } from '../api/chatApi';
 import { io, Socket } from 'socket.io-client';
+import toast from 'react-hot-toast';
 
 
 interface ChatState {
@@ -52,6 +53,15 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
         socket.on('connect', () => {
             console.log('Socket connected');
+        });
+
+        socket.on('connect_error', (error) => {
+            console.error('Socket connection error:', error);
+            toast.error(error.message);
+        });
+
+        socket.on('error', (data: { message: string }) => {
+            toast.error(data.message);
         });
 
         socket.on('receive_message', (message: Message) => {
@@ -179,8 +189,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
             set(state => ({ conversations: [newGroup, ...state.conversations] }));
             get().setActiveConversation(newGroup);
         } catch (error: any) {
-            console.log("STATUS:", error.response?.status);
-            console.log("BACKEND MESSAGE:", error.response?.data);
+            const message = error.response?.data?.message || "Failed to create group";
+            toast.error(message);
             throw error;
         }
     },
@@ -195,8 +205,9 @@ export const useChatStore = create<ChatState>((set, get) => ({
             if (socket) {
                 socket.emit('join_conversation', conversationId);
             }
-        } catch (error) {
-            console.error('Failed to join group:', error);
+        } catch (error: any) {
+            const message = error.response?.data?.message || "Failed to join group";
+            toast.error(message);
             throw error;
         }
     },

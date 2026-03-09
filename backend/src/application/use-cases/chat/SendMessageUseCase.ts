@@ -1,6 +1,7 @@
 import { IMessageRepository } from "../../../domain/repositories/chat/IMessageRepository";
 import { IConversationRepository } from "../../../domain/repositories/chat/IConversationRepository";
 import { Message } from "../../../domain/entities/chat/Message";
+import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
 
 
 
@@ -15,10 +16,17 @@ interface SendMessageDto {
 export class SendMessageUseCase {
     constructor(
         private messageRepository: IMessageRepository,
-        private conversationRepository: IConversationRepository
+        private conversationRepository: IConversationRepository,
+        private userRepository: IUserRepository
     ) { }
 
     async execute(dto: SendMessageDto): Promise<Message> {
+        const user = await this.userRepository.findById(dto.senderId);
+        if (user && user.isBanned()) {
+            const date = user.banned_until?.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+            throw new Error(`Your account is temporarily banned until ${date}. Reason: ${user.ban_reason}.`);
+        }
+
         const conversation = await this.conversationRepository.findById(dto.conversationId);
 
         if (!conversation) {

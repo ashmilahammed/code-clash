@@ -47,6 +47,11 @@ export class SocketServer {
                     return next(new Error("Authentication error: Invalid or blocked user"));
                 }
 
+                if (user.isBanned()) {
+                    const date = user.banned_until?.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+                    return next(new Error(`Your account is temporarily banned until ${date}. Reason: ${user.ban_reason}.`));
+                }
+
                 socket.data.userId = user.id;
                 next();
             } catch (error) {
@@ -100,9 +105,9 @@ export class SocketServer {
                         lastMessage: message
                     });
 
-                } catch (error) {
+                } catch (error: any) {
                     this.logger.error("Error sending message via socket", error);
-                    socket.emit("error", { message: "Failed to send message" });
+                    socket.emit("error", { message: error.message || "Failed to send message" });
                 }
             });
 

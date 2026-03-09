@@ -12,6 +12,7 @@ import levelRoutes from "./presentation/routes/level.routes";
 import badgeRoutes from "./presentation/routes/badge.routes";
 import chatRoutes from "./presentation/routes/chat.routes";
 import transactionRoutes from "./presentation/routes/transaction.routes";
+import reportRoutes from "./presentation/routes/report.routes";
 
 import { WinstonLogger } from "./infrastructure/services/logger";
 import { startPremiumExpirationJob } from "./infrastructure/services/scheduler/PremiumSchedulerService";
@@ -37,6 +38,7 @@ app.use("/api/levels", levelRoutes);
 app.use("/api/badges", badgeRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/transactions", transactionRoutes);
+app.use("/api/reports", reportRoutes);
 
 
 

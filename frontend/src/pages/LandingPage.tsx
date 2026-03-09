@@ -9,7 +9,7 @@ import { Users, Activity } from "lucide-react";
 const MOCK_DATA = {
     level: {
         level: 1,
-        currentXp: 120,
+        currentXp: 0,
         minXp: 0,
         maxXp: 499,
     },

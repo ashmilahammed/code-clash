@@ -12,6 +12,7 @@ import { LeaveGroupUseCase } from "../../application/use-cases/chat/LeaveGroupUs
 import { AddParticipantsUseCase } from "../../application/use-cases/chat/AddParticipantsUseCase";
 import { UploadChatImageUseCase } from "../../application/use-cases/chat/UploadChatImageUseCase";
 import { DeleteMessageUseCase } from "../../application/use-cases/chat/DeleteMessageUseCase";
+import { userRepository } from "./user.di";
 
 // Admin Use Cases
 import { GetAdminGroupsUseCase } from "../../application/use-cases/chat/GetAdminGroupsUseCase";
@@ -25,10 +26,10 @@ export const conversationRepository = new ConversationRepository();
 export const messageRepository = new MessageRepository();
 
 // Use Cases
-export const createGroupUseCase = new CreateGroupUseCase(conversationRepository);
-export const joinGroupUseCase = new JoinGroupUseCase(conversationRepository);
+export const createGroupUseCase = new CreateGroupUseCase(conversationRepository, userRepository);
+export const joinGroupUseCase = new JoinGroupUseCase(conversationRepository, userRepository);
 export const getConversationsUseCase = new GetConversationsUseCase(conversationRepository);
-export const sendMessageUseCase = new SendMessageUseCase(messageRepository, conversationRepository);
+export const sendMessageUseCase = new SendMessageUseCase(messageRepository, conversationRepository, userRepository);
 export const getMessagesUseCase = new GetMessagesUseCase(messageRepository, conversationRepository);
 export const getOrCreateDirectConversationUseCase = new GetOrCreateDirectConversationUseCase(conversationRepository);
 export const getPublicConversationsUseCase = new GetPublicConversationsUseCase(conversationRepository);

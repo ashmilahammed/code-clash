@@ -25,7 +25,7 @@ import { createRequireRole } from "../../presentation/middlewares/role.Middlewar
 
 
 // core dependencies
-const userRepository = new UserRepository();
+export const userRepository = new UserRepository();
 const submissionRepository = new SubmissionRepository();
 const levelRepository = new LevelRepository();
 const xpService = new XpService();

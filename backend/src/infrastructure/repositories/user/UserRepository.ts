@@ -231,6 +231,8 @@ export class UserRepository
                     role: snapshot.role,
                     status: snapshot.status,
                     isVerified: snapshot.isVerified,
+                    banned_until: snapshot.banned_until,
+                    ban_reason: snapshot.ban_reason,
                 },
             }
         );

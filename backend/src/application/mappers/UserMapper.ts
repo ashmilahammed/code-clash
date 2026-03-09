@@ -39,7 +39,9 @@ export class UserMapper {
 
       doc.isVerified,
       doc.otp ?? null,
-      doc.otpExpires ?? null
+      doc.otpExpires ?? null,
+      doc.banned_until ?? null,
+      doc.ban_reason ?? null
     );
   }
 
@@ -48,12 +50,17 @@ export class UserMapper {
   }
 
   static toAuth(user: User): AuthUserDTO {
+    const snap = user.snapshot();
     return {
-      id: user.snapshot().id,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-      isVerified: user.isVerified,
+      id: snap.id,
+      username: snap.username,
+      email: snap.email,
+      role: snap.role,
+      isVerified: snap.isVerified,
+      avatar: snap.avatar,
+      about: snap.about,
+      github_url: snap.github_url,
+      linkedin_url: snap.linkedin_url,
     };
   }
 }

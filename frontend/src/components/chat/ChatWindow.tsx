@@ -1,9 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useChatStore } from '../../store/useChatStore';
 import { useAuthStore } from '../../store/useAuthStore';
-import { Send, Hash, Settings, LogOut, Paperclip, Smile, UserPlus, Trash2, Image as ImageIcon } from 'lucide-react';
+import { Send, Hash, Settings, LogOut, Paperclip, Smile, UserPlus, Trash2, Image as ImageIcon, Flag } from 'lucide-react';
 import InviteModal from './InviteModal';
 import UserProfileCard from './UserProfileCard';
+import ReportModal from './ReportModal';
 import { chatApi } from '../../api/chatApi';
 import EmojiPicker, { Theme, type EmojiClickData } from 'emoji-picker-react';
 
@@ -20,6 +21,7 @@ const ChatWindow = () => {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [showMemberList, setShowMemberList] = useState(false);
     const [selectedProfileUserId, setSelectedProfileUserId] = useState<string | null>(null);
+    const [messageToReport, setMessageToReport] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const emojiPickerRef = useRef<HTMLDivElement>(null);
@@ -117,8 +119,14 @@ const ChatWindow = () => {
             <div className="h-16 border-b border-slate-800 flex items-center justify-between px-6 bg-[#141C2F]">
                 <div>
                     <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                        {isGroup && <Hash size={18} className="text-blue-500" />}
-                        {activeConversation.name || 'Direct Message'}
+                        {isGroup ? (
+                            <>
+                                <Hash size={18} className="text-blue-500" />
+                                {activeConversation.name}
+                            </>
+                        ) : (
+                            activeConversation.participantDetails?.find(p => p.id !== user?.id)?.username || 'Direct Message'
+                        )}
                     </h2>
                     {isGroup && (
                         <button 
@@ -179,6 +187,15 @@ const ChatWindow = () => {
                                                 title="Delete Message"
                                             >
                                                 <Trash2 size={12} />
+                                            </button>
+                                        )}
+                                        {!isMine && !message.isDeleted && (
+                                            <button
+                                                onClick={() => setMessageToReport(message.id)}
+                                                className="text-slate-500 hover:text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity ml-2"
+                                                title="Report Message"
+                                            >
+                                                <Flag size={12} />
                                             </button>
                                         )}
                                     </div>
@@ -249,7 +266,7 @@ const ChatWindow = () => {
                                 type="text"
                                 value={inputText}
                                 onChange={(e) => setInputText(e.target.value)}
-                                placeholder={`Message ${activeConversation.name || 'user'}`}
+                                placeholder={`Message ${isGroup ? activeConversation.name : (activeConversation.participantDetails?.find(p => p.id !== user?.id)?.username || 'user')}`}
                                 className="flex-1 bg-transparent text-sm text-white placeholder:text-slate-500 focus:outline-none px-2"
                             />
                             <button
@@ -372,6 +389,12 @@ const ChatWindow = () => {
                         </div>
                     </div>
                 </div>
+            )}
+            {messageToReport && (
+                <ReportModal 
+                    messageId={messageToReport} 
+                    onClose={() => setMessageToReport(null)} 
+                />
             )}
             {/* User Profile Card */}
             {selectedProfileUserId && (

@@ -6,6 +6,7 @@ import {
   Layers,
   Award,
   CreditCard,
+  ShieldCheck,
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -133,6 +134,18 @@ const Sidebar = () => {
         >
           <Users size={18} />
           Group Management
+        </NavLink>
+        <NavLink
+          to="/admin/reports"
+          className={({ isActive }) =>
+            `${linkBase} ${isActive
+              ? "bg-slate-800 text-white shadow-md"
+              : "text-slate-400 hover:bg-slate-800 hover:text-white"
+            }`
+          }
+        >
+          <ShieldCheck size={18} />
+          Report Management
         </NavLink>
       </nav>
 

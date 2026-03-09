@@ -42,6 +42,7 @@ import LevelManagement from "./pages/admin/levels/LevelManagement";
 import BadgeManagement from "./pages/admin/badges/BadgeManagement";
 import PlanManagement from "./pages/admin/plans/PlanManagement";
 import GroupManagement from "./pages/admin/group/GroupManagement";
+import ReportManagement from "./pages/admin/reportManagement/ReportManagement";
 
 import SolveChallenge from "./pages/challenges/SolveChallenge";
 
@@ -172,6 +173,7 @@ function App() {
             <Route path="/admin/badges" element={<BadgeManagement />} />
             <Route path="/admin/plans" element={<PlanManagement />} />
             <Route path="/admin/groups" element={<GroupManagement />} />
+            <Route path="/admin/reports" element={<ReportManagement />} />
 
             {/* wizard */}
             <Route

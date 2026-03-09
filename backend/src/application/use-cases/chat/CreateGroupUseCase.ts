@@ -1,5 +1,6 @@
 import { IConversationRepository } from "../../../domain/repositories/chat/IConversationRepository";
 import { Conversation, ConversationType } from "../../../domain/entities/chat/Conversation";
+import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
 
 
 interface CreateGroupDto {
@@ -12,9 +13,18 @@ interface CreateGroupDto {
 }
 
 export class CreateGroupUseCase {
-    constructor(private conversationRepository: IConversationRepository) { }
+    constructor(
+        private conversationRepository: IConversationRepository,
+        private userRepository: IUserRepository
+    ) { }
 
     async execute(dto: CreateGroupDto): Promise<Conversation> {
+        const user = await this.userRepository.findById(dto.adminId);
+        if (user && user.isBanned()) {
+            const date = user.banned_until?.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+            throw new Error(`Your account is temporarily banned until ${date}. Reason: ${user.ban_reason}.`);
+        }
+
         if (!dto.name || dto.name.trim() === '') {
             throw new Error("Group name is required");
         }

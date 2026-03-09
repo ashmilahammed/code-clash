@@ -18,6 +18,10 @@ import ConfirmModal from "../../components/modals/ConfirmModal";
 import { toast } from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
 
+
+
+
+
 const Profile = () => {
     const currentUser = useAuthStore((state) => state.user);
     const updateUser = useAuthStore((state) => state.updateUser);
@@ -41,6 +45,7 @@ const Profile = () => {
     const [githubUrl, setGithubUrl] = useState("");
     const [linkedinUrl, setLinkedinUrl] = useState("");
     const [isSaving, setIsSaving] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
 
     const activityLimit = 5;
 
@@ -69,6 +74,9 @@ const Profile = () => {
             .then((data) => {
                 if (mounted) {
                     setProfileData(data);
+                    if (isOwnProfile && data.user) {
+                        updateUser(data.user);
+                    }
                     setPageLoading(false);
                 }
             })
@@ -109,8 +117,9 @@ const Profile = () => {
             });
             updateUser(updatedUser);
             toast.success("Profile updated successfully");
+            setIsEditing(false);
             setView("stats");
-            
+
             // Keep the ID if we are somehow editing someone else's profile (should not happen UI-wise)
             const newParams: any = {};
             if (targetUserId) newParams.id = targetUserId;
@@ -121,6 +130,16 @@ const Profile = () => {
         } finally {
             setIsSaving(false);
         }
+    };
+
+    const handleCancelEdit = () => {
+        if (currentUser) {
+            setDisplayName(currentUser.username || "");
+            setBio(currentUser.about || "");
+            setGithubUrl(currentUser.github_url || "");
+            setLinkedinUrl(currentUser.linkedin_url || "");
+        }
+        setIsEditing(false);
     };
 
     if (!user || pageLoading || !profileData) return (
@@ -220,7 +239,7 @@ const Profile = () => {
                                 <Zap size={14} className="text-yellow-500" /> {profileData.streak.current} day streak
                             </span>
                         </div>
-
+                        {/* 
                         <div className="flex gap-4">
                             {user.github_url && (
                                 <a href={user.github_url} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition p-1 hover:bg-slate-800 rounded">
@@ -232,7 +251,7 @@ const Profile = () => {
                                     <Linkedin size={20} />
                                 </a>
                             )}
-                        </div>
+                        </div> */}
                     </div>
 
                     {isOwnProfile && (
@@ -246,11 +265,10 @@ const Profile = () => {
                                     }
                                     setSearchParams(newParams);
                                 }}
-                                className={`px-6 py-2.5 rounded-lg font-medium transition border shadow-sm hover:shadow-md active:transform active:scale-95 ${
-                                    view === 'info'
-                                        ? 'bg-blue-600 border-blue-500 text-white hover:bg-blue-700'
-                                        : 'bg-[#1E293B] border-slate-700 text-white hover:bg-[#283548]'
-                                }`}
+                                className={`px-6 py-2.5 rounded-lg font-medium transition border shadow-sm hover:shadow-md active:transform active:scale-95 ${view === 'info'
+                                    ? 'bg-blue-600 border-blue-500 text-white hover:bg-blue-700'
+                                    : 'bg-[#1E293B] border-slate-700 text-white hover:bg-[#283548]'
+                                    }`}
                             >
                                 {view === 'info' ? 'Back to Stats' : 'Profile'}
                             </button>
@@ -268,9 +286,9 @@ const Profile = () => {
                                     <span className="text-blue-400 text-sm font-semibold bg-blue-400/10 px-2 py-0.5 rounded">{profileData.level.currentXp - profileData.level.minXp} XP</span>
                                 </div>
                                 <div className="w-full bg-slate-800 h-3 rounded-full overflow-hidden mb-3">
-                                    <div 
-                                        className="bg-linear-to-r from-blue-600 to-purple-600 h-full shadow-[0_0_10px_rgba(59,130,246,0.5)]" 
-                                        style={{ width: `${Math.min(((profileData.level.currentXp - profileData.level.minXp) / (profileData.level.maxXp - profileData.level.minXp + 1)) * 100, 100)}%` }} 
+                                    <div
+                                        className="bg-linear-to-r from-blue-600 to-purple-600 h-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"
+                                        style={{ width: `${Math.min(((profileData.level.currentXp - profileData.level.minXp) / (profileData.level.maxXp - profileData.level.minXp + 1)) * 100, 100)}%` }}
                                     />
                                 </div>
                                 <div className="flex justify-between text-xs font-medium text-slate-500">
@@ -356,9 +374,9 @@ const Profile = () => {
                                                     <span className="text-slate-400 font-mono text-xs bg-slate-800 px-2 py-0.5 rounded">{lang.count} Solved</span>
                                                 </div>
                                                 <div className="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
-                                                    <div 
-                                                        className={`${colors[idx % colors.length]} h-full rounded-full`} 
-                                                        style={{ width: `${Math.min((lang.count / Math.max(profileData.stats.stats.passedSubmissions, 1)) * 100, 100)}%` }} 
+                                                    <div
+                                                        className={`${colors[idx % colors.length]} h-full rounded-full`}
+                                                        style={{ width: `${Math.min((lang.count / Math.max(profileData.stats.stats.passedSubmissions, 1)) * 100, 100)}%` }}
                                                     />
                                                 </div>
                                             </div>
@@ -413,7 +431,19 @@ const Profile = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                         <div className="lg:col-span-2 space-y-6">
                             <div className="bg-[#131B2D] border border-slate-800/60 rounded-2xl p-8 shadow-xl">
-                                <h3 className="text-xl font-bold text-white mb-8 flex items-center gap-2">User Info</h3>
+                                <div className="flex justify-between items-center mb-8">
+                                    <h3 className="text-xl font-bold text-white flex items-center gap-2">User Info</h3>
+                                    {isOwnProfile && !isEditing && (
+                                        <button
+                                            onClick={() => setIsEditing(true)}
+                                            // className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold transition border border-green-500 active:scale-95"
+                                            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold transition border border-indigo-500 active:scale-95"
+                                        >
+                                            {/* <Pencil size={16} /> */}
+                                            Edit Profile
+                                        </button>
+                                    )}
+                                </div>
                                 <div className="space-y-6">
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium text-slate-400 ml-1">Display Name</label>
@@ -422,8 +452,8 @@ const Profile = () => {
                                                 type="text"
                                                 value={displayName}
                                                 onChange={(e) => setDisplayName(e.target.value)}
-                                                readOnly={!isOwnProfile}
-                                                className={`w-full bg-[#1E293B]/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium ${!isOwnProfile ? 'cursor-default' : ''}`}
+                                                readOnly={!isOwnProfile || !isEditing}
+                                                className={`w-full bg-[#1E293B]/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium ${(!isOwnProfile || !isEditing) ? 'cursor-default' : ''}`}
                                                 placeholder="Enter your name"
                                             />
                                             <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500">
@@ -437,10 +467,10 @@ const Profile = () => {
                                         <textarea
                                             value={bio}
                                             onChange={(e) => setBio(e.target.value)}
-                                            readOnly={!isOwnProfile}
+                                            readOnly={!isOwnProfile || !isEditing}
                                             rows={4}
-                                            className={`w-full bg-[#1E293B]/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium resize-none ${!isOwnProfile ? 'cursor-default' : ''}`}
-                                            placeholder={isOwnProfile ? "Tell us about yourself..." : "This user hasn't added a bio yet."}
+                                            className={`w-full bg-[#1E293B]/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium resize-none ${(!isOwnProfile || !isEditing) ? 'cursor-default' : ''}`}
+                                            placeholder={isOwnProfile ? (isEditing ? "Tell us about yourself..." : "You haven't added a bio yet.") : "This user hasn't added a bio yet."}
                                         />
                                     </div>
 
@@ -453,8 +483,8 @@ const Profile = () => {
                                                 type="text"
                                                 value={githubUrl}
                                                 onChange={(e) => setGithubUrl(e.target.value)}
-                                                readOnly={!isOwnProfile}
-                                                className={`w-full bg-[#1E293B]/50 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all text-sm font-medium ${!isOwnProfile ? 'cursor-default' : ''}`}
+                                                readOnly={!isOwnProfile || !isEditing}
+                                                className={`w-full bg-[#1E293B]/50 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all text-sm font-medium ${(!isOwnProfile || !isEditing) ? 'cursor-default' : ''}`}
                                                 placeholder="github.com/username"
                                             />
                                         </div>
@@ -466,19 +496,19 @@ const Profile = () => {
                                                 type="text"
                                                 value={linkedinUrl}
                                                 onChange={(e) => setLinkedinUrl(e.target.value)}
-                                                readOnly={!isOwnProfile}
-                                                className={`w-full bg-[#1E293B]/50 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all text-sm font-medium ${!isOwnProfile ? 'cursor-default' : ''}`}
+                                                readOnly={!isOwnProfile || !isEditing}
+                                                className={`w-full bg-[#1E293B]/50 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all text-sm font-medium ${(!isOwnProfile || !isEditing) ? 'cursor-default' : ''}`}
                                                 placeholder="linkedin.com/in/username"
                                             />
                                         </div>
                                     </div>
 
-                                    {isOwnProfile && (
-                                        <div className="pt-4">
+                                    {isOwnProfile && isEditing && (
+                                        <div className="pt-4 flex items-center gap-4">
                                             <button
                                                 onClick={handleSaveChanges}
                                                 disabled={isSaving}
-                                                className="w-full md:w-auto px-8 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-600/50 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-500/20 active:scale-95 flex items-center justify-center gap-2"
+                                                className="flex-1 px-8 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-600/50 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-500/20 active:scale-95 flex items-center justify-center gap-2"
                                             >
                                                 {isSaving ? (
                                                     <>
@@ -488,6 +518,13 @@ const Profile = () => {
                                                 ) : (
                                                     "Save Changes"
                                                 )}
+                                            </button>
+                                            <button
+                                                onClick={handleCancelEdit}
+                                                disabled={isSaving}
+                                                className="px-8 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold transition-all active:scale-95"
+                                            >
+                                                Cancel
                                             </button>
                                         </div>
                                     )}
@@ -533,8 +570,8 @@ const Profile = () => {
                                         <span className="text-xs font-bold text-blue-400">{profileData.level.currentXp - profileData.level.minXp} / {profileData.level.maxXp - profileData.level.minXp + 1}</span>
                                     </div>
                                     <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                                        <div 
-                                            className="bg-linear-to-r from-blue-500 to-blue-400 h-full rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(59,130,246,0.3)]" 
+                                        <div
+                                            className="bg-linear-to-r from-blue-500 to-blue-400 h-full rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(59,130,246,0.3)]"
                                             style={{ width: `${Math.min(((profileData.level.currentXp - profileData.level.minXp) / (profileData.level.maxXp - profileData.level.minXp + 1)) * 100, 100)}%` }}
                                         />
                                     </div>
