@@ -22,7 +22,7 @@ const GroupManagement = () => {
     const [isToggleModalOpen, setIsToggleModalOpen] = useState(false);
     const [groupToToggle, setGroupToToggle] = useState<{ id: string, currentStatus: string } | null>(null);
 
-    const LIMIT = 10;
+    const LIMIT = 8;
 
     const fetchGroups = async () => {
         try {

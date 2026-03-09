@@ -84,6 +84,7 @@ export const authMiddleware = createAuthMiddleware(
     logger
 );
 
+
 // controllers
 export const authController = new AuthController(
     registerUseCase,

@@ -38,8 +38,19 @@ export class ReportController {
 
     async getAllReports(req: Request, res: Response): Promise<void> {
         try {
-            const reports = await this.getAllReportsUseCase.execute();
-            res.status(200).json(reports);
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 8;
+            const status = req.query.status as string || undefined;
+
+            const result = await this.getAllReportsUseCase.execute(page, limit, status);
+            
+            res.status(200).json({
+                data: result.data,
+                total: result.total,
+                page,
+                limit,
+                totalPages: Math.ceil(result.total / limit)
+            });
         } catch (error: any) {
             res.status(500).json({ message: error.message });
         }

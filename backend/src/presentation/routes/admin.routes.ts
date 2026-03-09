@@ -7,6 +7,7 @@ import { challengeController } from "../../infrastructure/di/challenge.di";
 import planRoutes from "./plan.routes";
 import transactionRoutes from "./transaction.routes";
 import { adminChatController } from "../../infrastructure/di/chat.di";
+import { adminNotificationRouter } from "./notification.routes";
 
 const router = Router();
 
@@ -48,6 +49,9 @@ router.use("/transactions", transactionRoutes);
 router.get("/groups", adminChatController.getAdminGroups);
 router.patch("/groups/:id/status", adminChatController.updateGroupStatus);
 router.delete("/groups/:id", adminChatController.deleteGroup);
+
+// notification management
+router.use("/notifications", adminNotificationRouter);
 
 export default router;
 

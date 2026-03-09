@@ -1,4 +1,5 @@
 import axiosInstance from "./axiosInstance";
+import type { PaginatedResponse } from "./adminApi";
 
 export interface ReportData {
     messageId: string;
@@ -10,8 +11,8 @@ export const reportMessage = async (data: ReportData) => {
     return response.data;
 };
 
-export const getAllReports = async () => {
-    const response = await axiosInstance.get("/reports/all");
+export const getAllReports = async (query: { page: number; limit: number; status?: string }): Promise<PaginatedResponse<any>> => {
+    const response = await axiosInstance.get("/reports/all", { params: query });
     return response.data;
 };
 

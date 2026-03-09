@@ -43,6 +43,7 @@ import BadgeManagement from "./pages/admin/badges/BadgeManagement";
 import PlanManagement from "./pages/admin/plans/PlanManagement";
 import GroupManagement from "./pages/admin/group/GroupManagement";
 import ReportManagement from "./pages/admin/reportManagement/ReportManagement";
+import NotificationManagement from "./pages/admin/notificationManagement/NotificationManagement";
 
 import SolveChallenge from "./pages/challenges/SolveChallenge";
 
@@ -174,6 +175,7 @@ function App() {
             <Route path="/admin/plans" element={<PlanManagement />} />
             <Route path="/admin/groups" element={<GroupManagement />} />
             <Route path="/admin/reports" element={<ReportManagement />} />
+            <Route path="/admin/notifications" element={<NotificationManagement />} />
 
             {/* wizard */}
             <Route

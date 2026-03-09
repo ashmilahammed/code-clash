@@ -25,6 +25,30 @@ export class ReportRepository implements IReportRepository {
         return docs.map(doc => this.toEntity(doc));
     }
 
+    async findPaginated(page: number, limit: number, status?: string): Promise<{ data: Report[], total: number }> {
+        const query: any = {};
+        if (status && status !== 'all') {
+            query.status = status;
+        }
+
+        const skip = (page - 1) * limit;
+
+        const [results, total] = await Promise.all([
+            ReportModel.find(query)
+                .populate('reportedUserId', 'username')
+                .populate('reportedById', 'username')
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit),
+            ReportModel.countDocuments(query)
+        ]);
+
+        return {
+            data: results.map(doc => this.toEntity(doc)),
+            total
+        };
+    }
+
     async findById(id: string): Promise<Report | null> {
         const doc = await ReportModel.findById(id);
         return doc ? this.toEntity(doc) : null;

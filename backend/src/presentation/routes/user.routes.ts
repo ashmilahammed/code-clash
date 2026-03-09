@@ -4,6 +4,7 @@ import { userController } from "../../infrastructure/di/user.di";
 import { planController } from "../../infrastructure/di/plan.di";
 
 import { upload } from "../middlewares/upload.middleware";
+import notificationRoutes from "./notification.routes";
 
 const router = Router();
 
@@ -35,5 +36,7 @@ router.put("/profile", authMiddleware, userController.updateProfile);
 
 router.get("/plans", authMiddleware, planController.getPublicPlans.bind(planController));
 
+// notifications
+router.use("/notifications", authMiddleware, notificationRoutes);
 
 export default router;

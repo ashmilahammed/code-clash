@@ -23,15 +23,28 @@ const ReportManagement = () => {
     const [banReason, setBanReason] = useState('Spam in chat');
     const [isActionLoading, setIsActionLoading] = useState(false);
 
+    // Pagination and Filter State
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalReports, setTotalReports] = useState(0);
+    const [statusFilter, setStatusFilter] = useState('all');
+    const LIMIT = 8;
+
     useEffect(() => {
         fetchReports();
-    }, []);
+    }, [currentPage, statusFilter]);
 
     const fetchReports = async () => {
         try {
             setIsLoading(true);
-            const data = await getAllReports();
-            setReports(data);
+            const res = await getAllReports({ 
+                page: currentPage, 
+                limit: LIMIT, 
+                status: statusFilter 
+            });
+            setReports(res.data);
+            setTotalPages(res.totalPages);
+            setTotalReports(res.total);
         } catch (error) {
             toast.error("Failed to fetch reports");
         } finally {
@@ -95,7 +108,14 @@ const ReportManagement = () => {
                     <p className="text-slate-400 mt-1">Manage user reports and enforce community guidelines</p>
                 </div>
                 <div className="flex items-center gap-2 bg-[#141C2F] p-1 rounded-lg border border-slate-800">
-                   <select className="bg-transparent border-none text-sm text-slate-300 focus:ring-0 cursor-pointer px-3">
+                   <select 
+                        value={statusFilter}
+                        onChange={(e) => {
+                            setStatusFilter(e.target.value);
+                            setCurrentPage(1);
+                        }}
+                        className="bg-transparent border-none text-sm text-slate-300 focus:ring-0 cursor-pointer px-3"
+                    >
                         <option value="all">All Status</option>
                         <option value="pending">Pending</option>
                         <option value="resolved">Resolved</option>
@@ -193,6 +213,29 @@ const ReportManagement = () => {
                         </tbody>
                     </table>
                 </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                    <div className="p-4 border-t border-slate-800 flex items-center justify-center gap-2">
+                        <button
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                            disabled={currentPage === 1}
+                            className="px-3 py-1 rounded-lg bg-slate-800 text-slate-300 disabled:opacity-50 hover:bg-slate-700 transition"
+                        >
+                            Previous
+                        </button>
+                        <span className="text-slate-400 text-sm">
+                            Page {currentPage} of {totalPages}
+                        </span>
+                        <button
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                            disabled={currentPage === totalPages}
+                            className="px-3 py-1 rounded-lg bg-slate-800 text-slate-300 disabled:opacity-50 hover:bg-slate-700 transition"
+                        >
+                            Next
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* View Message Modal */}

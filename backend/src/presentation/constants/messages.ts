@@ -63,6 +63,7 @@ export const MESSAGES = {
 
   COMMON: {
     SUCCESS: "Success",
+    FETCH_SUCCESS: "Resource fetched successfully",
     BAD_REQUEST: "Bad request",
     INTERNAL_ERROR: "Something went wrong",
     FORBIDDEN: "You are not allowed to access this resource",

@@ -7,6 +7,7 @@ import {
   Award,
   CreditCard,
   ShieldCheck,
+  Bell,
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -146,6 +147,19 @@ const Sidebar = () => {
         >
           <ShieldCheck size={18} />
           Report Management
+        </NavLink>
+        
+        <NavLink
+          to="/admin/notifications"
+          className={({ isActive }) =>
+            `${linkBase} ${isActive
+              ? "bg-slate-800 text-white shadow-md"
+              : "text-slate-400 hover:bg-slate-800 hover:text-white"
+            }`
+          }
+        >
+          <Bell size={18} />
+          Notify Management
         </NavLink>
       </nav>
 

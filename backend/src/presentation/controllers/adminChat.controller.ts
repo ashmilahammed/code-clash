@@ -15,12 +15,18 @@ export class AdminChatController {
     getAdminGroups = async (req: Request, res: Response) => {
         try {
             const page = parseInt(req.query.page as string) || 1;
-            const limit = parseInt(req.query.limit as string) || 5;
+            const limit = parseInt(req.query.limit as string) || 8;
             const search = (req.query.search as string) || undefined;
 
             const result = await this.getAdminGroupsUseCase.execute(page, limit, search);
 
-            res.status(200).json(result);
+            res.status(200).json({
+                data: result.data,
+                total: result.total,
+                page,
+                limit,
+                totalPages: Math.ceil(result.total / limit)
+            });
         } catch (error: any) {
             res.status(400).json({ success: false, message: error.message });
         }
