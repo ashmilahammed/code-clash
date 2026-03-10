@@ -10,7 +10,6 @@ import {
   Award,
   Bell,
   Check,
-  ExternalLink
 } from "lucide-react";
 import { 
   getUserNotificationsApi, 
@@ -270,9 +269,9 @@ function UserNavbar() {
                       Clear
                     </button>
                   </div>
-                  <button className="text-[11px] text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1 transition">
+                  {/* <button className="text-[11px] text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1 transition">
                     View all <ExternalLink size={10} />
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </>

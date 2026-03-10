@@ -61,10 +61,7 @@ export class NotificationRepository
     page: number,
     limit: number
   ): Promise<{ data: any[]; total: number }> {
-    const recipientTypes = ["all", "normal"];
-    if (isPremium) {
-      recipientTypes.push("premium");
-    }
+    const recipientTypes = ["all", isPremium ? "premium" : "normal"];
 
     const skip = (page - 1) * limit;
 
