@@ -16,6 +16,9 @@ router.use(authMiddleware);
 router.use(requireAdmin);
 
 
+// dashboard
+router.get("/dashboard/stats", adminController.getDashboardStats);
+
 // user management
 router.get("/users", adminController.listUsers);
 router.patch("/users/:userId/status", adminController.updateUserStatus);

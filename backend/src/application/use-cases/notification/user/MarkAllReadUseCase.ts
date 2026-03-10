@@ -3,7 +3,7 @@ import { INotificationRepository } from "../../../../domain/repositories/notific
 export class MarkAllReadUseCase {
   constructor(private readonly notificationRepository: INotificationRepository) {}
 
-  async execute(userId: string) {
-    return await this.notificationRepository.markAllAsRead(userId);
+  async execute(userId: string, isPremium: boolean) {
+    return await this.notificationRepository.markAllAsRead(userId, isPremium);
   }
 }

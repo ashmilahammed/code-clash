@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 
 import { ListUsersUseCase } from "../../application/use-cases/user/admin/listUsersUseCase";
 import { UpdateUserStatusUseCase } from "../../application/use-cases/user/admin/updateUserStatusUseCase";
+import { GetAdminDashboardStatsUseCase } from "../../application/use-cases/admin/GetAdminDashboardStatsUseCase";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { MESSAGES } from "../constants/messages";
@@ -17,7 +18,8 @@ interface AuthUserContext {
 export class AdminController {
   constructor(
     private readonly listUsersUseCase: ListUsersUseCase,
-    private readonly updateUserStatusUseCase: UpdateUserStatusUseCase
+    private readonly updateUserStatusUseCase: UpdateUserStatusUseCase,
+    private readonly getAdminDashboardStatsUseCase: GetAdminDashboardStatsUseCase
   ) { }
 
 
@@ -138,6 +140,23 @@ export class AdminController {
       const message =
         err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
 
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(ApiResponse.error(message));
+    }
+  };
+
+
+  
+  getDashboardStats = async (req: Request, res: Response) => {
+    try {
+      const stats = await this.getAdminDashboardStatsUseCase.execute();
+      return res
+        .status(HttpStatus.OK)
+        .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, stats));
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json(ApiResponse.error(message));

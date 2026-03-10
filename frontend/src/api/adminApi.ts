@@ -1,3 +1,10 @@
+// import api from "./axiosInstance";
+
+// export const getAdminDashboardStatsApi = async () => {
+//     return await api.get("/admin/dashboard/stats");
+// };
+
+
 import api from "./axiosInstance";
 import type { ListQuery } from "../types/ListQuery";
 
@@ -74,17 +81,10 @@ export const deleteAdminGroupApi = async (
     await api.delete(`/admin/groups/${groupId}`);
 };
 
-// // challenges
-// export interface CreateChallengePayload {
-//   title: string;
-//   description: string;
-//   difficulty: "easy" | "medium" | "hard";
-//   xpReward: number;
-// }
 
-// export const createChallengeApi = async (
-//   payload: CreateChallengePayload
-// ) => {
-//   const res = await api.post("/challenges", payload);
-//   return res.data.challenge;
-// };
+
+
+//
+export const getAdminDashboardStatsApi = async () => {
+    return await api.get("/admin/dashboard/stats");
+};

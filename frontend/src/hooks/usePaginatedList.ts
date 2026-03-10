@@ -1,112 +1,50 @@
-// import { useEffect, useState } from "react";
-// import type { ListQuery } from "../types/ListQuery";
+import { useEffect, useState } from "react";
+import type { ListQuery } from "../types/ListQuery";
 
 
+interface PaginatedResult<T> {
+  data: T[];
+  page: number;
+  totalPages: number;
+  total: number;
+}
 
-// interface PaginatedResponse<T> {
-//     data: T[];
-//     page: number;
-//     limit: number;
-//     total: number;
-//     totalPages: number;
-// }
+export function usePaginatedList<T>(
+  fetchFn: (query: ListQuery) => Promise<PaginatedResult<T>>,
+  initialLimit: number = 10
+) {
+  const [data, setData] = useState<T[]>([]);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(initialLimit);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-// interface UsePaginatedListOptions {
-//     pageSize?: number;
-//     initialFilters?: ListQuery["filters"];
-//     initialSort?: {
-//         sortBy: string;
-//         sortOrder: "asc" | "desc";
-//     };
-// }
+  const fetchData = async () => {
+    try {
+      setLoading(true);
 
-// export function usePaginatedList<T>(
-//     fetchFn: (query: ListQuery) => Promise<PaginatedResponse<T>>,
-//     options?: UsePaginatedListOptions
-// ) {
-//     // state
-//     const [data, setData] = useState<T[]>([]);
-//     const [page, setPage] = useState(1);
-//     const [totalPages, setTotalPages] = useState(1);
-//     const [loading, setLoading] = useState(false);
-//     const [error, setError] = useState<string | null>(null);
+      const res = await fetchFn({ page, limit });
 
-//     const [search, setSearch] = useState("");
-//     const [filters, setFilters] = useState<ListQuery["filters"]>(
-//         options?.initialFilters
-//     );
-//     const [sort, setSort] = useState(options?.initialSort);
+      setData(res.data);
+      setTotalPages(res.totalPages);
+      setTotal(res.total);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-//     const limit = options?.pageSize ?? 10;
+  useEffect(() => {
+    fetchData();
+  }, [page]);
 
-//     //fetch
-//     useEffect(() => {
-//         const fetchData = async () => {
-//             try {
-//                 setLoading(true);
-//                 setError(null);
-
-//                 const result = await fetchFn({
-//                     page,
-//                     limit,
-//                     ...(search && { search }),
-//                     ...(filters && { filters }),
-//                     ...(sort && {
-//                         sortBy: sort.sortBy,
-//                         sortOrder: sort.sortOrder,
-//                     }),
-//                 });
-
-//                 setData(result.data);
-//                 setTotalPages(result.totalPages);
-//             } catch (err) {
-//                 setError("Failed to load data");
-//             } finally {
-//                 setLoading(false);
-//             }
-//         };
-
-//         fetchData();
-//     }, [page, search, filters, sort, limit, fetchFn]);
-    
-
-//     //helpers
-//     const resetPage = () => setPage(1);
-
-//     const updateSearch = (value: string) => {
-//         resetPage();
-//         setSearch(value);
-//     };
-
-//     const updateFilters = (value?: ListQuery["filters"]) => {
-//         resetPage();
-//         setFilters(value);
-//     };
-
-//     const updateSort = (sortBy: string, sortOrder: "asc" | "desc") => {
-//         resetPage();
-//         setSort({ sortBy, sortOrder });
-//     };
-
-//     return {
-//         // data
-//         data,
-
-//         // pagination
-//         page,
-//         totalPages,
-//         setPage,
-
-//         // controls
-//         search,
-//         setSearch: updateSearch,
-//         filters,
-//         setFilters: updateFilters,
-//         sort,
-//         setSort: updateSort,
-
-//         // status
-//         loading,
-//         error,
-//     };
-// }
+  return {
+    data,
+    page,
+    setPage,
+    totalPages,
+    total,
+    loading,
+    refresh: fetchData,
+  };
+}

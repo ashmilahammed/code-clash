@@ -127,9 +127,9 @@ export class NotificationController {
 
   markAllAsRead = async (req: Request, res: Response) => {
     try {
-      const { userId } = res.locals.user as any;
+      const { userId, is_premium } = res.locals.user as any;
 
-      await this.markAllReadUseCase.execute(userId);
+      await this.markAllReadUseCase.execute(userId, !!is_premium);
 
       return res
         .status(HttpStatus.OK)

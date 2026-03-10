@@ -112,19 +112,25 @@ export class NotificationRepository
     );
   }
 
-  async markAllAsRead(userId: string): Promise<void> {
-    // This is tricky because we track per-user status. 
-    // We need to find all notifications the user hasn't marked as read yet.
-    // For simplicity, we can fetch all notifications applicable to the user and mark them.
-    // However, a better approach might be to just mark existing UserNotification docs.
-    // But what about notifications they haven't "interacted" with yet?
+  async markAllAsRead(userId: string, isPremium: boolean): Promise<void> {
+    const recipientTypes = ["all", isPremium ? "premium" : "normal"];
 
-    // Let's just mark all existing ones for now. 
-    // In a real broadcast system, "Mark all as Read" often means marking all CURRENTLY visible notifications.
-    await UserNotificationModel.updateMany(
-      { userId, isRead: false },
-      { $set: { isRead: true } }
-    );
+    // Find all notifications that match the user's segment
+    const notifications = await NotificationModel.find({
+      recipientType: { $in: recipientTypes },
+    }).select("_id");
+
+    if (notifications.length === 0) return;
+
+    const ops = notifications.map((n) => ({
+      updateOne: {
+        filter: { userId: new mongoose.Types.ObjectId(userId), notificationId: n._id },
+        update: { $set: { isRead: true } },
+        upsert: true,
+      },
+    }));
+
+    await UserNotificationModel.bulkWrite(ops);
   }
 
   async clearNotifications(userId: string): Promise<void> {
