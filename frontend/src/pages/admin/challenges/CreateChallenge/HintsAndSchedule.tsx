@@ -216,6 +216,152 @@ const ChallengeHintsAndSchedule = () => {
       </button>
     </div>
   );
+
+
+
+
+  // return (
+  //   <div className="max-w-5xl mx-auto space-y-8">
+
+  //     {/* Header */}
+  //     <div>
+  //       <h1 className="text-2xl font-semibold text-white">
+  //         Create Challenge
+  //       </h1>
+  //       <p className="text-sm text-slate-400">
+  //         Step 5 of 5 • Hints & Schedule
+  //       </p>
+  //     </div>
+
+  //     {/* Container */}
+  //     <div className="bg-[#020617] border border-slate-800 rounded-xl p-6 space-y-6">
+
+  //       {/* Hints Section */}
+  //       <div className="space-y-4">
+  //         <div className="flex justify-between items-center">
+  //           <h2 className="text-sm font-medium text-slate-300">
+  //             Hints
+  //           </h2>
+
+  //           <button
+  //             onClick={addHint}
+  //             className="px-3 py-1 rounded-md border border-slate-700
+  //           text-xs text-slate-300 hover:border-cyan-500 hover:text-white transition"
+  //           >
+  //             + Add Hint
+  //           </button>
+  //         </div>
+
+  //         {hints.map((h, i) => (
+  //           <div
+  //             key={i}
+  //             className="border border-slate-800 rounded-lg p-4 bg-slate-950 space-y-3"
+  //           >
+  //             {/* Top */}
+  //             <div className="flex justify-between items-center">
+  //               <p className="text-xs text-slate-400">
+  //                 Hint {i + 1}
+  //               </p>
+
+  //               {hints.length > 1 && (
+  //                 <button
+  //                   onClick={() => removeHint(i)}
+  //                   className="text-xs text-slate-500 hover:text-red-500"
+  //                 >
+  //                   Remove
+  //                 </button>
+  //               )}
+  //             </div>
+
+  //             {/* Hint Text */}
+  //             <textarea
+  //               value={h.content}
+  //               onChange={(e) => updateHint(i, e.target.value)}
+  //               placeholder="Write hint content..."
+  //               className="w-full px-3 py-2 rounded-md bg-slate-900 border border-slate-700
+  //             text-sm text-white focus:ring-1 focus:ring-cyan-500 outline-none
+  //             min-h-[60px] resize-y"
+  //             />
+
+  //             {/* Unlock Time */}
+  //             <input
+  //               type="number"
+  //               min={0}
+  //               placeholder="Unlock after minutes (optional)"
+  //               value={h.unlockAfterMinutes ?? ""}
+  //               onChange={(e) => {
+  //                 const val = e.target.value;
+  //                 setHints(prev => {
+  //                   const copy = [...prev];
+  //                   copy[i] = {
+  //                     ...copy[i],
+  //                     unlockAfterMinutes: val ? Number(val) : undefined,
+  //                   };
+  //                   return copy;
+  //                 });
+  //               }}
+  //               className="w-56 px-3 py-2 rounded-md bg-slate-900 border border-slate-700
+  //             text-sm text-white focus:ring-1 focus:ring-cyan-500 outline-none"
+  //             />
+  //           </div>
+  //         ))}
+  //       </div>
+
+
+  //       {/* Divider */}
+  //       <div className="border-t border-slate-800 pt-6 space-y-4">
+
+  //         <h2 className="text-sm font-medium text-slate-300">
+  //           Schedule
+  //         </h2>
+
+  //         <div className="grid md:grid-cols-2 gap-4">
+  //           <input
+  //             type="datetime-local"
+  //             value={schedule.availableFrom}
+  //             onChange={(e) =>
+  //               setSchedule(prev => ({
+  //                 ...prev,
+  //                 availableFrom: e.target.value,
+  //               }))
+  //             }
+  //             className="px-3 py-2 rounded-md bg-slate-900 border border-slate-700
+  //           text-sm text-white focus:ring-1 focus:ring-cyan-500 outline-none"
+  //           />
+
+  //           <input
+  //             type="datetime-local"
+  //             value={schedule.availableUntil}
+  //             onChange={(e) =>
+  //               setSchedule(prev => ({
+  //                 ...prev,
+  //                 availableUntil: e.target.value,
+  //               }))
+  //             }
+  //             className="px-3 py-2 rounded-md bg-slate-900 border border-slate-700
+  //           text-sm text-white focus:ring-1 focus:ring-cyan-500 outline-none"
+  //           />
+  //         </div>
+
+  //       </div>
+
+
+  //       {/* Footer */}
+  //       <div className="flex justify-end pt-4">
+  //         <button
+  //           onClick={saveAndNext}
+  //           className="px-6 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700
+  //         text-white font-medium transition"
+  //         >
+  //           Save & Continue →
+  //         </button>
+  //       </div>
+
+  //     </div>
+
+  //   </div>
+  // );
+
 };
 
 export default ChallengeHintsAndSchedule;
