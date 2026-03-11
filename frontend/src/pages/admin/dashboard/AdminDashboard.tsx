@@ -28,17 +28,19 @@ interface QuickActionButtonProps {
 const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<any>(null);
+  const [range, setRange] = useState("30days");
 
   const navigate = useNavigate();
 
 
   useEffect(() => {
     fetchStats();
-  }, []);
+  }, [range]);
 
   const fetchStats = async () => {
+    setLoading(true);
     try {
-      const res = await getAdminDashboardStatsApi();
+      const res = await getAdminDashboardStatsApi(range);
       setStats(res.data.data);
     } catch (err) {
       toast.error("Failed to fetch dashboard statistics");
@@ -60,9 +62,25 @@ const AdminDashboard = () => {
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-        <p className="text-slate-400 mt-1">Welcome back, Admin! Here's an overview of your platform.</p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+          <p className="text-slate-400 mt-1">Welcome back, Admin! Here's an overview of your platform.</p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-slate-500 font-medium">Filter Range:</span>
+          <select
+            value={range}
+            onChange={(e) => setRange(e.target.value)}
+            className="bg-slate-900 border border-slate-800 text-slate-300 text-sm rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500/50 cursor-pointer transition hover:bg-slate-800"
+          >
+            <option value="7days">Last 7 Days</option>
+            <option value="30days">Last 30 Days</option>
+            <option value="3months">Last 3 Months</option>
+            <option value="all">All Time</option>
+          </select>
+        </div>
       </div>
 
       {/* Stats Grid */}
@@ -106,7 +124,7 @@ const AdminDashboard = () => {
         {/* Signups Chart */}
         <div className="lg:col-span-2 bg-slate-900/50 border border-slate-800 rounded-2xl p-6 shadow-xl">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="font-semibold text-white">User Signups (Last 30 Days)</h3>
+            <h3 className="font-semibold text-white">User Signups ({getRangeLabel(range)})</h3>
           </div>
           <div className="h-[300px] w-full">
             <SignupChart data={signupsData} />
@@ -180,12 +198,12 @@ const AdminDashboard = () => {
 
           {/* Premium Revenue */}
           <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 shadow-xl">
-            <h3 className="font-semibold text-white mb-4 text-sm">Premium Revenue (This Month)</h3>
+            <h3 className="font-semibold text-white mb-4 text-sm">Premium Revenue ({getRangeLabel(range)})</h3>
             <div className="flex items-end justify-between">
               <div>
-                <p className="text-3xl font-bold text-emerald-400">₹{mainStats.monthlyRevenue.toLocaleString()}</p>
+                <p className="text-3xl font-bold text-emerald-400">₹{mainStats.revenue?.toLocaleString() || 0}</p>
                 <p className="text-[10px] text-emerald-500 mt-1 flex items-center gap-1">
-                  <TrendingUp size={10} /> +18% vs last month
+                  <TrendingUp size={10} /> +18% vs last period
                 </p>
               </div>
               <div className="h-12 flex items-end gap-1 pb-1">
@@ -199,7 +217,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 shadow-xl">
+      {/* <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 shadow-xl">
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-semibold text-white">Recent Activity</h3>
           <button className="text-blue-400 text-xs hover:underline flex items-center gap-1">
@@ -223,8 +241,11 @@ const AdminDashboard = () => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
+
+
     </div>
+
   );
 };
 
@@ -288,6 +309,9 @@ const SignupChart = ({ data }: { data: any[] }) => {
     return `${x},${y}`;
   }).join(' ');
 
+
+
+  
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full overflow-visible">
       <defs>
@@ -381,6 +405,16 @@ const CircularProgress = ({ percentage }: { percentage: number }) => {
       </text>
     </svg>
   );
+};
+
+const getRangeLabel = (range: string) => {
+  switch (range) {
+    case '7days': return 'Last 7 Days';
+    case '3months': return 'Last 3 Months';
+    case 'all': return 'All Time';
+    case '30days':
+    default: return 'Last 30 Days';
+  }
 };
 
 export default AdminDashboard;

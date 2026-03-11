@@ -85,6 +85,6 @@ export const deleteAdminGroupApi = async (
 
 
 //
-export const getAdminDashboardStatsApi = async () => {
-    return await api.get("/admin/dashboard/stats");
+export const getAdminDashboardStatsApi = async (range: string = '30days') => {
+    return await api.get("/admin/dashboard/stats", { params: { range } });
 };

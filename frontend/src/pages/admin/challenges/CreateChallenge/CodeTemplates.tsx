@@ -131,26 +131,38 @@ const CodeTemplates = () => {
           </div>
 
           {/* Starter Code */}
-          <textarea
-            className="w-full p-3 rounded bg-[#020617] font-mono text-sm border border-slate-700 focus:ring-2 focus:ring-cyan-500"
-            rows={6}
-            placeholder="Starter Code (what user sees initially)"
-            value={t.starterCode}
-            onChange={(e) =>
-              updateTemplate(i, "starterCode", e.target.value)
-            }
-          />
+          <div className="space-y-1">
+            <p className="text-sm text-slate-400">
+              Starter Code 
+            </p>
+
+            <textarea
+              className="w-full p-3 rounded bg-[#020617] font-mono text-sm border border-slate-700 focus:ring-2 focus:ring-cyan-500"
+              rows={6}
+              placeholder="Starter Code"
+              value={t.starterCode}
+              onChange={(e) =>
+                updateTemplate(i, "starterCode", e.target.value)
+              }
+            />
+          </div>
 
           {/* Solution Code */}
-          <textarea
-            className="w-full p-3 rounded bg-[#020617] font-mono text-sm border border-slate-700 focus:ring-2 focus:ring-cyan-500"
-            rows={6}
-            placeholder="Solution Code (used for validation)"
-            value={t.solutionCode}
-            onChange={(e) =>
-              updateTemplate(i, "solutionCode", e.target.value)
-            }
-          />
+          <div className="space-y-1">
+            <p className="text-sm text-slate-400">
+              Solution Code 
+            </p>
+
+            <textarea
+              className="w-full p-3 rounded bg-[#020617] font-mono text-sm border border-slate-700 focus:ring-2 focus:ring-cyan-500"
+              rows={6}
+              placeholder="Solution Code"
+              value={t.solutionCode}
+              onChange={(e) =>
+                updateTemplate(i, "solutionCode", e.target.value)
+              }
+            />
+          </div>
         </div>
       ))}
 

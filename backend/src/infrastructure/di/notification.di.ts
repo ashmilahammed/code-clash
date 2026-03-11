@@ -12,7 +12,7 @@ import { NotificationController } from "../../presentation/controllers/notificat
 import { userRepository } from "./user.di";
 
 // Repositories
-const notificationRepository = new NotificationRepository();
+export const notificationRepository = new NotificationRepository();
 
 // Use Cases - Admin
 const sendNotificationUseCase = new SendNotificationUseCase(notificationRepository);

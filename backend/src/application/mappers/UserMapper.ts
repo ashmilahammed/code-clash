@@ -30,6 +30,7 @@ export class UserMapper {
 
       doc.is_premium,
       doc.premium_expiry_date ?? null,
+      doc.premium_expiry_notification_sent,
       doc.date_joined,
 
       doc.role,

@@ -150,7 +150,8 @@ export class AdminController {
   
   getDashboardStats = async (req: Request, res: Response) => {
     try {
-      const stats = await this.getAdminDashboardStatsUseCase.execute();
+      const range = typeof req.query.range === "string" ? req.query.range : "30days";
+      const stats = await this.getAdminDashboardStatsUseCase.execute(range);
       return res
         .status(HttpStatus.OK)
         .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, stats));

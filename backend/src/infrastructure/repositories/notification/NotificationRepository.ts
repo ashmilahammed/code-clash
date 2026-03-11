@@ -20,7 +20,8 @@ export class NotificationRepository
       doc.message,
       doc.recipientType,
       doc.senderId.toString(),
-      doc.createdAt
+      doc.createdAt,
+      doc.recipientId?.toString()
     );
   }
 
@@ -33,6 +34,7 @@ export class NotificationRepository
     const created = await this.createRaw({
       ...notification,
       senderId: new mongoose.Types.ObjectId(notification.senderId),
+      recipientId: notification.recipientId ? new mongoose.Types.ObjectId(notification.recipientId) : undefined,
     } as Partial<INotificationDoc>);
 
     return this.toDomain(created);
@@ -67,14 +69,20 @@ export class NotificationRepository
 
     // Get all notifications for this user segment
     const notifications = await NotificationModel.find({
-      recipientType: { $in: recipientTypes },
+      $or: [
+        { recipientType: { $in: recipientTypes } },
+        { recipientType: "individual", recipientId: new mongoose.Types.ObjectId(userId) }
+      ]
     })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
 
     const total = await NotificationModel.countDocuments({
-      recipientType: { $in: recipientTypes },
+      $or: [
+        { recipientType: { $in: recipientTypes } },
+        { recipientType: "individual", recipientId: new mongoose.Types.ObjectId(userId) }
+      ]
     });
 
     // Get read/cleared status for these notifications
@@ -117,7 +125,10 @@ export class NotificationRepository
 
     // Find all notifications that match the user's segment
     const notifications = await NotificationModel.find({
-      recipientType: { $in: recipientTypes },
+      $or: [
+        { recipientType: { $in: recipientTypes } },
+        { recipientType: "individual", recipientId: new mongoose.Types.ObjectId(userId) }
+      ]
     }).select("_id");
 
     if (notifications.length === 0) return;

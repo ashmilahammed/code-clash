@@ -228,6 +228,7 @@ export class UserRepository
                     longest_streak: snapshot.longest_streak,
                     is_premium: snapshot.is_premium,
                     premium_expiry_date: snapshot.premium_expiry_date,
+                    premium_expiry_notification_sent: snapshot.premium_expiry_notification_sent,
                     role: snapshot.role,
                     status: snapshot.status,
                     isVerified: snapshot.isVerified,

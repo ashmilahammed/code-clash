@@ -7,10 +7,25 @@ import { SubmissionModel } from "../../../infrastructure/database/models/submiss
 
 
 export class GetAdminDashboardStatsUseCase {
-  async execute() {
+  async execute(range: string = '30days') {
     const now = new Date();
-    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    let startDate: Date;
+
+    switch (range) {
+      case '7days':
+        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        break;
+      case '3months':
+        startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+        break;
+      case 'all':
+        startDate = new Date(2024, 0, 1); // reasonable start date
+        break;
+      case '30days':
+      default:
+        startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        break;
+    }
 
     const [
       totalUsers,
@@ -18,7 +33,7 @@ export class GetAdminDashboardStatsUseCase {
       totalChallenges,
       totalGroups,
       pendingReports,
-      monthlyRevenueResult,
+      revenueResult,
       signupsData,
       mostAttemptedChallengeResult,
       recentActivity
@@ -28,16 +43,16 @@ export class GetAdminDashboardStatsUseCase {
       ChallengeModel.countDocuments({}),
       ConversationModel.countDocuments({ type: "group" }),
       ReportModel.countDocuments({ status: "pending" }),
-      
-      // Monthly Revenue
+
+      // Revenue for the range
       TransactionModel.aggregate([
-        { $match: { status: "Completed", date: { $gte: startOfMonth } } },
+        { $match: { status: "Completed", date: { $gte: startDate } } },
         { $group: { _id: null, total: { $sum: "$amount" } } }
       ]),
 
-      // Signups for last 30 days
+      // Signups for range
       UserModel.aggregate([
-        { $match: { role: "user", createdAt: { $gte: thirtyDaysAgo } } },
+        { $match: { role: "user", createdAt: { $gte: startDate } } },
         {
           $group: {
             _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
@@ -47,8 +62,9 @@ export class GetAdminDashboardStatsUseCase {
         { $sort: { _id: 1 } }
       ]),
 
-      // Most Attempted Challenge
+      // Most Attempted Challenge in range
       SubmissionModel.aggregate([
+        { $match: { createdAt: { $gte: startDate } } },
         { $group: { _id: "$challengeId", count: { $sum: 1 } } },
         { $sort: { count: -1 } },
         { $limit: 1 },
@@ -73,7 +89,8 @@ export class GetAdminDashboardStatsUseCase {
       const challenge = mostAttemptedChallengeResult[0];
       const successfulSubmissions = await SubmissionModel.countDocuments({
         challengeId: challenge._id,
-        finalStatus: "PASSED"
+        finalStatus: "PASSED",
+        createdAt: { $gte: startDate }
       });
       mostAttemptedChallenge = {
         title: challenge.challenge.title,
@@ -90,9 +107,9 @@ export class GetAdminDashboardStatsUseCase {
         totalChallenges,
         totalGroups,
         pendingReports,
-        monthlyRevenue: monthlyRevenueResult[0]?.total || 0,
+        revenue: revenueResult[0]?.total || 0,
       },
-      signupsData: this.formatSignups(signupsData, thirtyDaysAgo, now),
+      signupsData: this.formatSignups(signupsData, startDate, now),
       mostAttemptedChallenge,
       recentActivity
     };

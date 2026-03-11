@@ -27,6 +27,7 @@ import { GetChallengeByIdUseCase } from "../../application/use-cases/challenge/u
 import { GetChallengeCodeTemplatesUseCase } from "../../application/use-cases/challenge/user/getChallengeCodeTemplatesUseCase";
 import { GetChallengeHintsUseCase } from "../../application/use-cases/challenge/user/getChallengeHintsUseCase";
 import { GetChallengeTestCasesUseCase } from "../../application/use-cases/challenge/user/getChallengeTestCasesUseCase";
+import { notificationRepository } from "./notification.di";
 
 
 
@@ -46,7 +47,7 @@ const createChallengeUseCase = new CreateChallengeUseCase(challengeRepository);
 
 const adminListChallengesUseCase = new ListAdminChallengesUseCase(challengeRepository);
 
-const toggleChallengeStatusUseCase = new ToggleChallengeStatusUseCase(challengeRepository);
+const toggleChallengeStatusUseCase = new ToggleChallengeStatusUseCase(challengeRepository, notificationRepository);
 
 const addChallengeTagsUseCase =
     new AddChallengeTagsUseCase(

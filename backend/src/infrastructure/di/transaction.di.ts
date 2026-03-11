@@ -9,6 +9,7 @@ import { RazorpayService } from "../services/razorpay/RazorpayService";
 import { PlanRepository } from "../repositories/plan/PlanRepository";
 import { UserRepository } from "../repositories/user/UserRepository";
 import { WinstonLogger } from "../services/logger";
+import { notificationRepository } from "./notification.di";
 
 // Shared services
 const logger = new WinstonLogger();
@@ -26,7 +27,8 @@ const verifyRazorpayPaymentUseCase = new VerifyRazorpayPaymentUseCase(
     transactionRepository,
     userRepository,
     planRepository,
-    razorpayService
+    razorpayService,
+    notificationRepository
 );
 const getUserTransactionsUseCase = new GetUserTransactionsUseCase(transactionRepository);
 const getCurrentPremiumPlanUseCase = new GetCurrentPremiumPlanUseCase(transactionRepository);

@@ -3,6 +3,7 @@ import { IUserRepository } from "../../../domain/repositories/user/IUserReposito
 import { IPlanRepository } from "../../../domain/repositories/plan/IPlanRepository";
 import { IRazorpayService } from "../../../domain/services/IRazorpayService";
 import { Transaction } from "../../../domain/entities/transaction/Transaction";
+import { INotificationRepository } from "../../../domain/repositories/notification/INotificationRepository";
 
 interface VerifyPaymentDTO {
     razorpayOrderId: string;
@@ -17,7 +18,8 @@ export class VerifyRazorpayPaymentUseCase {
         private transactionRepository: ITransactionRepository,
         private userRepository: IUserRepository,
         private planRepository: IPlanRepository,
-        private razorpayService: IRazorpayService
+        private razorpayService: IRazorpayService,
+        private notificationRepository: INotificationRepository
     ) { }
 
     async execute(dto: VerifyPaymentDTO): Promise<Transaction> {
@@ -57,6 +59,7 @@ export class VerifyRazorpayPaymentUseCase {
         const user = await this.userRepository.findById(userId);
         if (user) {
             user.is_premium = true;
+            user.premium_expiry_notification_sent = false;
 
             const now = new Date();
             let baseDate = now;
@@ -69,6 +72,16 @@ export class VerifyRazorpayPaymentUseCase {
             user.premium_expiry_date = new Date(baseDate.getTime() + plan.duration * 24 * 60 * 60 * 1000);
             
             await this.userRepository.save(user);
+
+            // Send Notification
+            const featuresList = plan.features.join(", ");
+            await this.notificationRepository.createNotification({
+                title: "👑 Premium Activated!",
+                message: `${featuresList}.`,
+                recipientType: "individual",
+                recipientId: userId,
+                senderId: "000000000000000000000000", // System ID
+            });
         } else {
             throw new Error("User not found after successful payment");
         }
