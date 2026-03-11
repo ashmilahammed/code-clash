@@ -78,7 +78,8 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ userId, onClose }) =>
                 {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors p-1"
+                    // className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors p-1"
+                    className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-lg bg-slate-800/50 hover:bg-slate-700 text-slate-400 hover:text-white transition"
                 >
                     <X size={20} />
                 </button>
@@ -129,6 +130,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ userId, onClose }) =>
                     <div>
                         <p className="text-lg font-bold text-slate-200">Badges: {user.badgesCount || 0}</p>
                         <p className="text-xs text-slate-400">Solved: {stats?.stats?.passedSubmissions || 0} Challenges</p>
+
                     </div>
                 </div>
 

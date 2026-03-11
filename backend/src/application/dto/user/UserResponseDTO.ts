@@ -12,6 +12,7 @@ export interface UserResponseDTO {
   linkedin_url: string | null;
 
   badge_id: string | null;
+  badges?: any[] | null;
 
   current_streak: number;
   longest_streak: number;

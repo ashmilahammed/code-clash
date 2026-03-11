@@ -3,14 +3,12 @@ import { useAuthStore } from "../../store/useAuthStore";
 import {
     Settings,
     Zap,
-    Clock,
-    Bug,
     Award,
     Users,
     Github,
     Linkedin,
     Code2,
-    Trophy
+    // Trophy
 } from "lucide-react";
 import api from "../../api/axiosInstance";
 import { getUserProfileStatsApi, updateUserProfileApi } from "../../api/userApi";
@@ -339,22 +337,31 @@ const Profile = () => {
                                     Badges
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {[
-                                        { icon: Clock, color: 'text-blue-400', bg: 'bg-blue-500/10', title: 'Fast Solver', desc: 'Solved 10 challenges in under 5 mins' },
-                                        { icon: Bug, color: 'text-green-400', bg: 'bg-green-500/10', title: 'Debugging Master', desc: 'Fixed 50 bugs' },
-                                        { icon: Zap, color: 'text-yellow-500', bg: 'bg-yellow-500/10', title: 'Elite Coder', desc: 'Solved 10+ challenges without hints' },
-                                        { icon: Users, color: 'text-purple-400', bg: 'bg-purple-500/10', title: 'Social Collaborator', desc: 'Helped 20+ members' }
-                                    ].map((badge, idx) => (
-                                        <div key={idx} className="bg-[#1E293B]/50 border border-slate-800 p-4 rounded-xl flex gap-4 items-center hover:bg-[#1E293B] transition group">
-                                            <div className={`p-3 ${badge.bg} ${badge.color} rounded-lg group-hover:scale-110 transition duration-300`}>
-                                                <badge.icon size={24} />
+                                    {profileData.user.badges && profileData.user.badges.length > 0 ? (
+                                        profileData.user.badges.map((badge: any, idx: number) => (
+                                            <div key={badge.id || idx} className="bg-[#1E293B]/50 border border-slate-800 p-4 rounded-xl flex gap-4 items-center hover:bg-[#1E293B] transition group">
+                                                <div className="p-3 bg-blue-500/10 text-blue-400 rounded-lg group-hover:scale-110 transition duration-300">
+                                                    {badge.icon ? (
+                                                        badge.icon.startsWith('http') ? (
+                                                            <img src={badge.icon} alt={badge.name} className="w-6 h-6 object-contain" />
+                                                        ) : (
+                                                            <Award size={24} />
+                                                        )
+                                                    ) : (
+                                                        <Award size={24} />
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-bold text-sm text-white">{badge.name}</h4>
+                                                    <p className="text-xs text-slate-400 mt-0.5">{badge.description}</p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <h4 className="font-bold text-sm text-white">{badge.title}</h4>
-                                                <p className="text-xs text-slate-400 mt-0.5">{badge.desc}</p>
-                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="col-span-full py-8 text-center bg-[#1E293B]/30 rounded-xl border border-dashed border-slate-800">
+                                            <p className="text-slate-500 text-sm">No badges achieved yet. Keep coding!</p>
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
                             </div>
 
@@ -540,7 +547,7 @@ const Profile = () => {
                                     </div>
                                     <div>
                                         <p className="text-sm font-medium text-slate-400">Badges</p>
-                                        <p className="text-xl font-bold text-white">{profileData.stats.badgesCount || 0}</p>
+                                        <p className="text-xl font-bold text-white">{profileData.user.badges?.length || 0}</p>
                                     </div>
                                 </div>
 
@@ -554,7 +561,7 @@ const Profile = () => {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-4 text-slate-300">
+                                {/* <div className="flex items-center gap-4 text-slate-300">
                                     <div className="p-3 bg-purple-500/10 text-purple-400 rounded-xl">
                                         <Trophy size={24} />
                                     </div>
@@ -562,7 +569,7 @@ const Profile = () => {
                                         <p className="text-sm font-medium text-slate-400">Rank</p>
                                         <p className="text-xl font-bold text-white">#24</p>
                                     </div>
-                                </div>
+                                </div> */}
 
                                 <div className="pt-4 border-t border-slate-800/50">
                                     <div className="flex justify-between items-center mb-4">

@@ -173,7 +173,10 @@ export class UserRepository
     async updateBadge(userId: string, badgeId: string): Promise<void> {
         await UserModel.updateOne(
             { _id: userId },
-            { $set: { badge_id: badgeId } }
+            { 
+                $set: { badge_id: badgeId },
+                $addToSet: { badges: badgeId }
+             }
         );
     }
 
@@ -222,6 +225,7 @@ export class UserRepository
                     github_url: snapshot.github_url,
                     linkedin_url: snapshot.linkedin_url,
                     badge_id: snapshot.badge_id,
+                    badges: snapshot.badges,
                     level_id: snapshot.level_id,
                     xp: snapshot.xp,
                     current_streak: snapshot.current_streak,

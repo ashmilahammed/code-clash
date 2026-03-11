@@ -6,6 +6,7 @@ import { ChallengeListQuery } from "../../types/ChallengeListQuery";
 export interface IChallengeRepository {
 
     findByIdForUser(id: string): Promise<Challenge | null>;
+    findById(id: string): Promise<Challenge | null>;
 
     //admin
     create(data: Challenge): Promise<Challenge>;
@@ -44,6 +45,8 @@ export interface IChallengeRepository {
         id: string;
         languages: { key: string }[];
     } | null>;
+
+    delete(id: string): Promise<void>;
 
 }
 

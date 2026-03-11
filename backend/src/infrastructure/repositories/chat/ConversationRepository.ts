@@ -125,4 +125,12 @@ export class ConversationRepository implements IConversationRepository {
         if (!Types.ObjectId.isValid(id)) return;
         await ConversationModel.findByIdAndDelete(id);
     }
+
+    async countUserGroups(userId: string): Promise<number> {
+        if (!Types.ObjectId.isValid(userId)) return 0;
+        return await ConversationModel.countDocuments({
+            type: 'group',
+            participants: new Types.ObjectId(userId)
+        });
+    }
 }

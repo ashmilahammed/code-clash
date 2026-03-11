@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import { Plus, Edit2, Trash2 } from "lucide-react";
 import { getAllLevels, createLevel, updateLevel, deleteLevel } from "../../../api/levelApi"; 
-import { getAllBadges } from "../../../api/badgeApi"; 
 import LevelModal from "../../../components/modals/LevelModal"; 
 import ConfirmModal from "../../../components/modals/ConfirmModal"; 
-import type { Level, Badge } from "../../../types/Level";
+import type { Level } from "../../../types/Level";
 
 
 
 const LevelManagement = () => {
   const [levels, setLevels] = useState<Level[]>([]);
-  const [badges, setBadges] = useState<Badge[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [currentLevel, setCurrentLevel] = useState<Level | null>(null);
@@ -19,13 +17,9 @@ const LevelManagement = () => {
 
   const fetchData = async () => {
     try {
-      const [levelsData, badgesData] = await Promise.all([
-        getAllLevels(),
-        getAllBadges(),
-      ]);
+      const res = await getAllLevels();
      
-      setLevels(levelsData.data || []);
-      setBadges(badgesData.data || []);
+      setLevels(res.data || []);
     } catch (error) {
       console.error("Failed to fetch data:", error);
     }
@@ -75,11 +69,6 @@ const LevelManagement = () => {
   };
 
 
-  const getBadgeName = (badgeId?: string) => {
-    if (!badgeId) return "-";
-    const badge = badges.find((b) => (b.id === badgeId) || (b._id === badgeId));
-    return badge ? badge.name : "Unknown Badge";
-  };
 
   
   return (
@@ -105,7 +94,6 @@ const LevelManagement = () => {
               <th className="p-4">Level</th>
               <th className="p-4">XP Range</th>
               <th className="p-4">Title</th>
-              <th className="p-4">Badge</th>
               <th className="p-4 text-right">Actions</th>
             </tr>
           </thead>
@@ -122,9 +110,6 @@ const LevelManagement = () => {
                 </td>
                 <td className="p-4 text-slate-300 font-medium">
                   {level.title || "-"}
-                </td>
-                <td className="p-4 text-slate-300">
-                  {getBadgeName(level.badgeId)}
                 </td>
                 <td className="p-4 text-right">
                   <div className="flex items-center justify-end gap-2">
@@ -160,7 +145,6 @@ const LevelManagement = () => {
         onClose={() => setIsModalOpen(false)}
         onSave={handleSave}
         initialData={currentLevel}
-        badges={badges}
       />
 
       <ConfirmModal

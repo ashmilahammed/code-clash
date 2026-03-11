@@ -9,6 +9,7 @@ import { RunCodeUseCase } from "../../application/use-cases/submission/RunCodeUs
 import { SubmitSolutionUseCase } from "../../application/use-cases/submission/SubmitSolutionUseCase";
 
 import { SubmissionController } from "../../presentation/controllers/submission.controller";
+import { badgeRewardService } from "./badge.di";
 
 
 // Repositories
@@ -30,7 +31,8 @@ const submitUseCase = new SubmitSolutionUseCase(
   submissionRepo,
   executionService,
   userRepo,
-  levelRepo
+  levelRepo,
+  badgeRewardService
 );
 
 // Controller

@@ -67,7 +67,15 @@ export abstract class BaseRepository<TDoc extends Document> {
       .skip(skip)
       .limit(limit)
       .sort(sort)
+      .sort(sort)
       .exec();
+  }
+
+  async deleteByIdRaw(id: string): Promise<void> {
+    if (!this.isValidId(id)) {
+      throw new Error("Invalid ID");
+    }
+    await this._model.findByIdAndDelete(id).exec();
   }
 }
 

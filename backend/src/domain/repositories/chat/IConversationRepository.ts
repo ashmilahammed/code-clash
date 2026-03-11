@@ -12,4 +12,5 @@ export interface IConversationRepository {
     // Admin
     findAdminGroups(page: number, limit: number, search?: string): Promise<{ data: any[], total: number }>;
     delete(id: string): Promise<void>;
+    countUserGroups(userId: string): Promise<number>;
 }

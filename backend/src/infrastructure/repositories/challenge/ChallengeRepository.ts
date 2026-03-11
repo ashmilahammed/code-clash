@@ -164,6 +164,17 @@ export class ChallengeRepository
         return ChallengeMapper.toDomain(doc);
     }
 
+    async findById(id: string): Promise<Challenge | null> {
+        const doc = await ChallengeModel.findById(id)
+            .populate("tags")
+            .populate("languages")
+            .lean();
+
+        if (!doc) return null;
+
+        return ChallengeMapper.toDomain(doc);
+    }
+
     // async findByIdForUser(id: string) {
     //     const doc = await ChallengeModel.findOne({
     //         _id: id,
@@ -178,6 +189,9 @@ export class ChallengeRepository
 
 
 
+    async delete(id: string): Promise<void> {
+        await this.deleteByIdRaw(id);
+    }
 }
 
 

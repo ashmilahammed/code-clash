@@ -38,6 +38,16 @@ export class BadgeRepository implements IBadgeRepository {
         return !!result;
     }
 
+    async findByRequirementType(type: string): Promise<Badge[]> {
+        const docs = await BadgeModel.find({ requirementType: type, isActive: true });
+        return docs.map(this.toEntity);
+    }
+
+    async findByIds(ids: string[]): Promise<Badge[]> {
+        const docs = await BadgeModel.find({ _id: { $in: ids } });
+        return docs.map(this.toEntity);
+    }
+
     private toEntity(doc: IBadgeDoc): Badge {
         return new Badge(
             doc._id.toString(),

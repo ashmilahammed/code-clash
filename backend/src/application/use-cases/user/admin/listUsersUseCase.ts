@@ -9,7 +9,7 @@ import { UserMapper } from "../../../mappers/UserMapper";
 export class ListUsersUseCase {
   constructor(
     private readonly _userRepo: IUserRepository
-  ) {}
+  ) { }
 
   async execute(
     query: ListQuery
@@ -19,7 +19,10 @@ export class ListUsersUseCase {
 
     return {
       ...result,
-      data: result.data.map(UserMapper.toResponse),
+      // data: result.data.map(UserMapper.toResponse),
+      data: result.data.map(user =>
+        UserMapper.toResponse(user)
+      ),
     };
   }
 }

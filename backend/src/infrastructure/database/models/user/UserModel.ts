@@ -14,6 +14,7 @@ export interface IUserDoc extends Document {
   linkedin_url?: string | null;
 
   badge_id?: string | null;
+  badges: string[];
   level_id?: string | null;
 
   xp: number;
@@ -64,6 +65,7 @@ const UserSchema = new Schema<IUserDoc>(
     linkedin_url: { type: String, default: null },
 
     badge_id: { type: Schema.Types.ObjectId, ref: "Badge", default: null },
+    badges: [{ type: Schema.Types.ObjectId, ref: "Badge" }],
     level_id: { type: Schema.Types.ObjectId, ref: "Level", default: null },
 
     xp: { type: Number, default: 0 },

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   getAdminChallengesApi,
   toggleChallengeStatusApi,
+  deleteChallengeApi,
 } from "../../../api/challengeApi";
 import ConfirmModal from "../../../components/modals/ConfirmModal";
 
@@ -16,6 +17,9 @@ const ChallengeManagement = () => {
   const [togglingId, setTogglingId] = useState<string | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [challengeToToggle, setChallengeToToggle] = useState<{ id: string; isActive: boolean } | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [challengeToDelete, setChallengeToDelete] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // pagination 
   const [page, setPage] = useState(1);
@@ -71,6 +75,33 @@ const ChallengeManagement = () => {
   const cancelToggleStatus = () => {
     setIsConfirmModalOpen(false);
     setChallengeToToggle(null);
+  };
+
+
+  const handleDeleteClick = (id: string) => {
+    setChallengeToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDeleteChallenge = async () => {
+    if (!challengeToDelete) return;
+
+    try {
+      setDeletingId(challengeToDelete);
+      await deleteChallengeApi(challengeToDelete);
+      await fetchChallenges();
+    } catch (err) {
+      console.error("Failed to delete challenge", err);
+    } finally {
+      setDeletingId(null);
+      setIsDeleteModalOpen(false);
+      setChallengeToDelete(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setIsDeleteModalOpen(false);
+    setChallengeToDelete(null);
   };
 
 
@@ -143,25 +174,43 @@ const ChallengeManagement = () => {
                   </td>
 
                   <td className="py-3 text-right space-x-2">
+
+                    {/* Resume Draft OR Edit */}
                     <button
                       onClick={() =>
                         navigate(`/admin/challenges/edit/${c.id}`)
                       }
-                      className={`px-3 py-1 rounded text-sm transition ${c.status === 'draft'
+                      className={`px-3 py-1 rounded text-sm transition ${!c.isCompleted
                         ? 'bg-amber-600 hover:bg-amber-700 text-white'
-                        : 'bg-slate-700 hover:bg-slate-600'
+                        : 'bg-cyan-700 hover:bg-cyan-600 text-white'
                         }`}
                     >
-                      {c.status === 'draft' ? "Resume Draft" : "Edit"}
+                      {!c.isCompleted ? "Resume Draft" : "Edit"}
                     </button>
 
-                    <button
-                      disabled={togglingId === c.id}
-                      onClick={() => handleToggleClick(c.id!, c.isActive)}
-                      className="px-3 py-1 rounded bg-slate-800 hover:bg-slate-700 text-sm disabled:opacity-50"
-                    >
-                      {c.isActive ? "Deactivate" : "Activate"}
-                    </button>
+                    {/* Delete OR Toggle */}
+                    {!c.isCompleted ? (
+                      <button
+                        disabled={deletingId === c.id}
+                        onClick={() => handleDeleteClick(c.id!)}
+                        className="px-3 py-1 rounded border border-red-600
+      text-red-400 hover:bg-red-600/20 text-sm disabled:opacity-50 transition"
+                      >
+                        {deletingId === c.id ? "Deleting..." : "Delete"}
+                      </button>
+                    ) : (
+                      <button
+                        disabled={togglingId === c.id}
+                        onClick={() => handleToggleClick(c.id!, c.isActive)}
+                        className={`px-3 py-1 rounded text-sm text-white transition disabled:opacity-50
+        ${c.isActive
+                            ? "bg-red-600 hover:bg-red-700"
+                            : "bg-green-600 hover:bg-green-700"
+                          }`}
+                      >
+                        {c.isActive ? "Deactivate" : "Activate"}
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -215,6 +264,16 @@ const ChallengeManagement = () => {
         confirmText={challengeToToggle?.isActive ? "Deactivate" : "Activate"}
         onConfirm={confirmToggleStatus}
         onCancel={cancelToggleStatus}
+      />
+
+      <ConfirmModal
+        open={isDeleteModalOpen}
+        title="Delete Challenge"
+        message="Are you sure you want to delete this draft challenge? This action cannot be undone."
+        confirmText="Delete"
+        onConfirm={confirmDeleteChallenge}
+        onCancel={cancelDelete}
+        variant="danger"
       />
     </div>
   );

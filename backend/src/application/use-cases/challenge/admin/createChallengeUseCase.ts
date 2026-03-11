@@ -53,6 +53,7 @@ export class CreateChallengeUseCase {
       input.isPremium ?? false,
       false,        // isActive
       "draft",      // status
+      false,
       null,
       null
     );

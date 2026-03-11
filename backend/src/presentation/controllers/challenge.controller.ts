@@ -15,6 +15,8 @@ import { AddChallengeCodeTemplatesUseCase } from "../../application/use-cases/ch
 import { UpdateChallengeUseCase } from "../../application/use-cases/challenge/admin/updateChallengeUseCase";
 import { GetAdminChallengeCodeTemplatesUseCase } from "../../application/use-cases/challenge/admin/getAdminChallengeCodeTemplatesUseCase";
 import { GetAdminChallengeTestCasesUseCase } from "../../application/use-cases/challenge/admin/getAdminChallengeTestCasesUseCase";
+import { GetAdminChallengeByIdUseCase } from "../../application/use-cases/challenge/admin/getAdminChallengeByIdUseCase";
+import { DeleteChallengeUseCase } from "../../application/use-cases/challenge/admin/deleteChallengeUseCase";
 
 import { GetChallengeByIdUseCase } from "../../application/use-cases/challenge/user/getChallengeByIdUseCase";
 import { GetChallengeCodeTemplatesUseCase } from "../../application/use-cases/challenge/user/getChallengeCodeTemplatesUseCase";
@@ -49,6 +51,8 @@ export class ChallengeController {
         private readonly _updateChallenge: UpdateChallengeUseCase,
         private readonly _getAdminChallengeCodeTemplates: GetAdminChallengeCodeTemplatesUseCase,
         private readonly _getAdminChallengeTestCases: GetAdminChallengeTestCasesUseCase,
+        private readonly _getAdminChallengeById: GetAdminChallengeByIdUseCase,
+        private readonly _deleteChallenge: DeleteChallengeUseCase,
     ) { }
 
 
@@ -182,6 +186,41 @@ export class ChallengeController {
     };
 
 
+    getAdminById = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+
+            if (!id) {
+                return res
+                    .status(HttpStatus.BAD_REQUEST)
+                    .json(ApiResponse.error(MESSAGES.CHALLENGE.ID_REQUIRED));
+            }
+
+            const challenge = await this._getAdminChallengeById.execute(id);
+
+            if (!challenge) {
+                return res
+                    .status(HttpStatus.NOT_FOUND)
+                    .json(ApiResponse.error(MESSAGES.CHALLENGE.NOT_FOUND));
+            }
+
+            return res
+                .status(HttpStatus.OK)
+                .json(ApiResponse.success(MESSAGES.CHALLENGE.FETCHED, challenge));
+
+        } catch (err: unknown) {
+            const message =
+                err instanceof Error
+                    ? err.message
+                    : MESSAGES.COMMON.INTERNAL_ERROR;
+
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json(ApiResponse.error(message));
+        }
+    };
+
+
 
 
     getTemplates = async (req: Request, res: Response) => {
@@ -219,6 +258,32 @@ export class ChallengeController {
 
 
 
+    delete = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+
+            if (!id) {
+                return res
+                    .status(HttpStatus.BAD_REQUEST)
+                    .json(ApiResponse.error(MESSAGES.CHALLENGE.ID_REQUIRED));
+            }
+
+            await this._deleteChallenge.execute(id);
+
+            return res
+                .status(HttpStatus.OK)
+                .json(ApiResponse.success(MESSAGES.CHALLENGE.DELETED));
+        } catch (err: unknown) {
+            const message =
+                err instanceof Error
+                    ? err.message
+                    : MESSAGES.COMMON.INTERNAL_ERROR;
+
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json(ApiResponse.error(message));
+        }
+    };
 
 
     toggle = async (req: Request, res: Response) => {

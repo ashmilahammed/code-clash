@@ -26,6 +26,7 @@ export interface IChallengeDoc extends Document {
     isActive: boolean;
 
     status: "draft" | "active" | "archived";
+    isCompleted: boolean;
 
     availableFrom?: Date | null;
     availableUntil?: Date | null;
@@ -78,6 +79,7 @@ const ChallengeSchema = new Schema<IChallengeDoc>(
             enum: ["draft", "active", "archived"],
             default: "draft",
         },
+        isCompleted: { type: Boolean, default: false },
 
         availableFrom: { type: Date, default: null, index: true },
         availableUntil: { type: Date, default: null, index: true },

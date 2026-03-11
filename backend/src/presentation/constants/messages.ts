@@ -31,6 +31,7 @@ export const MESSAGES = {
   CHALLENGE: {
     CREATED: "Challenge created successfully",
     UPDATED: "Challenge updated successfully",
+    DELETED: "Challenge deleted successfully",
     STATUS_UPDATED: "Challenge status updated successfully",
 
     TAGS_ADDED: "Challenge tags added successfully",

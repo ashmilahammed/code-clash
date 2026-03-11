@@ -110,165 +110,165 @@ const CodeTemplates = () => {
   };
 
 
-  return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <h2 className="text-lg font-medium text-slate-200">
-        Code Templates
-      </h2>
-
-      {error && (
-        <p className="text-red-500 text-sm">{error}</p>
-      )}
-
-      {templates.map((t, i) => (
-        <div
-          key={t.language}
-          className="bg-slate-900 rounded-lg p-5 space-y-4"
-        >
-          {/* Language label (NOT editable) */}
-          <div className="text-slate-300 font-semibold capitalize">
-            {t.language}
-          </div>
-
-          {/* Starter Code */}
-          <div className="space-y-1">
-            <p className="text-sm text-slate-400">
-              Starter Code 
-            </p>
-
-            <textarea
-              className="w-full p-3 rounded bg-[#020617] font-mono text-sm border border-slate-700 focus:ring-2 focus:ring-cyan-500"
-              rows={6}
-              placeholder="Starter Code"
-              value={t.starterCode}
-              onChange={(e) =>
-                updateTemplate(i, "starterCode", e.target.value)
-              }
-            />
-          </div>
-
-          {/* Solution Code */}
-          <div className="space-y-1">
-            <p className="text-sm text-slate-400">
-              Solution Code 
-            </p>
-
-            <textarea
-              className="w-full p-3 rounded bg-[#020617] font-mono text-sm border border-slate-700 focus:ring-2 focus:ring-cyan-500"
-              rows={6}
-              placeholder="Solution Code"
-              value={t.solutionCode}
-              onChange={(e) =>
-                updateTemplate(i, "solutionCode", e.target.value)
-              }
-            />
-          </div>
-        </div>
-      ))}
-
-      <div className="flex justify-end">
-        <button
-          onClick={saveAndFinish}
-          disabled={loading}
-          className="px-5 py-2 rounded bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50"
-        >
-          {loading ? "Saving..." : "Save & Finish"}
-        </button>
-      </div>
-    </div>
-  );
-
-
-
-
   // return (
-  //   <div className="max-w-5xl mx-auto space-y-8">
+  //   <div className="max-w-4xl mx-auto space-y-8">
+  //     <h2 className="text-lg font-medium text-slate-200">
+  //       Code Templates
+  //     </h2>
 
-  //     {/* Header */}
-  //     <div>
-  //       <h1 className="text-2xl font-semibold text-white">
-  //         Create Challenge
-  //       </h1>
-  //       <p className="text-sm text-slate-400">
-  //         Final Step • Code Templates
-  //       </p>
-  //     </div>
+  //     {error && (
+  //       <p className="text-red-500 text-sm">{error}</p>
+  //     )}
 
-  //     {/* Container */}
-  //     <div className="bg-[#020617] border border-slate-800 rounded-xl p-6 space-y-6">
-
-  //       {error && (
-  //         <p className="text-red-400 text-sm">{error}</p>
-  //       )}
-
-  //       {templates.map((t, i) => (
-  //         <div
-  //           key={t.language}
-  //           className="border border-slate-800 rounded-lg p-5 space-y-4 bg-slate-950"
-  //         >
-
-  //           {/* Language Header */}
-  //           <div className="flex items-center justify-between">
-  //             <span className="px-3 py-1 text-xs rounded-md bg-slate-800 text-slate-300 font-medium capitalize">
-  //               {t.language}
-  //             </span>
-  //           </div>
-
-  //           {/* Starter Code */}
-  //           <div className="space-y-1">
-  //             <label className="text-xs text-slate-500">
-  //               Starter Code
-  //             </label>
-
-  //             <textarea
-  //               className="w-full px-3 py-2 rounded-md bg-slate-900 border border-slate-700
-  //             font-mono text-sm text-white focus:ring-1 focus:ring-cyan-500 outline-none
-  //             min-h-[120px] resize-y"
-  //               placeholder="Starter code template..."
-  //               value={t.starterCode}
-  //               onChange={(e) =>
-  //                 updateTemplate(i, "starterCode", e.target.value)
-  //               }
-  //             />
-  //           </div>
-
-  //           {/* Solution Code */}
-  //           <div className="space-y-1">
-  //             <label className="text-xs text-slate-500">
-  //               Official Solution
-  //             </label>
-
-  //             <textarea
-  //               className="w-full px-3 py-2 rounded-md bg-slate-900 border border-slate-700
-  //             font-mono text-sm text-white focus:ring-1 focus:ring-cyan-500 outline-none
-  //             min-h-[120px] resize-y"
-  //               placeholder="Official solution..."
-  //               value={t.solutionCode}
-  //               onChange={(e) =>
-  //                 updateTemplate(i, "solutionCode", e.target.value)
-  //               }
-  //             />
-  //           </div>
-
+  //     {templates.map((t, i) => (
+  //       <div
+  //         key={t.language}
+  //         className="bg-slate-900 rounded-lg p-5 space-y-4"
+  //       >
+  //         {/* Language label (NOT editable) */}
+  //         <div className="text-slate-300 font-semibold capitalize">
+  //           {t.language}
   //         </div>
-  //       ))}
 
-  //       {/* Footer */}
-  //       <div className="flex justify-end pt-4">
-  //         <button
-  //           onClick={saveAndFinish}
-  //           disabled={loading}
-  //           className="px-7 py-3 rounded-lg bg-cyan-600 hover:bg-cyan-700
-  //         text-white font-semibold transition disabled:opacity-50"
-  //         >
-  //           {loading ? "Saving..." : "Save & Publish Challenge "}
-  //         </button>
+  //         {/* Starter Code */}
+  //         <div className="space-y-1">
+  //           <p className="text-sm text-slate-400">
+  //             Starter Code
+  //           </p>
+
+  //           <textarea
+  //             className="w-full p-3 rounded bg-[#020617] font-mono text-sm border border-slate-700 focus:ring-2 focus:ring-cyan-500"
+  //             rows={6}
+  //             placeholder="Starter Code"
+  //             value={t.starterCode}
+  //             onChange={(e) =>
+  //               updateTemplate(i, "starterCode", e.target.value)
+  //             }
+  //           />
+  //         </div>
+
+  //         {/* Solution Code */}
+  //         <div className="space-y-1">
+  //           <p className="text-sm text-slate-400">
+  //             Solution Code
+  //           </p>
+
+  //           <textarea
+  //             className="w-full p-3 rounded bg-[#020617] font-mono text-sm border border-slate-700 focus:ring-2 focus:ring-cyan-500"
+  //             rows={6}
+  //             placeholder="Solution Code"
+  //             value={t.solutionCode}
+  //             onChange={(e) =>
+  //               updateTemplate(i, "solutionCode", e.target.value)
+  //             }
+  //           />
+  //         </div>
   //       </div>
+  //     ))}
 
+  //     <div className="flex justify-end">
+  //       <button
+  //         onClick={saveAndFinish}
+  //         disabled={loading}
+  //         className="px-5 py-2 rounded bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50"
+  //       >
+  //         {loading ? "Saving..." : "Save & Finish"}
+  //       </button>
   //     </div>
-
   //   </div>
   // );
+
+
+
+
+  return (
+    <div className="max-w-5xl mx-auto space-y-8">
+
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-semibold text-white">
+          Create Challenge
+        </h1>
+        <p className="text-sm text-slate-400">
+          Final Step • Code Templates
+        </p>
+      </div>
+
+      {/* Container */}
+      <div className="bg-[#020617] border border-slate-800 rounded-xl p-6 space-y-6">
+
+        {error && (
+          <p className="text-red-400 text-sm">{error}</p>
+        )}
+
+        {templates.map((t, i) => (
+          <div
+            key={t.language}
+            className="border border-slate-800 rounded-lg p-5 space-y-4 bg-slate-950"
+          >
+
+            {/* Language Header */}
+            <div className="flex items-center justify-between">
+              <span className="px-3 py-1 text-xs rounded-md bg-slate-800 text-slate-300 font-medium capitalize">
+                {t.language}
+              </span>
+            </div>
+
+            {/* Starter Code */}
+            <div className="space-y-1">
+              <label className="text-xs text-slate-500">
+                Starter Code
+              </label>
+
+              <textarea
+                className="w-full px-3 py-2 rounded-md bg-slate-900 border border-slate-700
+              font-mono text-sm text-white focus:ring-1 focus:ring-cyan-500 outline-none
+              min-h-[120px] resize-y"
+                placeholder="Starter code template..."
+                value={t.starterCode}
+                onChange={(e) =>
+                  updateTemplate(i, "starterCode", e.target.value)
+                }
+              />
+            </div>
+
+            {/* Solution Code */}
+            <div className="space-y-1">
+              <label className="text-xs text-slate-500">
+                Official Solution
+              </label>
+
+              <textarea
+                className="w-full px-3 py-2 rounded-md bg-slate-900 border border-slate-700
+              font-mono text-sm text-white focus:ring-1 focus:ring-cyan-500 outline-none
+              min-h-[120px] resize-y"
+                placeholder="Official solution..."
+                value={t.solutionCode}
+                onChange={(e) =>
+                  updateTemplate(i, "solutionCode", e.target.value)
+                }
+              />
+            </div>
+
+          </div>
+        ))}
+
+        {/* Footer */}
+        <div className="flex justify-end pt-4">
+          <button
+            onClick={saveAndFinish}
+            disabled={loading}
+            className="px-7 py-3 rounded-lg bg-cyan-600 hover:bg-cyan-700
+          text-white font-semibold transition disabled:opacity-50"
+          >
+            {loading ? "Saving..." : "Save & Publish Challenge "}
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  );
 
 };
 

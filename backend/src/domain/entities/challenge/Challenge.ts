@@ -27,6 +27,7 @@ export class Challenge {
     public isPremium: boolean,
     public isActive: boolean,
     public status: ChallengeStatus,
+    public isCompleted: boolean = false,
     public availableFrom?: Date | null,
     public availableUntil?: Date | null,
     public readonly createdAt?: Date,

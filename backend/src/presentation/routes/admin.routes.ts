@@ -27,7 +27,9 @@ router.patch("/users/:userId/status", adminController.updateUserStatus);
 router.post("/challenges", challengeController.create);
 router.patch("/challenges/:id", challengeController.update);
 router.get("/challenges", challengeController.adminList);
+router.get("/challenges/:id", challengeController.getAdminById);
 router.patch("/challenges/:id/status", challengeController.toggle);
+router.delete("/challenges/:id", challengeController.delete);
 
 //wizard
 router.post("/challenges/:id/tags", challengeController.addTags);

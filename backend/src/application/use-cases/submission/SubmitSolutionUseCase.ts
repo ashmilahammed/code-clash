@@ -6,6 +6,8 @@ import { Submission } from "../../../domain/entities/submission/Submission";
 
 import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
 import { ILevelRepository } from "../../../domain/repositories/level/ILevelRepository";
+import { IBadgeRewardService } from "../../../domain/services/IBadgeRewardService";
+import { Badge } from "../../../domain/entities/badge/Badge";
 
 
 
@@ -17,8 +19,8 @@ export class SubmitSolutionUseCase {
         private readonly executionService: ICodeExecutionService,
 
         private readonly userRepo: IUserRepository,
-        private readonly levelRepo: ILevelRepository
-
+        private readonly levelRepo: ILevelRepository,
+        private readonly badgeRewardService: IBadgeRewardService
     ) { }
 
 
@@ -184,7 +186,15 @@ export class SubmitSolutionUseCase {
                 if (level.badgeId) {
                     await this.userRepo.updateBadge(userId, level.badgeId);
                 }
+
+                // Automatic Badge Rewards - LEVEL
+                const levelNumber = level.levelNumber;
+                await this.badgeRewardService.checkAndReward(updatedUser, Badge.REQUIREMENT_TYPES.LEVEL_REACHED, levelNumber);
             }
+
+            // Automatic Badge Rewards - CHALLENGE
+            const solvedCount = await this.submissionRepo.countSolved(userId);
+            await this.badgeRewardService.checkAndReward(updatedUser, Badge.REQUIREMENT_TYPES.CHALLENGE_COMPLETED, solvedCount);
         }
 
         return {

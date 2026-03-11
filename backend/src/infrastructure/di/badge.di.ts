@@ -4,10 +4,20 @@ import { GetBadgesUseCase } from "../../application/use-cases/badge/GetBadgesUse
 import { UpdateBadgeUseCase } from "../../application/use-cases/badge/UpdateBadgeUseCase";
 import { DeleteBadgeUseCase } from "../../application/use-cases/badge/DeleteBadgeUseCase";
 import { BadgeController } from "../../presentation/controllers/badge.controller";
+import { BadgeRewardService } from "../services/BadgeRewardService";
+import { userRepository } from "./user.di";
+import { notificationRepository } from "./notification.di";
 
 
 // repository
-const badgeRepository = new BadgeRepository();
+export const badgeRepository = new BadgeRepository();
+
+// services
+export const badgeRewardService = new BadgeRewardService(
+    badgeRepository,
+    userRepository,
+    notificationRepository
+);
 
 // use cases
 const getBadgesUseCase = new GetBadgesUseCase(badgeRepository);

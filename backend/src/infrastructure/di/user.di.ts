@@ -1,6 +1,7 @@
 import { UserRepository } from "../repositories/user/UserRepository";
 import { SubmissionRepository } from "../repositories/submission/SubmissionRepository";
 import { LevelRepository } from "../repositories/level/LevelRepository";
+import { BadgeRepository } from "../repositories/badge/BadgeRepository";
 import { XpService } from "../services/xpService";
 import { WinstonLogger } from "../services/logger";
 
@@ -29,6 +30,7 @@ import { createRequireRole } from "../../presentation/middlewares/role.Middlewar
 export const userRepository = new UserRepository();
 const submissionRepository = new SubmissionRepository();
 const levelRepository = new LevelRepository();
+const badgeRepositoryForStats = new BadgeRepository();
 const xpService = new XpService();
 const logger = new WinstonLogger();
 const fileStorage = new CloudinaryStorageService();
@@ -62,7 +64,8 @@ const getUserProfileStatsUseCase = new GetUserProfileStatsUseCase(
   userRepository,
   submissionRepository,
   xpService,
-  levelRepository
+  levelRepository,
+  badgeRepositoryForStats
 );
 
 const cancelPremiumUseCase = new CancelPremiumUseCase(

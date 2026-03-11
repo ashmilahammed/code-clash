@@ -21,6 +21,7 @@ export class UserFactory {
       null, // linkedin_url
 
       null, // badge_id
+      [],     // badges 
       null, // level_id
 
       0, // xp
@@ -74,6 +75,7 @@ export class UserFactory {
       null, // linkedin_url
 
       null, // badge_id
+      [],     // badges
       null, // level_id
 
       0, // xp

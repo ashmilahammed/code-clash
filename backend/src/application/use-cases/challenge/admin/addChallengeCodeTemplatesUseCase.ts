@@ -1,10 +1,12 @@
 import { ChallengeCodeTemplate } from "../../../../domain/entities/challenge/ChallengeCodeTemplate";
 import { IChallengeCodeTemplateRepository } from "../../../../domain/repositories/challenge/IChallengeCodeTemplateRepository";
+import { IChallengeRepository } from "../../../../domain/repositories/challenge/IChallengeRepository";
 
 
 export class AddChallengeCodeTemplatesUseCase {
   constructor(
-    private readonly _repo: IChallengeCodeTemplateRepository
+    private readonly _repo: IChallengeCodeTemplateRepository,
+    private readonly _challengeRepo: IChallengeRepository
   ) { }
 
   async execute(
@@ -42,5 +44,8 @@ export class AddChallengeCodeTemplatesUseCase {
 
     ////
     await this._repo.createMany(challengeId, templates);
+
+    // mark as completed
+    await this._challengeRepo.update(challengeId, { isCompleted: true });
   }
 }

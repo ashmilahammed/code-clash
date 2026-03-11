@@ -6,6 +6,7 @@ interface ConfirmModalProps {
   cancelText?: string;
   onConfirm: () => void;
   onCancel: () => void;
+  variant?: "primary" | "danger";
 }
 
 const ConfirmModal = ({
@@ -16,6 +17,7 @@ const ConfirmModal = ({
   cancelText = "Cancel",
   onConfirm,
   onCancel,
+  variant = "primary",
 }: ConfirmModalProps) => {
   if (!open) return null;
 
@@ -40,7 +42,8 @@ const ConfirmModal = ({
 
           <button
             onClick={onConfirm}
-            className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition"
+            className={`px-4 py-2 rounded text-white transition ${variant === "danger" ? "bg-red-600 hover:bg-red-700" : "bg-cyan-600 hover:bg-cyan-700"
+              }`}
           >
             {confirmText}
           </button>

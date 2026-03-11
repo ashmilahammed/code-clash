@@ -4,6 +4,8 @@ import { IPlanRepository } from "../../../domain/repositories/plan/IPlanReposito
 import { IRazorpayService } from "../../../domain/services/IRazorpayService";
 import { Transaction } from "../../../domain/entities/transaction/Transaction";
 import { INotificationRepository } from "../../../domain/repositories/notification/INotificationRepository";
+import { IBadgeRewardService } from "../../../domain/services/IBadgeRewardService";
+import { Badge } from "../../../domain/entities/badge/Badge";
 
 interface VerifyPaymentDTO {
     razorpayOrderId: string;
@@ -19,7 +21,8 @@ export class VerifyRazorpayPaymentUseCase {
         private userRepository: IUserRepository,
         private planRepository: IPlanRepository,
         private razorpayService: IRazorpayService,
-        private notificationRepository: INotificationRepository
+        private notificationRepository: INotificationRepository,
+        private badgeRewardService: IBadgeRewardService
     ) { }
 
     async execute(dto: VerifyPaymentDTO): Promise<Transaction> {
@@ -82,6 +85,9 @@ export class VerifyRazorpayPaymentUseCase {
                 recipientId: userId,
                 senderId: "000000000000000000000000", // System ID
             });
+
+            // Automatic Badge Rewards - PREMIUM
+            await this.badgeRewardService.checkAndReward(user, Badge.REQUIREMENT_TYPES.PREMIUM_UPGRADED, 1);
         } else {
             throw new Error("User not found after successful payment");
         }

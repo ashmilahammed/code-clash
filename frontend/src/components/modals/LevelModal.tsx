@@ -1,19 +1,17 @@
 import { useState, useEffect } from "react";
-import type { Badge, Level } from "../../types/Level";
+import type { Level } from "../../types/Level";
 
 interface LevelModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSave: (data: any) => Promise<void>;
     initialData?: Level | null;
-    badges: Badge[];
 }
 
-const LevelModal = ({ isOpen, onClose, onSave, initialData, badges }: LevelModalProps) => {
+const LevelModal = ({ isOpen, onClose, onSave, initialData }: LevelModalProps) => {
     const [levelNumber, setLevelNumber] = useState<number | "">("");
     const [minXp, setMinXp] = useState<number | "">("");
     const [maxXp, setMaxXp] = useState<number | "">("");
-    const [badgeId, setBadgeId] = useState<string>("");
     const [title, setTitle] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -23,14 +21,12 @@ const LevelModal = ({ isOpen, onClose, onSave, initialData, badges }: LevelModal
             setLevelNumber(initialData.levelNumber);
             setMinXp(initialData.minXp);
             setMaxXp(initialData.maxXp);
-            setBadgeId(initialData.badgeId || "");
             setTitle(initialData.title || "");
         } else {
             // Reset form
             setLevelNumber("");
             setMinXp("");
             setMaxXp("");
-            setBadgeId("");
             setTitle("");
         }
         setError(null);
@@ -48,7 +44,6 @@ const LevelModal = ({ isOpen, onClose, onSave, initialData, badges }: LevelModal
                 levelNumber: Number(levelNumber),
                 minXp: Number(minXp),
                 maxXp: Number(maxXp),
-                badgeId: badgeId || undefined,
                 title,
             });
             onClose();
@@ -118,21 +113,6 @@ const LevelModal = ({ isOpen, onClose, onSave, initialData, badges }: LevelModal
                         />
                     </div>
 
-                    <div>
-                        <label className="block text-slate-400 text-sm mb-1">Badge</label>
-                        <select
-                            value={badgeId}
-                            onChange={(e) => setBadgeId(e.target.value)}
-                            className="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-white outline-none focus:border-blue-500 transition"
-                        >
-                            <option value="">Select a Badge</option>
-                            {badges.map((badge) => (
-                                <option key={badge.id || badge._id} value={badge.id || badge._id}>
-                                    {badge.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
 
                     <div className="flex justify-end gap-3 mt-6">
                         <button

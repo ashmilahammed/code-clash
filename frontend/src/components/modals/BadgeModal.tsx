@@ -113,8 +113,12 @@ const BadgeModal = ({ isOpen, onClose, onSave, initialData }: BadgeModalProps) =
                                 onChange={(e) => setCategory(e.target.value)}
                                 className="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-white outline-none focus:border-blue-500 transition"
                             >
-                                <option value="Achievement">Achievement</option>
-                                <option value="Challenge">Challenge</option>
+                                <option value="LEVEL">LEVEL</option>
+                                <option value="CHALLENGE">CHALLENGE</option>
+                                <option value="STREAK">STREAK</option>
+                                <option value="PREMIUM">PREMIUM</option>
+                                <option value="COMMUNITY">COMMUNITY</option>
+                                <option value="SPECIAL">SPECIAL</option>
                             </select>
                         </div>
                         <div>
@@ -124,9 +128,12 @@ const BadgeModal = ({ isOpen, onClose, onSave, initialData }: BadgeModalProps) =
                                 onChange={(e) => setRequirementType(e.target.value)}
                                 className="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-white outline-none focus:border-blue-500 transition"
                             >
-                                <option value="Manual">Manual</option>
-                                <option value="Level Reached">Level Reached</option>
-                                <option value="Challenge Completion">Challenge Completion</option>
+                                <option value="manual">manual</option>
+                                <option value="level_reached">level_reached</option>
+                                <option value="challenge_completed">challenge_completed</option>
+                                <option value="streak_achieved">streak_achieved</option>
+                                <option value="premium_upgraded">premium_upgraded</option>
+                                <option value="group_joined">group_joined</option>
                             </select>
                         </div>
                     </div>

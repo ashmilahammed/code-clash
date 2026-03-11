@@ -21,6 +21,7 @@ export class UserMapper {
       doc.linkedin_url ?? null,
 
       doc.badge_id?.toString() ?? null,
+      doc.badges?.map(b => b.toString()) ?? [],
       doc.level_id?.toString() ?? null,
 
       doc.xp,
@@ -46,8 +47,12 @@ export class UserMapper {
     );
   }
 
-  static toResponse(user: User): UserResponseDTO {
-    return user.snapshot();
+  static toResponse(user: User, populatedBadges?: any[]): UserResponseDTO {
+    const snap = user.snapshot();
+    return {
+      ...snap,
+      badges: populatedBadges ?? null
+    };
   }
 
   static toAuth(user: User): AuthUserDTO {

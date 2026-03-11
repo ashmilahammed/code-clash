@@ -24,6 +24,13 @@ export const getChallengeByIdApi = async (
     return res.data.data;
 };
 
+export const getAdminChallengeByIdApi = async (
+    id: string
+): Promise<Challenge> => {
+    const res = await axiosInstance.get(`/admin/challenges/${id}`);
+    return res.data.data;
+};
+
 
 // no solution code(only templates)
 export const getChallengeTemplatesApi = async (
@@ -60,6 +67,10 @@ export const toggleChallengeStatusApi = async (
         `/admin/challenges/${challengeId}/status`,
         { isActive }
     );
+};
+
+export const deleteChallengeApi = async (challengeId: string): Promise<void> => {
+    await axiosInstance.delete(`/admin/challenges/${challengeId}`);
 };
 
 

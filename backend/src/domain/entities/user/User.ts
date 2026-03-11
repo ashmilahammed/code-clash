@@ -19,6 +19,7 @@ export class User {
     public linkedin_url: string | null,
 
     public badge_id: string | null,
+    public badges: string[] = [],
     public level_id: string | null,
 
     private xp: number,
@@ -85,6 +86,20 @@ export class User {
     this.current_streak = current;
     this.longest_streak = longest;
     this.last_login_date = lastLogin;
+  }
+
+  addBadge(badgeId: string) {
+    if (!this.badges.includes(badgeId)) {
+      this.badges.push(badgeId);
+      // If no active badge, set this as active
+      if (!this.badge_id) {
+        this.badge_id = badgeId;
+      }
+    }
+  }
+
+  hasBadge(badgeId: string): boolean {
+    return this.badges.includes(badgeId);
   }
 
   getStreaks() {
@@ -230,6 +245,7 @@ export class User {
       linkedin_url: this.linkedin_url,
 
       badge_id: this.badge_id,
+      badges: this.badges,
       current_streak: this.current_streak,
       longest_streak: this.longest_streak,
       is_premium: this.is_premium,

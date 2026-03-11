@@ -16,6 +16,7 @@ export class ChallengeMapper {
       doc.isPremium,
       doc.isActive,
       doc.status,
+      doc.isCompleted,
       doc.availableFrom ?? null,
       doc.availableUntil ?? null,
       doc.createdAt,
@@ -65,6 +66,10 @@ export class ChallengeMapper {
 
     if (entity.status !== undefined) {
       persistence.status = entity.status;
+    }
+
+    if (entity.isCompleted !== undefined) {
+      persistence.isCompleted = entity.isCompleted;
     }
 
     if (entity.availableFrom !== undefined) {

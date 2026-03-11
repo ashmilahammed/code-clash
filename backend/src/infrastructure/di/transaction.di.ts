@@ -10,6 +10,7 @@ import { PlanRepository } from "../repositories/plan/PlanRepository";
 import { UserRepository } from "../repositories/user/UserRepository";
 import { WinstonLogger } from "../services/logger";
 import { notificationRepository } from "./notification.di";
+import { badgeRewardService } from "./badge.di";
 
 // Shared services
 const logger = new WinstonLogger();
@@ -28,7 +29,8 @@ const verifyRazorpayPaymentUseCase = new VerifyRazorpayPaymentUseCase(
     userRepository,
     planRepository,
     razorpayService,
-    notificationRepository
+    notificationRepository,
+    badgeRewardService
 );
 const getUserTransactionsUseCase = new GetUserTransactionsUseCase(transactionRepository);
 const getCurrentPremiumPlanUseCase = new GetCurrentPremiumPlanUseCase(transactionRepository);

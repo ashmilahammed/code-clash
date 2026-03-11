@@ -52,8 +52,10 @@ const verifyForgotOtpUseCase = new VerifyForgotOtpUseCase(userRepository);
 const resetPasswordUseCase = new ResetPasswordUseCase(userRepository, passwordService);
 
 
+import { badgeRewardService } from "./badge.di";
+
 //
-const updateLoginStreakUseCase = new UpdateLoginStreakUseCase(userRepository);
+const updateLoginStreakUseCase = new UpdateLoginStreakUseCase(userRepository, badgeRewardService);
 
 const loginUseCase = new LoginUseCase(
     userRepository,

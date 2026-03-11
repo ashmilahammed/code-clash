@@ -14,6 +14,7 @@ export interface User {
   linkedin_url: string | null;
 
   badge_id: string | null;
+  badges?: any[];
 
   current_streak: number;
   longest_streak: number;

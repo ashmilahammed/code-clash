@@ -57,6 +57,7 @@ const CreateChallengeWizard = () => {
   );
 };
 
+
 const Step = ({ label, path, id, active }: { label: string; path: string; id?: string; active?: boolean }) => {
   // If we have an ID, we can navigate directly
   // If not, we disable navigation (user must follow flow)

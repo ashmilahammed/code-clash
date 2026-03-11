@@ -1,4 +1,22 @@
 export class Badge {
+    static readonly CATEGORIES = {
+        LEVEL: "LEVEL",
+        CHALLENGE: "CHALLENGE",
+        STREAK: "STREAK",
+        PREMIUM: "PREMIUM",
+        COMMUNITY: "COMMUNITY",
+        SPECIAL: "SPECIAL"
+    };
+
+    static readonly REQUIREMENT_TYPES = {
+        MANUAL: "manual",
+        LEVEL_REACHED: "level_reached",
+        CHALLENGE_COMPLETED: "challenge_completed",
+        STREAK_ACHIEVED: "streak_achieved",
+        PREMIUM_UPGRADED: "premium_upgraded",
+        GROUP_JOINED: "group_joined"
+    };
+
     constructor(
         public readonly id: string | undefined,
         public readonly name: string,

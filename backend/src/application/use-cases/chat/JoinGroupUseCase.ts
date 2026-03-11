@@ -1,13 +1,16 @@
 import { IConversationRepository } from "../../../domain/repositories/chat/IConversationRepository";
 import { Conversation } from "../../../domain/entities/chat/Conversation";
 import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
+import { IBadgeRewardService } from "../../../domain/services/IBadgeRewardService";
+import { Badge } from "../../../domain/entities/badge/Badge";
 
 
 
 export class JoinGroupUseCase {
     constructor(
         private conversationRepository: IConversationRepository,
-        private userRepository: IUserRepository
+        private userRepository: IUserRepository,
+        private badgeRewardService: IBadgeRewardService
     ) { }
 
     async execute(conversationId: string, userId: string): Promise<Conversation> {
@@ -39,6 +42,12 @@ export class JoinGroupUseCase {
 
         if (!updatedConversation) {
             throw new Error("Failed to join group");
+        }
+
+        // Automatic Badge Rewards - COMMUNITY
+        const memberGroupsCount = await this.conversationRepository.countUserGroups(userId);
+        if (user) {
+            await this.badgeRewardService.checkAndReward(user, Badge.REQUIREMENT_TYPES.GROUP_JOINED, memberGroupsCount);
         }
 
         return updatedConversation;

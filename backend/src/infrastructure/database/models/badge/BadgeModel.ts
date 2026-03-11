@@ -20,6 +20,10 @@ const BadgeSchema = new Schema<IBadgeDoc>(
         description: { type: String, required: true },
         icon: { type: String, required: true },
         minXpRequired: { type: Number, default: 0 },
+        category: { type: String, required: true },
+        requirementType: { type: String, required: true },
+        requirementValue: { type: Number, default: 0 },
+        isActive: { type: Boolean, default: true },
     },
     { timestamps: true }
 );

@@ -20,6 +20,7 @@ import { UpdateGroupStatusUseCase } from "../../application/use-cases/chat/Updat
 import { DeleteGroupUseCase } from "../../application/use-cases/chat/DeleteGroupUseCase";
 
 import { CloudinaryStorageService } from "../adapters/fileStorage/CloudinaryStorageService";
+import { badgeRewardService } from "./badge.di";
 
 // Repositories
 export const conversationRepository = new ConversationRepository();
@@ -27,7 +28,7 @@ export const messageRepository = new MessageRepository();
 
 // Use Cases
 export const createGroupUseCase = new CreateGroupUseCase(conversationRepository, userRepository);
-export const joinGroupUseCase = new JoinGroupUseCase(conversationRepository, userRepository);
+export const joinGroupUseCase = new JoinGroupUseCase(conversationRepository, userRepository, badgeRewardService);
 export const getConversationsUseCase = new GetConversationsUseCase(conversationRepository);
 export const sendMessageUseCase = new SendMessageUseCase(messageRepository, conversationRepository, userRepository);
 export const getMessagesUseCase = new GetMessagesUseCase(messageRepository, conversationRepository);
