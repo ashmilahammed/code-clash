@@ -14,16 +14,23 @@ const PremiumManagement = () => {
   const [loading, setLoading] = useState(true);
   const [isCancelling, setIsCancelling] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  
+  // Pagination State
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const LIMIT = 5; // Showing 5 per page for settings view
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const [planData, historyData] = await Promise.all([
           getCurrentPlanApi(),
-          getMyTransactionsApi()
+          getMyTransactionsApi(page, LIMIT)
         ]);
         setCurrentPlan(planData);
-        setHistory(historyData);
+        setHistory(historyData.data);
+        setTotalCount(historyData.total);
       } catch (error) {
         console.error("Failed to load premium data", error);
         toast.error("Failed to load premium details.");
@@ -32,7 +39,9 @@ const PremiumManagement = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [page]);
+
+  const totalPages = Math.ceil(totalCount / LIMIT);
 
   const handleCancelPremium = async () => {
     try {
@@ -59,7 +68,7 @@ const PremiumManagement = () => {
     });
   };
 
-  if (loading) {
+  if (loading && history.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-64 text-slate-400">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500 mb-4"></div>
@@ -80,12 +89,6 @@ const PremiumManagement = () => {
 
         {user?.is_premium && user.premium_expiry_date ? (
           <div className="bg-linear-to-br from-indigo-900/40 to-[#1e1b4b] border border-indigo-500/30 rounded-2xl p-6 relative overflow-hidden shadow-2xl">
-            
-            {/* <div className="absolute top-0 right-0 p-6 opacity-10">
-              <svg width="120" height="120" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-              </svg>
-            </div> */}
             
             <div className="relative z-10">
               <div className="flex items-start gap-4 mb-6">
@@ -155,34 +158,66 @@ const PremiumManagement = () => {
         <h3 className="text-lg font-semibold mb-4 text-white">Membership History</h3>
         
         {history.length > 0 ? (
-          <div className="bg-[#1E293B] border border-white/5 rounded-2xl overflow-hidden">
-            {history.map((tx: any, idx: number) => (
-              <div 
-                key={tx.id} 
-                className={`p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${idx !== history.length - 1 ? 'border-b border-white/5' : ''}`}
-              >
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-medium text-white">{tx.plan?.name || "Premium Plan"}</span>
-                    {idx === 0 && user?.is_premium && (
-                      <span className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-medium">Active</span>
+          <div className="space-y-4">
+            <div className="bg-[#1E293B] border border-white/5 rounded-2xl overflow-hidden">
+              {history.map((tx: any, idx: number) => (
+                <div 
+                  key={tx.id} 
+                  className={`p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${idx !== history.length - 1 ? 'border-b border-white/5' : ''}`}
+                >
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-medium text-white">{tx.plan?.name || "Premium Plan"}</span>
+                      {idx === 0 && page === 1 && user?.is_premium && (
+                        <span className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-medium">Active</span>
+                      )}
+                    </div>
+                    <div className="text-sm text-slate-400 flex items-center gap-2">
+                      <Clock size={14} />
+                      {formatDate(tx.date)}
+                    </div>
+                    {tx.paymentMethod && (
+                      <div className="text-xs text-slate-500 mt-2">
+                        Order ID: {tx.id.slice(-8)} • <span className="text-emerald-500">✓ pay_{tx.paymentMethod}</span>
+                      </div>
                     )}
                   </div>
-                  <div className="text-sm text-slate-400 flex items-center gap-2">
-                    <Clock size={14} />
-                    {formatDate(tx.date)}
+                  <div className="flex flex-col items-end">
+                    <div className="font-medium text-emerald-400">{tx.amount} Rs</div>
                   </div>
-                  {tx.paymentMethod && (
-                    <div className="text-xs text-slate-500 mt-2">
-                      Order ID: {tx.id.slice(-8)} • <span className="text-emerald-500">✓ pay_{tx.paymentMethod}</span>
-                    </div>
-                  )}
                 </div>
-                <div className="flex flex-col items-end">
-                  <div className="font-medium text-emerald-400">{tx.amount} Rs</div>
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between px-2">
+                <div className="text-sm text-slate-500">
+                  Showing <span className="text-slate-300">{(page - 1) * LIMIT + 1}</span> to <span className="text-slate-300">{Math.min(page * LIMIT, totalCount)}</span> of <span className="text-slate-300">{totalCount}</span> results
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                    className="px-3 py-1 bg-slate-800 border border-slate-700 rounded-md text-sm font-medium text-slate-300 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Previous
+                  </button>
+                  <div className="flex items-center gap-1 mx-2">
+                    <span className="text-sm text-slate-300 font-medium">{page}</span>
+                    <span className="text-sm text-slate-500">/</span>
+                    <span className="text-sm text-slate-500">{totalPages}</span>
+                  </div>
+                  <button
+                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                    disabled={page === totalPages}
+                    className="px-3 py-1 bg-slate-800 border border-slate-700 rounded-md text-sm font-medium text-slate-300 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Next
+                  </button>
                 </div>
               </div>
-            ))}
+            )}
           </div>
         ) : (
           <div className="text-center p-8 bg-[#1E293B] border border-white/5 rounded-2xl text-slate-500">

@@ -53,7 +53,7 @@ const Settings = () => {
                 {activeTab === 'security' && <ChevronLeft size={16} className="rotate-180" />}
               </button>
 
-              <button 
+              {/* <button 
                 onClick={() => setActiveTab("notifications")}
                 className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition font-medium ${activeTab === 'notifications' ? 'bg-blue-600/20 text-blue-400' : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'}`}
               >
@@ -62,7 +62,7 @@ const Settings = () => {
                   Notifications
                 </div>
                 {activeTab === 'notifications' && <ChevronLeft size={16} className="rotate-180" />}
-              </button>
+              </button> */}
 
               <button 
                 onClick={() => setActiveTab("premium")}

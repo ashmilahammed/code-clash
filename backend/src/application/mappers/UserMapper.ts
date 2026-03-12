@@ -51,7 +51,8 @@ export class UserMapper {
     const snap = user.snapshot();
     return {
       ...snap,
-      badges: populatedBadges ?? null
+      badges: populatedBadges ?? null,
+      badgesCount: snap.badges.length
     };
   }
 

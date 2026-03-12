@@ -19,8 +19,8 @@ export const verifyPaymentApi = (data: {
     );
 };
 
-export const getMyTransactionsApi = async () => {
-    const res = await axiosInstance.get("/transactions/my-history");
+export const getMyTransactionsApi = async (page = 1, limit = 10): Promise<{ data: any[], total: number }> => {
+    const res = await axiosInstance.get(`/transactions/my-history?page=${page}&limit=${limit}`);
     return res.data;
 };
 

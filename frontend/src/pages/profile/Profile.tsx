@@ -155,7 +155,7 @@ const Profile = () => {
 
                 {/* Settings Button */}
                 {isOwnProfile && (
-                    <div className="absolute top-4 right-4 z-10">
+                    <div className="absolute top-4 right-50 z-10">
                         <button
                             onClick={() => window.location.href = '/settings'}
                             className="p-2 bg-black/30 hover:bg-black/50 rounded-full transition transform hover:scale-110 hover:rotate-45 text-white hover:text-indigo-400 backdrop-blur-sm border border-white/10"
@@ -547,7 +547,7 @@ const Profile = () => {
                                     </div>
                                     <div>
                                         <p className="text-sm font-medium text-slate-400">Badges</p>
-                                        <p className="text-xl font-bold text-white">{profileData.user.badges?.length || 0}</p>
+                                        <p className="text-xl font-bold text-white">{profileData.user.badgesCount || 0}</p>
                                     </div>
                                 </div>
 

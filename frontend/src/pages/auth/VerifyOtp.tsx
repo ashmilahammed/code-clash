@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { verifyOtpApi, resendOtpApi } from "../../api/authApi";
 
 import { getAuthErrorMessage } from "../../utils/getAuthErrorMessage";
-
+import toast from "react-hot-toast";
 
 
 const VerifyOtp = () => {
@@ -78,6 +78,7 @@ const VerifyOtp = () => {
     try {
       setLoading(true);
       await verifyOtpApi({ userId, otp });
+      toast.success("Account Created Successfully");
       navigate("/auth/login", { replace: true });
     } catch (err: any) {
 
@@ -201,9 +202,3 @@ const VerifyOtp = () => {
 };
 
 export default VerifyOtp;
-
-
-
-
-
-

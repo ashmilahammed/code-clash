@@ -51,7 +51,7 @@ export class GetLeaderboardUseCase {
                 id: user.id || userData.id, // ensure ID is at root
                 challengesSolved,
                 levelNumber: level ? level.levelNumber : 0,
-                badgesCount: 0 // placeholder
+                badgesCount: userData.badges?.length || 0
             };
         }));
 

@@ -43,33 +43,6 @@ export class RegisterUseCase {
       return { userId: existing.id };
     }
 
-    // New user
-    // const newUser = await this._userRepo.createUser({
-    //   username,
-    //   email,
-    //   password: hashed,
-
-    //   avatar_id: null,
-    //   badge_id: null,
-    //   level_id: null,
-
-    //   xp: 0,
-    //   current_streak: 0,
-    //   longest_streak: 0,
-
-    //   is_premium: false,
-    //   date_joined: new Date(),
-
-    //   role: "user",
-    //   status: "active",
-    //   refreshToken: null,
-    //   isVerified: false,
-
-    //   otp,
-    //   otpExpires: expires,
-    // });
-
-
     // new user
     const newUser = UserFactory.createEmailUser({
       username,
@@ -79,16 +52,16 @@ export class RegisterUseCase {
       otpExpires: expires,
     });
 
-    // const createdUser = await this._userRepo.createUser(newUser);
-    await this._userRepo.createUser(newUser);
+    const createdUser = await this._userRepo.createUser(newUser);
 
     await this._emailService.sendOtpEmail(email, otp);
 
-    return { userId: newUser.id };
+    return { userId: createdUser.id };
+
+
+    // await this._userRepo.createUser(newUser);
+    // await this._emailService.sendOtpEmail(email, otp);
+    // return { userId: newUser.id };
   }
 
 }
-
-
-
-

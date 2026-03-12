@@ -35,13 +35,20 @@ export class TransactionRepository implements ITransactionRepository {
         }));
     }
 
-    async findUserTransactions(userId: string): Promise<any[]> {
-        const docs = await TransactionModel.find({ userId })
-            .populate('planId', 'name features duration price')
-            .sort({ createdAt: -1 })
-            .lean();
+    async findUserTransactions(userId: string, page: number, limit: number): Promise<{ data: any[], total: number }> {
+        const skip = (page - 1) * limit;
+        
+        const [docs, total] = await Promise.all([
+            TransactionModel.find({ userId })
+                .populate('planId', 'name features duration price')
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .lean(),
+            TransactionModel.countDocuments({ userId })
+        ]);
 
-        return docs.map((doc: any) => {
+        const data = docs.map((doc: any) => {
             const planDoc = doc.planId as any;
             return {
                 id: doc._id.toString(),
@@ -58,6 +65,8 @@ export class TransactionRepository implements ITransactionRepository {
                 date: doc.date || doc.createdAt
             };
         });
+
+        return { data, total };
     }
 
     async findLatestSuccessfulTransaction(userId: string): Promise<any> {

@@ -13,6 +13,7 @@ export interface UserResponseDTO {
 
   badge_id: string | null;
   badges?: any[] | null;
+  badgesCount?: number;
 
   current_streak: number;
   longest_streak: number;

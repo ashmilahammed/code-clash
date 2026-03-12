@@ -129,11 +129,11 @@ const BadgeModal = ({ isOpen, onClose, onSave, initialData }: BadgeModalProps) =
                                 className="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-white outline-none focus:border-blue-500 transition"
                             >
                                 <option value="manual">manual</option>
-                                <option value="level_reached">level_reached</option>
-                                <option value="challenge_completed">challenge_completed</option>
-                                <option value="streak_achieved">streak_achieved</option>
-                                <option value="premium_upgraded">premium_upgraded</option>
-                                <option value="group_joined">group_joined</option>
+                                <option value="level_reached">level reached</option>
+                                <option value="challenge_completed">challenge completed</option>
+                                <option value="streak_achieved">streak achieved</option>
+                                <option value="premium_upgraded">premium upgraded</option>
+                                <option value="group_joined">group joined</option>
                             </select>
                         </div>
                     </div>

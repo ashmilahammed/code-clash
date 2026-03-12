@@ -4,9 +4,9 @@ import {
   History, 
   Users, 
   Search, 
-  Filter, 
-  ChevronRight, 
-  Copy,
+  // Filter, 
+  // ChevronRight, 
+  // Copy,
   Clock
 } from "lucide-react";
 import { 
@@ -64,8 +64,11 @@ const NotificationManagement = () => {
     }
   };
 
+
   return (
-    <div className="p-6 bg-[#020617] min-h-screen text-slate-200">
+    // <div className="p-6 bg-[#020617] min-h-screen text-slate-200">
+    <div className="p-6 bg-[#0B1220] min-h-screen text-slate-200">
+      
       <div className="flex items-center gap-4 mb-8">
         <div className="flex bg-slate-900 p-1 rounded-lg">
           <button
@@ -154,10 +157,10 @@ const NotificationManagement = () => {
                   className="w-full bg-[#0f172a] border border-slate-800 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-blue-500/50"
                 />
              </div>
-             <button className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm transition text-slate-400">
+             {/* <button className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm transition text-slate-400">
                <Filter size={16} />
                Filter
-             </button>
+             </button> */}
           </div>
 
           <div className="bg-slate-900/30 rounded-xl border border-slate-800 overflow-hidden">
@@ -167,7 +170,7 @@ const NotificationManagement = () => {
                     <th className="px-6 py-4 font-semibold">Title</th>
                     <th className="px-6 py-4 font-semibold">Recipients</th>
                     <th className="px-6 py-4 font-semibold">Sent</th>
-                    <th className="px-6 py-4 font-semibold text-right">Actions</th>
+                    {/* <th className="px-6 py-4 font-semibold text-right">Actions</th> */}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800">
@@ -186,7 +189,7 @@ const NotificationManagement = () => {
                           {new Date(item.createdAt).toLocaleString()}
                         </div>
                       </td>
-                      <td className="px-6 py-4">
+                      {/* <td className="px-6 py-4">
                         <div className="flex justify-end gap-3 text-slate-400">
                           <button className="hover:text-blue-400 transition" title="View details">
                              <ChevronRight size={18} />
@@ -195,7 +198,7 @@ const NotificationManagement = () => {
                              <Copy size={16} />
                           </button>
                         </div>
-                      </td>
+                      </td> */}
                     </tr>
                   ))}
                 </tbody>

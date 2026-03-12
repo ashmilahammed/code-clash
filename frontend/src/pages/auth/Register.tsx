@@ -6,7 +6,6 @@ import { registerApi } from "../../api/authApi";
 import { getAuthErrorMessage } from "../../utils/getAuthErrorMessage";
 
 
-
 const Register: React.FC = () => {
   const navigate = useNavigate();
 
@@ -214,8 +213,3 @@ const Register: React.FC = () => {
 };
 
 export default Register;
-
-
-
-
-
