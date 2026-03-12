@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Lock, Zap, CreditCard, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getPublicPlansApi } from "../../api/planApi";
-import { createOrderApi, verifyPaymentApi } from "../../api/transactionApi";
+import { createOrderApi, verifyPaymentApi, getCurrentPlanApi } from "../../api/transactionApi";
 import type { Plan } from "../../api/planApi";
 import { useAuthStore } from "../../store/useAuthStore";
 import toast from "react-hot-toast";
@@ -14,11 +14,25 @@ const UpgradePremium = () => {
     const navigate = useNavigate();
     const [plans, setPlans] = useState<Plan[]>([]);
     const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
+    const [currentPlanId, setCurrentPlanId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchPlans();
-    }, []);
+        const init = async () => {
+            await fetchPlans();
+            if (user?.is_premium) {
+                try {
+                    const current = await getCurrentPlanApi();
+                    if (current?.plan?.id) {
+                        setCurrentPlanId(current.plan.id);
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch current plan", error);
+                }
+            }
+        };
+        init();
+    }, [user?.is_premium]);
 
     const fetchPlans = async () => {
         try {
@@ -167,11 +181,16 @@ const UpgradePremium = () => {
                                     <div
                                         key={plan.id}
                                         onClick={() => setSelectedPlanId(plan.id)}
-                                        className={`cursor-pointer rounded-xl flex-1 text-center py-6 px-4 border ${selectedPlanId === plan.id
+                                        className={`cursor-pointer rounded-xl flex-1 text-center py-6 px-4 border relative ${selectedPlanId === plan.id
                                             ? 'border-indigo-500 bg-indigo-500/10 shadow-[0_0_15px_rgba(99,102,241,0.15)]'
                                             : 'border-slate-700 bg-slate-800/50 hover:bg-slate-800 hover:border-slate-600'
                                             } transition-all`}
                                     >
+                                        {currentPlanId === plan.id && (
+                                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap shadow-lg">
+                                                Current Plan
+                                            </div>
+                                        )}
                                         <h3 className="text-slate-300 font-medium mb-2">{plan.name}</h3>
                                         <div className="text-3xl font-bold text-white">₹{plan.price}</div>
                                         <div className="text-xs text-slate-400 mt-2">{plan.duration} days</div>
@@ -242,7 +261,7 @@ const UpgradePremium = () => {
                                     disabled={!selectedPlan}
                                     className="w-full bg-[#3399cc] hover:bg-[#2884b6] text-white py-3 rounded-lg font-bold flex justify-center items-center gap-2 transition-all shadow-lg shadow-cyan-900/30 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    <CreditCard size={18} /> Pay with Razorpay
+                                    <CreditCard size={18} /> {currentPlanId === selectedPlan?.id ? "Extend Plan" : "Pay with Razorpay"}
                                 </button>
                                 <div className="flex items-center justify-center gap-2 text-slate-500 mt-4 text-[10px]">
                                     <Lock size={12} /> Secure payment powered by Razorpay

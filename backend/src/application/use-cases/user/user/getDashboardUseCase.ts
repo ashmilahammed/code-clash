@@ -1,7 +1,7 @@
 import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
 import { IXpService } from "../../../../domain/services/IXpService";
 import { ILevelRepository } from "../../../../domain/repositories/level/ILevelRepository";
-
+import { SubmissionModel } from "../../../../infrastructure/database/models/submission/SubmissionModel";
 
 export class GetDashboardUseCase {
     constructor(
@@ -49,6 +49,44 @@ export class GetDashboardUseCase {
             streak.lastLoginDate
         );
 
+        // Fetch most attempted challenge (Last 30 days)
+        const now = new Date();
+        const startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+        const mostAttemptedChallengeResult = await SubmissionModel.aggregate([
+            { $match: { createdAt: { $gte: startDate } } },
+            { $group: { _id: "$challengeId", count: { $sum: 1 } } },
+            { $sort: { count: -1 } },
+            { $limit: 1 },
+            {
+                $lookup: {
+                    from: "challenges",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "challenge"
+                }
+            },
+            { $unwind: "$challenge" }
+        ]);
+
+        let mostAttemptedChallenge = null;
+        if (mostAttemptedChallengeResult.length > 0) {
+            const challengeObj = mostAttemptedChallengeResult[0];
+            const successfulSubmissions = await SubmissionModel.countDocuments({
+                challengeId: challengeObj._id,
+                finalStatus: "PASSED",
+                // createdAt: { $gte: startDate } // Optional: limit completion rate to recent
+            });
+            mostAttemptedChallenge = {
+                id: challengeObj.challenge._id, // Add id so we can link to it
+                title: challengeObj.challenge.title,
+                difficulty: challengeObj.challenge.difficulty,
+                attempts: challengeObj.count,
+                completionRate: Math.round((successfulSubmissions / challengeObj.count) * 100) || 0,
+                timeLimitMinutes: challengeObj.challenge.timeLimitMinutes,
+                description: challengeObj.challenge.description
+            };
+        }
 
         return {
             user: user.snapshot(),
@@ -66,6 +104,8 @@ export class GetDashboardUseCase {
                 longest: streak.longest,
                 dates: streakDates,
             },
+
+            mostAttemptedChallenge,
         };
 
     }

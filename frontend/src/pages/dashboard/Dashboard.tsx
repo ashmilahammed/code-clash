@@ -7,7 +7,7 @@ import StreakCalendar from "./StreakCalendar";
 import ChallengeList from "./ChallengeList";
 import PremiumBanner from "./PremiumBanner";
 import ActiveGroups from "./ActiveGroups";
-
+import MostAttemptedChallengeCard from "./MostAttemptedChallengeCard";
 
 //  Types for dashboard response
 type DashboardData = {
@@ -22,6 +22,16 @@ type DashboardData = {
     longest: number;
     dates: string[];
   };
+  mostAttemptedChallenge?: {
+    id: string;
+    title: string;
+    description: string;
+    difficulty: "easy" | "medium" | "hard";
+    attempts: number;
+    completionRate: number;
+    timeLimitMinutes?: number;
+    isPremium?: boolean;
+  } | null;
 };
 
 const Dashboard = () => {
@@ -56,6 +66,7 @@ const Dashboard = () => {
         setDashboard({
           level: data.level,
           streak: data.streak,
+          mostAttemptedChallenge: data.mostAttemptedChallenge,
         });
       })
       .catch((err) => {
@@ -97,9 +108,18 @@ const Dashboard = () => {
 
       {/* Main grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Challenges */}
-        <div className="lg:col-span-2 space-y-6">
-          <ChallengeList />
+        {/* Most Attempted Challenge */}
+        <div className="lg:col-span-2">
+          {dashboard.mostAttemptedChallenge ? (
+            <MostAttemptedChallengeCard
+              challenge={dashboard.mostAttemptedChallenge}
+              userPremium={user.is_premium}
+            />
+          ) : (
+            <div className="bg-[#020617] rounded-xl flex items-center justify-center p-6 h-full border border-slate-800">
+              <p className="text-slate-400">No challenges attempted recently.</p>
+            </div>
+          )}
         </div>
 
         {/* Streak */}
@@ -108,6 +128,11 @@ const Dashboard = () => {
           longestStreak={dashboard.streak.longest}
           activeDates={dashboard.streak.dates}
         />
+      </div>
+
+      {/* Challenges Section */}
+      <div className="space-y-6 mt-10">
+        <ChallengeList />
       </div>
 
       {/* Premium */}

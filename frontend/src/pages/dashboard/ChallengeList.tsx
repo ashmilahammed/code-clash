@@ -3,7 +3,7 @@
 
 
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { getChallengesApi } from "../../api/challengeApi";
 import type { Challenge, ChallengeDifficulty } from "../../types/Challenge";
@@ -32,10 +32,31 @@ const ChallengeList = () => {
 
   const { searchQuery } = useSearchStore();
 
-  const filteredChallenges = challenges.filter((challenge) =>
-    challenge.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    challenge.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const [selectedDomain, setSelectedDomain] = useState<string>("All");
+
+  const domains = useMemo(() => {
+    const uniqueDomains = Array.from(new Set(challenges.map((c) => c.domain)));
+    return ["All", ...uniqueDomains];
+  }, [challenges]);
+
+  const filteredChallenges = challenges.filter((challenge) => {
+    const matchesSearch =
+      challenge.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      challenge.description.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesDomain =
+      selectedDomain === "All" || challenge.domain === selectedDomain;
+
+    return matchesSearch && matchesDomain;
+  });
+
+  const formatDomain = (d: string) => {
+    if (d === "All") return "All";
+    if (d === "javascript") return "JavaScript";
+    if (d === "sql") return "SQL";
+    if (d === "dp") return "DP";
+    return d.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  };
 
 
   useEffect(() => {
@@ -72,21 +93,39 @@ const ChallengeList = () => {
 
   return (
     <>
-      <div className="bg-[#020617] rounded-xl p-6 space-y-4">
-        <h2 className="text-lg font-semibold text-white">
-          Available Challenges
-        </h2>
+      {/* Domain Filters */}
+      <div className="flex flex-wrap gap-3 mb-6">
+        {domains.map((domain) => (
+          <button
+            key={domain}
+            onClick={() => setSelectedDomain(domain)}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition ${
+              selectedDomain === domain
+                ? "bg-indigo-600 text-white"
+                : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+            }`}
+          >
+            {formatDomain(domain)}
+          </button>
+        ))}
+      </div>
 
-        {filteredChallenges.length === 0 && (
-          <p className="text-slate-400 text-sm">
-            {searchQuery ? "No challenges match your search." : "No challenges available yet."}
-          </p>
-        )}
+      <h2 className="text-xl font-bold text-white mb-4">
+        Available Challenges
+      </h2>
 
+      {filteredChallenges.length === 0 && (
+        <p className="text-slate-400 text-sm bg-[#020617] p-6 rounded-xl">
+          {searchQuery ? "No challenges match your search or filter." : "No challenges available yet."}
+        </p>
+      )}
+
+      {/* Grid Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredChallenges.map((challenge) => (
           <div
             key={challenge.id}
-            className="p-4 rounded-lg bg-[#0F172A] border border-slate-800 hover:border-slate-700 transition"
+            className="p-6 rounded-xl bg-[#020617] border border-slate-800 hover:border-slate-700 transition flex flex-col justify-between"
           >
             {/* Header */}
             <div className="flex items-center justify-between mb-1">
@@ -103,7 +142,7 @@ const ChallengeList = () => {
             </div>
 
             {/* Description */}
-            <p className="text-sm text-slate-400 mb-3 line-clamp-2">
+            <p className="text-sm text-slate-400 mb-6 line-clamp-2">
               {challenge.description}
             </p>
 
@@ -157,14 +196,18 @@ const ChallengeList = () => {
 
                   navigate(`/challenges/${challenge.id}`);
                 }}
-                className="px-3 py-1 rounded bg-cyan-600 text-black hover:bg-cyan-500 transition flex items-center justify-center gap-1 font-medium"
+                className="w-full py-3 rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 transition flex items-center justify-center gap-2 font-medium"
               >
                 {challenge.isPremium ? (
                   <>
-                    <Lock size={12} />
+                    <Lock size={16} />
                     Premium
                   </>
-                ) : "Open"}
+                ) : (
+                  <>
+                    &lt;&gt; Enter Domain
+                  </>
+                )}
               </button>
             </div>
           </div>

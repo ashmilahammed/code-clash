@@ -126,7 +126,7 @@ const PremiumManagement = () => {
                   Cancel Membership
                 </button>
                 <button
-                  onClick={() => navigate("/dashboard")}
+                  onClick={() => navigate("/premium")}
                   className="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium transition shadow-lg shadow-emerald-500/20 ml-auto"
                 >
                   Upgrade Membership
@@ -144,7 +144,7 @@ const PremiumManagement = () => {
               Upgrade to premium to unlock exclusive features, unlimited challenges, and performance boosts.
             </p>
             <button
-              onClick={() => navigate("/dashboard")}
+              onClick={() => navigate("/premium")}
               className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-medium transition shadow-lg shadow-indigo-500/20"
             >
               Explore Premium Plans
