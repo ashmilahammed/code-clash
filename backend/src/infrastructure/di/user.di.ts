@@ -17,6 +17,7 @@ import { RemoveUserAvatarUseCase } from "../../application/use-cases/user/user/r
 import { GetUserProfileStatsUseCase } from "../../application/use-cases/user/user/getUserProfileStatsUseCase";
 import { CancelPremiumUseCase } from "../../application/use-cases/user/user/CancelPremiumUseCase";
 import { UpdateUserProfileUseCase } from "../../application/use-cases/user/user/UpdateUserProfileUseCase";
+import { ClaimWelcomeXpUseCase } from "../../application/use-cases/user/user/ClaimWelcomeXpUseCase";
 
 import { UserController } from "../../presentation/controllers/user.controller";
 import { AdminController } from "../../presentation/controllers/admin.controllers";
@@ -74,6 +75,8 @@ const cancelPremiumUseCase = new CancelPremiumUseCase(
 
 const updateUserProfileUseCase = new UpdateUserProfileUseCase(userRepository);
 
+const claimWelcomeXpUseCase = new ClaimWelcomeXpUseCase(userRepository);
+
 
 //admin(user management)
 const listUsersUseCase = new ListUsersUseCase(userRepository);
@@ -109,7 +112,8 @@ export const userController = new UserController(
   removeUserAvatarUseCase,
   getUserProfileStatsUseCase,
   cancelPremiumUseCase,
-  updateUserProfileUseCase
+  updateUserProfileUseCase,
+  claimWelcomeXpUseCase
 );
 
 export const adminController = new AdminController(

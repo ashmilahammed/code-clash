@@ -8,6 +8,7 @@ import ChallengeList from "./ChallengeList";
 import PremiumBanner from "./PremiumBanner";
 import ActiveGroups from "./ActiveGroups";
 import MostAttemptedChallengeCard from "./MostAttemptedChallengeCard";
+import { WelcomeModal } from "../../components/modals/WelcomeModal";
 
 //  Types for dashboard response
 type DashboardData = {
@@ -97,7 +98,8 @@ const Dashboard = () => {
 
 
   return (
-    <div className="min-h-screen bg-[#0B1220] px-6 py-6 space-y-8">
+    <div className="min-h-screen bg-[#0B1220] px-6 py-6 space-y-8 relative">
+      <WelcomeModal />
       {/* Level / XP */}
       <LevelProgress
         level={dashboard.level.level}

@@ -3,24 +3,29 @@ import { Plus, Search, Lock, User as UserIcon, Hash } from 'lucide-react';
 import { useChatStore } from '../../store/useChatStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import CreateGroupModal from './CreateGroupModal';
-
+import { useDebounce } from '../../hooks/useDebounce';
 
 const ChatSidebar = () => {
     const { conversations, publicGroups, fetchPublicGroups, joinGroup, activeConversation, setActiveConversation } = useChatStore();
     const { user } = useAuthStore();
     const [search, setSearch] = useState('');
+    const debouncedSearch = useDebounce(search, 300);
     const [showCreateGroup, setShowCreateGroup] = useState(false);
 
     useEffect(() => {
         fetchPublicGroups();
     }, [fetchPublicGroups]);
 
-    const groups = conversations.filter(c => c.type === 'group');
+    const allGroups = conversations.filter(c => c.type === 'group');
+    const groups = allGroups.filter(g => (g.name || '').toLowerCase().includes(debouncedSearch.toLowerCase()));
+    
     const dms = conversations.filter(c => c.type === 'direct');
 
     // Public groups we haven't joined yet
-    const joinedGroupIds = new Set(groups.map(g => g.id));
-    const unjoinedPublicGroups = publicGroups.filter(g => !joinedGroupIds.has(g.id));
+    const joinedGroupIds = new Set(allGroups.map(g => g.id));
+    const unjoinedPublicGroups = publicGroups.filter(g => 
+        !joinedGroupIds.has(g.id) && (g.name || '').toLowerCase().includes(debouncedSearch.toLowerCase())
+    );
 
     const handleJoinGroup = async (groupId: string) => {
         try {

@@ -22,6 +22,8 @@ export interface User {
   is_premium: boolean;
   premium_expiry_date: string | null;
 
+  is_first_login?: boolean;
+
   role: "user" | "admin";
   status: "active" | "blocked";
 

@@ -37,3 +37,8 @@ export const updateUserProfileApi = async (data: {
   const res = await axiosInstance.put("/user/profile", data);
   return res.data.data;
 };
+
+export const claimWelcomeXpApi = async (): Promise<any> => {
+  const res = await axiosInstance.post("/user/welcome-xp");
+  return res.data;
+};

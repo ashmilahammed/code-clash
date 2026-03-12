@@ -1,8 +1,3 @@
-
-
-
-
-
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { getChallengesApi } from "../../api/challengeApi";
@@ -13,9 +8,9 @@ import { useSearchStore } from "../../store/useSearchStore";
 
 
 const difficultyColor: Record<ChallengeDifficulty, string> = {
-  easy: "text-green-400",
-  medium: "text-yellow-400",
-  hard: "text-red-400",
+  easy: "bg-green-500/10 text-green-400 border border-green-500/20",
+  medium: "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20",
+  hard: "bg-red-500/10 text-red-400 border border-red-500/20",
 };
 
 const ChallengeList = () => {
@@ -94,15 +89,15 @@ const ChallengeList = () => {
   return (
     <>
       {/* Domain Filters */}
-      <div className="flex flex-wrap gap-3 mb-6">
+      <div className="flex items-center gap-3 mb-8 overflow-x-auto pb-2 custom-scrollbar">
         {domains.map((domain) => (
           <button
             key={domain}
             onClick={() => setSelectedDomain(domain)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition ${
+            className={`px-5 py-2 rounded-full text-xs font-semibold tracking-wide transition-all whitespace-nowrap ${
               selectedDomain === domain
-                ? "bg-indigo-600 text-white"
-                : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/25"
+                : "bg-slate-800/50 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700/50"
             }`}
           >
             {formatDomain(domain)}
@@ -110,9 +105,14 @@ const ChallengeList = () => {
         ))}
       </div>
 
-      <h2 className="text-xl font-bold text-white mb-4">
-        Available Challenges
-      </h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-white flex items-center gap-2">
+          Available Challenges
+          <span className="text-xs font-semibold bg-slate-800 text-slate-400 px-2 py-1 rounded-full">
+            {filteredChallenges.length}
+          </span>
+        </h2>
+      </div>
 
       {filteredChallenges.length === 0 && (
         <p className="text-slate-400 text-sm bg-[#020617] p-6 rounded-xl">
@@ -121,37 +121,54 @@ const ChallengeList = () => {
       )}
 
       {/* Grid Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {filteredChallenges.map((challenge) => (
           <div
             key={challenge.id}
-            className="p-6 rounded-xl bg-[#020617] border border-slate-800 hover:border-slate-700 transition flex flex-col justify-between"
+            className="p-6 rounded-2xl bg-[#0f172a]/80 backdrop-blur-sm border border-slate-700/50 hover:border-indigo-500/50 hover:bg-[#1e293b]/80 transition-all duration-300 flex flex-col justify-between group shadow-lg"
           >
             {/* Header */}
-            <div className="flex items-center justify-between mb-1">
-              <h3 className="font-medium text-white">
-                {challenge.title}
-              </h3>
+            <div>
+              <div className="flex items-start justify-between mb-3">
+                <h3 className="font-bold text-lg text-white group-hover:text-indigo-300 transition-colors line-clamp-1 pr-2">
+                  {challenge.title}
+                </h3>
 
-              <span
-                className={`text-xs font-semibold uppercase ${difficultyColor[challenge.difficulty]
-                  }`}
-              >
-                {challenge.difficulty}
-              </span>
+                <div className="flex items-center gap-2">
+                  {challenge.isPremium && (
+                    <span className="text-[10px] font-bold uppercase px-2 py-1 rounded shrink-0 bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center gap-1">
+                      <Lock size={10} />
+                      Premium
+                    </span>
+                  )}
+                  <span
+                    className={`text-[10px] font-bold uppercase px-2 py-1 rounded shrink-0 ${difficultyColor[challenge.difficulty]}`}
+                  >
+                    {challenge.difficulty}
+                  </span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <p className="text-sm text-slate-400 mb-6 line-clamp-2 min-h-[40px]">
+                {challenge.description}
+              </p>
             </div>
 
-            {/* Description */}
-            <p className="text-sm text-slate-400 mb-6 line-clamp-2">
-              {challenge.description}
-            </p>
-
-            {/* Footer */}
-            <div className="flex items-center justify-between text-xs text-slate-400">
-              <span>XP: {challenge.xpReward}</span>
-              {challenge.timeLimitMinutes && (
-                <span>Time: {challenge.timeLimitMinutes} min</span>
-              )}
+            {/* Footer Attributes */}
+            <div className="flex flex-col gap-5 mt-auto">
+              <div className="flex items-center justify-between text-xs font-medium text-slate-300 bg-black/20 px-3 py-2 rounded-lg border border-white/5">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-indigo-400">✨</span>
+                  <span>{challenge.xpReward} XP</span>
+                </div>
+                {challenge.timeLimitMinutes && (
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-slate-500">⏱️</span>
+                    <span>{challenge.timeLimitMinutes} min</span>
+                  </div>
+                )}
+              </div>
 
               <button
                 onClick={() => {
@@ -196,16 +213,22 @@ const ChallengeList = () => {
 
                   navigate(`/challenges/${challenge.id}`);
                 }}
-                className="w-full py-3 rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 transition flex items-center justify-center gap-2 font-medium"
+                className={`w-full py-3 rounded-lg text-white transition-all flex items-center justify-center gap-2 font-bold text-sm ${
+                 challenge.isPremium && !user?.is_premium 
+                  ? "bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 shadow-lg shadow-amber-500/20" 
+                  : "bg-slate-800 hover:bg-indigo-600 border border-slate-700 hover:border-indigo-500"
+                }`}
               >
-                {challenge.isPremium ? (
+                {challenge.isPremium && !user?.is_premium ? (
                   <>
                     <Lock size={16} />
-                    Premium
+                    Unlock Premium
                   </>
                 ) : (
                   <>
-                    &lt;&gt; Enter Domain
+                    <span className="group-hover:translate-x-1 transition-transform">
+                      Attempt Challenge &rarr;
+                    </span>
                   </>
                 )}
               </button>

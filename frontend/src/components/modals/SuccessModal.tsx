@@ -18,8 +18,7 @@ const SuccessModal = ({
     difficulty = "Medium",
     timeTaken = "0:00",
     attempts = 1,
-    badge = null,
-    nextChallengeId
+    badge = null
 }: SuccessModalProps) => {
     const navigate = useNavigate();
 
@@ -117,7 +116,7 @@ const SuccessModal = ({
                     </div>
 
                     {/* Next Challenge Section */}
-                    <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-5 flex items-center justify-between mb-8 hover:bg-slate-800 transition-colors cursor-pointer group" onClick={() => nextChallengeId && navigate(`/challenges/${nextChallengeId}`)}>
+                    <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-5 flex items-center justify-between mb-8 hover:bg-slate-800 transition-colors cursor-pointer group" onClick={() => navigate(`/dashboard`)}>
                         <div className="flex items-center gap-4">
                             <div className="h-12 w-12 rounded-full bg-slate-700 flex items-center justify-center group-hover:bg-blue-600 transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-slate-300 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -149,7 +148,7 @@ const SuccessModal = ({
                         </button>
 
                         <button
-                            onClick={() => nextChallengeId ? navigate(`/challenges/${nextChallengeId}`) : onClose()}
+                            onClick={() => navigate('/dashboard')}
                             className="flex-[1.5] px-4 py-3 bg-green-600 hover:bg-green-500 rounded-lg font-bold text-white transition-colors flex items-center justify-center gap-2 shadow-lg shadow-green-900/20"
                         >
                             Next Challenge

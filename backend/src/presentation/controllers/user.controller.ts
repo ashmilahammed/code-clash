@@ -6,6 +6,7 @@ import { RemoveUserAvatarUseCase } from "../../application/use-cases/user/user/r
 import { GetUserProfileStatsUseCase } from "../../application/use-cases/user/user/getUserProfileStatsUseCase";
 import { CancelPremiumUseCase } from "../../application/use-cases/user/user/CancelPremiumUseCase";
 import { UpdateUserProfileUseCase } from "../../application/use-cases/user/user/UpdateUserProfileUseCase";
+import { ClaimWelcomeXpUseCase } from "../../application/use-cases/user/user/ClaimWelcomeXpUseCase";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
@@ -20,7 +21,8 @@ export class UserController {
     private readonly _removeUserAvatarUseCase: RemoveUserAvatarUseCase,
     private readonly _getUserProfileStatsUseCase: GetUserProfileStatsUseCase,
     private readonly _cancelPremiumUseCase: CancelPremiumUseCase,
-    private readonly _updateUserProfileUseCase: UpdateUserProfileUseCase
+    private readonly _updateUserProfileUseCase: UpdateUserProfileUseCase,
+    private readonly _claimWelcomeXpUseCase: ClaimWelcomeXpUseCase
   ) { }
 
 
@@ -247,6 +249,31 @@ export class UserController {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json(ApiResponse.error(message));
+    }
+  };
+
+  claimWelcomeXp = async (req: Request, res: Response) => {
+    try {
+      const authUser = res.locals.user as { userId: string };
+
+      if (!authUser?.userId) {
+        return res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
+      }
+
+      // Execute the use case which handles the DB update
+      const result = await this._claimWelcomeXpUseCase.execute(authUser.userId);
+
+      if (result.success) {
+        return res.status(HttpStatus.OK).json(ApiResponse.success("Welcome XP claimed!", result));
+      } else {
+        return res.status(HttpStatus.OK).json(ApiResponse.success("Welcome XP already claimed", result));
+      }
+
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(ApiResponse.error(message));
     }
   };
 
