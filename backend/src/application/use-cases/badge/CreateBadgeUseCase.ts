@@ -1,33 +1,27 @@
 import { Badge } from "../../../domain/entities/badge/Badge";
 import { IBadgeRepository } from "../../../domain/repositories/badge/IBadgeRepository";
+import { CreateBadgeDTO } from "../../dto/badge/CreateBadgeDTO";
 
-
-interface CreateBadgeDTO {
-    name: string;
-    description: string;
-    icon: string;
-    minXpRequired?: number;
-    category?: string;
-    requirementType?: string;
-    requirementValue?: number;
-    isActive?: boolean;
-}
 
 export class CreateBadgeUseCase {
-    constructor(private readonly badgeRepository: IBadgeRepository) { }
+  constructor(
+    private readonly _badgeRepository: IBadgeRepository
+  ) {}
 
-    async execute(dto: CreateBadgeDTO): Promise<Badge> {
-        const badge = new Badge(
-            undefined,
-            dto.name,
-            dto.description,
-            dto.icon,
-            dto.minXpRequired || 0,
-            dto.category || "Achievement",
-            dto.requirementType || "Manual",
-            dto.requirementValue || 0,
-            dto.isActive !== undefined ? dto.isActive : true
-        );
-        return this.badgeRepository.create(badge);
-    }
+  async execute(dto: CreateBadgeDTO): Promise<Badge> {
+
+    const badge = new Badge(
+      undefined,
+      dto.name,
+      dto.description,
+      dto.icon,
+      dto.minXpRequired,
+      dto.category,
+      dto.requirementType,
+      dto.requirementValue,
+      true
+    );
+
+    return this._badgeRepository.create(badge);
+  }
 }

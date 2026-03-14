@@ -28,9 +28,30 @@ export class BadgeRepository implements IBadgeRepository {
         return this.toEntity(doc);
     }
 
-    async update(id: string, badge: Partial<Badge>): Promise<Badge | null> {
-        const doc = await BadgeModel.findByIdAndUpdate(id, badge, { new: true });
-        return doc ? this.toEntity(doc) : null;
+
+    async updateEntity(badge: Badge): Promise<Badge> {
+
+        const doc = await BadgeModel.findByIdAndUpdate(
+            badge.id,
+            {
+                name: badge.name,
+                description: badge.description,
+                icon: badge.icon,
+                minXpRequired: badge.minXpRequired,
+                category: badge.category,
+                requirementType: badge.requirementType,
+                requirementValue: badge.requirementValue,
+                isActive: badge.isActive,
+                updatedAt: badge.updatedAt ?? new Date()
+            },
+            { new: true }
+        );
+
+        if (!doc) {
+            throw new Error("BADGE_NOT_FOUND");
+        }
+
+        return this.toEntity(doc);
     }
 
     async delete(id: string): Promise<boolean> {

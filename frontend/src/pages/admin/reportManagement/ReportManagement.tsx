@@ -37,11 +37,13 @@ const ReportManagement = () => {
     const fetchReports = async () => {
         try {
             setIsLoading(true);
-            const res = await getAllReports({ 
-                page: currentPage, 
-                limit: LIMIT, 
-                status: statusFilter 
+            const res = await getAllReports({
+                page: currentPage,
+                limit: LIMIT,
+                // status: statusFilter 
+                status: statusFilter === "all" ? undefined : statusFilter
             });
+
             setReports(res.data);
             setTotalPages(res.totalPages);
             setTotalReports(res.total);
@@ -108,7 +110,7 @@ const ReportManagement = () => {
                     <p className="text-slate-400 mt-1">Manage user reports and enforce community guidelines</p>
                 </div>
                 <div className="flex items-center gap-2 bg-[#141C2F] p-1 rounded-lg border border-slate-800">
-                   <select 
+                    <select
                         value={statusFilter}
                         onChange={(e) => {
                             setStatusFilter(e.target.value);
@@ -120,7 +122,7 @@ const ReportManagement = () => {
                         <option value="pending">Pending</option>
                         <option value="resolved">Resolved</option>
                         <option value="dismissed">Dismissed</option>
-                   </select>
+                    </select>
                 </div>
             </div>
 
@@ -167,17 +169,16 @@ const ReportManagement = () => {
                                             {new Date(report.createdAt).toLocaleDateString()}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className={`px-2 py-1 text-[10px] font-bold uppercase rounded-md border ${
-                                                report.status === 'pending' ? 'bg-orange-500/10 text-orange-500 border-orange-500/20' :
-                                                report.status === 'resolved' ? 'bg-green-500/10 text-green-500 border-green-500/20' :
-                                                'bg-slate-500/10 text-slate-400 border-slate-500/20'
-                                            }`}>
+                                            <span className={`px-2 py-1 text-[10px] font-bold uppercase rounded-md border ${report.status === 'pending' ? 'bg-orange-500/10 text-orange-500 border-orange-500/20' :
+                                                    report.status === 'resolved' ? 'bg-green-500/10 text-green-500 border-green-500/20' :
+                                                        'bg-slate-500/10 text-slate-400 border-slate-500/20'
+                                                }`}>
                                                 {report.status}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center justify-center gap-2">
-                                                <button 
+                                                <button
                                                     onClick={() => handleViewMessage(report.messageId)}
                                                     className="p-1.5 text-blue-400 hover:bg-blue-400/10 rounded-lg transition-colors"
                                                     title="View Message"
@@ -186,7 +187,7 @@ const ReportManagement = () => {
                                                 </button>
                                                 {report.status === 'pending' && (
                                                     <>
-                                                        <button 
+                                                        <button
                                                             onClick={() => {
                                                                 setUserToBan({ id: report.reportedUserId.id, reportId: report.id });
                                                                 setShowBanModal(true);
@@ -196,7 +197,7 @@ const ReportManagement = () => {
                                                         >
                                                             <Ban size={16} />
                                                         </button>
-                                                        <button 
+                                                        <button
                                                             onClick={() => handleDismissReport(report.id)}
                                                             className="p-1.5 text-slate-400 hover:bg-slate-400/10 rounded-lg transition-colors"
                                                             title="Dismiss Report"
@@ -290,7 +291,7 @@ const ReportManagement = () => {
                             <div className="space-y-4 mb-6">
                                 <div>
                                     <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Duration</label>
-                                    <select 
+                                    <select
                                         value={banDuration}
                                         onChange={(e) => setBanDuration(Number(e.target.value))}
                                         className="w-full bg-[#0B1220] border border-slate-800 rounded-xl px-4 py-2 text-sm text-white focus:ring-2 focus:ring-blue-500/20 transition-all outline-none"
@@ -303,7 +304,7 @@ const ReportManagement = () => {
                                 </div>
                                 <div>
                                     <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Reason</label>
-                                    <textarea 
+                                    <textarea
                                         value={banReason}
                                         onChange={(e) => setBanReason(e.target.value)}
                                         className="w-full bg-[#0B1220] border border-slate-800 rounded-xl px-4 py-2 text-sm text-white focus:ring-2 focus:ring-blue-500/20 transition-all outline-none h-24 resize-none"

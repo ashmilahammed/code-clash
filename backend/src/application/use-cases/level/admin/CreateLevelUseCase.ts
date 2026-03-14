@@ -5,7 +5,7 @@ import { CreateLevelDTO } from "../../../dto/level/CreateLevelDTO";
 
 export class CreateLevelUseCase {
   constructor(
-    private readonly levelRepository: ILevelRepository
+    private readonly _levelRepository: ILevelRepository
   ) { }
 
   async execute(dto: CreateLevelDTO): Promise<Level> {
@@ -13,16 +13,16 @@ export class CreateLevelUseCase {
 
     // Prevent duplicate level number
     const existingLevel =
-      await this.levelRepository.findByLevelNumber(levelNumber);
+      await this._levelRepository.findByLevelNumber(levelNumber);
 
     if (existingLevel) {
       throw new Error(`Level ${levelNumber} already exists`);
     }
 
-    // Enfo
+    //
     if (levelNumber > 1) {
       const previousLevel =
-        await this.levelRepository.findByLevelNumber(levelNumber - 1);
+        await this._levelRepository.findByLevelNumber(levelNumber - 1);
 
       if (!previousLevel) {
         throw new Error(
@@ -32,7 +32,7 @@ export class CreateLevelUseCase {
     }
 
     // 
-    const allLevels = await this.levelRepository.findAll();
+    const allLevels = await this._levelRepository.findAll();
 
     const hasOverlap = allLevels.some(
       (level) =>
@@ -49,11 +49,10 @@ export class CreateLevelUseCase {
       levelNumber,
       minXp,
       maxXp,
-      dto.badgeId,
       title
     );
 
     //
-    return this.levelRepository.create(level);
+    return this._levelRepository.create(level);
   }
 }

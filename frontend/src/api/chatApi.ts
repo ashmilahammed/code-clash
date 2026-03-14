@@ -34,17 +34,17 @@ export interface Message {
 export const chatApi = {
     getConversations: async (): Promise<Conversation[]> => {
         const response = await api.get('/chat/conversations');
-        return response.data;
+        return response.data.data;
     },
 
     getPublicGroups: async (): Promise<Conversation[]> => {
         const response = await api.get('/chat/groups/public');
-        return response.data;
+        return response.data.data;
     },
 
     getMessages: async (conversationId: string, skip: number = 0, limit: number = 50): Promise<Message[]> => {
         const response = await api.get(`/chat/conversations/${conversationId}/messages?skip=${skip}&limit=${limit}`);
-        return response.data;
+        return response.data.data;
     },
 
     uploadChatImage: async (conversationId: string, file: File): Promise<{ url: string }> => {
@@ -55,31 +55,31 @@ export const chatApi = {
                 'Content-Type': 'multipart/form-data',
             },
         });
-        return response.data;
+        return response.data.data;
     },
 
     createGroup: async (name: string, description?: string, memberLimit?: number, isPrivate?: boolean, participants: string[] = []): Promise<Conversation> => {
         const response = await api.post('/chat/groups', { name, description, memberLimit, isPrivate, participants });
-        return response.data;
+        return response.data.data;
     },
 
     joinGroup: async (conversationId: string): Promise<Conversation> => {
         const response = await api.post(`/chat/groups/${conversationId}/join`);
-        return response.data;
+        return response.data.data;
     },
 
     leaveGroup: async (conversationId: string): Promise<Conversation> => {
         const response = await api.post(`/chat/groups/${conversationId}/leave`);
-        return response.data;
+        return response.data.data;
     },
 
     inviteToGroup: async (conversationId: string, participants: string[]): Promise<Conversation> => {
         const response = await api.post(`/chat/groups/${conversationId}/invite`, { participants });
-        return response.data;
+        return response.data.data;
     },
 
     getOrCreateDirectConversation: async (receiverId: string): Promise<Conversation> => {
         const response = await api.post('/chat/conversations/direct', { receiverId });
-        return response.data;
+        return response.data.data;
     }
 };

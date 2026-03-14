@@ -3,91 +3,154 @@ import { CreatePlanUseCase } from "../../application/use-cases/plans/admin/Creat
 import { GetPlansUseCase } from "../../application/use-cases/plans/admin/GetPlansUseCase";
 import { UpdatePlanUseCase } from "../../application/use-cases/plans/admin/UpdatePlanUseCase";
 import { DeletePlanUseCase } from "../../application/use-cases/plans/admin/DeletePlanUseCase";
-import { WinstonLogger } from "../../infrastructure/services/logger";
+
+import { CreatePlanDTO } from "../../application/dto/plan/CreatePlanDTO";
+import { UpdatePlanDTO } from "../../application/dto/plan/UpdatePlanDTO";
+
+import { ApiResponse } from "../common/ApiResponse";
+import { HttpStatus } from "../constants/httpStatus";
+import { MESSAGES } from "../constants/messages";
+
 
 
 export class PlanController {
     constructor(
-        private createPlanUseCase: CreatePlanUseCase,
-        private getPlansUseCase: GetPlansUseCase,
-        private updatePlanUseCase: UpdatePlanUseCase,
-        private deletePlanUseCase: DeletePlanUseCase,
-        private logger: WinstonLogger
+        private readonly _createPlanUseCase: CreatePlanUseCase,
+        private readonly _getPlansUseCase: GetPlansUseCase,
+        private readonly _updatePlanUseCase: UpdatePlanUseCase,
+        private readonly _deletePlanUseCase: DeletePlanUseCase
     ) { }
 
-    
-    async createPlan(req: Request, res: Response) {
+
+    createPlan = async (req: Request, res: Response) => {
         try {
             const { name, description, price, duration, features, status } = req.body;
-            const newPlan = await this.createPlanUseCase.execute({
+
+            if (!name || price === undefined || duration === undefined) {
+                return res
+                    .status(HttpStatus.BAD_REQUEST)
+                    .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
+            }
+
+            const dto: CreatePlanDTO = {
                 name,
                 description,
                 price,
                 duration,
                 features,
-                status
-            });
-            return res.status(201).json(newPlan);
-        } catch (error: any) {
-            this.logger.error("Error creating plan", error);
-            return res.status(400).json({ message: error.message || "Failed to create plan" });
+                status,
+            };
+
+            const plan = await this._createPlanUseCase.execute(dto);
+
+            return res
+                .status(HttpStatus.CREATED)
+                .json(ApiResponse.success(MESSAGES.PLAN.CREATED, plan));
+        } catch (err: unknown) {
+            const message =
+                err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
+
+            return res
+                .status(HttpStatus.BAD_REQUEST)
+                .json(ApiResponse.error(message));
         }
-    }
+    };
 
 
-    async getPlans(req: Request, res: Response) {
+    getPlans = async (req: Request, res: Response) => {
         try {
-            const plans = await this.getPlansUseCase.execute();
-            return res.status(200).json(plans);
-        } catch (error: any) {
-            this.logger.error("Error fetching plans", error);
-            return res.status(500).json({ message: "Failed to fetch plans" });
-        }
-    }
+            const plans = await this._getPlansUseCase.execute();
 
-    async getPublicPlans(req: Request, res: Response) {
+            return res
+                .status(HttpStatus.OK)
+                .json(ApiResponse.success(MESSAGES.PLAN.FETCH_SUCCESS, plans));
+        } catch (err: unknown) {
+            const message =
+                err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
+
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json(ApiResponse.error(message));
+        }
+    };
+
+
+
+    getPublicPlans = async (req: Request, res: Response) => {
         try {
-            const plans = await this.getPlansUseCase.execute();
-            const activePlans = plans.filter(p => p.status === 'Active');
-            return res.status(200).json(activePlans);
-        } catch (error: any) {
-            this.logger.error("Error fetching public plans", error);
-            return res.status(500).json({ message: "Failed to fetch plans" });
+            const plans = await this._getPlansUseCase.execute();
+
+            const activePlans = plans.filter(
+                (plan) => plan.status === "Active"
+            );
+
+            return res
+                .status(HttpStatus.OK)
+                .json(ApiResponse.success(MESSAGES.PLAN.FETCH_SUCCESS, activePlans));
+
+        } catch (err: unknown) {
+            const message =
+                err instanceof Error
+                    ? err.message
+                    : MESSAGES.COMMON.INTERNAL_ERROR;
+
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json(ApiResponse.error(message));
         }
-    }
+    };
 
 
-    async updatePlan(req: Request, res: Response) {
+    updatePlan = async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
 
             if (!id) {
-                return res.status(400).json({ message: "Plan ID is required" });
+                return res
+                    .status(HttpStatus.BAD_REQUEST)
+                    .json(ApiResponse.error(MESSAGES.PLAN.ID_REQUIRED));
             }
 
-            const updateData = req.body;
-            const updatedPlan = await this.updatePlanUseCase.execute(id, updateData);
-            return res.status(200).json(updatedPlan);
-        } catch (error: any) {
-            this.logger.error(`Error updating plan ${req.params.id}`, error);
-            return res.status(400).json({ message: error.message || "Failed to update plan" });
-        }
-    }
+            const dto: UpdatePlanDTO = req.body;
 
-    
-    async deletePlan(req: Request, res: Response) {
+            const updated = await this._updatePlanUseCase.execute(id, dto);
+
+            return res
+                .status(HttpStatus.OK)
+                .json(ApiResponse.success(MESSAGES.PLAN.UPDATED, updated));
+        } catch (err: unknown) {
+            const message =
+                err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST;
+
+            return res
+                .status(HttpStatus.BAD_REQUEST)
+                .json(ApiResponse.error(message));
+        }
+    };
+
+
+    deletePlan = async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
 
             if (!id) {
-                return res.status(400).json({ message: "Plan ID is required" });
+                return res
+                    .status(HttpStatus.BAD_REQUEST)
+                    .json(ApiResponse.error(MESSAGES.PLAN.ID_REQUIRED));
             }
 
-            await this.deletePlanUseCase.execute(id);
-            return res.status(204).send();
-        } catch (error: any) {
-            this.logger.error(`Error deleting plan ${req.params.id}`, error);
-            return res.status(500).json({ message: "Failed to delete plan" });
+            await this._deletePlanUseCase.execute(id);
+
+            return res
+                .status(HttpStatus.OK)
+                .json(ApiResponse.success(MESSAGES.PLAN.DELETED));
+        } catch (err: unknown) {
+            const message =
+                err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST;
+
+            return res
+                .status(HttpStatus.BAD_REQUEST)
+                .json(ApiResponse.error(message));
         }
-    }
+    };
 }

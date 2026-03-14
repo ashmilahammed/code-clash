@@ -8,12 +8,10 @@ import { GetCurrentPremiumPlanUseCase } from "../../application/use-cases/transa
 import { RazorpayService } from "../services/razorpay/RazorpayService";
 import { PlanRepository } from "../repositories/plan/PlanRepository";
 import { UserRepository } from "../repositories/user/UserRepository";
-import { WinstonLogger } from "../services/logger";
 import { notificationRepository } from "./notification.di";
 import { badgeRewardService } from "./badge.di";
 
 // Shared services
-const logger = new WinstonLogger();
 const razorpayService = new RazorpayService();
 
 // Repositories
@@ -42,5 +40,4 @@ export const transactionController = new TransactionController(
     verifyRazorpayPaymentUseCase,
     getUserTransactionsUseCase,
     getCurrentPremiumPlanUseCase,
-    logger
 );

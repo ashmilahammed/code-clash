@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+
 import { GetDashboardUseCase } from "../../application/use-cases/user/user/getDashboardUseCase";
 import { GetLeaderboardUseCase } from "../../application/use-cases/user/user/getLeaderboardUseCase";
 import { UpdateUserAvatarUseCase } from "../../application/use-cases/user/user/updateUserAvatarUseCase";
@@ -11,6 +12,14 @@ import { ClaimWelcomeXpUseCase } from "../../application/use-cases/user/user/Cla
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
 import { MESSAGES } from "../constants/messages";
+
+import { UpdateUserProfileDTO } from "../../application/dto/user/UpdateUserProfileDTO";
+import { LeaderboardQueryDTO } from "../../application/dto/user/LeaderboardQueryDTO";
+
+interface AuthUserContext {
+  userId: string;
+  role: "user" | "admin";
+}
 
 
 export class UserController {
@@ -25,29 +34,25 @@ export class UserController {
     private readonly _claimWelcomeXpUseCase: ClaimWelcomeXpUseCase
   ) { }
 
-
+  // Dashboard
   getDashboard = async (req: Request, res: Response) => {
     try {
-      const authUser = res.locals.user as { userId: string };
+      const user = res.locals.user as AuthUserContext | undefined;
 
-      if (!authUser?.userId) {
+      if (!user) {
         return res
           .status(HttpStatus.UNAUTHORIZED)
           .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
       }
 
-      const data = await this._getDashboardUseCase.execute(authUser.userId);
+      const data = await this._getDashboardUseCase.execute(user.userId);
 
       return res
         .status(HttpStatus.OK)
-        .json(
-          ApiResponse.success(MESSAGES.USER.FETCH_SUCCESS, data)
-        );
+        .json(ApiResponse.success(MESSAGES.USER.FETCH_SUCCESS, data));
     } catch (err: unknown) {
       const message =
-        err instanceof Error
-          ? err.message
-          : MESSAGES.COMMON.INTERNAL_ERROR;
+        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
 
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -56,24 +61,203 @@ export class UserController {
   };
 
 
-
+  //
   getLeaderboard = async (req: Request, res: Response) => {
     try {
-      const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
-      const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 10;
-      const search = req.query.search ? (req.query.search as string) : "";
-      const rawTimeframe = req.query.timeframe as string;
+      const dto: LeaderboardQueryDTO = {
+        page: Number(req.query.page ?? 1),
+        limit: Number(req.query.limit ?? 10),
+        timeframe:
+          req.query.timeframe === "weekly" || req.query.timeframe === "monthly"
+            ? req.query.timeframe
+            : "all-time",
+      };
 
-      const timeframe: "all-time" | "weekly" | "monthly" =
-        ["weekly", "monthly"].includes(rawTimeframe)
-          ? (rawTimeframe as "weekly" | "monthly")
-          : "all-time";
+      // add search ONLY if exists
+      if (typeof req.query.search === "string" && req.query.search.trim() !== "") {
+        dto.search = req.query.search;
+      }
 
-      const users = await this._getLeaderboardUseCase.execute(page, limit, search, timeframe);
+      const result = await this._getLeaderboardUseCase.execute(
+        dto.page,
+        dto.limit,
+        dto.search,
+        dto.timeframe
+      );
 
       return res
         .status(HttpStatus.OK)
-        .json(ApiResponse.success("Leaderboard fetched successfully", users));
+        .json(ApiResponse.success("Leaderboard fetched successfully", result));
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
+
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(ApiResponse.error(message));
+    }
+  };
+
+
+  // 
+  updateAvatar = async (req: Request, res: Response) => {
+    try {
+      const user = res.locals.user as AuthUserContext | undefined;
+
+      if (!user) {
+        return res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
+      }
+
+      if (!req.file) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(ApiResponse.error("Avatar image is required"));
+      }
+
+      if (!req.file.mimetype.startsWith("image/")) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(ApiResponse.error("Invalid file type"));
+      }
+
+      const updatedUser = await this._updateUserAvatarUseCase.execute(
+        user.userId,
+        req.file.buffer
+      );
+
+      return res
+        .status(HttpStatus.OK)
+        .json(ApiResponse.success(MESSAGES.USER.UPDATE_SUCCESS, updatedUser));
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
+
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(ApiResponse.error(message));
+    }
+  };
+
+  //
+  removeAvatar = async (req: Request, res: Response) => {
+    try {
+      const user = res.locals.user as AuthUserContext | undefined;
+
+      if (!user) {
+        return res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
+      }
+
+      const updatedUser = await this._removeUserAvatarUseCase.execute(user.userId);
+
+      return res
+        .status(HttpStatus.OK)
+        .json(ApiResponse.success(MESSAGES.USER.UPDATE_SUCCESS, updatedUser));
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
+
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(ApiResponse.error(message));
+    }
+  };
+
+
+  // 
+  getProfileStats = async (req: Request, res: Response) => {
+    try {
+      const user = res.locals.user as AuthUserContext | undefined;
+
+      const targetUserId =
+        typeof req.query.userId === "string"
+          ? req.query.userId
+          : user?.userId;
+
+      if (!targetUserId) {
+        return res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
+      }
+
+      const data =
+        await this._getUserProfileStatsUseCase.execute(targetUserId);
+
+      return res
+        .status(HttpStatus.OK)
+        .json(ApiResponse.success("Profile stats fetched successfully", data));
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
+
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(ApiResponse.error(message));
+    }
+  };
+
+
+  // 
+  cancelPremium = async (req: Request, res: Response) => {
+    try {
+      const user = res.locals.user as AuthUserContext | undefined;
+
+      if (!user) {
+        return res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
+      }
+
+      await this._cancelPremiumUseCase.execute(user.userId);
+
+      return res
+        .status(HttpStatus.OK)
+        .json(
+          ApiResponse.success("Premium membership cancelled successfully")
+        );
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
+
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(ApiResponse.error(message));
+    }
+  };
+
+  
+  //
+  updateProfile = async (req: Request, res: Response) => {
+    try {
+      const user = res.locals.user as AuthUserContext | undefined;
+
+      if (!user) {
+        return res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
+      }
+
+      const dto: UpdateUserProfileDTO = {
+        username: req.body.username,
+        about: req.body.about,
+        github_url: req.body.github_url,
+        linkedin_url: req.body.linkedin_url,
+      };
+
+      const updatedUser =
+        await this._updateUserProfileUseCase.execute(user.userId, dto);
+
+      return res
+        .status(HttpStatus.OK)
+        .json(
+          ApiResponse.success(
+            MESSAGES.USER.UPDATE_SUCCESS,
+            updatedUser.snapshot()
+          )
+        );
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
@@ -86,195 +270,36 @@ export class UserController {
 
 
 
-
-
-
-
-  updateAvatar = async (req: Request, res: Response) => {
+  // 
+  claimWelcomeXp = async (req: Request, res: Response) => {
     try {
-      const authUser = res.locals.user as { userId: string };
+      const user = res.locals.user as AuthUserContext | undefined;
 
-      if (!authUser?.userId) {
+      if (!user) {
         return res
           .status(HttpStatus.UNAUTHORIZED)
           .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
       }
 
-      if (!req.file) {
-        return res
-          .status(HttpStatus.BAD_REQUEST)
-          .json(ApiResponse.error("No file uploaded"));
-      }
-
-      const updatedUser =
-        await this._updateUserAvatarUseCase.execute(
-          authUser.userId,
-          req.file.buffer
-        );
-
-      return res
-        .status(HttpStatus.OK)
-        .json(ApiResponse.success(MESSAGES.USER.UPDATE_SUCCESS, updatedUser));
-
-    } catch (err: unknown) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : MESSAGES.COMMON.INTERNAL_ERROR;
-
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
-    }
-  };
-
-
-
-  removeAvatar = async (req: Request, res: Response) => {
-    try {
-      const authUser = res.locals.user as { userId: string };
-
-      if (!authUser?.userId) {
-        return res
-          .status(HttpStatus.UNAUTHORIZED)
-          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-      }
-
-      const updatedUser = await this._removeUserAvatarUseCase.execute(authUser.userId);
-
-      return res
-        .status(HttpStatus.OK)
-        .json(ApiResponse.success(MESSAGES.USER.UPDATE_SUCCESS, updatedUser));
-
-    } catch (err: unknown) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : MESSAGES.COMMON.INTERNAL_ERROR;
-
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
-    }
-  };
-
-  getProfileStats = async (req: Request, res: Response) => {
-    try {
-      const authUser = res.locals.user as { userId: string };
-      const targetUserId = (req.query.userId as string) || authUser?.userId;
-
-      if (!targetUserId) {
-        return res
-          .status(HttpStatus.UNAUTHORIZED)
-          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-      }
-
-      const data = await this._getUserProfileStatsUseCase.execute(targetUserId);
+      const result = await this._claimWelcomeXpUseCase.execute(user.userId);
 
       return res
         .status(HttpStatus.OK)
         .json(
-          ApiResponse.success("Profile stats fetched successfully", data)
+          ApiResponse.success(
+            result.success
+              ? "Welcome XP claimed!"
+              : "Welcome XP already claimed",
+            result
+          )
         );
     } catch (err: unknown) {
       const message =
-        err instanceof Error
-          ? err.message
-          : MESSAGES.COMMON.INTERNAL_ERROR;
+        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
 
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json(ApiResponse.error(message));
     }
   };
-
-  cancelPremium = async (req: Request, res: Response) => {
-    try {
-      const authUser = res.locals.user as { userId: string };
-
-      if (!authUser?.userId) {
-        return res
-          .status(HttpStatus.UNAUTHORIZED)
-          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-      }
-
-      await this._cancelPremiumUseCase.execute(authUser.userId);
-
-      return res
-        .status(HttpStatus.OK)
-        .json(ApiResponse.success("Premium membership cancelled successfully"));
-
-    } catch (err: unknown) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : MESSAGES.COMMON.INTERNAL_ERROR;
-
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
-    }
-  };
-
-
-  updateProfile = async (req: Request, res: Response) => {
-    try {
-      const authUser = res.locals.user as { userId: string };
-
-      if (!authUser?.userId) {
-        return res
-          .status(HttpStatus.UNAUTHORIZED)
-          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-      }
-
-      const { username, about, github_url, linkedin_url } = req.body;
-
-      const updatedUser = await this._updateUserProfileUseCase.execute(authUser.userId, {
-        username,
-        about,
-        github_url,
-        linkedin_url
-      });
-
-      return res
-        .status(HttpStatus.OK)
-        .json(ApiResponse.success(MESSAGES.USER.UPDATE_SUCCESS, updatedUser.snapshot()));
-
-    } catch (err: unknown) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : MESSAGES.COMMON.INTERNAL_ERROR;
-
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
-    }
-  };
-
-  claimWelcomeXp = async (req: Request, res: Response) => {
-    try {
-      const authUser = res.locals.user as { userId: string };
-
-      if (!authUser?.userId) {
-        return res
-          .status(HttpStatus.UNAUTHORIZED)
-          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-      }
-
-      // Execute the use case which handles the DB update
-      const result = await this._claimWelcomeXpUseCase.execute(authUser.userId);
-
-      if (result.success) {
-        return res.status(HttpStatus.OK).json(ApiResponse.success("Welcome XP claimed!", result));
-      } else {
-        return res.status(HttpStatus.OK).json(ApiResponse.success("Welcome XP already claimed", result));
-      }
-
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(ApiResponse.error(message));
-    }
-  };
-
 }

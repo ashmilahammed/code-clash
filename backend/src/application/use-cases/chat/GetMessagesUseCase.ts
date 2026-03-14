@@ -1,7 +1,7 @@
 import { IMessageRepository } from "../../../domain/repositories/chat/IMessageRepository";
 import { IConversationRepository } from "../../../domain/repositories/chat/IConversationRepository";
 import { Message } from "../../../domain/entities/chat/Message";
-
+import { GetMessagesQueryDTO } from "../../dto/chat/GetMessagesQueryDTO";
 
 export class GetMessagesUseCase {
     constructor(
@@ -9,7 +9,10 @@ export class GetMessagesUseCase {
         private conversationRepository: IConversationRepository
     ) { }
 
-    async execute(conversationId: string, userId: string, limit: number = 50, skip: number = 0): Promise<Message[]> {
+    async execute(dto: GetMessagesQueryDTO): Promise<Message[]> {
+
+        const { conversationId, userId, limit, skip } = dto;
+
         const conversation = await this.conversationRepository.findById(conversationId);
 
         if (!conversation) {
@@ -20,7 +23,7 @@ export class GetMessagesUseCase {
             throw new Error("User is not a participant in this conversation");
         }
 
-        // Mark messages as read by this user
+        // Mark read
         await this.messageRepository.markConversationAsRead(conversationId, userId);
 
         return this.messageRepository.findByConversationId(conversationId, limit, skip);

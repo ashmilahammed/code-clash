@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+
 import { CreateGroupUseCase } from "../../application/use-cases/chat/CreateGroupUseCase";
 import { JoinGroupUseCase } from "../../application/use-cases/chat/JoinGroupUseCase";
 import { GetConversationsUseCase } from "../../application/use-cases/chat/GetConversationsUseCase";
@@ -9,59 +10,106 @@ import { LeaveGroupUseCase } from "../../application/use-cases/chat/LeaveGroupUs
 import { AddParticipantsUseCase } from "../../application/use-cases/chat/AddParticipantsUseCase";
 import { UploadChatImageUseCase } from "../../application/use-cases/chat/UploadChatImageUseCase";
 
+import { CreateGroupDTO } from "../../application/dto/chat/CreateGroupDTO";
+import { AddParticipantsDTO } from "../../application/dto/chat/AddParticipantsDTO";
+import { GetMessagesQueryDTO } from "../../application/dto/chat/GetMessagesQueryDTO";
+import { DirectConversationDTO } from "../../application/dto/chat/DirectConversationDTO";
+
+import { ApiResponse } from "../common/ApiResponse";
+import { HttpStatus } from "../constants/httpStatus";
+import { MESSAGES } from "../constants/messages";
+
+
+
 
 export class ChatController {
     constructor(
-        private createGroupUseCase: CreateGroupUseCase,
-        private joinGroupUseCase: JoinGroupUseCase,
-        private getConversationsUseCase: GetConversationsUseCase,
-        private getMessagesUseCase: GetMessagesUseCase,
-        private getOrCreateDirectConversationUseCase: GetOrCreateDirectConversationUseCase,
-        private getPublicConversationsUseCase: GetPublicConversationsUseCase,
-        private leaveGroupUseCase: LeaveGroupUseCase,
-        private addParticipantsUseCase: AddParticipantsUseCase,
-        private uploadChatImageUseCase: UploadChatImageUseCase
+        private readonly _createGroupUseCase: CreateGroupUseCase,
+        private readonly _joinGroupUseCase: JoinGroupUseCase,
+        private readonly _getConversationsUseCase: GetConversationsUseCase,
+        private readonly _getMessagesUseCase: GetMessagesUseCase,
+        private readonly _getOrCreateDirectConversationUseCase: GetOrCreateDirectConversationUseCase,
+        private readonly _getPublicConversationsUseCase: GetPublicConversationsUseCase,
+        private readonly _leaveGroupUseCase: LeaveGroupUseCase,
+        private readonly _addParticipantsUseCase: AddParticipantsUseCase,
+        private readonly _uploadChatImageUseCase: UploadChatImageUseCase
     ) { }
 
 
-    async createGroup(req: Request, res: Response): Promise<void> {
-        try {
-            const { name, description, memberLimit, isPrivate, participants } = req.body;
-            const adminId = res.locals.user?.userId as string; // Assuming you have standard user object attached
 
-            if (!adminId) {
-                res.status(401).json({ message: "Unauthorized" });
-                return;
+    createGroup = async (req: Request, res: Response) => {
+        try {
+            const userId = res.locals.user?.userId;
+
+            if (!userId) {
+                return res
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
             }
 
-            const group = await this.createGroupUseCase.execute({
-                adminId,
+            const { name, description, memberLimit, isPrivate, participants } =
+                req.body;
+
+            if (!name) {
+                return res
+                    .status(HttpStatus.BAD_REQUEST)
+                    .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
+            }
+
+            const dto: CreateGroupDTO = {
+                adminId: userId,
                 name,
                 description,
                 memberLimit,
                 isPrivate,
-                participants: participants || []
-            });
+                participants: participants || [],
+            };
 
-            res.status(201).json(group);
+            const group = await this._createGroupUseCase.execute(dto);
+
+            return res
+                .status(HttpStatus.CREATED)
+                .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, group));
         } catch (error: any) {
-            res.status(400).json({ message: error.message });
+            return res
+                .status(HttpStatus.BAD_REQUEST)
+                .json(ApiResponse.error(error.message));
         }
-    }
+    };
 
 
-    async getPublicGroups(req: Request, res: Response): Promise<void> {
+
+    getPublicGroups = async (req: Request, res: Response) => {
         try {
-            const groups = await this.getPublicConversationsUseCase.execute();
-            res.status(200).json(groups);
+            const groups = await this._getPublicConversationsUseCase.execute();
+
+            return res
+                .status(HttpStatus.OK)
+                .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, groups));
         } catch (error: any) {
-            res.status(500).json({ message: error.message });
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json(ApiResponse.error(error.message));
         }
-    }
+    };
 
-    async joinGroup(req: Request, res: Response): Promise<void> {
+
+
+    joinGroup = async (req: Request, res: Response) => {
         try {
+            // const userId = res.locals.user?.userId;
             // const { conversationId } = req.params;
+
+            // if (!userId || !conversationId) {
+            //     return res
+            //         .status(HttpStatus.BAD_REQUEST)
+            //         .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
+            // }
+
+            // const dto: JoinGroupDTO = { userId, conversationId };
+
+            // const group = await this._joinGroupUseCase.execute(dto);
+
             const conversationId = req.params.conversationId;
 
             if (!conversationId) {
@@ -76,16 +124,32 @@ export class ChatController {
                 return;
             }
 
-            const group = await this.joinGroupUseCase.execute(conversationId, userId);
-            res.status(200).json(group);
+            const group = await this._joinGroupUseCase.execute(conversationId, userId);
+
+            return res
+                .status(HttpStatus.OK)
+                .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, group));
+
         } catch (error: any) {
-            res.status(400).json({ message: error.message });
+            return res
+                .status(HttpStatus.BAD_REQUEST)
+                .json(ApiResponse.error(error.message));
         }
-    }
+    };
 
 
-    async getConversations(req: Request, res: Response): Promise<void> {
+
+    getConversations = async (req: Request, res: Response) => {
         try {
+            // const userId = res.locals.user?.userId;
+
+            // if (!userId) {
+            //     return res
+            //         .status(HttpStatus.UNAUTHORIZED)
+            //         .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
+            // }
+
+            // const conversations = await this._getConversationsUseCase.execute({ userId });
             const userId = res.locals.user?.userId;
 
             if (!userId) {
@@ -93,61 +157,103 @@ export class ChatController {
                 return;
             }
 
-            const conversations = await this.getConversationsUseCase.execute(userId);
-            res.status(200).json(conversations);
+            const conversations = await this._getConversationsUseCase.execute(userId);
+
+            return res
+                .status(HttpStatus.OK)
+                .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, conversations));
+
         } catch (error: any) {
-            res.status(400).json({ message: error.message });
+            return res
+                .status(HttpStatus.BAD_REQUEST)
+                .json(ApiResponse.error(error.message));
         }
-    }
+    };
 
 
-    async getMessages(req: Request, res: Response): Promise<void> {
+
+    getMessages = async (req: Request, res: Response) => {
         try {
-            // const { conversationId } = req.params;
-
-            const conversationId = req.params.conversationId;
-
-            if (!conversationId) {
-                res.status(400).json({ message: "Conversation ID is required" });
-                return;
-            }
-
             const userId = res.locals.user?.userId;
-            const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
-            const skip = req.query.skip ? parseInt(req.query.skip as string) : 0;
+            const { conversationId } = req.params;
 
-            if (!userId) {
-                res.status(401).json({ message: "Unauthorized" });
-                return;
+            const limit = Number(req.query.limit ?? 50);
+            const skip = Number(req.query.skip ?? 0);
+
+            if (!userId || !conversationId) {
+                return res
+                    .status(HttpStatus.BAD_REQUEST)
+                    .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
             }
 
-            const messages = await this.getMessagesUseCase.execute(conversationId, userId, limit, skip);
-            res.status(200).json(messages);
-        } catch (error: any) {
-            res.status(400).json({ message: error.message });
-        }
-    }
-    
+            if (limit < 1 || limit > 100) {
+                return res
+                    .status(HttpStatus.BAD_REQUEST)
+                    .json(ApiResponse.error("Invalid pagination limit"));
+            }
 
-    async getOrCreateDirectConversation(req: Request, res: Response): Promise<void> {
+            const dto: GetMessagesQueryDTO = {
+                userId,
+                conversationId,
+                limit,
+                skip,
+            };
+
+            const messages = await this._getMessagesUseCase.execute(dto);
+
+            return res
+                .status(HttpStatus.OK)
+                .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, messages));
+        } catch (error: any) {
+            return res
+                .status(HttpStatus.BAD_REQUEST)
+                .json(ApiResponse.error(error.message));
+        }
+    };
+
+
+
+    getOrCreateDirectConversation = async (req: Request, res: Response) => {
         try {
+            const senderId = res.locals.user?.userId;
             const { receiverId } = req.body;
-            const userId = res.locals.user?.userId;
 
-            if (!userId) {
-                res.status(401).json({ message: "Unauthorized" });
-                return;
+            if (!senderId || !receiverId) {
+                return res
+                    .status(HttpStatus.BAD_REQUEST)
+                    .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
             }
 
-            const conversation = await this.getOrCreateDirectConversationUseCase.execute(userId, receiverId);
-            res.status(200).json(conversation);
-        } catch (error: any) {
-            res.status(400).json({ message: error.message });
-        }
-    }
+            const dto: DirectConversationDTO = { senderId, receiverId };
 
-    async leaveGroup(req: Request, res: Response): Promise<void> {
+            const conversation = await this._getOrCreateDirectConversationUseCase.execute(dto);
+
+            return res
+                .status(HttpStatus.OK)
+                .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, conversation));
+        } catch (error: any) {
+            return res
+                .status(HttpStatus.BAD_REQUEST)
+                .json(ApiResponse.error(error.message));
+        }
+    };
+
+
+
+    leaveGroup = async (req: Request, res: Response) => {
         try {
+            // const userId = res.locals.user?.userId;
+            // const { conversationId } = req.params;
+
+            // if (!userId || !conversationId) {
+            //     return res
+            //         .status(HttpStatus.BAD_REQUEST)
+            //         .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
+            // }
+
+            // const dto: LeaveGroupDTO = { userId, conversationId };
+
+            // const group = await this._leaveGroupUseCase.execute(dto);
             const conversationId = req.params.conversationId;
             const userId = res.locals.user?.userId as string;
 
@@ -161,43 +267,69 @@ export class ChatController {
                 return;
             }
 
-            const group = await this.leaveGroupUseCase.execute(conversationId, userId);
-            res.status(200).json(group);
-        } catch (error: any) {
-            res.status(400).json({ message: error.message });
-        }
-    }
+            const group = await this._leaveGroupUseCase.execute(conversationId, userId);
 
-    async addParticipants(req: Request, res: Response): Promise<void> {
+            return res
+                .status(HttpStatus.OK)
+                .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, group));
+        } catch (error: any) {
+            return res
+                .status(HttpStatus.BAD_REQUEST)
+                .json(ApiResponse.error(error.message));
+        }
+    };
+
+
+
+    addParticipants = async (req: Request, res: Response) => {
         try {
-            const conversationId = req.params.conversationId;
-            const adderId = res.locals.user?.userId as string;
+            const adderId = res.locals.user?.userId;
+            const { conversationId } = req.params;
             const { participants } = req.body;
 
-            if (!conversationId) {
-                res.status(400).json({ message: "Conversation ID is required" });
-                return;
+            if (!adderId || !conversationId || !Array.isArray(participants)) {
+                return res
+                    .status(HttpStatus.BAD_REQUEST)
+                    .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
             }
 
-            if (!adderId) {
-                res.status(401).json({ message: "Unauthorized" });
-                return;
-            }
+            const dto: AddParticipantsDTO = {
+                adderId,
+                conversationId,
+                participants,
+            };
 
-            if (!participants || !Array.isArray(participants)) {
-                res.status(400).json({ message: "Participants array is required" });
-                return;
-            }
+            const group = await this._addParticipantsUseCase.execute(dto);
 
-            const group = await this.addParticipantsUseCase.execute(conversationId, adderId, participants);
-            res.status(200).json(group);
+            return res
+                .status(HttpStatus.OK)
+                .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, group));
         } catch (error: any) {
-            res.status(400).json({ message: error.message });
+            return res
+                .status(HttpStatus.BAD_REQUEST)
+                .json(ApiResponse.error(error.message));
         }
-    }
+    };
 
-    async uploadChatImage(req: Request, res: Response): Promise<void> {
+
+
+
+    uploadChatImage = async (req: Request, res: Response) => {
         try {
+            // const { conversationId } = req.params;
+            // const file = req.file;
+
+            // if (!conversationId || !file) {
+            //     return res
+            //         .status(HttpStatus.BAD_REQUEST)
+            //         .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
+            // }
+
+            // const url = await this._uploadChatImageUseCase.execute({
+            //     conversationId,
+            //     fileBuffer: file.buffer,
+            // });
+
             const conversationId = req.params.conversationId;
             const file = req.file;
 
@@ -211,12 +343,16 @@ export class ChatController {
                 return;
             }
 
-            // Execute the use case
-            const url = await this.uploadChatImageUseCase.execute(file.buffer, conversationId);
+            const url = await this._uploadChatImageUseCase.execute(file.buffer, conversationId);
 
-            res.status(200).json({ url });
+
+            return res
+                .status(HttpStatus.OK)
+                .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, { url }));
         } catch (error: any) {
-            res.status(400).json({ message: error.message });
+            return res
+                .status(HttpStatus.BAD_REQUEST)
+                .json(ApiResponse.error(error.message));
         }
-    }
+    };
 }

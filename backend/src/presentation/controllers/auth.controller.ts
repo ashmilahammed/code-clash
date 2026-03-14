@@ -13,6 +13,13 @@ import { RefreshSessionUseCase } from "../../application/use-cases/auth/refreshS
 import { GetCurrentUserUseCase } from "../../application/use-cases/auth/getCurrentUserUseCase";
 import { ChangePasswordUseCase } from "../../application/use-cases/auth/changePasswordUseCase";
 
+import { RegisterDTO } from "../../application/dto/auth/RegisterDTO";
+import { LoginDTO } from "../../application/dto/auth/LoginDTO";
+import { VerifyOtpDTO } from "../../application/dto/auth/VerifyOtpDTO";
+import { ChangePasswordDTO } from "../../application/dto/auth/ChangePasswordDTO";
+import { GoogleLoginDTO } from "../../application/dto/auth/GoogleLoginDTO";
+
+
 import { UserMapper } from "../../application/mappers/UserMapper";
 
 import { ApiResponse } from "../common/ApiResponse";
@@ -40,15 +47,47 @@ export class AuthController {
 
 
   ///
+  // register = async (req: Request, res: Response) => {
+  //   try {
+  //     const { username, email, password } = req.body;
+
+  //     const result = await this._registerUseCase.execute(
+  //       username,
+  //       email,
+  //       password
+  //     );
+
+  //     return res
+  //       .status(HttpStatus.CREATED)
+  //       .json(
+  //         ApiResponse.success(MESSAGES.AUTH.REGISTER_SUCCESS, {
+  //           userId: result.userId,
+  //         })
+  //       );
+
+  //   } catch (err: unknown) {
+  //     const message =
+  //       err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST;
+
+  //     return res
+  //       .status(HttpStatus.BAD_REQUEST)
+  //       .json(ApiResponse.error(message));
+  //   }
+
+  // };
   register = async (req: Request, res: Response) => {
     try {
       const { username, email, password } = req.body;
 
-      const result = await this._registerUseCase.execute(
-        username,
-        email,
-        password
-      );
+      if (!username || !email || !password) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
+      }
+
+      const dto: RegisterDTO = { username, email, password };
+
+      const result = await this._registerUseCase.execute(dto);
 
       return res
         .status(HttpStatus.CREATED)
@@ -57,7 +96,6 @@ export class AuthController {
             userId: result.userId,
           })
         );
-
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST;
@@ -66,12 +104,35 @@ export class AuthController {
         .status(HttpStatus.BAD_REQUEST)
         .json(ApiResponse.error(message));
     }
-
   };
 
 
-
   ///
+  // verifyOtp = async (req: Request, res: Response) => {
+  //   try {
+  //     const { userId, otp } = req.body;
+
+  //     if (!userId || !otp) {
+  //       return res
+  //         .status(HttpStatus.BAD_REQUEST)
+  //         .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
+  //     }
+
+  //     await this._verifyOtpUseCase.execute(userId, otp);
+
+  //     return res
+  //       .status(HttpStatus.OK)
+  //       .json(ApiResponse.success(MESSAGES.AUTH.OTP_VERIFIED));
+
+  //   } catch (err: unknown) {
+  //     const message =
+  //       err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST;
+
+  //     return res
+  //       .status(HttpStatus.BAD_REQUEST)
+  //       .json(ApiResponse.error(message));
+  //   }
+  // };
   verifyOtp = async (req: Request, res: Response) => {
     try {
       const { userId, otp } = req.body;
@@ -82,12 +143,13 @@ export class AuthController {
           .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
       }
 
-      await this._verifyOtpUseCase.execute(userId, otp);
+      const dto: VerifyOtpDTO = { userId, otp };
+
+      await this._verifyOtpUseCase.execute(dto);
 
       return res
         .status(HttpStatus.OK)
         .json(ApiResponse.success(MESSAGES.AUTH.OTP_VERIFIED));
-
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST;
@@ -131,11 +193,67 @@ export class AuthController {
 
 
   ///
+  // login = async (req: Request, res: Response) => {
+  //   try {
+  //     const { email, password } = req.body;
+
+  //     const result = await this._loginUseCase.execute(email, password);
+
+  //     res.cookie("refreshToken", result.refreshToken, {
+  //       httpOnly: true,
+  //       secure: process.env.NODE_ENV === "production",
+  //       sameSite: "lax",
+  //       maxAge: 7 * 24 * 60 * 60 * 1000,
+  //     });
+
+  //     return res
+  //       .status(HttpStatus.OK)
+  //       .json(
+  //         ApiResponse.success(MESSAGES.AUTH.LOGIN_SUCCESS, {
+  //           // user: result.user,
+  //           user: UserMapper.toAuth(result.user),
+  //           accessToken: result.accessToken,
+  //         })
+  //       );
+
+  //   } catch (err: unknown) {
+  //     if (err instanceof Error) {
+  //       if (err.message === "ACCOUNT_BLOCKED") {
+  //         return res
+  //           .status(HttpStatus.FORBIDDEN)
+  //           .json(ApiResponse.error(MESSAGES.AUTH.ACCOUNT_BLOCKED));
+  //       }
+
+  //       if (err.message === "ACCOUNT_NOT_VERIFIED") {
+  //         return res
+  //           .status(HttpStatus.BAD_REQUEST)
+  //           .json(ApiResponse.error(MESSAGES.AUTH.ACCOUNT_NOT_VERIFIED));
+  //       }
+
+  //       return res
+  //         .status(HttpStatus.BAD_REQUEST)
+  //         .json(ApiResponse.error(err.message));
+  //     }
+
+  //     return res
+  //       .status(HttpStatus.INTERNAL_SERVER_ERROR)
+  //       .json(ApiResponse.error(MESSAGES.COMMON.INTERNAL_ERROR));
+  //   };
+  // };
+
   login = async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
 
-      const result = await this._loginUseCase.execute(email, password);
+      if (!email || !password) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
+      }
+
+      const dto: LoginDTO = { email, password };
+
+      const result = await this._loginUseCase.execute(dto);
 
       res.cookie("refreshToken", result.refreshToken, {
         httpOnly: true,
@@ -144,41 +262,21 @@ export class AuthController {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      return res
-        .status(HttpStatus.OK)
-        .json(
-          ApiResponse.success(MESSAGES.AUTH.LOGIN_SUCCESS, {
-            // user: result.user,
-            user: UserMapper.toAuth(result.user),
-            accessToken: result.accessToken,
-          })
-        );
-
+      return res.status(HttpStatus.OK).json(
+        ApiResponse.success(MESSAGES.AUTH.LOGIN_SUCCESS, {
+          user: UserMapper.toAuth(result.user),
+          accessToken: result.accessToken,
+        })
+      );
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        if (err.message === "ACCOUNT_BLOCKED") {
-          return res
-            .status(HttpStatus.FORBIDDEN)
-            .json(ApiResponse.error(MESSAGES.AUTH.ACCOUNT_BLOCKED));
-        }
-
-        if (err.message === "ACCOUNT_NOT_VERIFIED") {
-          return res
-            .status(HttpStatus.BAD_REQUEST)
-            .json(ApiResponse.error(MESSAGES.AUTH.ACCOUNT_NOT_VERIFIED));
-        }
-
-        return res
-          .status(HttpStatus.BAD_REQUEST)
-          .json(ApiResponse.error(err.message));
-      }
+      const message =
+        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
 
       return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(MESSAGES.COMMON.INTERNAL_ERROR));
-    };
+        .status(HttpStatus.BAD_REQUEST)
+        .json(ApiResponse.error(message));
+    }
   };
-
 
 
   ///
@@ -293,6 +391,46 @@ export class AuthController {
 
 
   ///
+  // googleLogin = async (req: Request, res: Response) => {
+  //   try {
+  //     const { googleToken } = req.body;
+
+  //     if (!googleToken) {
+  //       return res
+  //         .status(HttpStatus.BAD_REQUEST)
+  //         .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
+  //     }
+
+  //     const result = await this._googleLoginUseCase.execute(googleToken);
+
+  //     res.cookie("refreshToken", result.refreshToken, {
+  //       httpOnly: true,
+  //       secure: process.env.NODE_ENV === "production",
+  //       sameSite: "lax",
+  //       maxAge: 7 * 24 * 60 * 60 * 1000,
+  //     });
+
+  //     return res
+  //       .status(HttpStatus.OK)
+  //       .json(
+  //         ApiResponse.success(MESSAGES.AUTH.GOOGLE_LOGIN_SUCCESS, {
+  //           // user: result.user,
+  //           user: UserMapper.toAuth(result.user),
+  //           accessToken: result.accessToken,
+  //         })
+  //       );
+
+  //   } catch (err: unknown) {
+  //     const message =
+  //       err instanceof Error ? err.message : MESSAGES.AUTH.UNAUTHORIZED;
+
+  //     return res
+  //       .status(HttpStatus.UNAUTHORIZED)
+  //       .json(ApiResponse.error(message));
+  //   }
+  // };
+
+
   googleLogin = async (req: Request, res: Response) => {
     try {
       const { googleToken } = req.body;
@@ -303,7 +441,9 @@ export class AuthController {
           .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
       }
 
-      const result = await this._googleLoginUseCase.execute(googleToken);
+      const dto: GoogleLoginDTO = { googleToken };
+
+      const result = await this._googleLoginUseCase.execute(dto);
 
       res.cookie("refreshToken", result.refreshToken, {
         httpOnly: true,
@@ -312,15 +452,12 @@ export class AuthController {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      return res
-        .status(HttpStatus.OK)
-        .json(
-          ApiResponse.success(MESSAGES.AUTH.GOOGLE_LOGIN_SUCCESS, {
-            // user: result.user,
-            user: UserMapper.toAuth(result.user),
-            accessToken: result.accessToken,
-          })
-        );
+      return res.status(HttpStatus.OK).json(
+        ApiResponse.success(MESSAGES.AUTH.GOOGLE_LOGIN_SUCCESS, {
+          user: UserMapper.toAuth(result.user),
+          accessToken: result.accessToken,
+        })
+      );
 
     } catch (err: unknown) {
       const message =
@@ -331,8 +468,7 @@ export class AuthController {
         .json(ApiResponse.error(message));
     }
   };
-
-
+  
 
   ///
   refreshSession = async (req: Request, res: Response) => {
@@ -361,30 +497,6 @@ export class AuthController {
 
 
 
-  ///
-  // me = async (req: any, res: Response) => {
-  //   try {
-  //     const userId = req.user?.userId;
-
-  //     if (!userId) {
-  //       return res
-  //         .status(HttpStatus.UNAUTHORIZED)
-  //         .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-  //     }
-
-  //     const user = await this.getCurrentUserUseCase.execute(userId);
-
-  //     return res
-  //       .status(HttpStatus.OK)
-  //       .json(
-  //         ApiResponse.success(MESSAGES.USER.FETCH_SUCCESS, { user })
-  //       );
-  //   } catch (err: any) {
-  //     return res
-  //       .status(HttpStatus.BAD_REQUEST)
-  //       .json(ApiResponse.error(err.message));
-  //   }
-  // };
   ///
   me = async (req: Request, res: Response) => {
     try {
@@ -419,9 +531,48 @@ export class AuthController {
 
 
   ///
+  // changePassword = async (req: Request, res: Response) => {
+  //   try {
+  //     const userContext = res.locals.user as { userId: string; role: "user" | "admin" } | undefined;
+
+  //     if (!userContext) {
+  //       return res
+  //         .status(HttpStatus.UNAUTHORIZED)
+  //         .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
+  //     }
+
+  //     const { currentPassword, newPassword } = req.body;
+
+  //     if (!currentPassword || !newPassword) {
+  //       return res
+  //         .status(HttpStatus.BAD_REQUEST)
+  //         .json(ApiResponse.error("Current password and new password are required"));
+  //     }
+
+  //     await this._changePasswordUseCase.execute(userContext.userId, currentPassword, newPassword);
+
+  //     return res
+  //       .status(HttpStatus.OK)
+  //       .json(ApiResponse.success(MESSAGES.USER.UPDATE_SUCCESS));
+
+  //   } catch (err: unknown) {
+  //     const message =
+  //       err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST;
+
+  //     let statusCode = HttpStatus.BAD_REQUEST;
+  //     if (message === "CURRENT_PASSWORD_INCORRECT") {
+  //       statusCode = HttpStatus.UNAUTHORIZED;
+  //     }
+
+  //     return res
+  //       .status(statusCode)
+  //       .json(ApiResponse.error(message));
+  //   }
+  // };
+
   changePassword = async (req: Request, res: Response) => {
     try {
-      const userContext = res.locals.user as { userId: string; role: "user" | "admin" } | undefined;
+      const userContext = res.locals.user;
 
       if (!userContext) {
         return res
@@ -434,30 +585,29 @@ export class AuthController {
       if (!currentPassword || !newPassword) {
         return res
           .status(HttpStatus.BAD_REQUEST)
-          .json(ApiResponse.error("Current password and new password are required"));
+          .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
       }
 
-      await this._changePasswordUseCase.execute(userContext.userId, currentPassword, newPassword);
+      const dto: ChangePasswordDTO = {
+        userId: userContext.userId,
+        currentPassword,
+        newPassword,
+      };
+
+      await this._changePasswordUseCase.execute(dto);
 
       return res
         .status(HttpStatus.OK)
         .json(ApiResponse.success(MESSAGES.USER.UPDATE_SUCCESS));
-
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST;
-      
-      let statusCode = HttpStatus.BAD_REQUEST;
-      if (message === "CURRENT_PASSWORD_INCORRECT") {
-        statusCode = HttpStatus.UNAUTHORIZED;
-      }
 
       return res
-        .status(statusCode)
+        .status(HttpStatus.BAD_REQUEST)
         .json(ApiResponse.error(message));
     }
   };
-
 
 
 

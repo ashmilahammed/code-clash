@@ -26,7 +26,7 @@ const PlanManagement = () => {
     const fetchPlans = async () => {
         try {
             const res = await getPlansApi();
-            setPlans(res.data);
+            setPlans(res.data.data);
         } catch (error) {
             toast.error("Failed to fetch plans");
         }
@@ -35,7 +35,7 @@ const PlanManagement = () => {
     const fetchTransactions = async () => {
         try {
             const res = await getTransactionsApi();
-            setTransactions(res.data);
+            setTransactions(res.data.data);
         } catch (error) {
             toast.error("Failed to fetch transactions");
         }

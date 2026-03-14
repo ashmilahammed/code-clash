@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { Level } from "../../domain/entities/level/Level";
 import { ILevelDoc } from "../../infrastructure/database/models/level/LevelModel";
 
@@ -10,7 +9,6 @@ export class LevelMapper {
       doc.levelNumber,
       doc.minXp,
       doc.maxXp,
-      doc.badgeId ? doc.badgeId.toString() : undefined,
       doc.title ?? undefined,
       doc.createdAt,
       doc.updatedAt
@@ -23,9 +21,6 @@ export class LevelMapper {
       minXp: level.minXp,
       maxXp: level.maxXp,
       title: level.title ?? null,
-      badgeId: level.badgeId
-        ? new Types.ObjectId(level.badgeId)
-        : null
     };
   }
 }

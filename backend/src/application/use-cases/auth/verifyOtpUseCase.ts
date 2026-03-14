@@ -1,33 +1,29 @@
 import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
-
+import { VerifyOtpDTO } from "../../dto/auth/VerifyOtpDTO";
 
 
 export class VerifyOtpUseCase {
-  constructor(private userRepo: IUserRepository) { }
+  constructor(
+    private readonly _userRepo: IUserRepository
+  ) {}
 
-  async execute(userId: string, otp: string) {
+  async execute(dto: VerifyOtpDTO) {
+    const { userId, otp } = dto;
 
-    const user = await this.userRepo.findById(userId);
-    if (!user) throw new Error("User not found");
+    const user = await this._userRepo.findById(userId);
+    if (!user) throw new Error("USER_NOT_FOUND");
 
     if (user.isVerified) {
-      throw new Error("User is already verified");
+      throw new Error("USER_ALREADY_VERIFIED");
     }
 
-    // if (user.otp !== otp) {
-    //   throw new Error("INVALID_OTP");
-    // }
-    //     if (!user.otpExpires || user.otpExpires < new Date()) {
-    //   throw new Error("OTP_EXPIRED");
-    // }
-    
     if (!user.isOtpValid(otp)) {
       throw new Error("INVALID_OR_EXPIRED_OTP");
     }
 
-    user.verifyAccount(); // sets isVerified = true + clears OTP internally
+    user.verifyAccount();
 
-    await this.userRepo.verifyUser(userId);
+    await this._userRepo.verifyUser(userId);
 
     return {
       message: "OTP verified successfully",

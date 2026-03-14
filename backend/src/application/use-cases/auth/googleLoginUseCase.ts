@@ -3,7 +3,7 @@ import { IUserRepository } from "../../../domain/repositories/user/IUserReposito
 import { IJwtService } from "../../../domain/services/IJwtService";
 import { JwtPayload } from "../../../domain/types/JwtPayload";
 import { UserFactory } from "../../../domain/entities/user/userFactory";
-
+import { GoogleLoginDTO } from "../../dto/auth/GoogleLoginDTO";
 
 export class GoogleLoginUseCase {
     constructor(
@@ -13,7 +13,10 @@ export class GoogleLoginUseCase {
         private readonly _googleClientId: string
     ) { }
 
-    async execute(idToken: string) {
+    async execute(dto: GoogleLoginDTO) {
+
+        const { googleToken: idToken } = dto;
+
         // Verify Google token
         const ticket = await this._googleClient.verifyIdToken({
             idToken,
@@ -39,27 +42,6 @@ export class GoogleLoginUseCase {
         // find or create user
         let user = await this._userRepo.findByEmail(email);
 
-        // if (!user) {
-        //     user = await this._userRepo.createUser({
-        //         username,
-        //         email,
-        //         password: null,
-        //         avatar_id: null,
-        //         badge_id: null,
-        //         level_id: null,
-        //         xp: 0,
-        //         current_streak: 0,
-        //         longest_streak: 0,
-        //         is_premium: false,
-        //         date_joined: new Date(),
-        //         role: "user",
-        //         status: "active",
-        //         refreshToken: null,
-        //         isVerified: true,
-        //         otp: null,
-        //         otpExpires: null,
-        //     });
-        // }
         if (!user) {
             const newUser = UserFactory.createGoogleUser({
                 username,
@@ -69,7 +51,7 @@ export class GoogleLoginUseCase {
             user = await this._userRepo.createUser(newUser);
         }
 
-        
+
         //generate token
         const tokenPayload: JwtPayload = {
             userId: user.id!,

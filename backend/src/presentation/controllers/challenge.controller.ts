@@ -361,7 +361,7 @@ export class ChallengeController {
 
             return res
                 .status(HttpStatus.OK)
-                .json(ApiResponse.success("Languages fetched successfully", langs));
+                .json(ApiResponse.success(MESSAGES.CHALLENGE.LANGUAGES_FETCHED, langs));
 
         } catch (err: unknown) {
             const message =
@@ -391,7 +391,7 @@ export class ChallengeController {
 
             return res
                 .status(HttpStatus.OK)
-                .json(ApiResponse.success("Languages added"));
+                .json(ApiResponse.success(MESSAGES.CHALLENGE.TAGS_ADDED));
         } catch (err: unknown) {
             const message =
                 err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
@@ -456,7 +456,7 @@ export class ChallengeController {
 
             return res
                 .status(HttpStatus.OK)
-                .json(ApiResponse.success("Test cases added successfully"));
+                .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS));
         } catch (err: unknown) {
             const message =
                 err instanceof Error
@@ -487,7 +487,7 @@ export class ChallengeController {
 
             return res
                 .status(HttpStatus.OK)
-                .json(ApiResponse.success("Hints added successfully"));
+                .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS));
         } catch (err: unknown) {
             const message =
                 err instanceof Error
@@ -515,7 +515,7 @@ export class ChallengeController {
 
             return res
                 .status(HttpStatus.OK)
-                .json(ApiResponse.success("Schedule updated successfully"));
+                .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS));
         } catch (err: unknown) {
             const message =
                 err instanceof Error
@@ -547,7 +547,7 @@ export class ChallengeController {
 
             return res
                 .status(HttpStatus.OK)
-                .json(ApiResponse.success("Hints fetched successfully", hints));
+                .json(ApiResponse.success(MESSAGES.CHALLENGE.HINTS_FETCHED, hints));
         } catch (err: unknown) {
             const message =
                 err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
@@ -572,7 +572,7 @@ export class ChallengeController {
 
             return res
                 .status(HttpStatus.OK)
-                .json(ApiResponse.success("Test cases fetched successfully", testCases));
+                .json(ApiResponse.success(MESSAGES.CHALLENGE.TEST_CASES_FETCHED, testCases));
         } catch (err: unknown) {
             const message =
                 err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
@@ -606,7 +606,7 @@ export class ChallengeController {
             return res
                 .status(HttpStatus.OK)
                 .json(
-                    ApiResponse.success("Code templates saved successfully")
+                    ApiResponse.success(MESSAGES.COMMON.SUCCESS)
                 );
         } catch (err: unknown) {
             const message =

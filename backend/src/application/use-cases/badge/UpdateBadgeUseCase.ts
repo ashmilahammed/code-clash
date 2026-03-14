@@ -1,21 +1,62 @@
+// import { Badge } from "../../../domain/entities/badge/Badge";
+// import { IBadgeRepository } from "../../../domain/repositories/badge/IBadgeRepository";
+
+// interface UpdateBadgeDTO {
+//     name?: string;
+//     description?: string;
+//     icon?: string;
+//     minXpRequired?: number;
+//     category?: string;
+//     requirementType?: string;
+//     requirementValue?: number;
+//     isActive?: boolean;
+// }
+
+// export class UpdateBadgeUseCase {
+//     constructor(private readonly badgeRepository: IBadgeRepository) { }
+
+//     async execute(id: string, dto: UpdateBadgeDTO): Promise<Badge | null> {
+//         return this.badgeRepository.update(id, dto);
+//     }
+// }
+
+
+
+
+
+
+
+
 import { Badge } from "../../../domain/entities/badge/Badge";
 import { IBadgeRepository } from "../../../domain/repositories/badge/IBadgeRepository";
-
-interface UpdateBadgeDTO {
-    name?: string;
-    description?: string;
-    icon?: string;
-    minXpRequired?: number;
-    category?: string;
-    requirementType?: string;
-    requirementValue?: number;
-    isActive?: boolean;
-}
+import { UpdateBadgeDTO } from "../../dto/badge/UpdateBadgeDTO";
 
 export class UpdateBadgeUseCase {
-    constructor(private readonly badgeRepository: IBadgeRepository) { }
+  constructor(
+    private readonly _badgeRepository: IBadgeRepository
+  ) {}
 
-    async execute(id: string, dto: UpdateBadgeDTO): Promise<Badge | null> {
-        return this.badgeRepository.update(id, dto);
+  async execute(id: string, dto: UpdateBadgeDTO): Promise<Badge> {
+
+    const existing = await this._badgeRepository.findById(id);
+    if (!existing) {
+      throw new Error("BADGE_NOT_FOUND");
     }
+
+    const updated = new Badge(
+      existing.id,
+      dto.name ?? existing.name,
+      dto.description ?? existing.description,
+      dto.icon ?? existing.icon,
+      dto.minXpRequired ?? existing.minXpRequired,
+      dto.category ?? existing.category,
+      dto.requirementType ?? existing.requirementType,
+      dto.requirementValue ?? existing.requirementValue,
+      dto.isActive ?? existing.isActive,
+      existing.createdAt,
+      new Date()
+    );
+
+    return this._badgeRepository.updateEntity(updated);
+  }
 }

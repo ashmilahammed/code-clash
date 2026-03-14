@@ -3,10 +3,13 @@ import { CreateLevelUseCase } from "../../application/use-cases/level/admin/Crea
 import { GetLevelsUseCase } from "../../application/use-cases/level/GetLevelsUseCase";
 import { UpdateLevelUseCase } from "../../application/use-cases/level/admin/UpdateLevelUseCase";
 import { DeleteLevelUseCase } from "../../application/use-cases/level/admin/DeleteLevelUseCase";
+
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
 import { MESSAGES } from "../constants/messages";
 
+import { CreateLevelDTO } from "../../application/dto/level/CreateLevelDTO";
+import { UpdateLevelDTO } from "../../application/dto/level/UpdateLevelDTO";
 
 
 export class LevelController {
@@ -21,7 +24,11 @@ export class LevelController {
   getAll = async (req: Request, res: Response) => {
     try {
       const levels = await this._getLevels.execute();
-      return res.status(HttpStatus.OK).json(ApiResponse.success("Levels retrieved successfully", levels));
+
+      return res
+        .status(HttpStatus.OK)
+        .json(ApiResponse.success("Levels retrieved successfully", levels));
+
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(ApiResponse.error(message));
@@ -29,26 +36,33 @@ export class LevelController {
   };
 
 
+
   create = async (req: Request, res: Response) => {
     try {
-      const { levelNumber, minXp, maxXp, title, badgeId } = req.body;
+      const { levelNumber, minXp, maxXp, title } = req.body;
 
-      const level = await this._createLevel.execute({
+      if (
+        levelNumber === undefined ||
+        minXp === undefined ||
+        maxXp === undefined
+      ) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
+      }
+
+      const dto: CreateLevelDTO = {
         levelNumber,
         minXp,
         maxXp,
         title,
-        badgeId
-      });
+      };
+
+      const level = await this._createLevel.execute(dto);
 
       return res
         .status(HttpStatus.CREATED)
-        .json(
-          ApiResponse.success(
-            MESSAGES.LEVEL.CREATED,
-            level
-          )
-        );
+        .json(ApiResponse.success(MESSAGES.LEVEL.CREATED, level));
 
     } catch (err: unknown) {
       const message =
@@ -62,25 +76,52 @@ export class LevelController {
     }
   };
 
-  
+
+
   update = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
+
       if (!id) {
-        return res.status(HttpStatus.BAD_REQUEST).json(ApiResponse.error("Level ID is required"));
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(ApiResponse.error(MESSAGES.LEVEL.ID_REQUIRED));
       }
-      const { levelNumber, minXp, maxXp, title, badgeId } = req.body;
-      const updatedLevel = await this._updateLevel.execute(id, { levelNumber, minXp, maxXp, title, badgeId });
-      if (!updatedLevel) {
-        return res.status(HttpStatus.NOT_FOUND).json(ApiResponse.error("Level not found"));
+
+      const { levelNumber, minXp, maxXp, title } = req.body;
+
+      const dto: UpdateLevelDTO = {
+        levelNumber,
+        minXp,
+        maxXp,
+        title,
+      };
+
+      const updated = await this._updateLevel.execute(id, dto);
+
+      if (!updated) {
+        return res
+          .status(HttpStatus.NOT_FOUND)
+          .json(ApiResponse.error(MESSAGES.LEVEL.NOT_FOUND));
       }
-      return res.status(HttpStatus.OK).json(ApiResponse.success("Level updated successfully", updatedLevel));
+
+      return res
+        .status(HttpStatus.OK)
+        .json(ApiResponse.success(MESSAGES.LEVEL.UPDATED, updated));
+
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST;
-      return res.status(HttpStatus.BAD_REQUEST).json(ApiResponse.error(message));
+      const message =
+        err instanceof Error
+          ? err.message
+          : MESSAGES.COMMON.BAD_REQUEST;
+
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json(ApiResponse.error(message));
     }
   };
-  
+
+
 
   delete = async (req: Request, res: Response) => {
     try {
@@ -90,6 +131,7 @@ export class LevelController {
       }
       await this._deleteLevel.execute(id);
       return res.status(HttpStatus.OK).json(ApiResponse.success("Level deleted successfully"));
+
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST;
       return res.status(HttpStatus.BAD_REQUEST).json(ApiResponse.error(message));

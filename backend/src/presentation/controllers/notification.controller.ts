@@ -10,21 +10,34 @@ import { MarkNotificationReadUseCase } from "../../application/use-cases/notific
 import { MarkAllReadUseCase } from "../../application/use-cases/notification/user/MarkAllReadUseCase";
 import { ClearNotificationsUseCase } from "../../application/use-cases/notification/user/ClearNotificationsUseCase";
 
+import { SendNotificationDTO } from "../../application/dto/notification/SendNotificationDTO";
+import { AdminNotificationHistoryQueryDTO } from "../../application/dto/notification/AdminNotificationHistoryQueryDTO";
+import { UserNotificationsQueryDTO } from "../../application/dto/notification/UserNotificationsQueryDTO";
+
+
+interface AuthUserContext {
+  userId: string;
+  role: "user" | "admin";
+  is_premium?: boolean;
+}
+
 export class NotificationController {
   constructor(
-    private readonly sendNotificationUseCase: SendNotificationUseCase,
-    private readonly getAdminNotificationHistoryUseCase: GetAdminNotificationHistoryUseCase,
-    private readonly getUserNotificationsUseCase: GetUserNotificationsUseCase,
-    private readonly markNotificationReadUseCase: MarkNotificationReadUseCase,
-    private readonly markAllReadUseCase: MarkAllReadUseCase,
-    private readonly clearNotificationsUseCase: ClearNotificationsUseCase
+    private readonly _sendNotificationUseCase: SendNotificationUseCase,
+    private readonly _getAdminNotificationHistoryUseCase: GetAdminNotificationHistoryUseCase,
+    private readonly _getUserNotificationsUseCase: GetUserNotificationsUseCase,
+    private readonly _markNotificationReadUseCase: MarkNotificationReadUseCase,
+    private readonly _markAllReadUseCase: MarkAllReadUseCase,
+    private readonly _clearNotificationsUseCase: ClearNotificationsUseCase
   ) { }
 
-  // Admin
+
+  //admin
+
   sendNotification = async (req: Request, res: Response) => {
     try {
       const { title, message, recipientType } = req.body;
-      const senderId = (res.locals.user as any).userId;
+      const userContext = res.locals.user as AuthUserContext;
 
       if (!title || !message || !recipientType) {
         return res
@@ -32,66 +45,81 @@ export class NotificationController {
           .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
       }
 
-      await this.sendNotificationUseCase.execute({
+      const dto: SendNotificationDTO = {
         title,
         message,
         recipientType,
-        senderId,
-      });
+        senderId: userContext.userId,
+      };
+
+      await this._sendNotificationUseCase.execute(dto);
 
       return res
         .status(HttpStatus.CREATED)
-        .json(ApiResponse.success("Notification sent successfully"));
+        .json(ApiResponse.success(MESSAGES.NOTIFICATION.SENT));
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
+
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json(ApiResponse.error(message));
     }
   };
+
+
 
   getAdminHistory = async (req: Request, res: Response) => {
     try {
-      const page = Number(req.query.page || 1);
-      const limit = Number(req.query.limit || 10);
+      const page = Number(req.query.page ?? 1);
+      const limit = Number(req.query.limit ?? 10);
 
-      const result = await this.getAdminNotificationHistoryUseCase.execute(
+      const dto: AdminNotificationHistoryQueryDTO = {
         page,
-        limit
-      );
+        limit,
+      };
+
+      const result = await this._getAdminNotificationHistoryUseCase.execute(dto);
 
       return res
         .status(HttpStatus.OK)
-        .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, result));
+        .json(ApiResponse.success(MESSAGES.NOTIFICATION.FETCH_SUCCESS, result));
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
+
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json(ApiResponse.error(message));
     }
   };
 
-  // User
+
+
+  // user
+
   getUserNotifications = async (req: Request, res: Response) => {
     try {
-      const { userId } = res.locals.user as any;
-      const page = Number(req.query.page || 1);
-      const limit = Number(req.query.limit || 10);
+      const userContext = res.locals.user as AuthUserContext;
 
-      const result = await this.getUserNotificationsUseCase.execute(
-        userId,
+      const page = Number(req.query.page ?? 1);
+      const limit = Number(req.query.limit ?? 10);
+
+      const dto: UserNotificationsQueryDTO = {
+        userId: userContext.userId,
         page,
-        limit
-      );
+        limit,
+      };
+
+      const result = await this._getUserNotificationsUseCase.execute(dto);
 
       return res
         .status(HttpStatus.OK)
-        .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, result));
+        .json(ApiResponse.success(MESSAGES.NOTIFICATION.FETCH_SUCCESS, result));
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
+
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json(ApiResponse.error(message));
@@ -101,20 +129,21 @@ export class NotificationController {
 
   markAsRead = async (req: Request, res: Response) => {
     try {
-      const { userId } = res.locals.user as any;
+
+      const userContext = res.locals.user as AuthUserContext;
       const { notificationId } = req.params;
 
       if (!notificationId) {
         return res
           .status(HttpStatus.BAD_REQUEST)
-          .json(ApiResponse.error("Notification id is required"));
+          .json(ApiResponse.error(MESSAGES.NOTIFICATION.ID_REQUIRED));
       }
 
-      await this.markNotificationReadUseCase.execute(userId, notificationId);
+      await this._markNotificationReadUseCase.execute(userContext.userId, notificationId);
 
       return res
         .status(HttpStatus.OK)
-        .json(ApiResponse.success("Notification marked as read"));
+        .json(ApiResponse.success(MESSAGES.NOTIFICATION.MARKED_READ));
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
@@ -124,37 +153,46 @@ export class NotificationController {
         .json(ApiResponse.error(message));
     }
   };
+
+
 
   markAllAsRead = async (req: Request, res: Response) => {
     try {
-      const { userId, is_premium } = res.locals.user as any;
+      const userContext = res.locals.user as AuthUserContext;
 
-      await this.markAllReadUseCase.execute(userId, !!is_premium);
+      await this._markAllReadUseCase.execute(
+        userContext.userId,
+        !!userContext.is_premium
+      );
 
       return res
         .status(HttpStatus.OK)
-        .json(ApiResponse.success("All notifications marked as read"));
+        .json(ApiResponse.success(MESSAGES.NOTIFICATION.MARKED_ALL_READ));
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
+
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json(ApiResponse.error(message));
     }
   };
 
+
+
   clearNotifications = async (req: Request, res: Response) => {
     try {
-      const { userId } = res.locals.user as any;
+      const userContext = res.locals.user as AuthUserContext;
 
-      await this.clearNotificationsUseCase.execute(userId);
+      await this._clearNotificationsUseCase.execute(userContext.userId);
 
       return res
         .status(HttpStatus.OK)
-        .json(ApiResponse.success("Notifications cleared"));
+        .json(ApiResponse.success(MESSAGES.NOTIFICATION.CLEARED));
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
+
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json(ApiResponse.error(message));

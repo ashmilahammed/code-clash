@@ -1,17 +1,20 @@
 import { INotificationRepository } from "../../../../domain/repositories/notification/INotificationRepository";
 import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
+import { UserNotificationsQueryDTO } from "../../../dto/notification/UserNotificationsQueryDTO";
 
 export class GetUserNotificationsUseCase {
   constructor(
-    private readonly notificationRepository: INotificationRepository,
-    private readonly userRepository: IUserRepository
+    private readonly _notificationRepository: INotificationRepository,
+    private readonly _userRepository: IUserRepository
   ) {}
 
-  async execute(userId: string, page: number, limit: number) {
-    const user = await this.userRepository.findById(userId);
-    const isPremium = user?.is_premium || false;
+  async execute(dto: UserNotificationsQueryDTO) {
+    const { userId, page, limit } = dto;
 
-    return await this.notificationRepository.getUserNotifications(
+    const user = await this._userRepository.findById(userId);
+    const isPremium = user?.is_premium ?? false;
+
+    return await this._notificationRepository.getUserNotifications(
       userId,
       isPremium,
       page,

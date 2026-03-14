@@ -4,7 +4,7 @@ export interface IBadgeRepository {
     findAll(): Promise<Badge[]>;
     findById(id: string): Promise<Badge | null>;
     create(badge: Badge): Promise<Badge>;
-    update(id: string, badge: Partial<Badge>): Promise<Badge | null>;
+    updateEntity(badge: Badge): Promise<Badge>;
     delete(id: string): Promise<boolean>;
     findByRequirementType(type: string): Promise<Badge[]>;
     findByIds(ids: string[]): Promise<Badge[]>;

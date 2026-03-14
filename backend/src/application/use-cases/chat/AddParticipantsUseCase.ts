@@ -1,46 +1,67 @@
 import { IConversationRepository } from "../../../domain/repositories/chat/IConversationRepository";
 import { Conversation } from "../../../domain/entities/chat/Conversation";
+import { AddParticipantsDTO } from "../../dto/chat/AddParticipantsDTO";
 
 
 export class AddParticipantsUseCase {
-    constructor(private conversationRepository: IConversationRepository) { }
+  constructor(
+    private readonly _conversationRepository: IConversationRepository
+  ) {}
 
-    async execute(conversationId: string, adderId: string, newParticipantIds: string[]): Promise<Conversation> {
-        const conversation = await this.conversationRepository.findById(conversationId);
+  async execute(dto: AddParticipantsDTO): Promise<Conversation> {
+    const { conversationId, adderId, participants } = dto;
 
-        if (!conversation) {
-            throw new Error("Group not found");
-        }
+    const conversation =
+      await this._conversationRepository.findById(conversationId);
 
-        if (conversation.type !== 'group') {
-            throw new Error("Cannot add participants to a direct message conversation");
-        }
-
-        if (!conversation.participants.includes(adderId) && conversation.adminId !== adderId) {
-            throw new Error("You do not have permission to add participants to this group");
-        }
-
-        const currentParticipantsMap = new Map(conversation.participants.map(id => [id.toString(), true]));
-        const uniqueNewParticipants = newParticipantIds.filter(id => !currentParticipantsMap.has(id.toString()));
-
-        if (uniqueNewParticipants.length === 0) {
-            throw new Error("All provided users are already in the group");
-        }
-
-        const updatedParticipants = [...conversation.participants, ...uniqueNewParticipants];
-
-        if (conversation.memberLimit && updatedParticipants.length > conversation.memberLimit) {
-            throw new Error(`Adding these users would exceed the group's member limit of ${conversation.memberLimit}`);
-        }
-
-        const updatedConversation = await this.conversationRepository.update(conversationId, {
-            participants: updatedParticipants
-        });
-
-        if (!updatedConversation) {
-            throw new Error("Failed to add participants");
-        }
-
-        return updatedConversation;
+    if (!conversation) {
+      throw new Error("GROUP_NOT_FOUND");
     }
+
+    if (conversation.type !== "group") {
+      throw new Error("NOT_GROUP_CONVERSATION");
+    }
+
+    if (
+      !conversation.participants.includes(adderId) &&
+      conversation.adminId !== adderId
+    ) {
+      throw new Error("NO_PERMISSION_TO_ADD_PARTICIPANTS");
+    }
+
+    const existingSet = new Set(
+      conversation.participants.map((id) => id.toString())
+    );
+
+    const uniqueNew = participants.filter(
+      (id) => !existingSet.has(id.toString())
+    );
+
+    if (uniqueNew.length === 0) {
+      throw new Error("ALL_USERS_ALREADY_IN_GROUP");
+    }
+
+    const updatedParticipants = [
+      ...conversation.participants,
+      ...uniqueNew,
+    ];
+
+    if (
+      conversation.memberLimit &&
+      updatedParticipants.length > conversation.memberLimit
+    ) {
+      throw new Error("GROUP_MEMBER_LIMIT_EXCEEDED");
+    }
+
+    const updatedConversation =
+      await this._conversationRepository.update(conversationId, {
+        participants: updatedParticipants,
+      });
+
+    if (!updatedConversation) {
+      throw new Error("FAILED_TO_ADD_PARTICIPANTS");
+    }
+
+    return updatedConversation;
+  }
 }

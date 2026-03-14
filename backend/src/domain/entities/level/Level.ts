@@ -4,7 +4,6 @@ export class Level {
     public readonly levelNumber: number,
     public readonly minXp: number,
     public readonly maxXp: number,
-    public readonly badgeId?: string | null,
     public readonly title?: string,
     public readonly createdAt?: Date,
     public readonly updatedAt?: Date

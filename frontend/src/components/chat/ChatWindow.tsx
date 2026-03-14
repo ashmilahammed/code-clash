@@ -304,7 +304,8 @@ const ChatWindow = () => {
                                             <img src={member.avatar} alt={member.username} className="w-full h-full object-cover" />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center bg-blue-600/10 text-blue-400 text-xs font-bold">
-                                                {member.username[0].toUpperCase()}
+                                                {/* {member.username[0].toUpperCase()} */}
+                                                {member.username?.[0]?.toUpperCase() || "U"}
                                             </div>
                                         )}
                                     </div>

@@ -4,6 +4,8 @@ import { IPasswordService } from "../../../domain/services/IPasswordService";
 import { generateOtp } from "../../../utils/generateOtp";
 
 import { UserFactory } from "../../../domain/entities/user/userFactory";
+import { RegisterDTO } from "../../dto/auth/RegisterDTO";
+
 
 
 export class RegisterUseCase {
@@ -14,7 +16,9 @@ export class RegisterUseCase {
   ) { }
 
 
-  async execute(username: string, email: string, password: string) {
+  async execute(dto: RegisterDTO) {
+
+    const { username, email, password } = dto;
 
     const existing = await this._userRepo.findByEmail(email);
 
@@ -58,10 +62,6 @@ export class RegisterUseCase {
 
     return { userId: createdUser.id };
 
-
-    // await this._userRepo.createUser(newUser);
-    // await this._emailService.sendOtpEmail(email, otp);
-    // return { userId: newUser.id };
   }
 
 }

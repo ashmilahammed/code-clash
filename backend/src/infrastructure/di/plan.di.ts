@@ -4,10 +4,7 @@ import { UpdatePlanUseCase } from "../../application/use-cases/plans/admin/Updat
 import { DeletePlanUseCase } from "../../application/use-cases/plans/admin/DeletePlanUseCase";
 import { PlanController } from "../../presentation/controllers/plan.controller";
 import { PlanRepository } from "../repositories/plan/PlanRepository";
-import { WinstonLogger } from "../services/logger";
 
-// Shared services
-const logger = new WinstonLogger();
 
 // Repositories
 const planRepository = new PlanRepository();
@@ -24,5 +21,4 @@ export const planController = new PlanController(
     getPlansUseCase,
     updatePlanUseCase,
     deletePlanUseCase,
-    logger
 );

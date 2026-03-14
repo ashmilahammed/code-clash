@@ -172,28 +172,55 @@ export const useChatStore = create<ChatState>((set, get) => ({
         }
     },
 
-    // createGroup: async (name: string, participants: string[] = []) => {
+
+
+    // createGroup: async (name: string, description?: string, memberLimit?: number, isPrivate?: boolean, participants: string[] = []) => {
     //     try {
-    //         const newGroup = await chatApi.createGroup(name, participants);
+    //         const newGroup = await chatApi.createGroup(name, description, memberLimit, isPrivate, participants);
     //         set(state => ({ conversations: [newGroup, ...state.conversations] }));
     //         get().setActiveConversation(newGroup);
-    //     } catch (error) {
-    //         console.error('Failed to create group:', error);
+    //     } catch (error: any) {
+    //         const message = error.response?.data?.message || "Failed to create group";
+    //         toast.error(message);
     //         throw error;
     //     }
     // },
 
-    createGroup: async (name: string, description?: string, memberLimit?: number, isPrivate?: boolean, participants: string[] = []) => {
+
+    createGroup: async (
+        name: string,
+        description?: string,
+        memberLimit?: number,
+        isPrivate?: boolean,
+        participants: string[] = []
+    ) => {
         try {
-            const newGroup = await chatApi.createGroup(name, description, memberLimit, isPrivate, participants);
-            set(state => ({ conversations: [newGroup, ...state.conversations] }));
-            get().setActiveConversation(newGroup);
+            const newGroup = await chatApi.createGroup(
+                name,
+                description,
+                memberLimit,
+                isPrivate,
+                participants
+            );
+
+            //  fetch fresh populated conversations
+            await get().fetchConversations();
+
+            //  find the full group object
+            const fullGroup = get().conversations.find(c => c.id === newGroup.id);
+
+            //  set that as active
+            if (fullGroup) {
+                get().setActiveConversation(fullGroup);
+            }
+
         } catch (error: any) {
             const message = error.response?.data?.message || "Failed to create group";
             toast.error(message);
             throw error;
         }
     },
+
 
     joinGroup: async (conversationId: string) => {
         try {

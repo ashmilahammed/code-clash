@@ -183,9 +183,9 @@ export class SubmitSolutionUseCase {
 
 
                 //
-                if (level.badgeId) {
-                    await this.userRepo.updateBadge(userId, level.badgeId);
-                }
+                // if (level.badgeId) {
+                //     await this.userRepo.updateBadge(userId, level.badgeId);
+                // }
 
                 // Automatic Badge Rewards - LEVEL
                 const levelNumber = level.levelNumber;

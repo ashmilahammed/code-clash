@@ -1,7 +1,9 @@
 import { INotificationRepository } from "../../../../domain/repositories/notification/INotificationRepository";
 
 export class SendNotificationUseCase {
-  constructor(private readonly notificationRepository: INotificationRepository) {}
+  constructor(
+    private readonly _notificationRepository: INotificationRepository
+  ) { }
 
   async execute(data: {
     title: string;
@@ -9,6 +11,6 @@ export class SendNotificationUseCase {
     recipientType: "all" | "normal" | "premium";
     senderId: string;
   }) {
-    return await this.notificationRepository.createNotification(data);
+    return await this._notificationRepository.createNotification(data);
   }
 }

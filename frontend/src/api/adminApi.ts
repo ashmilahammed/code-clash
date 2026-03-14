@@ -1,10 +1,3 @@
-// import api from "./axiosInstance";
-
-// export const getAdminDashboardStatsApi = async () => {
-//     return await api.get("/admin/dashboard/stats");
-// };
-
-
 import api from "./axiosInstance";
 import type { ListQuery } from "../types/ListQuery";
 
@@ -59,27 +52,27 @@ export const updateUserStatusApi = async (
 };
 
 
-// --- Group Management ---
 
-export const getAdminGroupsApi = async (
-    query: ListQuery
-): Promise<PaginatedResponse<AdminGroup>> => {
-    const res = await api.get("/admin/groups", { params: query });
-    return res.data;
-};
+// // --- Group Management ---
+// export const getAdminGroupsApi = async (
+//     query: ListQuery
+// ): Promise<PaginatedResponse<AdminGroup>> => {
+//     const res = await api.get("/admin/groups", { params: query });
+//     return res.data.data;
+// };
 
-export const updateAdminGroupStatusApi = async (
-    groupId: string,
-    status: 'active' | 'inactive'
-): Promise<void> => {
-    await api.patch(`/admin/groups/${groupId}/status`, { status });
-};
+// export const updateAdminGroupStatusApi = async (
+//     groupId: string,
+//     status: 'active' | 'inactive'
+// ): Promise<void> => {
+//     await api.patch(`/admin/groups/${groupId}/status`, { status });
+// };
 
-export const deleteAdminGroupApi = async (
-    groupId: string
-): Promise<void> => {
-    await api.delete(`/admin/groups/${groupId}`);
-};
+// export const deleteAdminGroupApi = async (
+//     groupId: string
+// ): Promise<void> => {
+//     await api.delete(`/admin/groups/${groupId}`);
+// };
 
 
 

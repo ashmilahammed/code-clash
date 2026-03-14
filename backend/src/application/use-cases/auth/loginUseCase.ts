@@ -5,6 +5,7 @@ import { IJwtService } from "../../../domain/services/IJwtService";
 import { generateOtp } from "../../../utils/generateOtp";
 
 import { UpdateLoginStreakUseCase } from "../user/user/updateLoginStreakUseCase";
+import { LoginDTO } from "../../dto/auth/LoginDTO";
 
 
 
@@ -18,7 +19,9 @@ export class LoginUseCase {
   ) { }
 
 
-  async execute(email: string, password: string) {
+  async execute(dto:LoginDTO) {
+
+    const {email, password} = dto;
 
     const user = await this._userRepository.findByEmail(email);
     if (!user) throw new Error("USER_NOT_FOUND");
@@ -36,14 +39,10 @@ export class LoginUseCase {
     }
 
     // Google-only user
-    // if (!user.password) {
-    //   throw new Error("GOOGLE_ONLY_ACCOUNT");
-    // }
     if (!user.hasPassword()) {
       throw new Error("GOOGLE_ONLY_ACCOUNT");
     }
 
-    // const isMatch = await this._passwordService.compare(password, user.password);
     const isMatch = await user.verifyPassword(password, this._passwordService);
 
     if (!isMatch) throw new Error("INVALID_CREDENTIALS");

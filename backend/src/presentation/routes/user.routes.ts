@@ -36,7 +36,8 @@ router.put("/profile", authMiddleware, userController.updateProfile);
 
 router.post("/welcome-xp", authMiddleware, userController.claimWelcomeXp);
 
-router.get("/plans", authMiddleware, planController.getPublicPlans.bind(planController));
+// router.get("/plans", authMiddleware, planController.getPublicPlans.bind(planController));
+router.get("/plans", authMiddleware, planController.getPublicPlans);
 
 // notifications
 router.use("/notifications", authMiddleware, notificationRoutes);

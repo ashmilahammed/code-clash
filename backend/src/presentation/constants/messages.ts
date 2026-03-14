@@ -59,6 +59,46 @@ export const MESSAGES = {
 
   LEVEL: {
     CREATED: "Level created successfully",
+    FETCH_SUCCESS: "Levels retrieved successfully",
+    UPDATED: "Level updated successfully",
+    DELETED: "Level deleted successfully",
+    ID_REQUIRED: "Level ID is required",
+    NOT_FOUND: "Level not found",
+  },
+
+
+  BADGE: {
+    FETCH_SUCCESS: "Badges retrieved successfully",
+    CREATE_SUCCESS: "Badge created successfully",
+    UPDATE_SUCCESS: "Badge updated successfully",
+    DELETE_SUCCESS: "Badge deleted successfully",
+    ID_REQUIRED: "Badge id is required",
+    ALREADY_EXISTS: "A badge with this name already exists",
+  },
+
+  CHAT: {
+    GROUPS_FETCH_SUCCESS: "Groups fetched successfully",
+    GROUP_STATUS_UPDATED: "Group status updated successfully",
+    GROUP_DELETED: "Group deleted successfully",
+  },
+
+  NOTIFICATION: {
+    SENT: "Notification sent successfully",
+    FETCH_SUCCESS: "Notifications fetched successfully",
+    MARKED_READ: "Notification marked as read",
+    MARKED_ALL_READ: "All notifications marked as read",
+    CLEARED: "Notifications cleared",
+    ID_REQUIRED: "Notification id is required",
+  },
+
+
+  PLAN: {
+    CREATED: "Plan created successfully",
+    FETCH_SUCCESS: "Plans fetched successfully",
+    UPDATED: "Plan updated successfully",
+    DELETED: "Plan deleted successfully",
+    ID_REQUIRED: "Plan ID is required",
+    NOT_FOUND: "Plan not found",
   },
 
 
