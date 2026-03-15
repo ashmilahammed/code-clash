@@ -1,5 +1,6 @@
 import api from "./axiosInstance";
 
+
 // Admin
 export const sendNotificationApi = async (data: {
   title: string;
@@ -12,13 +13,13 @@ export const sendNotificationApi = async (data: {
 
 export const getAdminNotificationHistoryApi = async (page = 1, limit = 10) => {
   const response = await api.get(`/admin/notifications/history?page=${page}&limit=${limit}`);
-  return response.data;
+  return response.data.data;
 };
 
 // User
 export const getUserNotificationsApi = async (page = 1, limit = 10) => {
-  const response = await api.get(`/user/notifications?page=${page}&limit=${limit}`);
-  return response.data;
+  const res = await api.get(`/user/notifications?page=${page}&limit=${limit}`);
+  return res.data.data;  
 };
 
 export const markAsReadApi = async (notificationId: string) => {

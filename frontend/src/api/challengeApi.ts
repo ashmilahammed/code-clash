@@ -17,28 +17,20 @@ export const getChallengesApi = async (): Promise<Challenge[]> => {
 };
 
 //
-export const getChallengeByIdApi = async (
-    id: string
-): Promise<Challenge> => {
+export const getChallengeByIdApi = async (id: string): Promise<Challenge> => {
     const res = await axiosInstance.get(`/challenges/${id}`);
     return res.data.data;
 };
 
-export const getAdminChallengeByIdApi = async (
-    id: string
-): Promise<Challenge> => {
+export const getAdminChallengeByIdApi = async (id: string): Promise<Challenge> => {
     const res = await axiosInstance.get(`/admin/challenges/${id}`);
     return res.data.data;
 };
 
 
 // no solution code(only templates)
-export const getChallengeTemplatesApi = async (
-    challengeId: string
-): Promise<{ language: string; starterCode: string }[]> => {
-    const res = await axiosInstance.get(
-        `/challenges/${challengeId}/templates`
-    );
+export const getChallengeTemplatesApi = async (challengeId: string): Promise<{ language: string; starterCode: string }[]> => {
+    const res = await axiosInstance.get(`/challenges/${challengeId}/templates`);
     return res.data.data;
 };
 
@@ -47,21 +39,14 @@ export const getChallengeTemplatesApi = async (
 
 
 // Admin – list challenges
-export const getAdminChallengesApi = async (
-    query: ListQuery
-): Promise<PaginatedResponse<Challenge>> => {
-    const res = await axiosInstance.get("/admin/challenges", {
-        params: query,
-    });
+export const getAdminChallengesApi = async (query: ListQuery): Promise<PaginatedResponse<Challenge>> => {
+    const res = await axiosInstance.get("/admin/challenges", { params: query, });
 
     return res.data.data;
 };
 
 // toggle challenge 
-export const toggleChallengeStatusApi = async (
-    challengeId: string,
-    isActive: boolean
-): Promise<void> => {
+export const toggleChallengeStatusApi = async (challengeId: string, isActive: boolean): Promise<void> => {
     await axiosInstance.patch(
         // `/challenges/${challengeId}/toggle/status`,
         `/admin/challenges/${challengeId}/status`,
@@ -76,9 +61,7 @@ export const deleteChallengeApi = async (challengeId: string): Promise<void> => 
 
 
 // wizard (admin)
-export const createChallengeBasicApi = async (
-    payload: CreateChallengePayload
-): Promise<CreateChallengeResponse> => {
+export const createChallengeBasicApi = async (payload: CreateChallengePayload): Promise<CreateChallengeResponse> => {
     const res = await axiosInstance.post("/admin/challenges", payload);
     return res.data.data; // { id, status }
 };
@@ -92,10 +75,7 @@ export const updateChallengeBasicApi = async (
 };
 
 
-export const addChallengeTagsApi = async (
-    challengeId: string,
-    tags: string[]
-) => {
+export const addChallengeTagsApi = async (challengeId: string, tags: string[]) => {
     await axiosInstance.post(
         `/admin/challenges/${challengeId}/tags`,
         { tags }
@@ -113,9 +93,7 @@ export const getAvailableLanguagesApi = async () => {
     return res.data.data;
 };
 
-export const getChallengeLanguagesApi = async (
-    challengeId: string
-): Promise<string[]> => {
+export const getChallengeLanguagesApi = async (challengeId: string): Promise<string[]> => {
     const res = await axiosInstance.get(
         `/admin/challenges/${challengeId}/languages`
     );
@@ -123,10 +101,7 @@ export const getChallengeLanguagesApi = async (
 };
 
 
-export const addChallengeLanguagesApi = async (
-    challengeId: string,
-    languages: string[]
-) => {
+export const addChallengeLanguagesApi = async (challengeId: string, languages: string[]) => {
     await axiosInstance.post(
         `/admin/challenges/${challengeId}/languages`,
         { languages }

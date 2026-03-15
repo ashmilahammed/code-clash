@@ -2,8 +2,12 @@ import { useState, useEffect } from "react";
 import { CreditCard, IndianRupee, Users } from "lucide-react";
 import toast from "react-hot-toast";
 
-import { getPlansApi, getTransactionsApi, createPlanApi, updatePlanApi, deletePlanApi } from "../../../api/planApi";
-import type { Plan, Transaction } from "../../../api/planApi";
+// import { getPlansApi, getTransactionsApi, createPlanApi, updatePlanApi, deletePlanApi } from "../../../api/planApi";
+// import type { Plan, Transaction } from "../../../api/planApi";
+import { getPlansApi ,createPlanApi, updatePlanApi, deletePlanApi } from "../../../api/planApi";
+import { getAdminTransactionsApi } from "../../../api/transactionApi";
+import type { Plan } from "../../../api/planApi";
+import type { Transaction } from "../../../api/transactionApi";
 import PlanTable from "./components/PlanTable";
 import TransactionTable from "./components/TransactionTable";
 import PlanModal from "./components/PlanModal";
@@ -23,10 +27,15 @@ const PlanManagement = () => {
         fetchTransactions();
     }, []);
 
+    //
     const fetchPlans = async () => {
         try {
-            const res = await getPlansApi();
-            setPlans(res.data.data);
+            // const res = await getPlansApi();
+            // setPlans(res.data.data);
+
+            const plans = await getPlansApi();
+            setPlans(plans)
+
         } catch (error) {
             toast.error("Failed to fetch plans");
         }
@@ -34,8 +43,9 @@ const PlanManagement = () => {
 
     const fetchTransactions = async () => {
         try {
-            const res = await getTransactionsApi();
-            setTransactions(res.data.data);
+            const tx = await getAdminTransactionsApi();
+            setTransactions(tx)
+
         } catch (error) {
             toast.error("Failed to fetch transactions");
         }

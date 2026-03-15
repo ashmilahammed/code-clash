@@ -20,22 +20,15 @@ export interface AdminGroup {
 }
 
 
-export const getAdminGroupsApi = async (
-    query: ListQuery
-): Promise<PaginatedResponse<AdminGroup>> => {
+export const getAdminGroupsApi = async (query: ListQuery): Promise<PaginatedResponse<AdminGroup>> => {
     const res = await api.get("/admin/groups", { params: query });
     return res.data.data;
 };
 
-export const updateAdminGroupStatusApi = async (
-    groupId: string,
-    status: 'active' | 'inactive'
-): Promise<void> => {
+export const updateAdminGroupStatusApi = async (groupId: string, status: 'active' | 'inactive'): Promise<void> => {
     await api.patch(`/admin/groups/${groupId}/status`, { status });
 };
 
-export const deleteAdminGroupApi = async (
-    groupId: string
-): Promise<void> => {
+export const deleteAdminGroupApi = async (groupId: string): Promise<void> => {
     await api.delete(`/admin/groups/${groupId}`);
 };

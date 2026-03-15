@@ -11,11 +11,11 @@ import {
   Bell,
   Check,
 } from "lucide-react";
-import { 
-  getUserNotificationsApi, 
-  markAsReadApi, 
-  markAllAsReadApi, 
-  clearNotificationsApi 
+import {
+  getUserNotificationsApi,
+  markAsReadApi,
+  markAllAsReadApi,
+  clearNotificationsApi
 } from "../../api/notificationApi";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "react-hot-toast";
@@ -42,9 +42,18 @@ function UserNavbar() {
 
   const fetchNotifications = async () => {
     try {
-      const res = await getUserNotificationsApi(1, 10);
-      setNotifications(res.data.data);
-      setUnreadCount(res.data.data.filter((n: any) => !n.isRead).length);
+
+      // const res = await getUserNotificationsApi(1, 10);
+      // setNotifications(res.data.data);
+      // setUnreadCount(res.data.data.filter((n: any) => !n.isRead).length);
+
+      const notifications = await getUserNotificationsApi(1, 10);
+
+      setNotifications(notifications);
+      setUnreadCount(
+        notifications.filter((n: any) => !n.isRead).length
+      );
+
     } catch (err) {
       console.error("Failed to fetch notifications", err);
     }
@@ -191,11 +200,11 @@ function UserNavbar() {
           {showNotifications && (
             <>
               {/* Backdrop to close */}
-              <div 
-                className="fixed inset-0 z-40" 
+              <div
+                className="fixed inset-0 z-40"
                 onClick={() => setShowNotifications(false)}
               />
-              
+
               <div className="absolute right-0 mt-2 w-80 bg-[#0f172a] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50">
                 <div className="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
                   <h3 className="font-semibold text-sm">Notifications</h3>
@@ -210,35 +219,35 @@ function UserNavbar() {
                   {notifications.length > 0 ? (
                     <div className="divide-y divide-slate-800/50">
                       {notifications.map((n) => (
-                        <div 
-                          key={n.id} 
+                        <div
+                          key={n.id}
                           className={`p-4 hover:bg-slate-800/40 transition cursor-default group relative ${!n.isRead ? 'bg-blue-900/10' : ''}`}
                         >
                           <div className="flex justify-between items-start gap-2">
-                             <div className="space-y-1 flex-1">
-                               <div className="flex items-center gap-2">
-                                 {!n.isRead && <div className="w-2 h-2 bg-blue-500 rounded-full shrink-0" />}
-                                 <h4 className={`text-sm font-medium ${!n.isRead ? 'text-white' : 'text-slate-400'}`}>
-                                   {n.title}
-                                 </h4>
-                               </div>
-                               <p className="text-xs text-slate-500 leading-relaxed">
-                                 {n.message}
-                               </p>
-                               <span className="text-[10px] text-slate-600 block pt-1">
-                                 {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true })}
-                               </span>
-                             </div>
-                             
-                             {!n.isRead && (
-                               <button 
-                                 onClick={() => handleMarkAsRead(n.id)}
-                                 className="opacity-0 group-hover:opacity-100 p-1 hover:bg-slate-700 rounded transition text-blue-400"
-                                 title="Mark as read"
-                               >
-                                 <Check size={14} />
-                               </button>
-                             )}
+                            <div className="space-y-1 flex-1">
+                              <div className="flex items-center gap-2">
+                                {!n.isRead && <div className="w-2 h-2 bg-blue-500 rounded-full shrink-0" />}
+                                <h4 className={`text-sm font-medium ${!n.isRead ? 'text-white' : 'text-slate-400'}`}>
+                                  {n.title}
+                                </h4>
+                              </div>
+                              <p className="text-xs text-slate-500 leading-relaxed">
+                                {n.message}
+                              </p>
+                              <span className="text-[10px] text-slate-600 block pt-1">
+                                {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true })}
+                              </span>
+                            </div>
+
+                            {!n.isRead && (
+                              <button
+                                onClick={() => handleMarkAsRead(n.id)}
+                                className="opacity-0 group-hover:opacity-100 p-1 hover:bg-slate-700 rounded transition text-blue-400"
+                                title="Mark as read"
+                              >
+                                <Check size={14} />
+                              </button>
+                            )}
                           </div>
                         </div>
                       ))}
@@ -255,14 +264,14 @@ function UserNavbar() {
 
                 <div className="p-3 bg-slate-900/50 border-t border-slate-800 flex justify-between items-center">
                   <div className="flex gap-3">
-                    <button 
+                    <button
                       onClick={handleMarkAllAsRead}
                       className="text-[11px] text-slate-400 hover:text-white transition"
                     >
                       Mark all as read
                     </button>
                     <span className="text-slate-700">|</span>
-                    <button 
+                    <button
                       onClick={handleClear}
                       className="text-[11px] text-slate-400 hover:text-red-400 transition"
                     >
@@ -285,13 +294,13 @@ function UserNavbar() {
         >
           {/* Avatar */}
           <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 overflow-hidden shrink-0">
-              <img 
-                src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.username || 'User'}&background=random`}
-                alt={user?.username || "User"} 
-                className="w-full h-full object-cover"
-              />
+            <img
+              src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.username || 'User'}&background=random`}
+              alt={user?.username || "User"}
+              className="w-full h-full object-cover"
+            />
           </div>
-          
+
           {/* User Name & Rank */}
           <div className="flex flex-col leading-tight text-right">
             <span className="text-sm font-medium">

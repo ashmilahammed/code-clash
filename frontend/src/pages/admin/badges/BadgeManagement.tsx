@@ -16,10 +16,14 @@ const BadgeManagement = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
+
+
     const fetchData = async () => {
         try {
-            const response = await getAllBadges();
-            setBadges(response.data || []);
+            // const response = await getAllBadges();
+            // setBadges(response.data || []);
+            const badges = await getAllBadges();   
+            setBadges(badges || []);
         } catch (error) {
             console.error("Failed to fetch badges:", error);
         }
@@ -28,6 +32,7 @@ const BadgeManagement = () => {
     useEffect(() => {
         fetchData();
     }, []);
+
 
     const handleSave = async (data: any) => {
         if (currentBadge) {
@@ -39,6 +44,7 @@ const BadgeManagement = () => {
         setIsModalOpen(false);
         setCurrentBadge(null);
     };
+    
 
     const handleEdit = (badge: Badge) => {
         setCurrentBadge(badge);

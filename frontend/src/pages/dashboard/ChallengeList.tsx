@@ -150,7 +150,7 @@ const ChallengeList = () => {
               </div>
 
               {/* Description */}
-              <p className="text-sm text-slate-400 mb-6 line-clamp-2 min-h-[40px]">
+              <p className="text-sm text-slate-400 mb-6 line-clamp-2 min-h-10">
                 {challenge.description}
               </p>
             </div>
@@ -215,7 +215,7 @@ const ChallengeList = () => {
                 }}
                 className={`w-full py-3 rounded-lg text-white transition-all flex items-center justify-center gap-2 font-bold text-sm ${
                  challenge.isPremium && !user?.is_premium 
-                  ? "bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 shadow-lg shadow-amber-500/20" 
+                  ? "bg-linear-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 shadow-lg shadow-amber-500/20" 
                   : "bg-slate-800 hover:bg-indigo-600 border border-slate-700 hover:border-indigo-500"
                 }`}
               >

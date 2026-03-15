@@ -112,6 +112,7 @@ export class NotificationRepository
     return { data, total };
   }
 
+  
   async markAsRead(userId: string, notificationId: string): Promise<void> {
     await UserNotificationModel.updateOne(
       { userId, notificationId },

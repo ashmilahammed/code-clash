@@ -30,25 +30,23 @@ export interface AdminGroup {
     createdAt: string;
 }
 
-//get paginated users(admin)
-export const getUsersApi = async (
-    query: ListQuery
-): Promise<PaginatedResponse<AdminUser>> => {
-    const res = await api.get("/admin/users", {
-        params: query,
-    });
+//get paginated users
+export const getUsersApi = async (query: ListQuery): Promise<PaginatedResponse<AdminUser>> => {
+    const res = await api.get("/admin/users", { params: query, });
 
-    // backend already wraps once
     return res.data.data;
 };
 
 
-// update user status(admin)
-export const updateUserStatusApi = async (
-    userId: string,
-    status: UserStatus
-): Promise<void> => {
+//
+export const updateUserStatusApi = async (userId: string, status: UserStatus): Promise<void> => {
     await api.patch(`/admin/users/${userId}/status`, { status });
+};
+
+
+//dashboard
+export const getAdminDashboardStatsApi = async (range: string = '30days') => {
+    return await api.get("/admin/dashboard/stats", { params: { range } });
 };
 
 
@@ -77,7 +75,3 @@ export const updateUserStatusApi = async (
 
 
 
-//
-export const getAdminDashboardStatsApi = async (range: string = '30days') => {
-    return await api.get("/admin/dashboard/stats", { params: { range } });
-};

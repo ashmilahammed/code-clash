@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Plus, Edit2, Trash2 } from "lucide-react";
-import { getAllLevels, createLevel, updateLevel, deleteLevel } from "../../../api/levelApi"; 
-import LevelModal from "../../../components/modals/LevelModal"; 
-import ConfirmModal from "../../../components/modals/ConfirmModal"; 
+import { getAllLevels, createLevel, updateLevel, deleteLevel } from "../../../api/levelApi";
+import LevelModal from "../../../components/modals/LevelModal";
+import ConfirmModal from "../../../components/modals/ConfirmModal";
 import type { Level } from "../../../types/Level";
 
 
@@ -17,9 +17,11 @@ const LevelManagement = () => {
 
   const fetchData = async () => {
     try {
-      const res = await getAllLevels();
-     
-      setLevels(res.data || []);
+      // const res = await getAllLevels();
+      // setLevels(res.data || []);
+      const levels = await getAllLevels();
+      setLevels(levels || []);
+      
     } catch (error) {
       console.error("Failed to fetch data:", error);
     }
@@ -70,7 +72,7 @@ const LevelManagement = () => {
 
 
 
-  
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">

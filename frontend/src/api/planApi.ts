@@ -11,51 +11,32 @@ export interface Plan {
     status: "Active" | "Inactive";
 }
 
-// Transaction Interface
-export interface Transaction {
-    id: string;
-    user: { name: string; email: string; avatar: string } | null;
-    plan: { name: string } | null;
-    amount: number;
-    paymentMethod: string;
-    status: "Completed" | "Pending" | "Failed";
-    date: string;
-}
 
 
-export interface ApiResponse<T> {
-    success: boolean;
-    message: string;
-    data: T;
-}
+export const getPlansApi = async (): Promise<Plan[]> => {
+    const res = await axiosInstance.get("/admin/plans");
+    return res.data.data;
+};
 
+export const createPlanApi = async (data: Partial<Plan>): Promise<Plan> => {
+    const res = await axiosInstance.post("/admin/plans", data);
+    return res.data.data;
+};
 
-// Plan APIs
-export const getPlansApi = () =>
-    axiosInstance.get<ApiResponse<Plan[]>>("/admin/plans");
+export const updatePlanApi = async (id: string, data: Partial<Plan>): Promise<Plan> => {
+    const res = await axiosInstance.put(`/admin/plans/${id}`, data);
+    return res.data.data;
+};
 
-export const createPlanApi = (data: Partial<Plan>) =>
-    axiosInstance.post<ApiResponse<Plan>>("/admin/plans", data);
+export const deletePlanApi = async (id: string): Promise<void> => {
+    await axiosInstance.delete(`/admin/plans/${id}`);
+};
 
-export const updatePlanApi = (id: string, data: Partial<Plan>) =>
-    axiosInstance.put<Plan>(`/admin/plans/${id}`, data);
-
-export const deletePlanApi = (id: string) =>
-    axiosInstance.delete(`/admin/plans/${id}`);
-
-
-// Transaction APIs
-// export const getTransactionsApi = () =>
-//     axiosInstance.get<Transaction[]>("/admin/transactions");
-export const getTransactionsApi = () =>
-    axiosInstance.get<ApiResponse<Transaction[]>>("/admin/transactions");
-
-
-// Public APIs
-// export const getPublicPlansApi = () =>
-//     axiosInstance.get<ApiResponse<Plan[]>>("/user/plans");
-
+// user plans
 export const getPublicPlansApi = async (): Promise<Plan[]> => {
     const res = await axiosInstance.get("/user/plans");
     return res.data.data;
 };
+
+
+

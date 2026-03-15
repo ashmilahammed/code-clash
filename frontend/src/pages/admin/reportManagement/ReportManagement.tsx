@@ -44,9 +44,15 @@ const ReportManagement = () => {
                 status: statusFilter === "all" ? undefined : statusFilter
             });
 
-            setReports(res.data);
-            setTotalPages(res.totalPages);
-            setTotalReports(res.total);
+
+            // setReports(res.data);
+            // setTotalPages(res.totalPages);
+            // setTotalReports(res.total);
+
+            setReports(res.data || []);
+            setTotalPages(Math.ceil((res.total || 0) / LIMIT) || 1);
+            setTotalReports(res.total || 0);
+
         } catch (error) {
             toast.error("Failed to fetch reports");
         } finally {
@@ -102,6 +108,9 @@ const ReportManagement = () => {
     return (
         <div className="p-8 bg-[#0B1220] min-h-screen text-slate-200">
             <div className="mb-8 flex items-center justify-between">
+                <p className="text-slate-400 mt-1">
+                    Total Reports: {totalReports}
+                </p>
                 <div>
                     <h1 className="text-2xl font-bold text-white flex items-center gap-3">
                         <ShieldCheck className="text-blue-500" />
@@ -170,8 +179,8 @@ const ReportManagement = () => {
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`px-2 py-1 text-[10px] font-bold uppercase rounded-md border ${report.status === 'pending' ? 'bg-orange-500/10 text-orange-500 border-orange-500/20' :
-                                                    report.status === 'resolved' ? 'bg-green-500/10 text-green-500 border-green-500/20' :
-                                                        'bg-slate-500/10 text-slate-400 border-slate-500/20'
+                                                report.status === 'resolved' ? 'bg-green-500/10 text-green-500 border-green-500/20' :
+                                                    'bg-slate-500/10 text-slate-400 border-slate-500/20'
                                                 }`}>
                                                 {report.status}
                                             </span>

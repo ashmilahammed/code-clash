@@ -115,7 +115,7 @@ export class NotificationController {
 
       return res
         .status(HttpStatus.OK)
-        .json(ApiResponse.success(MESSAGES.NOTIFICATION.FETCH_SUCCESS, result));
+        .json(ApiResponse.success(MESSAGES.NOTIFICATION.FETCH_SUCCESS, result.data));
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
