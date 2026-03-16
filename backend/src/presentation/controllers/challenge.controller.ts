@@ -23,10 +23,19 @@ import { GetChallengeCodeTemplatesUseCase } from "../../application/use-cases/ch
 import { GetChallengeHintsUseCase } from "../../application/use-cases/challenge/user/getChallengeHintsUseCase";
 import { GetChallengeTestCasesUseCase } from "../../application/use-cases/challenge/user/getChallengeTestCasesUseCase";
 
+import { CreateChallengeDTO } from "../../application/dto/challenge/CreateChallengeDTO";
+import { UpdateChallengeDTO } from "../../application/dto/challenge/UpdateChallengeDTO";
+import { ToggleChallengeDTO } from "../../application/dto/challenge/ToggleChallengeDTO";
+import { AdminListChallengesQueryDTO } from "../../application/dto/challenge/AdminListChallengesQueryDTO";
+import { UserListChallengesQueryDTO } from "../../application/dto/challenge/UserListChallengesQueryDTO";
+
+import { ChallengeDifficulty, ChallengeDomain } from "../../domain/entities/challenge/Challenge";
+import { toNumber } from "../../utils/toNumber";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
 import { MESSAGES } from "../constants/messages";
+
 
 
 
@@ -58,54 +67,88 @@ export class ChallengeController {
 
     create = async (req: Request, res: Response) => {
         try {
-            const challenge = await this._createChallenge.execute(req.body);
+            // const challenge = await this._createChallenge.execute(req.body);
 
-            return res.status(HttpStatus.CREATED).json(
-                ApiResponse.success(MESSAGES.CHALLENGE.CREATED, {
-                    id: challenge.id,
-                    status: challenge.status,
-                })
-            );
-        } catch (err: unknown) {
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : MESSAGES.COMMON.BAD_REQUEST;
+            // return res
+            //     .status(HttpStatus.CREATED)
+            //     .json(ApiResponse.success(MESSAGES.CHALLENGE.CREATED, {
+            //         id: challenge.id,
+            //         status: challenge.status,
+            //     }));
+
+            const dto: CreateChallengeDTO = {
+                title: req.body.title,
+                description: req.body.description,
+                difficulty: req.body.difficulty,
+                domain: req.body.domain,
+                xpReward: req.body.xpReward,
+                timeLimitMinutes: req.body.timeLimitMinutes,
+                isPremium: req.body.isPremium,
+            };
+
+            const challenge = await this._createChallenge.execute(dto);
 
             return res
+                .status(HttpStatus.CREATED)
+                .json(ApiResponse.success(MESSAGES.CHALLENGE.CREATED, challenge));
+
+        } catch (err: unknown) {
+            return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
         }
     };
 
 
     update = async (req: Request, res: Response) => {
         try {
-            const { id } = req.params;
 
-            if (!id) {
+            // const { id } = req.params;
+
+            // if (!id) {
+            //     return res
+            //         .status(HttpStatus.BAD_REQUEST)
+            //         .json(ApiResponse.error(MESSAGES.CHALLENGE.ID_REQUIRED));
+            // }
+
+            // const challenge = await this._updateChallenge.execute(id, req.body);
+
+            // return res.status(HttpStatus.OK).json(
+            //     ApiResponse.success(MESSAGES.CHALLENGE.UPDATED, {
+            //         id: challenge.id,
+            //         status: challenge.status,
+            //     })
+            // );
+
+            const challengeId = req.params.id;
+
+            if (!challengeId) {
                 return res
                     .status(HttpStatus.BAD_REQUEST)
                     .json(ApiResponse.error(MESSAGES.CHALLENGE.ID_REQUIRED));
             }
 
-            const challenge = await this._updateChallenge.execute(id, req.body);
+            const dto: UpdateChallengeDTO = {
+                challengeId: challengeId,
+                title: req.body.title,
+                description: req.body.description,
+                difficulty: req.body.difficulty,
+                domain: req.body.domain,
+                xpReward: req.body.xpReward,
+                timeLimitMinutes: req.body.timeLimitMinutes,
+                isPremium: req.body.isPremium,
+            };
 
-            return res.status(HttpStatus.OK).json(
-                ApiResponse.success(MESSAGES.CHALLENGE.UPDATED, {
-                    id: challenge.id,
-                    status: challenge.status,
-                })
-            );
-        } catch (err: unknown) {
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : MESSAGES.COMMON.BAD_REQUEST;
+            const result = await this._updateChallenge.execute(dto);
 
             return res
+                .status(HttpStatus.OK)
+                .json(ApiResponse.success(MESSAGES.CHALLENGE.UPDATED, result));
+
+        } catch (err: unknown) {
+            return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
         }
     };
 
@@ -119,16 +162,80 @@ export class ChallengeController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, result));
         } catch (err: unknown) {
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : MESSAGES.COMMON.BAD_REQUEST;
-
             return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
         }
     };
+
+    // adminList = async (req: Request, res: Response) => {
+    //     try {
+
+    //         const page = toNumber(req.query.page, 1);
+    //         const limit = toNumber(req.query.limit, 10);
+
+    //         const search =
+    //             typeof req.query.search === "string"
+    //                 ? req.query.search
+    //                 : undefined;
+
+    //         let difficulty: ChallengeDifficulty | undefined;
+    //         if (
+    //             req.query.difficulty === "easy" ||
+    //             req.query.difficulty === "medium" ||
+    //             req.query.difficulty === "hard"
+    //         ) {
+    //             difficulty = req.query.difficulty;
+    //         }
+
+    //         let domain: ChallengeDomain | undefined;
+    //         if (
+    //             req.query.domain === "arrays" ||
+    //             req.query.domain === "strings" ||
+    //             req.query.domain === "linked-list" ||
+    //             req.query.domain === "stack" ||
+    //             req.query.domain === "queue" ||
+    //             req.query.domain === "tree" ||
+    //             req.query.domain === "graph" ||
+    //             req.query.domain === "dp" ||
+    //             req.query.domain === "math" ||
+    //             req.query.domain === "sql"
+    //         ) {
+    //             domain = req.query.domain;
+    //         }
+
+    //         let status: "active" | "blocked" | undefined;
+    //         if (
+    //             req.query.status === "active" ||
+    //             req.query.status === "blocked"
+    //         ) {
+    //             status = req.query.status;
+    //         }
+
+    //         const dto: AdminListChallengesQueryDTO = {
+    //             page,
+    //             limit,
+    //             search,
+    //             difficulty,
+    //             domain,
+    //             status,
+    //         };
+
+    //         const result = await this._adminListChallenges.execute(dto);
+
+    //         return res
+    //             .status(HttpStatus.OK)
+    //             .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, result));
+
+    //     } catch (err: unknown) {
+    //         return res
+    //             .status(HttpStatus.BAD_REQUEST)
+    //             .json(ApiResponse.error(
+    //                 err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST
+    //             ));
+    //     }
+    // };
+
 
 
     userList = async (req: Request, res: Response) => {
@@ -139,16 +246,78 @@ export class ChallengeController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, result));
         } catch (err: unknown) {
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : MESSAGES.COMMON.BAD_REQUEST;
-
             return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
         }
     };
+
+    // userList = async (req: Request, res: Response) => {
+    //     try {
+
+    //         const page = toNumber(req.query.page, 1);
+    //         const limit = toNumber(req.query.limit, 10);
+
+    //         const search =
+    //             typeof req.query.search === "string"
+    //                 ? req.query.search
+    //                 : undefined;
+
+    //         let difficulty: ChallengeDifficulty | undefined;
+    //         if (
+    //             req.query.difficulty === "easy" ||
+    //             req.query.difficulty === "medium" ||
+    //             req.query.difficulty === "hard"
+    //         ) {
+    //             difficulty = req.query.difficulty;
+    //         }
+
+    //         let domain: ChallengeDomain | undefined;
+    //         if (
+    //             req.query.domain === "arrays" ||
+    //             req.query.domain === "strings" ||
+    //             req.query.domain === "linked-list" ||
+    //             req.query.domain === "stack" ||
+    //             req.query.domain === "queue" ||
+    //             req.query.domain === "tree" ||
+    //             req.query.domain === "graph" ||
+    //             req.query.domain === "dp" ||
+    //             req.query.domain === "math" ||
+    //             req.query.domain === "sql"
+    //         ) {
+    //             domain = req.query.domain;
+    //         }
+
+    //         let isPremium: boolean | undefined;
+    //         if (req.query.isPremium === "true") {
+    //             isPremium = true;
+    //         } else if (req.query.isPremium === "false") {
+    //             isPremium = false;
+    //         }
+
+    //         const dto: UserListChallengesQueryDTO = {
+    //             page,
+    //             limit,
+    //             search,
+    //             difficulty,
+    //             domain,
+    //             isPremium,
+    //         };
+
+    //         const result = await this._userListChallenges.execute(dto);
+
+    //         return res
+    //             .status(HttpStatus.OK)
+    //             .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, result));
+
+    //     } catch (err: unknown) {
+    //         return res
+    //             .status(HttpStatus.BAD_REQUEST)
+    //             .json(ApiResponse.error(
+    //                 err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST
+    //             ));
+    //     }
+    // };
 
 
     getById = async (req: Request, res: Response) => {
@@ -174,14 +343,9 @@ export class ChallengeController {
                 .json(ApiResponse.success(MESSAGES.CHALLENGE.FETCHED, challenge));
 
         } catch (err: unknown) {
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -209,14 +373,9 @@ export class ChallengeController {
                 .json(ApiResponse.success(MESSAGES.CHALLENGE.FETCHED, challenge));
 
         } catch (err: unknown) {
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -245,14 +404,9 @@ export class ChallengeController {
                 ApiResponse.success(MESSAGES.CHALLENGE.TEMPLATES_FETCHED, templates)
             );
         } catch (err: unknown) {
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -274,43 +428,47 @@ export class ChallengeController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.CHALLENGE.DELETED));
         } catch (err: unknown) {
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
 
     toggle = async (req: Request, res: Response) => {
         try {
-            const { id } = req.params;
-            const { isActive } = req.body;
+            // const { id } = req.params;
+            // const { isActive } = req.body;
 
-            if (!id) {
+            // if (!id) {
+            //     return res
+            //         .status(HttpStatus.BAD_REQUEST)
+            //         .json(ApiResponse.error(MESSAGES.CHALLENGE.ID_REQUIRED));
+            // }
+
+            // await this._toggleChallenge.execute(id, isActive);
+            const challengeId = req.params.id;
+
+            if (!challengeId) {
                 return res
                     .status(HttpStatus.BAD_REQUEST)
                     .json(ApiResponse.error(MESSAGES.CHALLENGE.ID_REQUIRED));
             }
 
-            await this._toggleChallenge.execute(id, isActive);
+            const dto: ToggleChallengeDTO = {
+                challengeId: challengeId,
+                isActive: req.body.isActive,
+            };
+
+            await this._toggleChallenge.execute(dto);
 
             return res
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.CHALLENGE.STATUS_UPDATED));
         } catch (err: unknown) {
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : MESSAGES.COMMON.BAD_REQUEST;
-
             return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
         }
     };
 
@@ -341,14 +499,9 @@ export class ChallengeController {
                 .json(ApiResponse.success(MESSAGES.CHALLENGE.TAGS_ADDED));
 
         } catch (err: unknown) {
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -364,12 +517,9 @@ export class ChallengeController {
                 .json(ApiResponse.success(MESSAGES.CHALLENGE.LANGUAGES_FETCHED, langs));
 
         } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -393,12 +543,9 @@ export class ChallengeController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.CHALLENGE.TAGS_ADDED));
         } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -425,14 +572,9 @@ export class ChallengeController {
                     )
                 );
         } catch (err: unknown) {
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -458,14 +600,9 @@ export class ChallengeController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS));
         } catch (err: unknown) {
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -489,14 +626,9 @@ export class ChallengeController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS));
         } catch (err: unknown) {
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -517,14 +649,9 @@ export class ChallengeController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS));
         } catch (err: unknown) {
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -549,14 +676,12 @@ export class ChallengeController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.CHALLENGE.HINTS_FETCHED, hints));
         } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
+
 
     getTestCases = async (req: Request, res: Response) => {
         try {
@@ -574,12 +699,9 @@ export class ChallengeController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.CHALLENGE.TEST_CASES_FETCHED, testCases));
         } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -609,14 +731,9 @@ export class ChallengeController {
                     ApiResponse.success(MESSAGES.COMMON.SUCCESS)
                 );
         } catch (err: unknown) {
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -639,16 +756,12 @@ export class ChallengeController {
                 ApiResponse.success(MESSAGES.CHALLENGE.TEMPLATES_FETCHED, templates)
             );
         } catch (err: unknown) {
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
+
 
     getAdminTestCases = async (req: Request, res: Response) => {
         try {
@@ -666,14 +779,9 @@ export class ChallengeController {
                 ApiResponse.success(MESSAGES.CHALLENGE.TEST_CASES_FETCHED, testCases)
             );
         } catch (err: unknown) {
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 }

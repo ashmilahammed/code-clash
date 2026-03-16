@@ -1,28 +1,29 @@
 import { IChallengeRepository } from "../../../../domain/repositories/challenge/IChallengeRepository";
 import { INotificationRepository } from "../../../../domain/repositories/notification/INotificationRepository";
-
+import { ToggleChallengeDTO } from "../../../dto/challenge/ToggleChallengeDTO";
 
 export class ToggleChallengeStatusUseCase {
+
   constructor(
     private readonly _challengeRepo: IChallengeRepository,
     private readonly _notificationRepo: INotificationRepository
   ) {}
 
-  async execute(
-    challengeId: string,
-    isActive: boolean,
-    senderId?: string
-  ): Promise<void> {
+  async execute(dto: ToggleChallengeDTO, senderId?: string): Promise<void> {
+
+    const { challengeId, isActive } = dto;
+
     await this._challengeRepo.toggleActive(challengeId, isActive);
 
     if (isActive) {
       const challenge = await this._challengeRepo.findByIdForUser(challengeId);
+
       if (challenge) {
         await this._notificationRepo.createNotification({
           title: "🚀 New Challenge Available!",
           message: `Try solving "${challenge.title}".`,
           recipientType: "all",
-          senderId: senderId || "000000000000000000000000", // Default system ID if sender not provided
+          senderId: senderId || "000000000000000000000000",
         });
       }
     }
