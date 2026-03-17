@@ -5,7 +5,7 @@ import ProtectedRoute from "./components/common/ProtectedRoute";
 import AdminRoute from "./components/common/AdminRoute";
 import GuestRoute from "./components/common/GuestRoute";
 
-import LandingPage from "./pages/LandingPage";
+import LandingPage from "./pages/landing/LandingPage";
 import LandingLayout from "./components/layout/LandingLayout";
 
 import Register from "./pages/auth/Register";

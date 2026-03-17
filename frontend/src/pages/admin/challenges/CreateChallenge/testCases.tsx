@@ -21,6 +21,7 @@ const ChallengeTestCases = () => {
   const [cases, setCases] = useState<TestCaseForm[]>([
     { input: "", expectedOutput: "", isSample: true },
   ]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -66,20 +67,22 @@ const ChallengeTestCases = () => {
   const saveAndNext = async () => {
     if (!id) return;
 
+    setError(null);
+
     if (!cases.length) {
-      alert("Add at least one test case");
+      setError("Add at least one test case");
       return;
     }
 
     const hasSample = cases.some(c => c.isSample);
     if (!hasSample) {
-      alert("At least one sample test case is required");
+      setError("At least one sample test case is required");
       return;
     }
 
     for (const c of cases) {
       if (!c.input.trim() || !c.expectedOutput.trim()) {
-        alert("Input and output cannot be empty");
+        setError("Input and output cannot be empty");
         return;
       }
     }
@@ -195,6 +198,10 @@ const ChallengeTestCases = () => {
 
       {/* Container */}
       <div className="bg-[#020617] border border-slate-800 rounded-xl p-6 space-y-6">
+
+        {error && (
+          <p className="text-red-400 text-sm">{error}</p>
+        )}
 
         {cases.map((c, i) => (
           <div

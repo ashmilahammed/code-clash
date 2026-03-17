@@ -4,6 +4,7 @@ import { ProgrammingLanguageRepository } from "../repositories/language/Programm
 import { ChallengeTestCaseRepository } from "../repositories/challenge/ChallengeTestCaseRepository";
 import { ChallengeHintRepository } from "../repositories/challenge/ChallengeHintRepository";
 import { ChallengeCodeTemplateRepository } from "../repositories/challenge/ChallengeCodeTemplateRepository";
+import { SubmissionRepository } from "../repositories/submission/SubmissionRepository";
 
 import { CreateChallengeUseCase } from "../../application/use-cases/challenge/admin/createChallengeUseCase";
 import { DeleteChallengeUseCase } from "../../application/use-cases/challenge/admin/deleteChallengeUseCase";
@@ -31,9 +32,8 @@ import { GetChallengeHintsUseCase } from "../../application/use-cases/challenge/
 import { GetChallengeTestCasesUseCase } from "../../application/use-cases/challenge/user/getChallengeTestCasesUseCase";
 import { notificationRepository } from "./notification.di";
 
-
-
 import { ChallengeController } from "../../presentation/controllers/challenge.controller";
+import { AdminChallengeController } from "../../presentation/controllers/adminChallengeController";
 
 // repository
 const challengeRepository = new ChallengeRepository();
@@ -42,6 +42,7 @@ const programmingLanguageRepository = new ProgrammingLanguageRepository();
 const challengeTestCaseRepository = new ChallengeTestCaseRepository();
 const challengeHintRepository = new ChallengeHintRepository();
 const challengeCodeTemplateRepository = new ChallengeCodeTemplateRepository();
+const submissionRepository = new SubmissionRepository();
 
 
 //admin use cases
@@ -81,13 +82,18 @@ const addChallengeCodeTemplatesUseCase = new AddChallengeCodeTemplatesUseCase(
     challengeRepository
 );
 
+const getAdminChallengeCodeTemplatesUseCase = new GetAdminChallengeCodeTemplatesUseCase(challengeCodeTemplateRepository);
+
+const getAdminChallengeTestCasesUseCase = new GetAdminChallengeTestCasesUseCase(challengeTestCaseRepository);
+
+
 
 //user
 const userListChallengesUseCase = new ListChallengesUseCase(challengeRepository);
 
 const getChallengeByIdUseCase = new GetChallengeByIdUseCase(challengeRepository);
 
-const getChallengeCodeTemplatesUseCase = new GetChallengeCodeTemplatesUseCase(challengeCodeTemplateRepository);
+const getChallengeCodeTemplatesUseCase = new GetChallengeCodeTemplatesUseCase(challengeCodeTemplateRepository, submissionRepository);
 
 const getChallengeHintsUseCase = new GetChallengeHintsUseCase(challengeHintRepository);
 const getChallengeTestCasesUseCase = new GetChallengeTestCasesUseCase(challengeTestCaseRepository);
@@ -96,27 +102,33 @@ const updateChallengeUseCase = new UpdateChallengeUseCase(challengeRepository);
 
 
 //controller
-export const challengeController = new ChallengeController(
+export const adminChallengeController = new AdminChallengeController(
     createChallengeUseCase,
     adminListChallengesUseCase,
-    userListChallengesUseCase,
     toggleChallengeStatusUseCase,
     addChallengeTagsUseCase,
+
     getAvailableLanguagesUseCase,
-    addChallengeLanguagesUseCase,
     getChallengeLanguagesUseCase,
+    addChallengeLanguagesUseCase,
+
     addChallengeTestCasesUseCase,
     addChallengeHintsUseCase,
     updateChallengeScheduleUseCase,
     addChallengeCodeTemplatesUseCase,
+    updateChallengeUseCase,
+    
+    getAdminChallengeCodeTemplatesUseCase,
+    getAdminChallengeTestCasesUseCase,
+    getAdminChallengeByIdUseCase,
+    deleteChallengeUseCase
+);
 
+export const challengeController = new ChallengeController(
+    userListChallengesUseCase,
+    getChallengeLanguagesUseCase,
     getChallengeByIdUseCase,
     getChallengeCodeTemplatesUseCase,
     getChallengeHintsUseCase,
-    getChallengeTestCasesUseCase,
-    updateChallengeUseCase,
-    new GetAdminChallengeCodeTemplatesUseCase(challengeCodeTemplateRepository),
-    new GetAdminChallengeTestCasesUseCase(challengeTestCaseRepository),
-    getAdminChallengeByIdUseCase,
-    deleteChallengeUseCase
+    getChallengeTestCasesUseCase
 );

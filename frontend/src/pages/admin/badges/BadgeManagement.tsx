@@ -22,8 +22,19 @@ const BadgeManagement = () => {
         try {
             // const response = await getAllBadges();
             // setBadges(response.data || []);
-            const badges = await getAllBadges();   
-            setBadges(badges || []);
+            const badges = await getAllBadges();
+            if (badges && Array.isArray(badges)) {
+                // Sort by ID descending so newly created badges appear first
+                const sortedBadges = [...badges].sort((a, b) => {
+                    const idA = a._id || a.id || "";
+                    const idB = b._id || b.id || "";
+                    // Using localeCompare works well for MongoDB ObjectIDs which are chronological
+                    return idB.localeCompare(idA);
+                });
+                setBadges(sortedBadges);
+            } else {
+                setBadges([]);
+            }
         } catch (error) {
             console.error("Failed to fetch badges:", error);
         }

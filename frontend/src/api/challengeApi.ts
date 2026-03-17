@@ -28,8 +28,7 @@ export const getAdminChallengeByIdApi = async (id: string): Promise<Challenge> =
 };
 
 
-// no solution code(only templates)
-export const getChallengeTemplatesApi = async (challengeId: string): Promise<{ language: string; starterCode: string }[]> => {
+export const getChallengeTemplatesApi = async (challengeId: string): Promise<{ language: string; starterCode: string; solutionCode: string }[]> => {
     const res = await axiosInstance.get(`/challenges/${challengeId}/templates`);
     return res.data.data;
 };
@@ -45,7 +44,7 @@ export const getAdminChallengesApi = async (query: ListQuery): Promise<Paginated
     return res.data.data;
 };
 
-// toggle challenge 
+
 export const toggleChallengeStatusApi = async (challengeId: string, isActive: boolean): Promise<void> => {
     await axiosInstance.patch(
         // `/challenges/${challengeId}/toggle/status`,
@@ -74,7 +73,6 @@ export const updateChallengeBasicApi = async (
     return res.data.data;
 };
 
-
 export const addChallengeTagsApi = async (challengeId: string, tags: string[]) => {
     await axiosInstance.post(
         `/admin/challenges/${challengeId}/tags`,
@@ -89,14 +87,13 @@ export const addChallengeTagsApi = async (challengeId: string, tags: string[]) =
 // };
 
 export const getAvailableLanguagesApi = async () => {
-    const res = await axiosInstance.get("/challenges/languages");
+    const res = await axiosInstance.get("/admin/languages");
     return res.data.data;
 };
 
+
 export const getChallengeLanguagesApi = async (challengeId: string): Promise<string[]> => {
-    const res = await axiosInstance.get(
-        `/admin/challenges/${challengeId}/languages`
-    );
+    const res = await axiosInstance.get(`/admin/challenges/${challengeId}/languages`);
     return res.data.data;
 };
 
@@ -107,7 +104,6 @@ export const addChallengeLanguagesApi = async (challengeId: string, languages: s
         { languages }
     );
 };
-
 
 export const addChallengeTestCasesApi = async (
     challengeId: string,
@@ -122,7 +118,6 @@ export const addChallengeTestCasesApi = async (
         { testCases }
     );
 };
-
 
 
 export const addChallengeHintsApi = async (
@@ -140,7 +135,6 @@ export const addChallengeHintsApi = async (
 };
 
 
-
 export const updateChallengeScheduleApi = async (
     challengeId: string,
     schedule: {
@@ -155,7 +149,6 @@ export const updateChallengeScheduleApi = async (
 };
 
 
-//
 export const saveCodeTemplatesApi = async (
     challengeId: string,
     templates: {
@@ -181,8 +174,6 @@ export const getAdminChallengeTemplatesApi = async (
 
 
 
-
-
 // 
 export const getChallengeHintsApi = async (
     challengeId: string
@@ -197,6 +188,7 @@ export const getChallengeTestCasesApi = async (
     const res = await axiosInstance.get(`/challenges/${challengeId}/test-cases`);
     return res.data.data;
 };
+
 export const getAdminChallengeTestCasesApi = async (
     challengeId: string
 ): Promise<{ input: string; expectedOutput: string; isSample: boolean }[]> => {

@@ -112,26 +112,119 @@ const VerifyOtp = () => {
 
 
 
+  // return (
+  //   <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#0a1a33] via-[#0f2b55] to-[#081426] px-4">
+  //     {/* Glass Card */}
+  //     <div className="w-full max-w-md rounded-2xl bg-white/10 backdrop-blur-xl shadow-2xl border border-white/20 p-8">
+
+  //       {/* Title */}
+  //       <h2 className="text-2xl font-semibold text-center text-white mb-2">
+  //         Verify OTP
+  //       </h2>
+
+  //       {/* Email Info */}
+  //       {email && (
+  //         <p className="text-center text-white/80 mb-3">
+  //           Verification required for{" "}
+  //           <span className="font-medium text-white">{email}</span>
+  //         </p>
+  //       )}
+
+  //       <p className="text-white/60 text-sm text-center mb-6">
+  //         Enter the OTP sent to your email
+  //       </p>
+
+  //       {/* Form */}
+  //       <form onSubmit={submitOtp} className="space-y-4">
+
+  //         {/* Error */}
+  //         {error && (
+  //           <div className="p-3 text-sm text-red-200 bg-red-500/20 border border-red-400/30 rounded-lg text-center">
+  //             {error}
+  //           </div>
+  //         )}
+
+  //         {/* Success */}
+  //         {success && (
+  //           <div className="p-3 text-sm text-green-200 bg-green-500/20 border border-green-400/30 rounded-lg text-center">
+  //             {success}
+  //           </div>
+  //         )}
+
+  //         <input
+  //           value={otp}
+  //           onChange={(e) => setOtp(e.target.value)}
+  //           placeholder="Enter OTP"
+  //           className="w-full rounded-lg bg-white/10 border border-white/30 px-4 py-2.5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 tracking-widest text-center"
+  //         />
+
+  //         <button
+  //           disabled={loading}
+  //           className="w-full mt-2 rounded-lg bg-linear-to-r from-blue-600 to-blue-400 py-2.5 text-white font-medium hover:opacity-90 transition disabled:opacity-50"
+  //         >
+  //           {loading ? "Verifying..." : "Verify"}
+  //         </button>
+  //       </form>
+
+  //       {/* Timer / Resend */}
+  //       <div className="text-center mt-4 text-sm">
+  //         {timer > 0 ? (
+  //           <p className="text-white/60">
+  //             Resend OTP in <span className="text-white">{timer}s</span>
+  //           </p>
+  //         ) : (
+  //           <button
+  //             className="text-white hover:underline"
+  //             onClick={resendOtp}
+  //           >
+  //             Resend OTP
+  //           </button>
+  //         )}
+  //       </div>
+
+  //       {/* Back to Login */}
+  //       <div className="text-center mt-6">
+  //         <button
+  //           onClick={() => navigate("/auth/login")}
+  //           className="text-sm text-white/70 hover:text-white transition hover:underline"
+  //         >
+  //           ← Back to Login
+  //         </button>
+  //       </div>
+
+  //     </div>
+  //   </div>
+  // );
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#0a1a33] via-[#0f2b55] to-[#081426] px-4">
-      {/* Glass Card */}
-      <div className="w-full max-w-md rounded-2xl bg-white/10 backdrop-blur-xl shadow-2xl border border-white/20 p-8">
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center px-4">
+
+      {/* ⭐ Linear Base Gradient */}
+      <div className="absolute inset-0 -z-20 bg-linear-to-br from-[#0f1c3d] via-[#0b1430] to-[#1a0f3d]" />
+
+      {/* ⭐ Radial Glow */}
+      <div className="absolute inset-0 -z-10 pointer-events-none">
+        <div className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-blue-500/50 rounded-full blur-[180px]" />
+        <div className="absolute -bottom-40 -right-40 w-[800px] h-[800px] bg-purple-500/50 rounded-full blur-[180px]" />
+      </div>
+
+      {/* ⭐ Card */}
+      <div className="relative z-10 w-full max-w-md bg-white/5 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl p-8">
 
         {/* Title */}
-        <h2 className="text-2xl font-semibold text-center text-white mb-2">
-          Verify OTP
+        <h2 className="text-2xl font-bold text-white text-center mb-2">
+          Verify Your Email
         </h2>
 
         {/* Email Info */}
         {email && (
-          <p className="text-center text-white/80 mb-3">
-            Verification required for{" "}
-            <span className="font-medium text-white">{email}</span>
+          <p className="text-center text-slate-400 mb-2">
+            OTP sent to <span className="text-white font-semibold">{email}</span>
           </p>
         )}
 
-        <p className="text-white/60 text-sm text-center mb-6">
-          Enter the OTP sent to your email
+        <p className="text-slate-500 text-sm text-center mb-6">
+          Enter the 6-digit verification code
         </p>
 
         {/* Form */}
@@ -151,26 +244,29 @@ const VerifyOtp = () => {
             </div>
           )}
 
+          {/* OTP Input */}
           <input
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
             placeholder="Enter OTP"
-            className="w-full rounded-lg bg-white/10 border border-white/30 px-4 py-2.5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 tracking-widest text-center"
+            className="w-full bg-[#0F172A] border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 text-center text-lg focus:outline-none focus:border-cyan-500 transition"
           />
 
+          {/* Submit */}
           <button
             disabled={loading}
-            className="w-full mt-2 rounded-lg bg-linear-to-r from-blue-600 to-blue-400 py-2.5 text-white font-medium hover:opacity-90 transition disabled:opacity-50"
+            className="w-full bg-linear-to-r from-indigo-600 to-cyan-500 py-3 rounded-lg font-bold text-white hover:scale-[1.02] transition shadow-lg disabled:opacity-50"
           >
-            {loading ? "Verifying..." : "Verify"}
+            {loading ? "Verifying..." : "Verify OTP"}
           </button>
+
         </form>
 
         {/* Timer / Resend */}
         <div className="text-center mt-4 text-sm">
           {timer > 0 ? (
-            <p className="text-white/60">
-              Resend OTP in <span className="text-white">{timer}s</span>
+            <p className="text-slate-400">
+              Resend OTP in <span className="text-white font-semibold">{timer}s</span>
             </p>
           ) : (
             <button
@@ -182,21 +278,20 @@ const VerifyOtp = () => {
           )}
         </div>
 
-        {/* Back to Login */}
+        {/* Back */}
         <div className="text-center mt-6">
           <button
             onClick={() => navigate("/auth/login")}
-            className="text-sm text-white/70 hover:text-white transition hover:underline"
+            className="text-sm text-slate-400 hover:text-white transition hover:underline"
           >
             ← Back to Login
           </button>
         </div>
 
       </div>
+
     </div>
   );
-
-
 
 
 };

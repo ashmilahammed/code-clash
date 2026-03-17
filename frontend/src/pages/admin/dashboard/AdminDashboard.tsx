@@ -7,11 +7,9 @@ import {
   PlusCircle,
   Send,
   FileText,
-  ChevronRight,
   Crown
 } from "lucide-react";
 import { getAdminDashboardStatsApi } from "../../../api/adminApi";
-import { formatDistanceToNow } from "date-fns";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -57,7 +55,7 @@ const AdminDashboard = () => {
     );
   }
 
-  const { stats: mainStats, signupsData, mostAttemptedChallenge, recentActivity } = stats;
+  const { stats: mainStats, signupsData, mostAttemptedChallenge } = stats;
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
@@ -216,33 +214,6 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Recent Activity */}
-      {/* <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 shadow-xl">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="font-semibold text-white">Recent Activity</h3>
-          <button className="text-blue-400 text-xs hover:underline flex items-center gap-1">
-            View All <ChevronRight size={14} />
-          </button>
-        </div>
-        <div className="space-y-4">
-          {recentActivity.map((activity: any, idx: number) => (
-            <div key={idx} className="flex items-center gap-4 group">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${getActivityColor(activity.type)}`}>
-                {getActivityIcon(activity.type)}
-              </div>
-              <div className="flex-1">
-                <p className="text-sm text-slate-300 group-hover:text-white transition">
-                  {activity.text}
-                </p>
-                <p className="text-[10px] text-slate-500">
-                  {formatDistanceToNow(new Date(activity.time), { addSuffix: true })}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div> */}
-
 
     </div>
 
@@ -277,24 +248,6 @@ const QuickActionButton = ({ icon, label, color, onClick }: QuickActionButtonPro
   </button>
 );
 
-const getActivityIcon = (type: string) => {
-  switch (type) {
-    case "challenge": return <Trophy size={14} className="text-yellow-500" />;
-    case "user": return <Users size={14} className="text-emerald-500" />;
-    case "report": return <ShieldAlert size={14} className="text-red-500" />;
-    default: return null;
-  }
-};
-
-const getActivityColor = (type: string) => {
-  switch (type) {
-    case "challenge": return "bg-yellow-500/10";
-    case "user": return "bg-emerald-500/10";
-    case "report": return "bg-red-500/10";
-    default: return "bg-slate-800";
-  }
-};
-
 const SignupChart = ({ data }: { data: any[] }) => {
   if (!data.length) return null;
 
@@ -311,7 +264,7 @@ const SignupChart = ({ data }: { data: any[] }) => {
 
 
 
-  
+
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full overflow-visible">
       <defs>
@@ -370,6 +323,8 @@ const CircularProgress = ({ percentage }: { percentage: number }) => {
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (percentage / 100) * circumference;
 
+
+
   return (
     <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
       <circle
@@ -398,6 +353,7 @@ const CircularProgress = ({ percentage }: { percentage: number }) => {
         y="50"
         textAnchor="middle"
         dominantBaseline="middle"
+        fill="white"
         className="text-white text-xl font-bold"
         transform="rotate(90 50 50)"
       >

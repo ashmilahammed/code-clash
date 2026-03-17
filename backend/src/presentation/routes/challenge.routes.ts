@@ -7,16 +7,14 @@ const router = Router();
 // user only
 router.get("/", authMiddleware, challengeController.userList);
 
-// languages (read-only)
-router.get("/languages", authMiddleware, challengeController.getLanguages);
-
 router.get("/:id", authMiddleware, challengeController.getById);
 router.get("/:id/templates", authMiddleware, challengeController.getTemplates);
-
 router.get("/:id/hints", authMiddleware, challengeController.getHints);
 router.get("/:id/test-cases", authMiddleware, challengeController.getTestCases);
 
-
+// languages (read-only)
+// router.get("/languages", authMiddleware, challengeController.getLanguages);
+router.get("/:id/languages", authMiddleware, challengeController.getChallengeLanguages);
 
 export default router;
 

@@ -33,6 +33,7 @@ const ChallengeHintsAndSchedule = () => {
     availableFrom: "",
     availableUntil: "",
   });
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -91,8 +92,10 @@ const ChallengeHintsAndSchedule = () => {
   const saveAndNext = async () => {
     if (!id) return;
 
+    setError(null);
+
     if (hints.some(h => !h.content.trim())) {
-      alert("Hint content cannot be empty");
+      setError("Hint content cannot be empty");
       return;
     }
 
@@ -102,7 +105,7 @@ const ChallengeHintsAndSchedule = () => {
       new Date(schedule.availableUntil) <
       new Date(schedule.availableFrom)
     ) {
-      alert("Available until must be after available from");
+      setError("Available until must be after available from");
       return;
     }
 
@@ -234,6 +237,10 @@ const ChallengeHintsAndSchedule = () => {
 
       {/* Container */}
       <div className="bg-[#020617] border border-slate-800 rounded-xl p-6 space-y-6">
+
+        {error && (
+          <p className="text-red-400 text-sm">{error}</p>
+        )}
 
         {/* Hints Section */}
         <div className="space-y-4">

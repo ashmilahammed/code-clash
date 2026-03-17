@@ -2,12 +2,13 @@ import { Router } from "express";
 import { authMiddleware, } from "../../infrastructure/di/auth.di";
 import { requireAdmin, adminController, } from "../../infrastructure/di/user.di";
 
-import { challengeController } from "../../infrastructure/di/challenge.di";
 // import { levelController } from "../../infrastructure/di/level.di";
 import planRoutes from "./plan.routes";
 import transactionRoutes from "./transaction.routes";
+
 import { adminChatController } from "../../infrastructure/di/chat.di";
 import { adminNotificationRouter } from "./notification.routes";
+import { adminChallengeController } from "../../infrastructure/di/challenge.di";
 
 const router = Router();
 
@@ -23,24 +24,26 @@ router.get("/dashboard/stats", adminController.getDashboardStats);
 router.get("/users", adminController.listUsers);
 router.patch("/users/:userId/status", adminController.updateUserStatus);
 
+
 // challenge management
-router.post("/challenges", challengeController.create);
-router.patch("/challenges/:id", challengeController.update);
-router.get("/challenges", challengeController.adminList);
-router.get("/challenges/:id", challengeController.getAdminById);
-router.patch("/challenges/:id/status", challengeController.toggle);
-router.delete("/challenges/:id", challengeController.delete);
+router.post("/challenges", adminChallengeController.create);
+router.patch("/challenges/:id", adminChallengeController.update);
+router.get("/challenges", adminChallengeController.adminList);
+router.get("/challenges/:id", adminChallengeController.getAdminById);
+router.patch("/challenges/:id/status", adminChallengeController.toggle);
+router.delete("/challenges/:id", adminChallengeController.delete);
 
 //wizard
-router.post("/challenges/:id/tags", challengeController.addTags);
-router.post("/challenges/:id/languages", challengeController.addLanguages);
-router.post("/challenges/:id/test-cases", challengeController.addTestCases);
-router.get("/challenges/:id/test-cases", challengeController.getAdminTestCases);
-router.post("/challenges/:id/hints", challengeController.addHints);
-router.patch("/challenges/:id/schedule", challengeController.updateSchedule);
-router.get("/challenges/:id/languages", challengeController.getChallengeLanguages);
-router.post("/challenges/:id/code-templates", challengeController.addCodeTemplates);
-router.get("/challenges/:id/code-templates", challengeController.getAdminTemplates);
+router.post("/challenges/:id/tags", adminChallengeController.addTags)
+router.get("/languages", adminChallengeController.getLanguages);
+router.get("/challenges/:id/languages", adminChallengeController.getChallengeLanguages);
+router.post("/challenges/:id/languages", adminChallengeController.addLanguages);
+router.post("/challenges/:id/test-cases", adminChallengeController.addTestCases);
+router.get("/challenges/:id/test-cases", adminChallengeController.getAdminTestCases);
+router.post("/challenges/:id/hints", adminChallengeController.addHints);
+router.patch("/challenges/:id/schedule", adminChallengeController.updateSchedule);
+router.post("/challenges/:id/code-templates", adminChallengeController.addCodeTemplates);
+router.get("/challenges/:id/code-templates", adminChallengeController.getAdminTemplates);
 
 
 // levels management

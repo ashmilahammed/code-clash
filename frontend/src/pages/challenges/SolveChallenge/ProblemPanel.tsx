@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const ProblemPanel = ({ challenge, hints, testCases }: any) => {
+const ProblemPanel = ({ challenge, hints, testCases, templates }: any) => {
   const [activeTab, setActiveTab] = useState("description");
 
   return (
@@ -8,7 +8,7 @@ const ProblemPanel = ({ challenge, hints, testCases }: any) => {
 
       {/* Tabs */}
       <div className="flex gap-6 px-6 pt-4 border-b border-slate-800">
-        {["description", "hints"].map((tab) => (
+        {["description", "hints", "solution"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -66,6 +66,46 @@ const ProblemPanel = ({ challenge, hints, testCases }: any) => {
               ))
             ) : (
               <div className="text-slate-500 italic">No hints available for this challenge.</div>
+            )}
+          </div>
+        )}
+
+        {activeTab === "solution" && (
+          <div className="space-y-4">
+            {templates?.length > 0 ? (
+              templates.map((template: any, i: number) => (
+                <div key={i} className="bg-slate-900 rounded-lg overflow-hidden border border-slate-800">
+                  <div className="bg-slate-800/50 px-4 py-2 text-slate-400 text-sm font-medium border-b border-slate-800 uppercase tracking-wider flex justify-between items-center">
+                    <span>{template.language}</span>
+                    {template.solutionCode ? (
+                      <span className="text-emerald-400 text-xs font-semibold bg-emerald-400/10 px-2 py-0.5 rounded-full border border-emerald-400/20">
+                        ✅ Official Solution Unlocked
+                      </span>
+                    ) : (
+                      <span className="text-amber-400 text-xs font-semibold bg-amber-400/10 px-2 py-0.5 rounded-full border border-amber-400/20">
+                        🔒 Solution Locked
+                      </span>
+                    )}
+                  </div>
+                  <div className="p-4 overflow-x-auto">
+                    {template.solutionCode ? (
+                      <pre className="text-slate-300 text-sm font-mono whitespace-pre-wrap">{template.solutionCode}</pre>
+                    ) : (
+                      <div className="py-8 text-center space-y-3">
+                        <div className="text-slate-400 text-sm">Solve this challenge to unlock the official solution.</div>
+                        <button 
+                          onClick={() => setActiveTab('description')}
+                          className="text-indigo-400 text-xs font-medium hover:text-indigo-300 transition-colors underline underline-offset-4"
+                        >
+                          Back to Description
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-slate-500 italic">No solution templates available for this challenge.</div>
             )}
           </div>
         )}

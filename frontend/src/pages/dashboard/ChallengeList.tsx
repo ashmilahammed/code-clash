@@ -38,7 +38,7 @@ const ChallengeList = () => {
     const matchesSearch =
       challenge.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       challenge.description.toLowerCase().includes(searchQuery.toLowerCase());
-    
+
     const matchesDomain =
       selectedDomain === "All" || challenge.domain === selectedDomain;
 
@@ -86,6 +86,7 @@ const ChallengeList = () => {
 
 
 
+
   return (
     <>
       {/* Domain Filters */}
@@ -94,11 +95,10 @@ const ChallengeList = () => {
           <button
             key={domain}
             onClick={() => setSelectedDomain(domain)}
-            className={`px-5 py-2 rounded-full text-xs font-semibold tracking-wide transition-all whitespace-nowrap ${
-              selectedDomain === domain
-                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/25"
-                : "bg-slate-800/50 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700/50"
-            }`}
+            className={`px-5 py-2 rounded-full text-xs font-semibold tracking-wide transition-all whitespace-nowrap ${selectedDomain === domain
+              ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/25"
+              : "bg-slate-800/50 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700/50"
+              }`}
           >
             {formatDomain(domain)}
           </button>
@@ -213,11 +213,10 @@ const ChallengeList = () => {
 
                   navigate(`/challenges/${challenge.id}`);
                 }}
-                className={`w-full py-3 rounded-lg text-white transition-all flex items-center justify-center gap-2 font-bold text-sm ${
-                 challenge.isPremium && !user?.is_premium 
-                  ? "bg-linear-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 shadow-lg shadow-amber-500/20" 
+                className={`w-full py-3 rounded-lg text-white transition-all flex items-center justify-center gap-2 font-bold text-sm ${challenge.isPremium && !user?.is_premium
+                  ? "bg-linear-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 shadow-lg shadow-amber-500/20"
                   : "bg-slate-800 hover:bg-indigo-600 border border-slate-700 hover:border-indigo-500"
-                }`}
+                  }`}
               >
                 {challenge.isPremium && !user?.is_premium ? (
                   <>
