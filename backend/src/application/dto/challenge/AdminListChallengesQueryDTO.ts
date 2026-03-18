@@ -1,11 +1,3 @@
-// export interface ListChallengesQueryDTO {
-//   page: number
-//   limit: number
-//   search?: string
-//   difficulty?: string
-//   domain?: string
-//   status?: string
-// }
 import {
   ChallengeDifficulty,
   ChallengeDomain,

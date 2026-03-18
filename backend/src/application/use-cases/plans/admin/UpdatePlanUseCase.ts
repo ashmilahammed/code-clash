@@ -2,10 +2,13 @@ import { IPlanRepository } from "../../../../domain/repositories/plan/IPlanRepos
 import { Plan } from "../../../../domain/entities/plan/Plan";
 
 export class UpdatePlanUseCase {
-    constructor(private planRepository: IPlanRepository) { }
+    constructor(
+        private readonly _planRepository: IPlanRepository
+    ) { }
 
     async execute(id: string, updateData: Partial<Plan>): Promise<Plan> {
-        const updatedPlan = await this.planRepository.update(id, updateData);
+        
+        const updatedPlan = await this._planRepository.update(id, updateData);
         if (!updatedPlan) {
             throw new Error("Plan not found");
         }

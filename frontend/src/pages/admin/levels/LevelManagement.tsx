@@ -17,11 +17,10 @@ const LevelManagement = () => {
 
   const fetchData = async () => {
     try {
-      // const res = await getAllLevels();
-      // setLevels(res.data || []);
+
       const levels = await getAllLevels();
       setLevels(levels || []);
-      
+
     } catch (error) {
       console.error("Failed to fetch data:", error);
     }

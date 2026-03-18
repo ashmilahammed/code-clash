@@ -9,7 +9,6 @@ import { GetChallengeHintsUseCase } from "../../application/use-cases/challenge/
 import { GetChallengeTestCasesUseCase } from "../../application/use-cases/challenge/user/getChallengeTestCasesUseCase";
 
 import { ChallengeDifficulty, ChallengeDomain } from "../../domain/entities/challenge/Challenge";
-import { toNumber } from "../../utils/toNumber";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
@@ -44,72 +43,6 @@ export class ChallengeController {
         }
     };
 
-    // userList = async (req: Request, res: Response) => {
-    //     try {
-
-    //         const page = toNumber(req.query.page, 1);
-    //         const limit = toNumber(req.query.limit, 10);
-
-    //         const search =
-    //             typeof req.query.search === "string"
-    //                 ? req.query.search
-    //                 : undefined;
-
-    //         let difficulty: ChallengeDifficulty | undefined;
-    //         if (
-    //             req.query.difficulty === "easy" ||
-    //             req.query.difficulty === "medium" ||
-    //             req.query.difficulty === "hard"
-    //         ) {
-    //             difficulty = req.query.difficulty;
-    //         }
-
-    //         let domain: ChallengeDomain | undefined;
-    //         if (
-    //             req.query.domain === "arrays" ||
-    //             req.query.domain === "strings" ||
-    //             req.query.domain === "linked-list" ||
-    //             req.query.domain === "stack" ||
-    //             req.query.domain === "queue" ||
-    //             req.query.domain === "tree" ||
-    //             req.query.domain === "graph" ||
-    //             req.query.domain === "dp" ||
-    //             req.query.domain === "math" ||
-    //             req.query.domain === "sql"
-    //         ) {
-    //             domain = req.query.domain;
-    //         }
-
-    //         let isPremium: boolean | undefined;
-    //         if (req.query.isPremium === "true") {
-    //             isPremium = true;
-    //         } else if (req.query.isPremium === "false") {
-    //             isPremium = false;
-    //         }
-
-    //         const dto: UserListChallengesQueryDTO = {
-    //             page,
-    //             limit,
-    //             search,
-    //             difficulty,
-    //             domain,
-    //             isPremium,
-    //         };
-
-    //         const result = await this._userListChallenges.execute(dto);
-
-    //         return res
-    //             .status(HttpStatus.OK)
-    //             .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, result));
-
-    //     } catch (err: unknown) {
-    //         return res
-    //             .status(HttpStatus.BAD_REQUEST)
-    //             .json(ApiResponse.error(
-    //                 err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST
-    //             ));
-    //     }
-    // };
 
 
     getById = async (req: Request, res: Response) => {

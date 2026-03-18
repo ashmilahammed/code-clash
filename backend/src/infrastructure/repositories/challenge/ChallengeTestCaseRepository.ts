@@ -6,8 +6,7 @@ import { ChallengeTestCaseMapper } from "../../../application/mappers/ChallengeT
 
 
 
-export class ChallengeTestCaseRepository
-  implements IChallengeTestCaseRepository {
+export class ChallengeTestCaseRepository implements IChallengeTestCaseRepository {
 
   async createMany(
     challengeId: string,

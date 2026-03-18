@@ -13,7 +13,7 @@ export class GetCurrentUserUseCase {
       throw new Error("USER_NOT_FOUND");
     }
 
-    return user; // DOMAIN entity
+    return user; // domain entity
   }
 }
 

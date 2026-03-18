@@ -1,6 +1,6 @@
-import { IConversationRepository } from "../../../domain/repositories/chat/IConversationRepository";
-import { Conversation } from "../../../domain/entities/chat/Conversation";
-import { AddParticipantsDTO } from "../../dto/chat/AddParticipantsDTO";
+import { IConversationRepository } from "../../../../domain/repositories/chat/IConversationRepository";
+import { Conversation } from "../../../../domain/entities/chat/Conversation";
+import { AddParticipantsDTO } from "../../../dto/chat/AddParticipantsDTO";
 
 
 export class AddParticipantsUseCase {

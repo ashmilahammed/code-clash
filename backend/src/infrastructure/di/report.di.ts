@@ -1,9 +1,9 @@
 import { ReportRepository } from "../repositories/chat/ReportRepository";
-import { ReportMessageUseCase } from "../../application/use-cases/chat/ReportMessageUseCase";
-import { GetAllReportsUseCase } from "../../application/use-cases/chat/GetAllReportsUseCase";
-import { BanUserUseCase } from "../../application/use-cases/user/BanUserUseCase";
-import { DismissReportUseCase } from "../../application/use-cases/chat/DismissReportUseCase";
-import { GetMessageByIdUseCase } from "../../application/use-cases/chat/GetMessageByIdUseCase";
+import { ReportMessageUseCase } from "../../application/use-cases/chat/user/ReportMessageUseCase";
+import { GetAllReportsUseCase } from "../../application/use-cases/chat/admin/GetAllReportsUseCase";
+import { BanUserUseCase } from "../../application/use-cases/chat/admin/BanUserUseCase";
+import { DismissReportUseCase } from "../../application/use-cases/chat/admin/DismissReportUseCase";
+import { GetMessageByIdUseCase } from "../../application/use-cases/chat/user/GetMessageByIdUseCase";
 import { ReportController } from "../../presentation/controllers/report.controller";
 import { messageRepository } from "./chat.di";
 import { userRepository } from "./user.di";

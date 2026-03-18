@@ -3,7 +3,7 @@ import { ChallengeTestCase } from "../../../../domain/entities/challenge/Challen
 
 export class GetAdminChallengeTestCasesUseCase {
     constructor(
-        private readonly testCaseRepo: IChallengeTestCaseRepository
+        private readonly _testCaseRepo: IChallengeTestCaseRepository
     ) { }
 
     async execute(challengeId: string): Promise<ChallengeTestCase[]> {
@@ -11,6 +11,6 @@ export class GetAdminChallengeTestCasesUseCase {
             throw new Error("CHALLENGE_ID_REQUIRED");
         }
 
-        return await this.testCaseRepo.findByChallenge(challengeId);
+        return await this._testCaseRepo.findByChallenge(challengeId);
     }
 }

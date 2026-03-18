@@ -23,7 +23,7 @@ export class UpdateLoginStreakUseCase {
       new Date()
     );
 
-    // Automatic Badge Rewards - STREAK
+    // Automatic Badge Rewards(streak)
     await this._badgeRewardService.checkAndReward(user, Badge.REQUIREMENT_TYPES.STREAK_ACHIEVED, user.getStreaks().current);
   }
 }

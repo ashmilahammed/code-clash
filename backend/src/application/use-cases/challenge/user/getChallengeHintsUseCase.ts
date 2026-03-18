@@ -3,7 +3,7 @@ import { ChallengeHint } from "../../../../domain/entities/challenge/ChallengeHi
 
 export class GetChallengeHintsUseCase {
     constructor(
-        private readonly hintRepo: IChallengeHintRepository
+        private readonly _hintRepo: IChallengeHintRepository
     ) { }
 
     async execute(challengeId: string): Promise<ChallengeHint[]> {
@@ -11,6 +11,6 @@ export class GetChallengeHintsUseCase {
             throw new Error("CHALLENGE_ID_REQUIRED");
         }
 
-        return this.hintRepo.findByChallenge(challengeId);
+        return this._hintRepo.findByChallenge(challengeId);
     }
 }

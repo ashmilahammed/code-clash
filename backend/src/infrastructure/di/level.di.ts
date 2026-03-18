@@ -1,5 +1,5 @@
 import { CreateLevelUseCase } from "../../application/use-cases/level/admin/CreateLevelUseCase";
-import { GetLevelsUseCase } from "../../application/use-cases/level/GetLevelsUseCase";
+import { GetLevelsUseCase } from "../../application/use-cases/level/user/GetLevelsUseCase";
 import { UpdateLevelUseCase } from "../../application/use-cases/level/admin/UpdateLevelUseCase";
 import { DeleteLevelUseCase } from "../../application/use-cases/level/admin/DeleteLevelUseCase";
 

@@ -51,12 +51,9 @@ export class UserController {
         .status(HttpStatus.OK)
         .json(ApiResponse.success(MESSAGES.USER.FETCH_SUCCESS, data));
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
     }
   };
 
@@ -89,12 +86,9 @@ export class UserController {
         .status(HttpStatus.OK)
         .json(ApiResponse.success("Leaderboard fetched successfully", result));
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
     }
   };
 
@@ -131,14 +125,12 @@ export class UserController {
         .status(HttpStatus.OK)
         .json(ApiResponse.success(MESSAGES.USER.UPDATE_SUCCESS, updatedUser));
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
     }
   };
+
 
   //
   removeAvatar = async (req: Request, res: Response) => {
@@ -190,12 +182,9 @@ export class UserController {
         .status(HttpStatus.OK)
         .json(ApiResponse.success("Profile stats fetched successfully", data));
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
     }
   };
 
@@ -219,16 +208,13 @@ export class UserController {
           ApiResponse.success("Premium membership cancelled successfully")
         );
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
     }
   };
 
-  
+
   //
   updateProfile = async (req: Request, res: Response) => {
     try {
@@ -259,12 +245,9 @@ export class UserController {
           )
         );
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
     }
   };
 
@@ -294,12 +277,9 @@ export class UserController {
           )
         );
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
     }
   };
 }

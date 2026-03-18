@@ -5,29 +5,29 @@ import { ChangePasswordDTO } from "../../dto/auth/ChangePasswordDTO";
 
 export class ChangePasswordUseCase {
   constructor(
-    private readonly userRepository: IUserRepository,
-    private readonly passwordService: IPasswordService
+    private readonly _userRepository: IUserRepository,
+    private readonly _passwordService: IPasswordService
   ) { }
 
   async execute(dto: ChangePasswordDTO): Promise<void> {
 
     const { userId, currentPassword, newPassword } = dto;
 
-    const user = await this.userRepository.findById(userId);
+    const user = await this._userRepository.findById(userId);
 
     if (!user) {
       throw new Error("User not found");
     }
 
-    const isPasswordValid = await user.verifyPassword(currentPassword, this.passwordService);
+    const isPasswordValid = await user.verifyPassword(currentPassword, this._passwordService);
 
     if (!isPasswordValid) {
       throw new Error("CURRENT_PASSWORD_INCORRECT");
     }
 
-    const newHashedPassword = await this.passwordService.hash(newPassword);
+    const newHashedPassword = await this._passwordService.hash(newPassword);
 
-    await this.userRepository.updatePassword(userId, newHashedPassword);
+    await this._userRepository.updatePassword(userId, newHashedPassword);
   }
 }
 

@@ -1,23 +1,23 @@
 import { ConversationRepository } from "../repositories/chat/ConversationRepository";
 import { MessageRepository } from "../repositories/chat/MessageRepository";
 
-import { CreateGroupUseCase } from "../../application/use-cases/chat/CreateGroupUseCase";
-import { JoinGroupUseCase } from "../../application/use-cases/chat/JoinGroupUseCase";
-import { GetConversationsUseCase } from "../../application/use-cases/chat/GetConversationsUseCase";
-import { SendMessageUseCase } from "../../application/use-cases/chat/SendMessageUseCase";
-import { GetMessagesUseCase } from "../../application/use-cases/chat/GetMessagesUseCase";
-import { GetOrCreateDirectConversationUseCase } from "../../application/use-cases/chat/GetOrCreateDirectConversationUseCase";
-import { GetPublicConversationsUseCase } from "../../application/use-cases/chat/GetPublicConversationsUseCase";
-import { LeaveGroupUseCase } from "../../application/use-cases/chat/LeaveGroupUseCase";
-import { AddParticipantsUseCase } from "../../application/use-cases/chat/AddParticipantsUseCase";
-import { UploadChatImageUseCase } from "../../application/use-cases/chat/UploadChatImageUseCase";
-import { DeleteMessageUseCase } from "../../application/use-cases/chat/DeleteMessageUseCase";
+import { CreateGroupUseCase } from "../../application/use-cases/chat/user/CreateGroupUseCase";
+import { JoinGroupUseCase } from "../../application/use-cases/chat/user/JoinGroupUseCase";
+import { GetConversationsUseCase } from "../../application/use-cases/chat/user/GetConversationsUseCase";
+import { SendMessageUseCase } from "../../application/use-cases/chat/user/SendMessageUseCase";
+import { GetMessagesUseCase } from "../../application/use-cases/chat/user/GetMessagesUseCase";
+import { GetOrCreateDirectConversationUseCase } from "../../application/use-cases/chat/user/GetOrCreateDirectConversationUseCase";
+import { GetPublicConversationsUseCase } from "../../application/use-cases/chat/user/GetPublicConversationsUseCase";
+import { LeaveGroupUseCase } from "../../application/use-cases/chat/user/LeaveGroupUseCase";
+import { AddParticipantsUseCase } from "../../application/use-cases/chat/user/AddParticipantsUseCase";
+import { UploadChatImageUseCase } from "../../application/use-cases/chat/user/UploadChatImageUseCase";
+import { DeleteMessageUseCase } from "../../application/use-cases/chat/user/DeleteMessageUseCase";
 import { userRepository } from "./user.di";
 
 // Admin Use Cases
-import { GetAdminGroupsUseCase } from "../../application/use-cases/chat/GetAdminGroupsUseCase";
-import { UpdateGroupStatusUseCase } from "../../application/use-cases/chat/UpdateGroupStatusUseCase";
-import { DeleteGroupUseCase } from "../../application/use-cases/chat/DeleteGroupUseCase";
+import { GetAdminGroupsUseCase } from "../../application/use-cases/chat/admin/GetAdminGroupsUseCase";
+import { UpdateGroupStatusUseCase } from "../../application/use-cases/chat/admin/UpdateGroupStatusUseCase";
+import { DeleteGroupUseCase } from "../../application/use-cases/chat/admin/DeleteGroupUseCase";
 
 import { CloudinaryStorageService } from "../adapters/fileStorage/CloudinaryStorageService";
 import { badgeRewardService } from "./badge.di";

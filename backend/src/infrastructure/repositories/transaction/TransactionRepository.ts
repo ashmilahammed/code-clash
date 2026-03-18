@@ -5,6 +5,7 @@ import { TransactionMapper } from "../../../application/mappers/TransactionMappe
 
 
 export class TransactionRepository implements ITransactionRepository {
+    
     async create(transaction: Transaction): Promise<Transaction> {
         const persistenceData = TransactionMapper.toPersistence(transaction);
         const createdModel = await TransactionModel.create(persistenceData);

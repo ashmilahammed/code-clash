@@ -9,8 +9,7 @@ import { IUserDoc } from "../../database/models/user/UserModel";
 
 
 
-export class UserRepository
-    extends BaseRepository<IUserDoc>
+export class UserRepository extends BaseRepository<IUserDoc>
     implements IUserRepository {
 
     constructor() {
@@ -173,10 +172,10 @@ export class UserRepository
     async updateBadge(userId: string, badgeId: string): Promise<void> {
         await UserModel.updateOne(
             { _id: userId },
-            { 
+            {
                 $set: { badge_id: badgeId },
                 $addToSet: { badges: badgeId }
-             }
+            }
         );
     }
 

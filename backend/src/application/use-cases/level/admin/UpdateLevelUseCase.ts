@@ -8,15 +8,6 @@ export class UpdateLevelUseCase {
         private readonly _levelRepository: ILevelRepository
     ) { }
 
-    // async execute(id: string, dto: Partial<CreateLevelDTO>): Promise<Level | null> {
-    //     const existingLevel = await this._levelRepository.findById(id);
-    //     if (!existingLevel) {
-    //         throw new Error("Level not found");
-    //     }
-
-    //     return this._levelRepository.update(id, dto);
-    // }
-
     async execute(id: string, dto: UpdateLevelDTO): Promise<Level> {
 
         const existing = await this._levelRepository.findById(id);
@@ -35,7 +26,7 @@ export class UpdateLevelUseCase {
             new Date()
         );
 
-        //IMPORTANT: re-validate overlap
+        // re-validate overlap
         const allLevels = await this._levelRepository.findAll();
 
         const overlap = allLevels.some(

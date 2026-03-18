@@ -47,12 +47,9 @@ export class PlanController {
                 .status(HttpStatus.CREATED)
                 .json(ApiResponse.success(MESSAGES.PLAN.CREATED, plan));
         } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
         }
     };
 
@@ -65,12 +62,9 @@ export class PlanController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.PLAN.FETCH_SUCCESS, plans));
         } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -89,14 +83,9 @@ export class PlanController {
                 .json(ApiResponse.success(MESSAGES.PLAN.FETCH_SUCCESS, activePlans));
 
         } catch (err: unknown) {
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -119,12 +108,9 @@ export class PlanController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.PLAN.UPDATED, updated));
         } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST;
-
             return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
         }
     };
 
@@ -145,12 +131,9 @@ export class PlanController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.PLAN.DELETED));
         } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST;
-
             return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
         }
     };
 }

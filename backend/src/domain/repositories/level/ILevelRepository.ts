@@ -5,7 +5,7 @@ export interface ILevelRepository {
 
   findAll(): Promise<Level[]>;
 
-  //Core: resolve level from XP
+  //resolve level from XP
   findByXp(xp: number): Promise<Level | null>;
 
   findByLevelNumber(levelNumber: number): Promise<Level | null>;

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { CreateLevelUseCase } from "../../application/use-cases/level/admin/CreateLevelUseCase";
-import { GetLevelsUseCase } from "../../application/use-cases/level/GetLevelsUseCase";
+import { GetLevelsUseCase } from "../../application/use-cases/level/user/GetLevelsUseCase";
 import { UpdateLevelUseCase } from "../../application/use-cases/level/admin/UpdateLevelUseCase";
 import { DeleteLevelUseCase } from "../../application/use-cases/level/admin/DeleteLevelUseCase";
 
@@ -30,8 +30,9 @@ export class LevelController {
         .json(ApiResponse.success("Levels retrieved successfully", levels));
 
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(ApiResponse.error(message));
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
     }
   };
 
@@ -65,14 +66,9 @@ export class LevelController {
         .json(ApiResponse.success(MESSAGES.LEVEL.CREATED, level));
 
     } catch (err: unknown) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : MESSAGES.COMMON.BAD_REQUEST;
-
       return res
         .status(HttpStatus.BAD_REQUEST)
-        .json(ApiResponse.error(message));
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
     }
   };
 
@@ -110,14 +106,9 @@ export class LevelController {
         .json(ApiResponse.success(MESSAGES.LEVEL.UPDATED, updated));
 
     } catch (err: unknown) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : MESSAGES.COMMON.BAD_REQUEST;
-
       return res
         .status(HttpStatus.BAD_REQUEST)
-        .json(ApiResponse.error(message));
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
     }
   };
 
@@ -133,8 +124,9 @@ export class LevelController {
       return res.status(HttpStatus.OK).json(ApiResponse.success("Level deleted successfully"));
 
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST;
-      return res.status(HttpStatus.BAD_REQUEST).json(ApiResponse.error(message));
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
     }
   };
 }

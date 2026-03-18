@@ -1,16 +1,3 @@
-// import { ChallengeDifficulty,ChallengeDomain } from "../../../domain/entities/challenge/Challenge";
-
-// export interface GetChallengeQueryDTO {
-//   page: number;
-//   limit: number;
-
-//   search?: string;
-//   difficulty?: ChallengeDifficulty;
-//   domain?: ChallengeDomain;
-
-//   isPremium?: boolean;
-// }
-
 import {
   ChallengeDifficulty,
   ChallengeDomain,

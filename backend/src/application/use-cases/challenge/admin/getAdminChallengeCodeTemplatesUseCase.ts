@@ -3,13 +3,12 @@ import { IChallengeCodeTemplateRepository } from "../../../../domain/repositorie
 
 export class GetAdminChallengeCodeTemplatesUseCase {
     constructor(
-        private readonly repo: IChallengeCodeTemplateRepository
+        private readonly _repo: IChallengeCodeTemplateRepository
     ) { }
 
     async execute(challengeId: string) {
-        const templates = await this.repo.findByChallenge(challengeId);
+        const templates = await this._repo.findByChallenge(challengeId);
 
-        // full details including solutionCode
         return templates.map(t => ({
             language: t.language,
             starterCode: t.starterCode,

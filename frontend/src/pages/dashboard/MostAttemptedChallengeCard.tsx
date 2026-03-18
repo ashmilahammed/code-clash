@@ -25,7 +25,7 @@ const MostAttemptedChallengeCard = ({ challenge, userPremium }: MostAttemptedCha
   const navigate = useNavigate();
 
   return (
-    <div className="bg-gradient-to-br from-[#020617] to-[#0a0f1d] rounded-2xl p-6 relative overflow-hidden flex flex-col justify-between h-full border border-slate-700/50 shadow-xl group">
+    <div className="bg-linear-to-br from-[#020617] to-[#0a0f1d] rounded-2xl p-6 relative overflow-hidden flex flex-col justify-between h-full border border-slate-700/50 shadow-xl group">
       
       {/* Background decoration */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none group-hover:bg-indigo-500/20 transition-all duration-700"></div>

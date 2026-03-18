@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
 
-import { CreateGroupUseCase } from "../../application/use-cases/chat/CreateGroupUseCase";
-import { JoinGroupUseCase } from "../../application/use-cases/chat/JoinGroupUseCase";
-import { GetConversationsUseCase } from "../../application/use-cases/chat/GetConversationsUseCase";
-import { GetMessagesUseCase } from "../../application/use-cases/chat/GetMessagesUseCase";
-import { GetOrCreateDirectConversationUseCase } from "../../application/use-cases/chat/GetOrCreateDirectConversationUseCase";
-import { GetPublicConversationsUseCase } from "../../application/use-cases/chat/GetPublicConversationsUseCase";
-import { LeaveGroupUseCase } from "../../application/use-cases/chat/LeaveGroupUseCase";
-import { AddParticipantsUseCase } from "../../application/use-cases/chat/AddParticipantsUseCase";
-import { UploadChatImageUseCase } from "../../application/use-cases/chat/UploadChatImageUseCase";
+import { CreateGroupUseCase } from "../../application/use-cases/chat/user/CreateGroupUseCase";
+import { JoinGroupUseCase } from "../../application/use-cases/chat/user/JoinGroupUseCase";
+import { GetConversationsUseCase } from "../../application/use-cases/chat/user/GetConversationsUseCase";
+import { GetMessagesUseCase } from "../../application/use-cases/chat/user/GetMessagesUseCase";
+import { GetOrCreateDirectConversationUseCase } from "../../application/use-cases/chat/user/GetOrCreateDirectConversationUseCase";
+import { GetPublicConversationsUseCase } from "../../application/use-cases/chat/user/GetPublicConversationsUseCase";
+import { LeaveGroupUseCase } from "../../application/use-cases/chat/user/LeaveGroupUseCase";
+import { AddParticipantsUseCase } from "../../application/use-cases/chat/user/AddParticipantsUseCase";
+import { UploadChatImageUseCase } from "../../application/use-cases/chat/user/UploadChatImageUseCase";
 
 import { CreateGroupDTO } from "../../application/dto/chat/CreateGroupDTO";
 import { AddParticipantsDTO } from "../../application/dto/chat/AddParticipantsDTO";
@@ -70,10 +70,10 @@ export class ChatController {
             return res
                 .status(HttpStatus.CREATED)
                 .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, group));
-        } catch (error: any) {
+        } catch (err: unknown) {
             return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(error.message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
         }
     };
 
@@ -97,18 +97,6 @@ export class ChatController {
 
     joinGroup = async (req: Request, res: Response) => {
         try {
-            // const userId = res.locals.user?.userId;
-            // const { conversationId } = req.params;
-
-            // if (!userId || !conversationId) {
-            //     return res
-            //         .status(HttpStatus.BAD_REQUEST)
-            //         .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-            // }
-
-            // const dto: JoinGroupDTO = { userId, conversationId };
-
-            // const group = await this._joinGroupUseCase.execute(dto);
 
             const conversationId = req.params.conversationId;
 
@@ -130,10 +118,10 @@ export class ChatController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, group));
 
-        } catch (error: any) {
+        } catch (err: unknown) {
             return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(error.message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
         }
     };
 
@@ -141,15 +129,7 @@ export class ChatController {
 
     getConversations = async (req: Request, res: Response) => {
         try {
-            // const userId = res.locals.user?.userId;
 
-            // if (!userId) {
-            //     return res
-            //         .status(HttpStatus.UNAUTHORIZED)
-            //         .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-            // }
-
-            // const conversations = await this._getConversationsUseCase.execute({ userId });
             const userId = res.locals.user?.userId;
 
             if (!userId) {
@@ -163,10 +143,10 @@ export class ChatController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, conversations));
 
-        } catch (error: any) {
+        } catch (err: unknown) {
             return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(error.message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
         }
     };
 
@@ -204,10 +184,10 @@ export class ChatController {
             return res
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, messages));
-        } catch (error: any) {
+        } catch (err: unknown) {
             return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(error.message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
         }
     };
 
@@ -231,10 +211,10 @@ export class ChatController {
             return res
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, conversation));
-        } catch (error: any) {
+        } catch (err: unknown) {
             return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(error.message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
         }
     };
 
@@ -242,18 +222,7 @@ export class ChatController {
 
     leaveGroup = async (req: Request, res: Response) => {
         try {
-            // const userId = res.locals.user?.userId;
-            // const { conversationId } = req.params;
 
-            // if (!userId || !conversationId) {
-            //     return res
-            //         .status(HttpStatus.BAD_REQUEST)
-            //         .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-            // }
-
-            // const dto: LeaveGroupDTO = { userId, conversationId };
-
-            // const group = await this._leaveGroupUseCase.execute(dto);
             const conversationId = req.params.conversationId;
             const userId = res.locals.user?.userId as string;
 
@@ -272,10 +241,10 @@ export class ChatController {
             return res
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, group));
-        } catch (error: any) {
+        } catch (err: unknown) {
             return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(error.message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
         }
     };
 
@@ -304,10 +273,10 @@ export class ChatController {
             return res
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, group));
-        } catch (error: any) {
+        } catch (err: unknown) {
             return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(error.message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
         }
     };
 
@@ -316,19 +285,6 @@ export class ChatController {
 
     uploadChatImage = async (req: Request, res: Response) => {
         try {
-            // const { conversationId } = req.params;
-            // const file = req.file;
-
-            // if (!conversationId || !file) {
-            //     return res
-            //         .status(HttpStatus.BAD_REQUEST)
-            //         .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-            // }
-
-            // const url = await this._uploadChatImageUseCase.execute({
-            //     conversationId,
-            //     fileBuffer: file.buffer,
-            // });
 
             const conversationId = req.params.conversationId;
             const file = req.file;
@@ -349,10 +305,10 @@ export class ChatController {
             return res
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, { url }));
-        } catch (error: any) {
+        } catch (err: unknown) {
             return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(error.message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
         }
     };
 }

@@ -4,6 +4,7 @@ import { IUserRepository } from "../../domain/repositories/user/IUserRepository"
 import { INotificationRepository } from "../../domain/repositories/notification/INotificationRepository";
 import { User } from "../../domain/entities/user/User";
 
+
 export class BadgeRewardService implements IBadgeRewardService {
     constructor(
         private readonly badgeRepo: IBadgeRepository,

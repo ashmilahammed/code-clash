@@ -58,12 +58,9 @@ export class NotificationController {
         .status(HttpStatus.CREATED)
         .json(ApiResponse.success(MESSAGES.NOTIFICATION.SENT));
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
     }
   };
 
@@ -85,12 +82,9 @@ export class NotificationController {
         .status(HttpStatus.OK)
         .json(ApiResponse.success(MESSAGES.NOTIFICATION.FETCH_SUCCESS, result));
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
     }
   };
 
@@ -117,12 +111,9 @@ export class NotificationController {
         .status(HttpStatus.OK)
         .json(ApiResponse.success(MESSAGES.NOTIFICATION.FETCH_SUCCESS, result.data));
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
     }
   };
 
@@ -145,12 +136,9 @@ export class NotificationController {
         .status(HttpStatus.OK)
         .json(ApiResponse.success(MESSAGES.NOTIFICATION.MARKED_READ));
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
     }
   };
 
@@ -169,12 +157,9 @@ export class NotificationController {
         .status(HttpStatus.OK)
         .json(ApiResponse.success(MESSAGES.NOTIFICATION.MARKED_ALL_READ));
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
     }
   };
 
@@ -190,12 +175,9 @@ export class NotificationController {
         .status(HttpStatus.OK)
         .json(ApiResponse.success(MESSAGES.NOTIFICATION.CLEARED));
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
     }
   };
 }

@@ -4,7 +4,7 @@ import { Challenge } from "../../../../domain/entities/challenge/Challenge";
 
 export class GetChallengeByIdUseCase {
   constructor(
-    private readonly challengeRepo: IChallengeRepository
+    private readonly _challengeRepo: IChallengeRepository
   ) {}
 
   async execute(id: string): Promise<Challenge | null> {
@@ -12,7 +12,7 @@ export class GetChallengeByIdUseCase {
       throw new Error("CHALLENGE_ID_REQUIRED");
     }
 
-    return this.challengeRepo.findByIdForUser(id);
+    return this._challengeRepo.findByIdForUser(id);
   }
 }
 

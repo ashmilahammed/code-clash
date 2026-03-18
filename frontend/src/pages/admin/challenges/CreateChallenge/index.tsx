@@ -11,8 +11,6 @@ const CreateChallengeWizard = () => {
   const { id } = useParams();
   const location = useLocation();
 
-  // Helper to determine if a step is active or completed
-  // This is simple styling logic for now
   const isActive = (path: string): boolean => {
     if (!path) {
       return location.pathname.endsWith("/create") || !!location.pathname.match(/\/edit\/[^/]+$/);
@@ -59,8 +57,6 @@ const CreateChallengeWizard = () => {
 
 
 const Step = ({ label, path, id, active }: { label: string; path: string; id?: string; active?: boolean }) => {
-  // If we have an ID, we can navigate directly
-  // If not, we disable navigation (user must follow flow)
   const canNavigate = !!id;
   const basePath = id ? `/admin/challenges/edit/${id}` : "/admin/challenges/create";
   const to = path ? `${basePath}/${path}` : basePath;

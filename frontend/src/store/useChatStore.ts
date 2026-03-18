@@ -42,10 +42,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
         const currentSocket = get().socket;
         if (currentSocket) return;
 
-        // const socket = io('http://localhost:5000', {
-        //     auth: { token },
-        //     withCredentials: true,
-        // });
+
         const socket = io(import.meta.env.VITE_SOCKET_URL, {
             auth: { token },
             withCredentials: true,
@@ -109,7 +106,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
         set({ activeConversation: conversation });
         if (conversation) {
             get().fetchMessages(conversation.id);
-            // Join room via socket to ensure we get real-time updates specifically for this active view
+            // Join room via socket 
             const { socket } = get();
             if (socket) {
                 socket.emit('join_conversation', conversation.id);
@@ -172,19 +169,6 @@ export const useChatStore = create<ChatState>((set, get) => ({
         }
     },
 
-
-
-    // createGroup: async (name: string, description?: string, memberLimit?: number, isPrivate?: boolean, participants: string[] = []) => {
-    //     try {
-    //         const newGroup = await chatApi.createGroup(name, description, memberLimit, isPrivate, participants);
-    //         set(state => ({ conversations: [newGroup, ...state.conversations] }));
-    //         get().setActiveConversation(newGroup);
-    //     } catch (error: any) {
-    //         const message = error.response?.data?.message || "Failed to create group";
-    //         toast.error(message);
-    //         throw error;
-    //     }
-    // },
 
 
     createGroup: async (
@@ -254,7 +238,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
         try {
             await chatApi.leaveGroup(conversationId);
             get().fetchConversations();
-            get().fetchPublicGroups(); // Re-fetch public groups in case it was public
+            get().fetchPublicGroups(); 
 
             const { activeConversation } = get();
             if (activeConversation?.id === conversationId) {

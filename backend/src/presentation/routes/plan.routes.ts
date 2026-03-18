@@ -1,12 +1,8 @@
 import { Router } from "express";
 import { planController } from "../../infrastructure/di/plan.di";
-// import { authMiddleware } from "../../infrastructure/di/auth.di";
-// import { requireAdminRole } from "../../infrastructure/di/role.di";
+
 
 const router = Router();
-
-// router.use(authMiddleware);
-// router.use(requireAdminRole);
 
 // Routes
 router.post("/", planController.createPlan.bind(planController));

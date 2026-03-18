@@ -1,9 +1,11 @@
 import { ITransactionRepository } from "../../../domain/repositories/transaction/ITransactionRepository";
 
 export class GetCurrentPremiumPlanUseCase {
-    constructor(private transactionRepository: ITransactionRepository) { }
+    constructor(
+        private readonly _transactionRepository: ITransactionRepository
+    ) { }
 
     async execute(userId: string): Promise<any> {
-        return this.transactionRepository.findLatestSuccessfulTransaction(userId);
+        return this._transactionRepository.findLatestSuccessfulTransaction(userId);
     }
 }

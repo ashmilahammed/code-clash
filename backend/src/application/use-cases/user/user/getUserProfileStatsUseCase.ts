@@ -15,6 +15,7 @@ export class GetUserProfileStatsUseCase {
     ) { }
 
     async execute(userId: string) {
+        
         const user = await this._userRepo.findById(userId);
         if (!user) throw new Error("USER_NOT_FOUND");
 

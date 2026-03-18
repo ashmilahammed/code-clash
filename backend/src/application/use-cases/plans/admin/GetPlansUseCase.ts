@@ -2,9 +2,11 @@ import { IPlanRepository } from "../../../../domain/repositories/plan/IPlanRepos
 import { Plan } from "../../../../domain/entities/plan/Plan";
 
 export class GetPlansUseCase {
-    constructor(private planRepository: IPlanRepository) { }
+    constructor(
+        private readonly _planRepository: IPlanRepository
+    ) { }
 
     async execute(): Promise<Plan[]> {
-        return this.planRepository.findAll();
+        return this._planRepository.findAll();
     }
 }

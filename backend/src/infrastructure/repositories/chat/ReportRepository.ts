@@ -2,7 +2,9 @@ import { IReportRepository } from "../../../domain/repositories/chat/IReportRepo
 import { Report, ReportReason, ReportStatus, UserBasicInfo } from "../../../domain/entities/chat/Report";
 import { ReportModel } from "../../database/models/chat/ReportModel";
 
+
 export class ReportRepository implements IReportRepository {
+
     async create(report: Report): Promise<Report> {
         const getId = (val: string | UserBasicInfo) => typeof val === 'string' ? val : val.id;
         const doc = await ReportModel.create({

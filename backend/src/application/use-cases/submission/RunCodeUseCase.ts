@@ -3,7 +3,7 @@ import { ICodeExecutionService } from "../../../domain/services/ICodeExecutionSe
 
 export class RunCodeUseCase {
   constructor(
-    private readonly executionService: ICodeExecutionService
+    private readonly _executionService: ICodeExecutionService
   ) { }
 
   async execute(language: string, code: string, input: string) {
@@ -15,6 +15,6 @@ export class RunCodeUseCase {
       throw new Error("Language is required");
     }
 
-    return this.executionService.execute(language, code, input);
+    return this._executionService.execute(language, code, input);
   }
 }

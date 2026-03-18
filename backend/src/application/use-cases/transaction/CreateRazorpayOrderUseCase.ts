@@ -1,19 +1,18 @@
 import { IPlanRepository } from "../../../domain/repositories/plan/IPlanRepository";
 import { IRazorpayService } from "../../../domain/services/IRazorpayService";
+import { CreateOrderDTO } from "../../dto/transaction/CreateOrderDTO";
 
-interface CreateOrderDTO {
-    planId: string;
-    userId: string;
-}
+
 
 export class CreateRazorpayOrderUseCase {
     constructor(
-        private planRepository: IPlanRepository,
-        private razorpayService: IRazorpayService
+        private readonly _planRepository: IPlanRepository,
+        private readonly _razorpayService: IRazorpayService
     ) { }
 
     async execute(dto: CreateOrderDTO): Promise<any> {
-        const plan = await this.planRepository.findById(dto.planId);
+
+        const plan = await this._planRepository.findById(dto.planId);
 
         if (!plan) {
             throw new Error("Plan not found");
@@ -30,9 +29,8 @@ export class CreateRazorpayOrderUseCase {
 
         // Receipt id 
         const receiptId = `rcpt_${Date.now()}`;
-        // const receiptId = `receipt_${dto.userId}_${Date.now()}`;
 
-        const order = await this.razorpayService.createOrder(amountInPaise, "INR", receiptId);
+        const order = await this._razorpayService.createOrder(amountInPaise, "INR", receiptId);
 
         return {
             id: order.id,

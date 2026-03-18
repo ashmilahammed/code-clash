@@ -87,61 +87,6 @@ const ChallengeTags = () => {
 
 
 
-  // return (
-  //   <div className="max-w-2xl mx-auto space-y-6">
-  //     <h1 className="text-xl font-semibold text-white">
-  //       Challenge – Tags
-  //     </h1>
-
-  //     {error && (
-  //       <p className="text-red-500 text-sm">{error}</p>
-  //     )}
-
-  //     <div className="flex gap-2">
-  //       <input
-  //         className="input flex-1 p-3 rounded bg-slate-800 text-white border border-slate-700"
-  //         placeholder="Add tag (e.g. array)"
-  //         value={input}
-  //         onChange={(e) => setInput(e.target.value)}
-  //         onKeyDown={(e) => e.key === "Enter" && addTag()}
-  //       />
-  //       <button onClick={addTag} className="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded text-white">
-  //         Add
-  //       </button>
-  //     </div>
-
-  //     <div className="flex flex-wrap gap-2">
-  //       {tags.map((t) => (
-  //         <span
-  //           key={t}
-  //           className="px-3 py-1 bg-slate-700 rounded-full text-sm flex items-center gap-2 text-slate-200"
-  //         >
-  //           {t}
-  //           <button
-  //             onClick={() => removeTag(t)}
-  //             className="hover:text-red-400 font-bold"
-  //           >
-  //             &times;
-  //           </button>
-  //         </span>
-  //       ))}
-  //     </div>
-
-  //     <div className="flex justify-end">
-  //       <button
-  //         onClick={saveAndNext}
-  //         disabled={loading}
-  //         className="px-5 py-2 rounded bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50 text-white"
-  //       >
-  //         {loading ? "Saving..." : "Save & Continue"}
-  //       </button>
-  //     </div>
-
-  //   </div>
-  // );
-
-
-
     return (
     <div className="max-w-4xl mx-auto space-y-8">
 

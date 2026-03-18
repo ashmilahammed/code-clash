@@ -17,7 +17,6 @@ import ResetPassword from "./pages/auth/ResetPassword";
 
 import Dashboard from "./pages/dashboard/Dashboard";
 import UserLayout from "./components/layout/UserLayout";
-// import Badges from "./pages/profile/Badges";
 import Profile from "./pages/profile/Profile";
 import Settings from "./pages/settings";
 import Leaderboard from "./pages/dashboard/Leaderboard";
@@ -28,7 +27,6 @@ import AdminLayout from "./components/layout/AdminLayout";
 import AdminDashboard from "./pages/admin/dashboard/AdminDashboard";
 import UserManagement from "./pages/admin/userManagement/UserManagement";
 import ChallengeManagement from "./pages/admin/challenges/ChallengeManagement"
-// import ChallengeDetails from "./pages/dashboard/ChallengeDetails";
 
 import CreateChallengeWizard from "./pages/admin/challenges/CreateChallenge";
 import BasicInfo from "./pages/admin/challenges/CreateChallenge/BasicInfo";

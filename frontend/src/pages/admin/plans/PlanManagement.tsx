@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { CreditCard, IndianRupee, Users } from "lucide-react";
 import toast from "react-hot-toast";
 
-// import { getPlansApi, getTransactionsApi, createPlanApi, updatePlanApi, deletePlanApi } from "../../../api/planApi";
-// import type { Plan, Transaction } from "../../../api/planApi";
 import { getPlansApi ,createPlanApi, updatePlanApi, deletePlanApi } from "../../../api/planApi";
 import { getAdminTransactionsApi } from "../../../api/transactionApi";
 import type { Plan } from "../../../api/planApi";
@@ -21,6 +19,8 @@ const PlanManagement = () => {
     const [planToEdit, setPlanToEdit] = useState<Plan | null>(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [planToDelete, setPlanToDelete] = useState<Plan | null>(null);
+
+
 
     useEffect(() => {
         fetchPlans();

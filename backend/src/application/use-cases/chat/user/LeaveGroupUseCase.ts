@@ -1,11 +1,14 @@
-import { IConversationRepository } from "../../../domain/repositories/chat/IConversationRepository";
-import { Conversation } from "../../../domain/entities/chat/Conversation";
+import { IConversationRepository } from "../../../../domain/repositories/chat/IConversationRepository";
+import { Conversation } from "../../../../domain/entities/chat/Conversation";
 
 export class LeaveGroupUseCase {
-    constructor(private conversationRepository: IConversationRepository) { }
+    constructor(
+        private readonly _conversationRepository: IConversationRepository
+    ) { }
 
     async execute(conversationId: string, userId: string): Promise<Conversation> {
-        const conversation = await this.conversationRepository.findById(conversationId);
+
+        const conversation = await this._conversationRepository.findById(conversationId);
 
         if (!conversation) {
             throw new Error("Group not found");
@@ -21,7 +24,7 @@ export class LeaveGroupUseCase {
 
         const updatedParticipants = conversation.participants.filter(id => id.toString() !== userId.toString());
 
-        const updatedConversation = await this.conversationRepository.update(conversationId, {
+        const updatedConversation = await this._conversationRepository.update(conversationId, {
             participants: updatedParticipants
         });
 

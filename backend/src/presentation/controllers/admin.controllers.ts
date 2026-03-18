@@ -62,14 +62,9 @@ export class AdminController {
         .json(ApiResponse.success(MESSAGES.USER.FETCH_SUCCESS, result));
 
     } catch (err: unknown) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : MESSAGES.COMMON.INTERNAL_ERROR;
-
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
     }
   };
 
@@ -111,14 +106,9 @@ export class AdminController {
         .json(ApiResponse.success(MESSAGES.USER.UPDATE_SUCCESS));
 
     } catch (err: unknown) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : MESSAGES.COMMON.INTERNAL_ERROR;
-
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
     }
   };
 
@@ -136,14 +126,9 @@ export class AdminController {
         .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, stats));
 
     } catch (err: unknown) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : MESSAGES.COMMON.INTERNAL_ERROR;
-
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(message));
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
     }
   };
 }

@@ -1,8 +1,11 @@
 import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
 import { User } from "../../../../domain/entities/user/User";
 
+
 export class UpdateUserProfileUseCase {
-  constructor(private readonly _userRepository: IUserRepository) {}
+  constructor(
+    private readonly _userRepository: IUserRepository
+  ) {}
 
   async execute(
     userId: string,

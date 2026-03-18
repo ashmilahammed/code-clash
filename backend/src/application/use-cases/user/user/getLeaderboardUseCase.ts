@@ -5,9 +5,9 @@ import { ILevelRepository } from "../../../../domain/repositories/level/ILevelRe
 
 export class GetLeaderboardUseCase {
     constructor(
-        private readonly userRepo: IUserRepository,
-        private readonly submissionRepo: ISubmissionRepository,
-        private readonly levelRepo: ILevelRepository
+        private readonly _userRepo: IUserRepository,
+        private readonly _submissionRepo: ISubmissionRepository,
+        private readonly _levelRepo: ILevelRepository
     ) { }
 
     async execute(
@@ -20,28 +20,25 @@ export class GetLeaderboardUseCase {
         let total = 0;
 
         if (timeframe === "all-time") {
-            const result = await this.userRepo.getLeaderboard(page, limit, search);
+            const result = await this._userRepo.getLeaderboard(page, limit, search);
             users = result.data;
             total = result.total;
         } else {
-            const result = await this.submissionRepo.getLeaderboardByTimeframe(page, limit, timeframe, search);
+            const result = await this._submissionRepo.getLeaderboardByTimeframe(page, limit, timeframe, search);
             users = result.data;
             total = result.total;
         }
 
         const enrichedUsers = await Promise.all(users.map(async (user) => {
-            // For all-time, we need to count solved challenges. 
-            // For weekly/monthly, we already aggregated it in the submission repository.
+
             let challengesSolved = user.challengesSolved;
 
-            // if it's the all-time user model from userRepo, it won't have challengesSolved yet, it's a User domain object.
-            // if it's from submissionRepo, it's a plain object with challengesSolved pre-aggregated.
             if (timeframe === "all-time") {
-                challengesSolved = await this.submissionRepo.countSolved(user.id!);
+                challengesSolved = await this._submissionRepo.countSolved(user.id!);
             }
 
             const levelId = user.level_id || (user.snapshot && user.snapshot().level_id);
-            const level = levelId ? await this.levelRepo.findById(levelId) : null;
+            const level = levelId ? await this._levelRepo.findById(levelId) : null;
 
             // Normalize the user object representation
             const userData = user.snapshot ? user.snapshot() : user;

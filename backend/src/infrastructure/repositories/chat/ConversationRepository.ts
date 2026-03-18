@@ -8,6 +8,7 @@ import { Types } from "mongoose";
 
 
 export class ConversationRepository implements IConversationRepository {
+    
     async findById(id: string): Promise<Conversation | null> {
         if (!Types.ObjectId.isValid(id)) return null;
         const doc = await ConversationModel.findById(id).populate('participants', 'username avatar');

@@ -4,14 +4,14 @@ import { ISubmissionRepository } from "../../../../domain/repositories/submissio
 
 export class GetChallengeCodeTemplatesUseCase {
   constructor(
-    private readonly repo: IChallengeCodeTemplateRepository,
-    private readonly submissionRepo: ISubmissionRepository,
+    private readonly _repo: IChallengeCodeTemplateRepository,
+    private readonly _submissionRepo: ISubmissionRepository,
   ) {}
 
   async execute(challengeId: string, userId: string) {
     const [templates, isSolved] = await Promise.all([
-      this.repo.findByChallenge(challengeId),
-      this.submissionRepo.hasUserSolvedChallenge(userId, challengeId),
+      this._repo.findByChallenge(challengeId),
+      this._submissionRepo.hasUserSolvedChallenge(userId, challengeId),
     ]);
 
     return templates.map(t => ({

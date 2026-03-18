@@ -13,29 +13,9 @@ export class GetDashboardUseCase {
     async execute(userId: string) {
 
         const user = await this._userRepo.findById(userId);
+
         if (!user) throw new Error("USER_NOT_FOUND");
 
-        // const levelInfo = this._xpService.getLevelInfo(user.xp);
-
-        // const streakDates = this.buildStreakDates(
-        //     user.current_streak,
-        //     user.last_login_date
-        // );
-        // return {
-        //     user,
-
-        //     level: {
-        //         level: levelInfo.level,
-        //         currentXp: user.xp,
-        //         nextLevelXp: levelInfo.nextLevelXp,
-        //     },
-
-        //     streak: {
-        //         current: user.current_streak,
-        //         longest: user.longest_streak,
-        //         dates: streakDates,
-        //     },
-        // };
 
         //
         const xp = user.getXp();
@@ -78,7 +58,7 @@ export class GetDashboardUseCase {
                 // createdAt: { $gte: startDate } // Optional: limit completion rate to recent
             });
             mostAttemptedChallenge = {
-                id: challengeObj.challenge._id, // Add id so we can link to it
+                id: challengeObj.challenge._id, 
                 title: challengeObj.challenge.title,
                 difficulty: challengeObj.challenge.difficulty,
                 attempts: challengeObj.count,

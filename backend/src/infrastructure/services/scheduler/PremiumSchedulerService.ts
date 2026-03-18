@@ -1,7 +1,7 @@
 import { UserModel } from "../../database/models/user/UserModel";
 import { WinstonLogger } from "../logger";
 import { NotificationRepository } from "../../repositories/notification/NotificationRepository";
-// import mongoose from "mongoose";
+
 
 const logger = new WinstonLogger();
 const notificationRepository = new NotificationRepository();

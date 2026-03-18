@@ -10,7 +10,7 @@ import { CreateChallengeDTO } from "../../../dto/challenge/CreateChallengeDTO";
 
 export class CreateChallengeUseCase {
   constructor(
-    private readonly challengeRepo: IChallengeRepository
+    private readonly _challengeRepo: IChallengeRepository
   ) {}
 
   async execute(input: CreateChallengeDTO): Promise<Challenge> {
@@ -58,7 +58,7 @@ export class CreateChallengeUseCase {
       null
     );
 
-    return this.challengeRepo.create(challenge);
+    return this._challengeRepo.create(challenge);
   }
 }
 

@@ -4,15 +4,14 @@ import { ProgrammingLanguage } from "../../../domain/entities/language/Programmi
 import { ProgrammingLanguageMapper } from "../../../application/mappers/ProgrammingLanguageMapper";
 
 
-export class ProgrammingLanguageRepository
-  implements IProgrammingLanguageRepository {
+export class ProgrammingLanguageRepository implements IProgrammingLanguageRepository {
 
   async findAllActive(): Promise<ProgrammingLanguage[]> {
     const docs = await ProgrammingLanguageModel.find({ isActive: true });
     return docs.map(ProgrammingLanguageMapper.toDomain);
   }
 
-  
+
   async findByKeys(keys: string[]): Promise<string[]> {
     const docs = await ProgrammingLanguageModel.find({
       key: { $in: keys },

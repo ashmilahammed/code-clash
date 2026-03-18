@@ -189,19 +189,19 @@ const ChallengeList = () => {
                         const parsedData = JSON.parse(activeData);
                         // Make sure timer hasn't expired organically yet
                         if (parsedData.expiryTime > Date.now()) {
-                          // If they click the exact same one they are already active in, just let them in
+                          // if click the same actice challenge, get in 
                           if (parsedData.challengeId === challenge.id) {
                             navigate(`/challenges/${challenge.id}`);
                             return;
                           }
 
-                          // Otherwise block and warn them
+                          // Otherwise block and warn 
                           setActiveChallengeData(parsedData);
                           setPendingChallenge(challenge);
                           setShowWarningModal(true);
                           return;
                         } else {
-                          // Timer naturally expired but wasn't cleared yet, clear it
+               
                           localStorage.removeItem(globalActiveKey);
                           localStorage.removeItem(`challenge_timer_${userId}_${parsedData.challengeId}`);
                         }

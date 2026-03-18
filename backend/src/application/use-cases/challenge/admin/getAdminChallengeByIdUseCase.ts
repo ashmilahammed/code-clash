@@ -3,7 +3,7 @@ import { Challenge } from "../../../../domain/entities/challenge/Challenge";
 
 export class GetAdminChallengeByIdUseCase {
   constructor(
-    private readonly challengeRepo: IChallengeRepository
+    private readonly _challengeRepo: IChallengeRepository
   ) {}
 
   async execute(id: string): Promise<Challenge | null> {
@@ -11,6 +11,6 @@ export class GetAdminChallengeByIdUseCase {
       throw new Error("CHALLENGE_ID_REQUIRED");
     }
 
-    return this.challengeRepo.findById(id);
+    return this._challengeRepo.findById(id);
   }
 }

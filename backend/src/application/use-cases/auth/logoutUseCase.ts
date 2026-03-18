@@ -2,10 +2,12 @@ import { IUserRepository } from "../../../domain/repositories/user/IUserReposito
 
 
 export class LogoutUseCase {
-  constructor(private userRepository: IUserRepository) {}
+  constructor(
+    private readonly _userRepository: IUserRepository
+  ) { }
 
   async execute(userId: string) {
-    await this.userRepository.updateRefreshToken(userId, null);
+    await this._userRepository.updateRefreshToken(userId, null);
     return { message: "Logged out successfully" };
   }
 }

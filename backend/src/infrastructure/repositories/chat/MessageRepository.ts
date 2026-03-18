@@ -7,6 +7,7 @@ import { Types } from "mongoose";
 
 
 export class MessageRepository implements IMessageRepository {
+    
     async findById(id: string): Promise<Message | null> {
         if (!Types.ObjectId.isValid(id)) return null;
         const doc = await MessageModel.findById(id);

@@ -1,21 +1,3 @@
-// const HeaderBar = ({ challenge }: any) => {
-//   return (
-//     <div className="px-6 py-3 border-b border-slate-800 bg-[#0f172a]">
-//       <h1 className="text-lg font-semibold">
-//         {challenge.title}
-//       </h1>
-
-//       <div className="text-sm text-slate-400">
-//         {challenge.difficulty.toUpperCase()} • XP {challenge.xpReward}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default HeaderBar;
-
-
-
 import { useState, useEffect } from "react";
 import { useAuthStore } from "../../../store/useAuthStore";
 

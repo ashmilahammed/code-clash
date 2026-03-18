@@ -5,6 +5,7 @@ import { Types } from "mongoose";
 
 
 export class SubmissionRepository implements ISubmissionRepository {
+
   async create(submission: Submission): Promise<Submission> {
     const created = await SubmissionModel.create({
       userId: new Types.ObjectId(submission.userId),

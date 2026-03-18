@@ -48,9 +48,6 @@ export abstract class BaseRepository<TDoc extends Document> {
   }
 
 
-  // async count(filter: any = {}): Promise<number> {
-  //   return this._model.countDocuments(filter).exec();
-  // }
   async count(filter: Record<string, unknown> = {}): Promise<number> {
     return this._model.countDocuments(filter).exec();
   }

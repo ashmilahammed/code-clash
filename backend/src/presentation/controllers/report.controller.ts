@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { ReportMessageUseCase } from "../../application/use-cases/chat/ReportMessageUseCase";
-import { GetAllReportsUseCase } from "../../application/use-cases/chat/GetAllReportsUseCase";
-import { BanUserUseCase } from "../../application/use-cases/user/BanUserUseCase";
-import { DismissReportUseCase } from "../../application/use-cases/chat/DismissReportUseCase";
-import { GetMessageByIdUseCase } from "../../application/use-cases/chat/GetMessageByIdUseCase";
+import { ReportMessageUseCase } from "../../application/use-cases/chat/user/ReportMessageUseCase";
+import { GetAllReportsUseCase } from "../../application/use-cases/chat/admin/GetAllReportsUseCase";
+import { BanUserUseCase } from "../../application/use-cases/chat/admin/BanUserUseCase";
+import { DismissReportUseCase } from "../../application/use-cases/chat/admin/DismissReportUseCase";
+import { GetMessageByIdUseCase } from "../../application/use-cases/chat/user/GetMessageByIdUseCase";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
@@ -76,12 +76,9 @@ export class ReportController {
                 .json(ApiResponse.success("Message reported successfully", report));
 
         } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(message));
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -111,12 +108,9 @@ export class ReportController {
                 .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, result));
 
         } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -145,12 +139,9 @@ export class ReportController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success("User banned successfully"));
         } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(message));
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -171,12 +162,9 @@ export class ReportController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success("Report dismissed successfully"));
         } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(message));
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -204,12 +192,9 @@ export class ReportController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, message));
         } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(message));
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 }

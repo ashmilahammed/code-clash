@@ -2,7 +2,6 @@ import { Router } from "express";
 import { authMiddleware, } from "../../infrastructure/di/auth.di";
 import { requireAdmin, adminController, } from "../../infrastructure/di/user.di";
 
-// import { levelController } from "../../infrastructure/di/level.di";
 import planRoutes from "./plan.routes";
 import transactionRoutes from "./transaction.routes";
 
@@ -46,8 +45,6 @@ router.post("/challenges/:id/code-templates", adminChallengeController.addCodeTe
 router.get("/challenges/:id/code-templates", adminChallengeController.getAdminTemplates);
 
 
-// levels management
-// router.post("/levels", levelController.create);
 
 // plan management
 router.use("/plans", planRoutes);

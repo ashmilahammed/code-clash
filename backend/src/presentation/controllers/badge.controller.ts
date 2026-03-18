@@ -29,15 +29,10 @@ export class BadgeController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.BADGE.FETCH_SUCCESS, badges));
 
-        } catch (error) {
-            const message =
-                error instanceof Error
-                    ? error.message
-                    : MESSAGES.COMMON.INTERNAL_ERROR;
-
+        } catch (err: unknown) {
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -104,34 +99,6 @@ export class BadgeController {
 
 
 
-    // update = async (req: Request, res: Response) => {
-    //     try {
-    //         const { id } = req.params;
-
-    //         if (!id) {
-    //             return res
-    //                 .status(HttpStatus.BAD_REQUEST)
-    //                 .json(ApiResponse.error("Badge id is required"));
-    //         }
-
-    //         const updated = await this._updateBadgeUseCase.execute(id, req.body);
-
-    //         return res
-    //             .status(HttpStatus.OK)
-    //             .json(ApiResponse.success(MESSAGES.BADGE.UPDATE_SUCCESS, updated));
-
-    //     } catch (error) {
-    //         const message =
-    //             error instanceof Error
-    //                 ? error.message
-    //                 : MESSAGES.COMMON.BAD_REQUEST;
-
-    //         return res
-    //             .status(HttpStatus.BAD_REQUEST)
-    //             .json(ApiResponse.error(message));
-    //     }
-    // };
-
     update = async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
@@ -185,7 +152,7 @@ export class BadgeController {
                 .json(ApiResponse.error(message));
         }
     };
-    
+
 
 
 
@@ -205,15 +172,10 @@ export class BadgeController {
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.BADGE.DELETE_SUCCESS));
 
-        } catch (error) {
-            const message =
-                error instanceof Error
-                    ? error.message
-                    : MESSAGES.COMMON.BAD_REQUEST;
-
+        } catch (err: unknown) {
             return res
                 .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
         }
     };
 

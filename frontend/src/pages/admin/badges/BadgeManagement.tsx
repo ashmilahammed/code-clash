@@ -20,15 +20,14 @@ const BadgeManagement = () => {
 
     const fetchData = async () => {
         try {
-            // const response = await getAllBadges();
-            // setBadges(response.data || []);
+;
             const badges = await getAllBadges();
             if (badges && Array.isArray(badges)) {
-                // Sort by ID descending so newly created badges appear first
+                // Sort by ID descending 
                 const sortedBadges = [...badges].sort((a, b) => {
                     const idA = a._id || a.id || "";
                     const idB = b._id || b.id || "";
-                    // Using localeCompare works well for MongoDB ObjectIDs which are chronological
+
                     return idB.localeCompare(idA);
                 });
                 setBadges(sortedBadges);
@@ -55,7 +54,7 @@ const BadgeManagement = () => {
         setIsModalOpen(false);
         setCurrentBadge(null);
     };
-    
+
 
     const handleEdit = (badge: Badge) => {
         setCurrentBadge(badge);

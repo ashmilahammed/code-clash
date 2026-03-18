@@ -6,9 +6,10 @@ import { BaseRepository } from "../BaseRepository";
 
 import mongoose from "mongoose";
 
-export class NotificationRepository
-  extends BaseRepository<INotificationDoc>
+
+export class NotificationRepository extends BaseRepository<INotificationDoc>
   implements INotificationRepository {
+
   constructor() {
     super(NotificationModel);
   }
@@ -112,7 +113,7 @@ export class NotificationRepository
     return { data, total };
   }
 
-  
+
   async markAsRead(userId: string, notificationId: string): Promise<void> {
     await UserNotificationModel.updateOne(
       { userId, notificationId },

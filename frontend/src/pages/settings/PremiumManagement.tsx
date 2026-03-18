@@ -6,6 +6,7 @@ import { cancelPremiumApi } from "../../api/userApi";
 import { useAuthStore } from "../../store/useAuthStore";
 import toast from "react-hot-toast";
 
+
 const PremiumManagement = () => {
   const navigate = useNavigate();
   const { user, updateUser } = useAuthStore();
@@ -18,7 +19,7 @@ const PremiumManagement = () => {
   // Pagination State
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const LIMIT = 5; // Showing 5 per page for settings view
+  const LIMIT = 5; 
 
   useEffect(() => {
     const fetchData = async () => {

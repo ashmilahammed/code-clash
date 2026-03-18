@@ -9,8 +9,7 @@ import { ChallengeMapper } from "../../../application/mappers/ChallengeMapper";
 
 
 
-export class ChallengeRepository
-    extends BaseRepository<IChallengeDoc>
+export class ChallengeRepository extends BaseRepository<IChallengeDoc>
     implements IChallengeRepository {
 
     constructor() {

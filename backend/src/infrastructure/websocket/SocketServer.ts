@@ -8,23 +8,23 @@ import { sendMessageUseCase, getConversationsUseCase, deleteMessageUseCase } fro
 
 
 export class SocketServer {
-    private io: SocketIOServer;
-    private jwtService: JwtService;
-    private userRepository: UserRepository;
-    private logger: WinstonLogger;
+    private readonly _io: SocketIOServer;
+    private readonly _jwtService: JwtService;
+    private readonly _userRepository: UserRepository;
+    private readonly _logger: WinstonLogger;
 
 
     constructor(server: HttpServer) {
-        this.io = new SocketIOServer(server, {
+        this._io = new SocketIOServer(server, {
             cors: {
                 origin: "http://localhost:5173",
                 credentials: true,
             },
         });
 
-        this.jwtService = new JwtService();
-        this.userRepository = new UserRepository();
-        this.logger = new WinstonLogger();
+        this._jwtService = new JwtService();
+        this._userRepository = new UserRepository();
+        this._logger = new WinstonLogger();
 
         this.setupMiddleware();
         this.setupEventHandlers();
@@ -32,7 +32,7 @@ export class SocketServer {
 
     
     private setupMiddleware() {
-        this.io.use(async (socket: Socket, next) => {
+        this._io.use(async (socket: Socket, next) => {
             try {
                 const token = socket.handshake.auth.token || socket.handshake.headers.authorization?.split(" ")[1];
 
@@ -40,8 +40,8 @@ export class SocketServer {
                     return next(new Error("Authentication error: No token provided"));
                 }
 
-                const decoded = this.jwtService.verifyAccessToken(token) as { userId: string };
-                const user = await this.userRepository.findById(decoded.userId);
+                const decoded = this._jwtService.verifyAccessToken(token) as { userId: string };
+                const user = await this._userRepository.findById(decoded.userId);
 
                 if (!user || user.status === "blocked") {
                     return next(new Error("Authentication error: Invalid or blocked user"));
@@ -55,16 +55,16 @@ export class SocketServer {
                 socket.data.userId = user.id;
                 next();
             } catch (error) {
-                this.logger.error("Socket authentication error", error);
+                this._logger.error("Socket authentication error", error);
                 next(new Error("Authentication error: Invalid token"));
             }
         });
     }
 
     private setupEventHandlers() {
-        this.io.on("connection", async (socket: Socket) => {
+        this._io.on("connection", async (socket: Socket) => {
             const userId = socket.data.userId;
-            this.logger.info(`User connected via Socket.io: ${userId}`);
+            this._logger.info(`User connected via Socket.io: ${userId}`);
 
             // Auto-join all rooms the user is part of
             try {
@@ -79,7 +79,7 @@ export class SocketServer {
                 socket.join(userId);
 
             } catch (error) {
-                this.logger.error("Error auto-joining rooms on connection", error);
+                this._logger.error("Error auto-joining rooms on connection", error);
             }
 
             socket.on("join_conversation", (conversationId: string) => {
@@ -97,16 +97,16 @@ export class SocketServer {
                     });
 
                     // Emit to all users in the conversation
-                    this.io.to(data.conversationId).emit("receive_message", message);
+                    this._io.to(data.conversationId).emit("receive_message", message);
 
                     // We can also emit an event to notify about updated conversation list
-                    this.io.to(data.conversationId).emit("conversation_list_updated", {
+                    this._io.to(data.conversationId).emit("conversation_list_updated", {
                         conversationId: data.conversationId,
                         lastMessage: message
                     });
 
                 } catch (error: any) {
-                    this.logger.error("Error sending message via socket", error);
+                    this._logger.error("Error sending message via socket", error);
                     socket.emit("error", { message: error.message || "Failed to send message" });
                 }
             });
@@ -116,15 +116,15 @@ export class SocketServer {
                     const deletedMessage = await deleteMessageUseCase.execute(data.messageId, userId);
 
                     // Emit deletion to all users in the conversation
-                    this.io.to(data.conversationId).emit("message_deleted", deletedMessage);
+                    this._io.to(data.conversationId).emit("message_deleted", deletedMessage);
                 } catch (error) {
-                    this.logger.error("Error deleting message via socket", error);
+                    this._logger.error("Error deleting message via socket", error);
                     socket.emit("error", { message: "Failed to delete message" });
                 }
             });
 
             socket.on("disconnect", () => {
-                this.logger.info(`User disconnected: ${userId}`);
+                this._logger.info(`User disconnected: ${userId}`);
             });
         });
     }

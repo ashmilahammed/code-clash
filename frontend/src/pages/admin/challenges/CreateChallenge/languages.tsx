@@ -74,44 +74,6 @@ const ChallengeLanguages = () => {
 
 
 
-  // return (
-  //   <div className="max-w-2xl mx-auto space-y-6">
-  //     <h2 className="text-lg font-medium text-slate-200">
-  //       Supported Languages
-  //     </h2>
-
-  //     {error && <p className="text-red-500 text-sm">{error}</p>}
-
-  //     <div className="space-y-3">
-  //       {languages.map((l) => (
-  //         <label
-  //           key={l.key}
-  //           className="flex gap-3 items-center text-slate-200"
-  //         >
-  //           <input
-  //             type="checkbox"
-  //             checked={selected.includes(l.key)}
-  //             onChange={() => toggle(l.key)}
-  //           />
-  //           {l.name}
-  //         </label>
-  //       ))}
-  //     </div>
-
-  //     <div className="flex justify-end">
-  //       <button
-  //         onClick={saveAndNext}
-  //         disabled={loading}
-  //         className="btn-primary"
-  //       >
-  //         {loading ? "Saving..." : "Save & Continue"}
-  //       </button>
-  //     </div>
-  //   </div>
-  // );
-
-
-
   return (
     <div className="max-w-4xl mx-auto space-y-8">
 

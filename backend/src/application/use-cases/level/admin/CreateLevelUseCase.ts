@@ -11,7 +11,7 @@ export class CreateLevelUseCase {
   async execute(dto: CreateLevelDTO): Promise<Level> {
     const { levelNumber, minXp, maxXp, title } = dto;
 
-    // Prevent duplicate level number
+    // 
     const existingLevel =
       await this._levelRepository.findByLevelNumber(levelNumber);
 

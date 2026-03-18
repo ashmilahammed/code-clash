@@ -4,8 +4,8 @@ import { Logger } from "../../../../infrastructure/services/logger";
 
 export class UpdateUserStatusUseCase {
   constructor(
-    private userRepo: IUserRepository,
-    private logger: Logger
+    private readonly _userRepo: IUserRepository,
+    private readonly _logger: Logger
   ) { }
 
   async execute(
@@ -15,18 +15,18 @@ export class UpdateUserStatusUseCase {
   ): Promise<void> {
 
     if (adminRole !== "admin") {
-      this.logger.warn("Unauthorized status update attempt", {
+      this._logger.warn("Unauthorized status update attempt", {
         targetUserId: userId,
         attemptedStatus: status,
       });
       throw new Error("FORBIDDEN");
     }
 
-    await this.userRepo.updateStatus(userId, status);
+    await this._userRepo.updateStatus(userId, status);
 
 
-    //AUDIT LOG 
-    this.logger.warn("User status updated by admin", {
+    //Audit log
+    this._logger.warn("User status updated by admin", {
       targetUserId: userId,
       newStatus: status,
     });

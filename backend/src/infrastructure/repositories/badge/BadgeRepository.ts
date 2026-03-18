@@ -2,6 +2,7 @@ import { Badge } from "../../../domain/entities/badge/Badge";
 import { IBadgeRepository } from "../../../domain/repositories/badge/IBadgeRepository";
 import { BadgeModel, IBadgeDoc } from "../../database/models/badge/BadgeModel";
 
+
 export class BadgeRepository implements IBadgeRepository {
 
     async findAll(): Promise<Badge[]> {

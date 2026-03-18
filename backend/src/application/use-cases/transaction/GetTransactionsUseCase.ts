@@ -1,9 +1,10 @@
 import { ITransactionRepository } from "../../../domain/repositories/transaction/ITransactionRepository";
 
 export class GetTransactionsUseCase {
-    constructor(private transactionRepository: ITransactionRepository) { }
+    constructor(
+        private readonly _transactionRepository: ITransactionRepository) { }
 
     async execute(): Promise<any[]> {
-        return this.transactionRepository.findAllWithDetails();
+        return this._transactionRepository.findAllWithDetails();
     }
 }

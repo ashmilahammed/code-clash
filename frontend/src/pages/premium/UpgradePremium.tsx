@@ -21,7 +21,7 @@ const UpgradePremium = () => {
     useEffect(() => {
         const init = async () => {
             await fetchPlans();
-            
+
             if (user?.is_premium) {
                 try {
 
@@ -29,11 +29,7 @@ const UpgradePremium = () => {
                     if (current?.plan?.id) {
                         setCurrentPlanId(current.plan.id);
                     }
-                    // const currentPlan = await getCurrentPlanApi();
 
-                    // if (currentPlan?.id) {
-                    //     setCurrentPlanId(currentPlan.id);
-                    // }
 
                 } catch (error) {
                     console.error("Failed to fetch current plan", error);
@@ -46,12 +42,6 @@ const UpgradePremium = () => {
     
     const fetchPlans = async () => {
         try {
-            // const res = await getPublicPlansApi();
-            // setPlans(res.data.data);
-            // if (res.data.data.length > 0) {
-            //     setSelectedPlanId(res.data.data[0].id);
-            // }
-
             const plans = await getPublicPlansApi();
             setPlans(plans);
 
@@ -90,20 +80,7 @@ const UpgradePremium = () => {
                 order_id: order.id,
                 handler: async function (response: any) {
                     try {
-                        // const verifyRes = await verifyPaymentApi({
-                        //     razorpayOrderId: response.razorpay_order_id,
-                        //     razorpayPaymentId: response.razorpay_payment_id,
-                        //     razorpaySignature: response.razorpay_signature,
-                        //     planId: selectedPlan.id
-                        // });
-
-                        // if (verifyRes.data.success) {
-                        //     toast.success("Payment Successful! Welcome to Premium.");
-                        //     // Elevate user state immediately
-                        //     useAuthStore.getState().updateUser({ is_premium: true });
-                        //     // Optionally navigate back to dashboard
-                        //     navigate("/dashboard");
-                        // }
+    
 
                         await verifyPaymentApi({
                             razorpayOrderId: response.razorpay_order_id,

@@ -5,8 +5,7 @@ import { ChallengeHintMapper } from "../../../application/mappers/ChallengeHintM
 
 
 
-export class ChallengeHintRepository
-  implements IChallengeHintRepository {
+export class ChallengeHintRepository implements IChallengeHintRepository {
 
   async createMany(
     challengeId: string,

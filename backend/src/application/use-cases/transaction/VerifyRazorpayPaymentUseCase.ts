@@ -7,29 +7,24 @@ import { INotificationRepository } from "../../../domain/repositories/notificati
 import { IBadgeRewardService } from "../../../domain/services/IBadgeRewardService";
 import { Badge } from "../../../domain/entities/badge/Badge";
 
-interface VerifyPaymentDTO {
-    razorpayOrderId: string;
-    razorpayPaymentId: string;
-    razorpaySignature: string;
-    userId: string;
-    planId: string;
-}
+import { VerifyPaymentDTO } from "../../dto/transaction/VerifyPaymentDTO";
+
 
 export class VerifyRazorpayPaymentUseCase {
     constructor(
-        private transactionRepository: ITransactionRepository,
-        private userRepository: IUserRepository,
-        private planRepository: IPlanRepository,
-        private razorpayService: IRazorpayService,
-        private notificationRepository: INotificationRepository,
-        private badgeRewardService: IBadgeRewardService
+        private readonly _transactionRepository: ITransactionRepository,
+        private readonly _userRepository: IUserRepository,
+        private readonly _planRepository: IPlanRepository,
+        private readonly _razorpayService: IRazorpayService,
+        private readonly _notificationRepository: INotificationRepository,
+        private readonly _badgeRewardService: IBadgeRewardService
     ) { }
 
     async execute(dto: VerifyPaymentDTO): Promise<Transaction> {
         const { razorpayOrderId, razorpayPaymentId, razorpaySignature, userId, planId } = dto;
 
         // Verify Payment Signature
-        const isValid = this.razorpayService.verifyPaymentSignature(
+        const isValid = this._razorpayService.verifyPaymentSignature(
             razorpayOrderId,
             razorpayPaymentId,
             razorpaySignature
@@ -40,7 +35,7 @@ export class VerifyRazorpayPaymentUseCase {
         }
 
         // Fetch Plan to define amount
-        const plan = await this.planRepository.findById(planId);
+        const plan = await this._planRepository.findById(planId);
         if (!plan) {
             throw new Error("Plan not found");
         }
@@ -56,10 +51,10 @@ export class VerifyRazorpayPaymentUseCase {
             new Date()
         );
 
-        const createdTransaction = await this.transactionRepository.create(transaction);
+        const createdTransaction = await this._transactionRepository.create(transaction);
 
         // Update User Premium Status
-        const user = await this.userRepository.findById(userId);
+        const user = await this._userRepository.findById(userId);
         if (user) {
             user.is_premium = true;
             user.premium_expiry_notification_sent = false;
@@ -67,18 +62,18 @@ export class VerifyRazorpayPaymentUseCase {
             const now = new Date();
             let baseDate = now;
 
-            // If user already has an active premium until a future date, extend from that date.
+            //if already have plan, extend date
             if (user.premium_expiry_date && user.premium_expiry_date > now) {
                 baseDate = new Date(user.premium_expiry_date);
             }
 
             user.premium_expiry_date = new Date(baseDate.getTime() + plan.duration * 24 * 60 * 60 * 1000);
-            
-            await this.userRepository.save(user);
+
+            await this._userRepository.save(user);
 
             // Send Notification
             const featuresList = plan.features.join(", ");
-            await this.notificationRepository.createNotification({
+            await this._notificationRepository.createNotification({
                 title: "👑 Premium Activated!",
                 message: `${featuresList}.`,
                 recipientType: "individual",
@@ -86,8 +81,8 @@ export class VerifyRazorpayPaymentUseCase {
                 senderId: "000000000000000000000000", // System ID
             });
 
-            // Automatic Badge Rewards - PREMIUM
-            await this.badgeRewardService.checkAndReward(user, Badge.REQUIREMENT_TYPES.PREMIUM_UPGRADED, 1);
+            // Automatic Badge Rewards(premium)
+            await this._badgeRewardService.checkAndReward(user, Badge.REQUIREMENT_TYPES.PREMIUM_UPGRADED, 1);
         } else {
             throw new Error("User not found after successful payment");
         }

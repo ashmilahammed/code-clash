@@ -35,12 +35,12 @@ const NewLeaderboard = () => {
         setPage(1);
     }, [debouncedSearch, timeframe]);
 
-    // Top Performers Logic
+    // Top Performers 
     const topXPGainer = users.length > 0 ? users[0] : null;
     const topSolver = users.length > 0 ? users.reduce((prev, current) =>
         ((prev.challengesSolved || 0) > (current.challengesSolved || 0)) ? prev : current, users[0]) : null;
 
-    // Fix: check `longest_streak` instead of only `current_streak` for Longest Streak card
+    //longest streak
     const longestStreakUser = users.length > 0 ? users.reduce((prev, current) =>
         ((prev.longest_streak || prev.current_streak || 0) > (current.longest_streak || current.current_streak || 0)) ? prev : current, users[0]) : null;
 

@@ -12,7 +12,3 @@ export class GetAvailableLanguagesUseCase {
 }
 
 
-// async execute(): Promise<IProgrammingLanguage[]> {
-//   return this._langRepo.findAllActive();
-// }
-

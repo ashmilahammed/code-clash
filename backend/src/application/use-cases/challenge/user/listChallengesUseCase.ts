@@ -14,7 +14,7 @@ export class ListChallengesUseCase {
   ): Promise<PaginatedResult<Challenge>> {
     return this._challengeRepo.findAll({
       ...query,
-      // user should only see active challenges
+      // active challenges
       filters: {
         isActive: true,
       },

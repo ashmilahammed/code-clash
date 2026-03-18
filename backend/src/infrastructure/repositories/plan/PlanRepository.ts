@@ -4,7 +4,9 @@ import { PlanModel } from "../../database/models/plan/PlanModel";
 import { Types } from "mongoose";
 import { PlanMapper } from "../../../application/mappers/PlanMapper";
 
+
 export class PlanRepository implements IPlanRepository {
+    
     async create(plan: Plan): Promise<Plan> {
         const persistenceData = PlanMapper.toPersistence(plan);
         const createdModel = await PlanModel.create(persistenceData);

@@ -1,9 +1,11 @@
 import { IPlanRepository } from "../../../../domain/repositories/plan/IPlanRepository";
 
 export class DeletePlanUseCase {
-    constructor(private planRepository: IPlanRepository) { }
+    constructor(
+        private readonly _planRepository: IPlanRepository
+    ) { }
 
     async execute(id: string): Promise<void> {
-        await this.planRepository.delete(id);
+        await this._planRepository.delete(id);
     }
 }

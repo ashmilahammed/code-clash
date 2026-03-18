@@ -50,12 +50,9 @@ export class SubmissionController {
                 .json(ApiResponse.success(MESSAGES.SUBMISSION.RUN_SUCCESS, result));
 
         } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(message));
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 
@@ -93,12 +90,9 @@ export class SubmissionController {
                 .json(ApiResponse.success(MESSAGES.SUBMISSION.SUBMIT_SUCCESS, result));
 
         } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR;
-
             return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(message));
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 }

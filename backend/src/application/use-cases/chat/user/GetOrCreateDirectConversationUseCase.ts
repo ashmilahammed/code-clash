@@ -1,6 +1,6 @@
-import { IConversationRepository } from "../../../domain/repositories/chat/IConversationRepository";
-import { Conversation, ConversationType } from "../../../domain/entities/chat/Conversation";
-import { DirectConversationDTO } from "../../dto/chat/DirectConversationDTO";
+import { IConversationRepository } from "../../../../domain/repositories/chat/IConversationRepository";
+import { Conversation, ConversationType } from "../../../../domain/entities/chat/Conversation";
+import { DirectConversationDTO } from "../../../dto/chat/DirectConversationDTO";
 
 
 export class GetOrCreateDirectConversationUseCase {

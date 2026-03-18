@@ -1,12 +1,10 @@
-// import { Types } from "mongoose";
 import { ChallengeCodeTemplateModel } from "../../database/models/challenge/ChallengeCodeTemplateModel";
 import { IChallengeCodeTemplateRepository } from "../../../domain/repositories/challenge/IChallengeCodeTemplateRepository";
 import { ChallengeCodeTemplate } from "../../../domain/entities/challenge/ChallengeCodeTemplate";
 import { ChallengeCodeTemplateMapper } from "../../../application/mappers/ChallengeCodeTemplateMapper";
 
 
-export class ChallengeCodeTemplateRepository
-  implements IChallengeCodeTemplateRepository {
+export class ChallengeCodeTemplateRepository implements IChallengeCodeTemplateRepository {
 
   async createMany(
     challengeId: string,

@@ -1,17 +1,10 @@
-import { IMessageRepository } from "../../../domain/repositories/chat/IMessageRepository";
-import { IConversationRepository } from "../../../domain/repositories/chat/IConversationRepository";
-import { Message } from "../../../domain/entities/chat/Message";
-import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
+import { IMessageRepository } from "../../../../domain/repositories/chat/IMessageRepository";
+import { IConversationRepository } from "../../../../domain/repositories/chat/IConversationRepository";
+import { Message } from "../../../../domain/entities/chat/Message";
+import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
+import { SendMessageDTO } from "../../../dto/chat/SendMessageDTO";
 
 
-
-interface SendMessageDto {
-    conversationId: string;
-    senderId: string;
-    content: string;
-    messageType?: 'text' | 'image';
-    mediaUrl?: string | null;
-}
 
 export class SendMessageUseCase {
     constructor(
@@ -20,7 +13,7 @@ export class SendMessageUseCase {
         private userRepository: IUserRepository
     ) { }
 
-    async execute(dto: SendMessageDto): Promise<Message> {
+    async execute(dto: SendMessageDTO): Promise<Message> {
         const user = await this.userRepository.findById(dto.senderId);
         if (user && user.isBanned()) {
             const date = user.banned_until?.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });

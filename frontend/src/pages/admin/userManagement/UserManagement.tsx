@@ -57,23 +57,6 @@ const UserManagement = () => {
 
 
   //actions
-  // const toggleStatus = async (id: string, currentStatus: UserStatus) => {
-  //   const newStatus: UserStatus =
-  //     currentStatus === "active" ? "blocked" : "active";
-
-  //   try {
-  //     await updateUserStatusApi(id, newStatus);
-
-  //     // optimistic update
-  //     setUsers((prev) =>
-  //       prev.map((u) =>
-  //         u.id === id ? { ...u, status: newStatus } : u
-  //       )
-  //     );
-  //   } catch (err) {
-  //     console.error("Failed to update user status", err);
-  //   }
-  // };
 
   const requestToggleStatus = (user: AdminUser) => {
     setSelectedUser({
