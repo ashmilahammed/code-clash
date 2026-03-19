@@ -61,6 +61,7 @@ export class NotificationRepository extends BaseRepository<INotificationDoc>
   async getUserNotifications(
     userId: string,
     isPremium: boolean,
+    dateJoined: Date,
     page: number,
     limit: number
   ): Promise<{ data: any[]; total: number }> {
@@ -71,7 +72,10 @@ export class NotificationRepository extends BaseRepository<INotificationDoc>
     // Get all notifications for this user segment
     const notifications = await NotificationModel.find({
       $or: [
-        { recipientType: { $in: recipientTypes } },
+        {
+          recipientType: { $in: recipientTypes },
+          createdAt: { $gte: dateJoined }
+        },
         { recipientType: "individual", recipientId: new mongoose.Types.ObjectId(userId) }
       ]
     })
@@ -81,7 +85,10 @@ export class NotificationRepository extends BaseRepository<INotificationDoc>
 
     const total = await NotificationModel.countDocuments({
       $or: [
-        { recipientType: { $in: recipientTypes } },
+        {
+          recipientType: { $in: recipientTypes },
+          createdAt: { $gte: dateJoined }
+        },
         { recipientType: "individual", recipientId: new mongoose.Types.ObjectId(userId) }
       ]
     });
@@ -122,13 +129,16 @@ export class NotificationRepository extends BaseRepository<INotificationDoc>
     );
   }
 
-  async markAllAsRead(userId: string, isPremium: boolean): Promise<void> {
+  async markAllAsRead(userId: string, isPremium: boolean, dateJoined: Date): Promise<void> {
     const recipientTypes = ["all", isPremium ? "premium" : "normal"];
 
     // Find all notifications that match the user's segment
     const notifications = await NotificationModel.find({
       $or: [
-        { recipientType: { $in: recipientTypes } },
+        {
+          recipientType: { $in: recipientTypes },
+          createdAt: { $gte: dateJoined }
+        },
         { recipientType: "individual", recipientId: new mongoose.Types.ObjectId(userId) }
       ]
     }).select("_id");

@@ -21,7 +21,7 @@ const getAdminNotificationHistoryUseCase = new GetAdminNotificationHistoryUseCas
 // Use Cases - User
 const getUserNotificationsUseCase = new GetUserNotificationsUseCase(notificationRepository, userRepository);
 const markNotificationReadUseCase = new MarkNotificationReadUseCase(notificationRepository);
-const markAllReadUseCase = new MarkAllReadUseCase(notificationRepository);
+const markAllReadUseCase = new MarkAllReadUseCase(notificationRepository, userRepository);
 const clearNotificationsUseCase = new ClearNotificationsUseCase(notificationRepository);
 
 // Controller

@@ -1,5 +1,6 @@
 import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
 import { IPasswordService } from "../../../domain/services/IPasswordService";
+import { ResetPasswordDTO } from "../../dto/auth/ResetPasswordDTO";
 
 
 export class ResetPasswordUseCase {
@@ -8,12 +9,13 @@ export class ResetPasswordUseCase {
     private readonly _passwordService: IPasswordService
   ) {}
 
-  async execute(userId: string, newPassword: string): Promise<void> {
-    const hashed = await this._passwordService.hash(newPassword);
+  async execute(dto: ResetPasswordDTO): Promise<void> {
 
-    await this._userRepo.updatePassword(userId, hashed);
+    const hashed = await this._passwordService.hash(dto.newPassword);
+
+    await this._userRepo.updatePassword(dto.userId, hashed);
 
     // logout from all devices
-    await this._userRepo.updateRefreshToken(userId, null);
+    await this._userRepo.updateRefreshToken(dto.userId, null);
   }
 }

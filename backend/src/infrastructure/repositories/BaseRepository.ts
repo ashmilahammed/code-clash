@@ -64,7 +64,6 @@ export abstract class BaseRepository<TDoc extends Document> {
       .skip(skip)
       .limit(limit)
       .sort(sort)
-      .sort(sort)
       .exec();
   }
 
@@ -72,7 +71,12 @@ export abstract class BaseRepository<TDoc extends Document> {
     if (!this.isValidId(id)) {
       throw new Error("Invalid ID");
     }
-    await this._model.findByIdAndDelete(id).exec();
+    // await this._model.findByIdAndDelete(id).exec();
+    const deleted = await this._model.findByIdAndDelete(id).exec();
+
+    if (!deleted) {
+      throw new Error("Entity not found");
+    }
   }
 }
 

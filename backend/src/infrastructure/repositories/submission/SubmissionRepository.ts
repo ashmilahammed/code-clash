@@ -110,6 +110,7 @@ export class SubmissionRepository implements ISubmissionRepository {
       }
     ]);
 
+
     const difficultyStats = await SubmissionModel.aggregate([
       { $match: { userId: objectId, finalStatus: "PASSED" } },
       { $group: { _id: "$challengeId" } },
@@ -130,11 +131,11 @@ export class SubmissionRepository implements ISubmissionRepository {
       }
     ]);
 
+
     const languageStats = await SubmissionModel.aggregate([
       { $match: { userId: objectId, finalStatus: "PASSED" } },
       {
         $group: {
-          // We group by both language and challengeId so if they solve the same challenge
           // multiple times in the same language, it counts as 1.
           _id: { language: "$language", challengeId: "$challengeId" }
         }
@@ -185,6 +186,7 @@ export class SubmissionRepository implements ISubmissionRepository {
   }
 
 
+
   async getLeaderboardByTimeframe(
     page: number,
     limit: number,
@@ -203,7 +205,7 @@ export class SubmissionRepository implements ISubmissionRepository {
 
     const matchStage: any = {
       submittedAt: { $gte: startDate },
-      // finalStatus: "PASSED", // We might want only passed submissions to count for XP, but it depends on logic. Assuming we want to aggregate xpEarned.
+      // finalStatus: "PASSED"
     };
 
     const pipeline: any[] = [
@@ -212,7 +214,7 @@ export class SubmissionRepository implements ISubmissionRepository {
         $group: {
           _id: "$userId",
           xpEarned: { $sum: "$xpEarned" },
-          // Count distinct challenges solved (approximate without adding sub-pipelines, assuming PASSED logic handles this or we just count all submissions if it's simplified here). Let's do distinct:
+
           uniqueChallenges: { $addToSet: { $cond: [{ $eq: ["$finalStatus", "PASSED"] }, "$challengeId", null] } }
         }
       },
@@ -274,11 +276,11 @@ export class SubmissionRepository implements ISubmissionRepository {
 
     // Map the result to resemble the existing user snapshot with calculated XP
     const mappedData = data.map((item: any) => ({
-      ...item.user, // spread the user properties
+      ...item.user, //
       id: item.user._id.toString(),
-      xp: item.xp, // override with the timeframe XP
+      xp: item.xp, // 
       challengesSolved: item.challengesSolved,
-      // For levelNumber we might not have it directly here, it will be enriched by the UseCase
+  
     }));
 
     return {

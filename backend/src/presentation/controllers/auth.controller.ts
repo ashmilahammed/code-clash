@@ -18,6 +18,8 @@ import { LoginDTO } from "../../application/dto/auth/LoginDTO";
 import { VerifyOtpDTO } from "../../application/dto/auth/VerifyOtpDTO";
 import { ChangePasswordDTO } from "../../application/dto/auth/ChangePasswordDTO";
 import { GoogleLoginDTO } from "../../application/dto/auth/GoogleLoginDTO";
+import { ForgotPasswordDTO } from "../../application/dto/auth/ForgotPasswordDTO";
+import { ResetPasswordDTO } from "../../application/dto/auth/ResetPasswordDTO";
 
 
 import { UserMapper } from "../../application/mappers/UserMapper";
@@ -202,9 +204,13 @@ export class AuthController {
   ///
   forgotPassword = async (req: Request, res: Response) => {
     try {
-      const { email } = req.body;
 
-      const result = await this._forgotPasswordUseCase.execute(email);
+      // const { email } = req.body;
+      // const result = await this._forgotPasswordUseCase.execute(email);
+
+      const dto = new ForgotPasswordDTO(req.body.email);
+
+      const result = await this._forgotPasswordUseCase.execute(dto);
 
       return res
         .status(HttpStatus.OK)
@@ -246,9 +252,16 @@ export class AuthController {
   ///
   resetPassword = async (req: Request, res: Response) => {
     try {
-      const { userId, password } = req.body;
+      // const { userId, password } = req.body;
+      // await this._resetPasswordUseCase.execute(userId, password);
 
-      await this._resetPasswordUseCase.execute(userId, password);
+      const dto = new ResetPasswordDTO(
+        req.body.userId,
+        req.body.password
+      );
+
+      await this._resetPasswordUseCase.execute(dto);
+
 
       return res
         .status(HttpStatus.OK)

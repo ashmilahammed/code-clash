@@ -1,51 +1,53 @@
 import { IPlanRepository } from "../../../domain/repositories/plan/IPlanRepository";
 import { Plan } from "../../../domain/entities/plan/Plan";
-import { PlanModel } from "../../database/models/plan/PlanModel";
-import { Types } from "mongoose";
+import { PlanModel, IPlanDoc } from "../../database/models/plan/PlanModel";
 import { PlanMapper } from "../../../application/mappers/PlanMapper";
+import { BaseRepository } from "../BaseRepository";
 
 
-export class PlanRepository implements IPlanRepository {
-    
-    async create(plan: Plan): Promise<Plan> {
-        const persistenceData = PlanMapper.toPersistence(plan);
-        const createdModel = await PlanModel.create(persistenceData);
-        return PlanMapper.toDomain(createdModel);
-    }
+export class PlanRepository
+  extends BaseRepository<IPlanDoc>
+  implements IPlanRepository {
 
-    async findById(id: string): Promise<Plan | null> {
-        if (!Types.ObjectId.isValid(id)) return null;
-        const doc = await PlanModel.findById(id);
-        return doc ? PlanMapper.toDomain(doc) : null;
-    }
+  constructor() {
+    super(PlanModel);
+  }
 
-    async findAll(): Promise<Plan[]> {
-        const docs = await PlanModel.find().sort({ createdAt: -1 });
-        return docs.map(PlanMapper.toDomain);
-    }
+  async create(plan: Plan): Promise<Plan> {
+    const persistenceData = PlanMapper.toPersistence(plan);
+    const created = await this.createRaw(persistenceData);
+    return PlanMapper.toDomain(created);
+  }
 
-    async update(id: string, planData: Partial<Plan>): Promise<Plan | null> {
-        if (!Types.ObjectId.isValid(id)) return null;
+  async findById(id: string): Promise<Plan | null> {
+    const doc = await this.findByIdRaw(id);
+    return doc ? PlanMapper.toDomain(doc) : null;
+  }
 
-        const updateData: any = {};
-        if (planData.name !== undefined) updateData.name = planData.name;
-        if (planData.description !== undefined) updateData.description = planData.description;
-        if (planData.price !== undefined) updateData.price = planData.price;
-        if (planData.duration !== undefined) updateData.duration = planData.duration;
-        if (planData.features !== undefined) updateData.features = planData.features;
-        if (planData.status !== undefined) updateData.status = planData.status;
+  async findAll(): Promise<Plan[]> {
+    const docs = await this._model
+      .find()
+      .sort({ createdAt: -1 })
+      .exec();
 
-        const updatedDoc = await PlanModel.findByIdAndUpdate(
-            id,
-            { $set: updateData },
-            { new: true } // Return the updated document
-        );
+    return docs.map(PlanMapper.toDomain);
+  }
 
-        return updatedDoc ? PlanMapper.toDomain(updatedDoc) : null;
-    }
+  async update(id: string, planData: Partial<Plan>): Promise<Plan | null> {
+    const updateData: any = {};
 
-    async delete(id: string): Promise<void> {
-        if (!Types.ObjectId.isValid(id)) return;
-        await PlanModel.findByIdAndDelete(id);
-    }
+    if (planData.name !== undefined) updateData.name = planData.name;
+    if (planData.description !== undefined) updateData.description = planData.description;
+    if (planData.price !== undefined) updateData.price = planData.price;
+    if (planData.duration !== undefined) updateData.duration = planData.duration;
+    if (planData.features !== undefined) updateData.features = planData.features;
+    if (planData.status !== undefined) updateData.status = planData.status;
+
+    const updated = await this.updateRaw(id, updateData);
+    return updated ? PlanMapper.toDomain(updated) : null;
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.deleteByIdRaw(id);
+  }
 }
