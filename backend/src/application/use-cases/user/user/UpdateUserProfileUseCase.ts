@@ -1,10 +1,10 @@
-import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
+import { IUserCoreRepository } from "../../../../domain/repositories/user/IUserCoreRepository";
 import { User } from "../../../../domain/entities/user/User";
 
 
 export class UpdateUserProfileUseCase {
   constructor(
-    private readonly _userRepository: IUserRepository
+    private readonly _userRepository: IUserCoreRepository
   ) {}
 
   async execute(

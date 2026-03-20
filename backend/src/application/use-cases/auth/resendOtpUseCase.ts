@@ -1,4 +1,5 @@
-import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
+import { IUserCoreRepository } from "../../../domain/repositories/user/IUserCoreRepository";
+import { IUserAuthRepository } from "../../../domain/repositories/user/IUserAuthRepository";
 import { IEmailService } from "../../../domain/services/IEmailService";
 import { generateOtp } from "../../../utils/generateOtp";
 
@@ -6,7 +7,7 @@ import { generateOtp } from "../../../utils/generateOtp";
 
 export class ResendOtpUseCase {
   constructor(
-    private readonly _userRepo: IUserRepository,
+    private readonly _userRepo: IUserCoreRepository & IUserAuthRepository,
     private readonly _emailService: IEmailService
   ) { }
 

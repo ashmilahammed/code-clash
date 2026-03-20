@@ -1,9 +1,9 @@
-import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
+import { IUserCoreRepository } from "../../../../domain/repositories/user/IUserCoreRepository";
 
 export class CancelPremiumUseCase {
     constructor(
-        private readonly _userRepository: IUserRepository
-    ) { }
+        private readonly _userRepository: IUserCoreRepository
+    ) {}
 
     async execute(userId: string): Promise<void> {
         const user = await this._userRepository.findById(userId);

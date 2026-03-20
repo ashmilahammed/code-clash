@@ -1,11 +1,11 @@
-import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
+import { IUserCoreRepository } from "../../../../domain/repositories/user/IUserCoreRepository";
 import { IXpService } from "../../../../domain/services/IXpService";
 import { ILevelRepository } from "../../../../domain/repositories/level/ILevelRepository";
 import { SubmissionModel } from "../../../../infrastructure/database/models/submission/SubmissionModel";
 
 export class GetDashboardUseCase {
     constructor(
-        private readonly _userRepo: IUserRepository,
+        private readonly _userRepo: IUserCoreRepository,
         private readonly _xpService: IXpService,
         private readonly _levelRepo: ILevelRepository
     ) { }

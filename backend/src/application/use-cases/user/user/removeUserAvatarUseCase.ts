@@ -1,9 +1,9 @@
-import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
+import { IUserCoreRepository } from "../../../../domain/repositories/user/IUserCoreRepository";
 import { IFileStorageService } from "../../../../domain/services/IFileStorageService";
 
 export class RemoveUserAvatarUseCase {
     constructor(
-        private readonly _userRepository: IUserRepository,
+        private readonly _userRepository: IUserCoreRepository,
         private readonly _fileStorage: IFileStorageService
     ) { }
 

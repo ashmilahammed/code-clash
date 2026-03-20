@@ -1,9 +1,10 @@
-import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
+import { IUserCoreRepository } from "../../../domain/repositories/user/IUserCoreRepository";
+import { IUserAuthRepository } from "../../../domain/repositories/user/IUserAuthRepository";
 
 
 export class VerifyForgotOtpUseCase {
   constructor(
-    private readonly _userRepo: IUserRepository
+    private readonly _userRepo: IUserCoreRepository & IUserAuthRepository
   ) { }
 
 

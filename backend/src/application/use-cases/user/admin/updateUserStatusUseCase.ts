@@ -1,10 +1,10 @@
-import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
+import { IUserAdminRepository } from "../../../../domain/repositories/user/IUserAdminRepository";
 import { Logger } from "../../../../infrastructure/services/logger";
 
 
 export class UpdateUserStatusUseCase {
   constructor(
-    private readonly _userRepo: IUserRepository,
+    private readonly _userRepo: IUserAdminRepository,
     private readonly _logger: Logger
   ) { }
 

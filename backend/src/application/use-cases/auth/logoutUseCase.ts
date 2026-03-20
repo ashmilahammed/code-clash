@@ -1,9 +1,9 @@
-import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
+import { IUserAuthRepository } from "../../../domain/repositories/user/IUserAuthRepository";
 
 
 export class LogoutUseCase {
   constructor(
-    private readonly _userRepository: IUserRepository
+    private readonly _userRepository: IUserAuthRepository
   ) { }
 
   async execute(userId: string) {

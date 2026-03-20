@@ -1,11 +1,11 @@
-import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
+import { IUserCoreRepository } from "../../../domain/repositories/user/IUserCoreRepository";
 import { IJwtService } from "../../../domain/services/IJwtService";
 import { JwtPayload } from "../../../domain/types/JwtPayload";
 
 
 export class RefreshSessionUseCase {
   constructor(
-    private readonly _userRepo: IUserRepository,
+    private readonly _userRepo: IUserCoreRepository,
     private readonly _jwtService: IJwtService
   ) { }
 

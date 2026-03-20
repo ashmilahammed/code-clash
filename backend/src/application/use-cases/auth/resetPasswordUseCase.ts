@@ -1,11 +1,11 @@
-import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
+import { IUserAuthRepository } from "../../../domain/repositories/user/IUserAuthRepository";
 import { IPasswordService } from "../../../domain/services/IPasswordService";
 import { ResetPasswordDTO } from "../../dto/auth/ResetPasswordDTO";
 
 
 export class ResetPasswordUseCase {
   constructor(
-    private readonly _userRepo: IUserRepository,
+    private readonly _userRepo: IUserAuthRepository,
     private readonly _passwordService: IPasswordService
   ) {}
 

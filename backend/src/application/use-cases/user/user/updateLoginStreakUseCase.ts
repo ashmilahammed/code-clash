@@ -1,10 +1,11 @@
-import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
+import { IUserCoreRepository } from "../../../../domain/repositories/user/IUserCoreRepository";
+import { IUserGamificationRepository } from "../../../../domain/repositories/user/IUserGamificationRepository";
 import { IBadgeRewardService } from "../../../../domain/services/IBadgeRewardService";
 import { Badge } from "../../../../domain/entities/badge/Badge";
 
 export class UpdateLoginStreakUseCase {
   constructor(
-    private readonly _userRepo: IUserRepository,
+    private readonly _userRepo: IUserCoreRepository & IUserGamificationRepository,
     private readonly _badgeRewardService: IBadgeRewardService
   ) {}
 

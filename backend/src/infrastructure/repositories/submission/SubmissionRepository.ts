@@ -2,6 +2,7 @@ import { SubmissionModel } from "../../database/models/submission/SubmissionMode
 import { ISubmissionRepository } from "../../../domain/repositories/submission/ISubmissionRepository";
 import { Submission } from "../../../domain/entities/submission/Submission";
 import { Types } from "mongoose";
+import { SubmissionMapper } from "../../../application/mappers/SubmissionMapper";
 
 
 export class SubmissionRepository implements ISubmissionRepository {
@@ -18,18 +19,7 @@ export class SubmissionRepository implements ISubmissionRepository {
       xpEarned: submission.xpEarned,
     });
 
-    return new Submission(
-      created._id.toString(),
-      created.userId.toString(),
-      created.challengeId.toString(),
-      created.language,
-      created.code,
-      created.finalStatus,
-      created.runtime,
-      created.memory,
-      created.xpEarned,
-      created.submittedAt
-    );
+    return SubmissionMapper.toDomain(created);
   }
 
   async findByUserAndChallenge(
@@ -41,21 +31,7 @@ export class SubmissionRepository implements ISubmissionRepository {
       challengeId,
     }).lean();
 
-    return docs.map(
-      (doc) =>
-        new Submission(
-          doc._id.toString(),
-          doc.userId.toString(),
-          doc.challengeId.toString(),
-          doc.language,
-          doc.code,
-          doc.finalStatus,
-          doc.runtime,
-          doc.memory,
-          doc.xpEarned,
-          doc.submittedAt
-        )
-    );
+    return docs.map((doc) => SubmissionMapper.toDomain(doc));
   }
 
   async hasUserSolvedChallenge(
@@ -275,13 +251,7 @@ export class SubmissionRepository implements ISubmissionRepository {
     const total = result[0]?.totalCount[0]?.count || 0;
 
     // Map the result to resemble the existing user snapshot with calculated XP
-    const mappedData = data.map((item: any) => ({
-      ...item.user, //
-      id: item.user._id.toString(),
-      xp: item.xp, // 
-      challengesSolved: item.challengesSolved,
-  
-    }));
+    const mappedData = data.map((item: any) => SubmissionMapper.toLeaderboardDTO(item));
 
     return {
       data: mappedData,

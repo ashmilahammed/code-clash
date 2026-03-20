@@ -1,5 +1,6 @@
 import { OAuth2Client } from "google-auth-library";
-import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
+import { IUserCoreRepository } from "../../../domain/repositories/user/IUserCoreRepository";
+import { IUserAuthRepository } from "../../../domain/repositories/user/IUserAuthRepository";
 import { IJwtService } from "../../../domain/services/IJwtService";
 import { JwtPayload } from "../../../domain/types/JwtPayload";
 import { UserFactory } from "../../../domain/entities/user/userFactory";
@@ -7,7 +8,7 @@ import { GoogleLoginDTO } from "../../dto/auth/GoogleLoginDTO";
 
 export class GoogleLoginUseCase {
     constructor(
-        private readonly _userRepo: IUserRepository,
+        private readonly _userRepo: IUserCoreRepository & IUserAuthRepository,
         private readonly _jwtService: IJwtService,
         private readonly _googleClient: OAuth2Client,
         private readonly _googleClientId: string

@@ -1,4 +1,5 @@
-import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
+import { IUserCoreRepository } from "../../../domain/repositories/user/IUserCoreRepository";
+import { IUserAuthRepository } from "../../../domain/repositories/user/IUserAuthRepository";
 import { IEmailService } from "../../../domain/services/IEmailService";
 import { IPasswordService } from "../../../domain/services/IPasswordService";
 import { generateOtp } from "../../../utils/generateOtp";
@@ -10,7 +11,7 @@ import { RegisterDTO } from "../../dto/auth/RegisterDTO";
 
 export class RegisterUseCase {
   constructor(
-    private readonly _userRepo: IUserRepository,
+    private readonly _userRepo: IUserCoreRepository & IUserAuthRepository,
     private readonly _emailService: IEmailService,
     private readonly _passwordService: IPasswordService
   ) { }

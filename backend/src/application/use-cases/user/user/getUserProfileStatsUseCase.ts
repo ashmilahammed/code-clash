@@ -1,4 +1,4 @@
-import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
+import { IUserCoreRepository } from "../../../../domain/repositories/user/IUserCoreRepository";
 import { ISubmissionRepository } from "../../../../domain/repositories/submission/ISubmissionRepository";
 import { IXpService } from "../../../../domain/services/IXpService";
 import { ILevelRepository } from "../../../../domain/repositories/level/ILevelRepository";
@@ -7,7 +7,7 @@ import { UserMapper } from "../../../mappers/UserMapper";
 
 export class GetUserProfileStatsUseCase {
     constructor(
-        private readonly _userRepo: IUserRepository,
+        private readonly _userRepo: IUserCoreRepository,
         private readonly _submissionRepo: ISubmissionRepository,
         private readonly _xpService: IXpService,
         private readonly _levelRepo: ILevelRepository,

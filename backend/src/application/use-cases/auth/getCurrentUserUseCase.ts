@@ -1,9 +1,9 @@
 import { User } from "../../../domain/entities/user/User";
-import { IUserRepository } from "../../../domain/repositories/user/IUserRepository";
+import { IUserCoreRepository } from "../../../domain/repositories/user/IUserCoreRepository";
 
 export class GetCurrentUserUseCase {
   constructor(
-    private readonly _userRepository: IUserRepository
+    private readonly _userRepository: IUserCoreRepository
   ) {}
 
   async execute(userId: string): Promise<User> {

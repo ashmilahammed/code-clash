@@ -1,11 +1,11 @@
-import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
+import { IUserGamificationRepository } from "../../../../domain/repositories/user/IUserGamificationRepository";
 import { ISubmissionRepository } from "../../../../domain/repositories/submission/ISubmissionRepository";
 import { ILevelRepository } from "../../../../domain/repositories/level/ILevelRepository";
 
 
 export class GetLeaderboardUseCase {
     constructor(
-        private readonly _userRepo: IUserRepository,
+        private readonly _userRepo: IUserGamificationRepository,
         private readonly _submissionRepo: ISubmissionRepository,
         private readonly _levelRepo: ILevelRepository
     ) { }

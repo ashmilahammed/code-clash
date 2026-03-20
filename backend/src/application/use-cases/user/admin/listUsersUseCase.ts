@@ -1,4 +1,4 @@
-import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
+import { IUserAdminRepository } from "../../../../domain/repositories/user/IUserAdminRepository";
 import { ListQuery } from "../../../../domain/types/ListQuery";
 import { PaginatedResult } from "../../../../domain/types/PaginatedResult";
 import { UserResponseDTO } from "../../../dto/user/UserResponseDTO";
@@ -8,8 +8,8 @@ import { UserMapper } from "../../../mappers/UserMapper";
 
 export class ListUsersUseCase {
   constructor(
-    private readonly _userRepo: IUserRepository
-  ) { }
+    private readonly _userRepo: IUserAdminRepository
+  ) {}
 
   async execute(
     query: ListQuery

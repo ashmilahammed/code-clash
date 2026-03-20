@@ -1,9 +1,9 @@
-import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
+import { IUserCoreRepository } from "../../../../domain/repositories/user/IUserCoreRepository";
 
 export class ClaimWelcomeXpUseCase {
   constructor(
-    private readonly _userRepository: IUserRepository
-  ) { }
+    private readonly _userRepository: IUserCoreRepository
+  ) {}
 
   async execute(userId: string): Promise<{ success: boolean; xp: number; }> {
 
