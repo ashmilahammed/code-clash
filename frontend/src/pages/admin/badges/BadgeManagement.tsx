@@ -16,23 +16,22 @@ const BadgeManagement = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-
-
+    const [page, setPage] = useState(1);
+    const [limit] = useState(9);
+    const [totalPages, setTotalPages] = useState(1);
     const fetchData = async () => {
         try {
-;
-            const badges = await getAllBadges();
-            if (badges && Array.isArray(badges)) {
-                // Sort by ID descending 
-                const sortedBadges = [...badges].sort((a, b) => {
-                    const idA = a._id || a.id || "";
-                    const idB = b._id || b.id || "";
-
-                    return idB.localeCompare(idA);
-                });
-                setBadges(sortedBadges);
+            const response = await getAllBadges({
+                page,
+                limit,
+                ...(debouncedSearchQuery && { search: debouncedSearchQuery })
+            });
+            if (response && response.badges) {
+                setBadges(response.badges);
+                setTotalPages(response.totalPages || 1);
             } else {
                 setBadges([]);
+                setTotalPages(1);
             }
         } catch (error) {
             console.error("Failed to fetch badges:", error);
@@ -41,7 +40,7 @@ const BadgeManagement = () => {
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [page, debouncedSearchQuery]);
 
 
     const handleSave = async (data: any) => {
@@ -79,13 +78,7 @@ const BadgeManagement = () => {
         }
     };
 
-    const filteredBadges = badges.filter(badge => {
-        const query = (debouncedSearchQuery || "").toLowerCase();
-        return (
-            (badge.name?.toLowerCase().includes(query)) ||
-            (badge.category?.toLowerCase().includes(query))
-        );
-    });
+    const filteredBadges = badges;
 
     return (
         <div className="p-6">
@@ -95,7 +88,10 @@ const BadgeManagement = () => {
                         type="text"
                         placeholder="Search badges..."
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={(e) => {
+                            setSearchQuery(e.target.value);
+                            setPage(1);
+                        }}
                         className="w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-2 text-white outline-none focus:border-blue-500 transition"
                     />
                 </div>
@@ -160,6 +156,31 @@ const BadgeManagement = () => {
                     </div>
                 )}
             </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+                <div className="flex justify-end items-center gap-3 mt-6">
+                    <button
+                        disabled={page === 1}
+                        onClick={() => setPage((p) => p - 1)}
+                        className="px-3 py-1 bg-slate-800 text-white rounded disabled:opacity-40"
+                    >
+                        Prev
+                    </button>
+
+                    <span className="text-slate-400 text-sm">
+                        Page {page} of {totalPages}
+                    </span>
+
+                    <button
+                        disabled={page === totalPages || totalPages === 0}
+                        onClick={() => setPage((p) => p + 1)}
+                        className="px-3 py-1 bg-slate-800 text-white rounded disabled:opacity-40"
+                    >
+                        Next
+                    </button>
+                </div>
+            )}
 
             <BadgeModal
                 isOpen={isModalOpen}

@@ -149,8 +149,7 @@ export class NotificationController {
       const userContext = res.locals.user as AuthUserContext;
 
       await this._markAllReadUseCase.execute(
-        userContext.userId,
-        !!userContext.is_premium
+        userContext.userId
       );
 
       return res

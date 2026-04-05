@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getUsersApi, updateUserStatusApi } from "../../../api/adminApi";
 import type { UserStatus, AdminUser } from "../../../api/adminApi";
 
@@ -9,6 +10,7 @@ import ConfirmModal from "../../../components/modals/ConfirmModal";
 
 
 const UserManagement = () => {
+  const navigate = useNavigate();
   const [users, setUsers] = useState<AdminUser[]>([]);
 
   const [page, setPage] = useState(1);
@@ -37,10 +39,11 @@ const UserManagement = () => {
       const data = await getUsersApi({
         page,
         limit,
-        // ...(search && { search }), 
         ...(debouncedSearch && { search: debouncedSearch }),
-        // ...(status && { filters: { status } }),
         ...(status && { status }),
+
+        // ...(search && { search }), 
+        // ...(status && { filters: { status } }),
       });
 
       setUsers(data.data);
@@ -154,15 +157,18 @@ const UserManagement = () => {
                 className="border-b border-slate-800 hover:bg-slate-800 transition"
               >
                 <td className="py-4">
-                  <div className="flex items-center gap-3">
+                  <div 
+                    className="flex items-center gap-3 cursor-pointer group"
+                    onClick={() => navigate(`/admin/users/${u.id}/stats`)}
+                  >
                     <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 overflow-hidden shrink-0">
                       <img 
                         src={u.avatar || `https://ui-avatars.com/api/?name=${u.username}&background=random`} 
                         alt={u.username} 
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover group-hover:opacity-80 transition"
                       />
                     </div>
-                    <span className="text-white font-medium">{u.username}</span>
+                    <span className="text-white font-medium group-hover:text-indigo-400 transition">{u.username}</span>
                   </div>
                 </td>
 

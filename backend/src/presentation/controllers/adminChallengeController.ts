@@ -22,9 +22,9 @@ import { DeleteChallengeUseCase } from "../../application/use-cases/challenge/ad
 import { CreateChallengeDTO } from "../../application/dto/challenge/CreateChallengeDTO";
 import { UpdateChallengeDTO } from "../../application/dto/challenge/UpdateChallengeDTO";
 import { ToggleChallengeDTO } from "../../application/dto/challenge/ToggleChallengeDTO";
-import { AdminListChallengesQueryDTO } from "../../application/dto/challenge/AdminListChallengesQueryDTO";
+// import { AdminListChallengesQueryDTO } from "../../application/dto/challenge/AdminListChallengesQueryDTO";
 
-import { ChallengeDifficulty, ChallengeDomain } from "../../domain/entities/challenge/Challenge";
+// import { ChallengeDifficulty, ChallengeDomain } from "../../domain/entities/challenge/Challenge";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";

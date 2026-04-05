@@ -22,7 +22,7 @@ const getAdminNotificationHistoryUseCase = new GetAdminNotificationHistoryUseCas
 const getUserNotificationsUseCase = new GetUserNotificationsUseCase(notificationRepository, userRepository);
 const markNotificationReadUseCase = new MarkNotificationReadUseCase(notificationRepository);
 const markAllReadUseCase = new MarkAllReadUseCase(notificationRepository, userRepository);
-const clearNotificationsUseCase = new ClearNotificationsUseCase(notificationRepository);
+const clearNotificationsUseCase = new ClearNotificationsUseCase(notificationRepository, userRepository);
 
 // Controller
 export const notificationController = new NotificationController(

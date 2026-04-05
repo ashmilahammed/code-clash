@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { notificationController } from "../../infrastructure/di/notification.di";
-import { requireAdmin } from "../../infrastructure/di/user.di";
+// import { requireAdmin } from "../../infrastructure/di/user.di";
 
 const router = Router();
 

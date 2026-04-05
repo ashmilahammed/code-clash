@@ -23,11 +23,15 @@ export class BadgeController {
 
     getAll = async (req: Request, res: Response) => {
         try {
-            const badges = await this._getBadgesUseCase.execute();
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 9;
+            const search = req.query.search as string || "";
+
+            const result = await this._getBadgesUseCase.execute(page, limit, search);
 
             return res
                 .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.BADGE.FETCH_SUCCESS, badges));
+                .json(ApiResponse.success(MESSAGES.BADGE.FETCH_SUCCESS, result));
 
         } catch (err: unknown) {
             return res

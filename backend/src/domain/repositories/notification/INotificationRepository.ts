@@ -6,5 +6,5 @@ export interface INotificationRepository {
   getUserNotifications(userId: string, isPremium: boolean, dateJoined: Date, page: number, limit: number): Promise<{ data: any[]; total: number }>;
   markAsRead(userId: string, notificationId: string): Promise<void>;
   markAllAsRead(userId: string, isPremium: boolean, dateJoined: Date): Promise<void>;
-  clearNotifications(userId: string): Promise<void>;
+  clearNotifications(userId: string, isPremium: boolean, dateJoined: Date): Promise<void>;
 }

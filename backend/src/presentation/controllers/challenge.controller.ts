@@ -8,7 +8,7 @@ import { GetChallengeCodeTemplatesUseCase } from "../../application/use-cases/ch
 import { GetChallengeHintsUseCase } from "../../application/use-cases/challenge/user/getChallengeHintsUseCase";
 import { GetChallengeTestCasesUseCase } from "../../application/use-cases/challenge/user/getChallengeTestCasesUseCase";
 
-import { ChallengeDifficulty, ChallengeDomain } from "../../domain/entities/challenge/Challenge";
+// import { ChallengeDifficulty, ChallengeDomain } from "../../domain/entities/challenge/Challenge";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";

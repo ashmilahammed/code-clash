@@ -26,6 +26,7 @@ import UpgradePremium from "./pages/premium/UpgradePremium";
 import AdminLayout from "./components/layout/AdminLayout";
 import AdminDashboard from "./pages/admin/dashboard/AdminDashboard";
 import UserManagement from "./pages/admin/userManagement/UserManagement";
+import UserStats from "./pages/admin/userManagement/UserStats";
 import ChallengeManagement from "./pages/admin/challenges/ChallengeManagement"
 
 import CreateChallengeWizard from "./pages/admin/challenges/CreateChallenge";
@@ -166,6 +167,7 @@ function App() {
           <Route element={<AdminLayout />}>
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/users" element={<UserManagement />} />
+            <Route path="/admin/users/:id/stats" element={<UserStats />} />
             <Route path="/admin/challenges" element={<ChallengeManagement />} />
 
             <Route path="/admin/levels" element={<LevelManagement />} />

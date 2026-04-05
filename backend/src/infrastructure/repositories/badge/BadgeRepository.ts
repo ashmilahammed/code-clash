@@ -21,6 +21,26 @@ export class BadgeRepository
     return docs.map(doc => this.toEntity(doc));
   }
 
+  async findAllPaginated(skip: number, limit: number, query: string = ""): Promise<{ badges: Badge[], total: number }> {
+    const filter: Record<string, unknown> = {};
+    if (query) {
+      filter.$or = [
+        { name: { $regex: query, $options: "i" } },
+        { category: { $regex: query, $options: "i" } }
+      ];
+    }
+
+    const [docs, total] = await Promise.all([
+      this.findManyRaw(filter, skip, limit, { _id: -1 }), // Sort by ID descending as it was in frontend
+      this.count(filter)
+    ]);
+
+    return {
+      badges: docs.map(doc => this.toEntity(doc)),
+      total
+    };
+  }
+
   async findById(id: string): Promise<Badge | null> {
     const doc = await this.findByIdRaw(id);
     return doc ? this.toEntity(doc) : null;

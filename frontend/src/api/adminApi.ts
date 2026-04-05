@@ -49,3 +49,8 @@ export const getAdminDashboardStatsApi = async (range: string = '30days') => {
     return await api.get("/admin/dashboard/stats", { params: { range } });
 };
 
+export const getUserSolvedCountAdminApi = async (userId: string) => {
+    const res = await api.get(`/admin/users/${userId}/solved-count`);
+    return res.data;
+};
+

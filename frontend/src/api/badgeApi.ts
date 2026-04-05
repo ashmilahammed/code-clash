@@ -1,7 +1,7 @@
 import api from "./axiosInstance";
 
-export const getAllBadges = async () => {
-    const response = await api.get("/badges");
+export const getAllBadges = async (params?: { page: number; limit: number; search?: string }) => {
+    const response = await api.get("/badges", { params });
     return response.data.data;
 };
 

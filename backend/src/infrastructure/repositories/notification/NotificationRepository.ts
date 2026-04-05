@@ -156,11 +156,29 @@ export class NotificationRepository extends BaseRepository<INotificationDoc>
     await UserNotificationModel.bulkWrite(ops);
   }
 
-  async clearNotifications(userId: string): Promise<void> {
-    // Similar to markAllAsRead, but setting isCleared
-    await UserNotificationModel.updateMany(
-      { userId },
-      { $set: { isCleared: true, isRead: true } }
-    );
+  async clearNotifications(userId: string, isPremium: boolean, dateJoined: Date): Promise<void> {
+    const recipientTypes = ["all", isPremium ? "premium" : "normal"];
+
+    const notifications = await NotificationModel.find({
+      $or: [
+        {
+          recipientType: { $in: recipientTypes },
+          createdAt: { $gte: dateJoined }
+        },
+        { recipientType: "individual", recipientId: new mongoose.Types.ObjectId(userId) }
+      ]
+    }).select("_id");
+
+    if (notifications.length === 0) return;
+
+    const ops = notifications.map((n) => ({
+      updateOne: {
+        filter: { userId: new mongoose.Types.ObjectId(userId), notificationId: n._id },
+        update: { $set: { isCleared: true, isRead: true } },
+        upsert: true,
+      },
+    }));
+
+    await UserNotificationModel.bulkWrite(ops);
   }
 }

@@ -7,9 +7,10 @@ export class MarkAllReadUseCase {
     private readonly _userRepository: IUserRepository
   ) { }
 
-  async execute(userId: string, isPremium: boolean) {
+  async execute(userId: string) {
     const user = await this._userRepository.findById(userId);
     const dateJoined = user?.date_joined ?? new Date();
+    const isPremium = user?.is_premium ?? false;
 
     return await this._notificationRepository.markAllAsRead(userId, isPremium, dateJoined);
   }

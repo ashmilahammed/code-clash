@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { ListUsersUseCase } from "../../application/use-cases/user/admin/listUsersUseCase";
 import { UpdateUserStatusUseCase } from "../../application/use-cases/user/admin/updateUserStatusUseCase";
 import { GetAdminDashboardStatsUseCase } from "../../application/use-cases/admin/GetAdminDashboardStatsUseCase";
-
+import { GetUserSolvedCountUseCase } from "../../application/use-cases/user/admin/getUserSolvedCountUseCase";
 import { ApiResponse } from "../common/ApiResponse";
 import { MESSAGES } from "../constants/messages";
 import { HttpStatus } from "../constants/httpStatus";
@@ -21,7 +21,8 @@ export class AdminController {
   constructor(
     private readonly _listUsersUseCase: ListUsersUseCase,
     private readonly _updateUserStatusUseCase: UpdateUserStatusUseCase,
-    private readonly _getAdminDashboardStatsUseCase: GetAdminDashboardStatsUseCase
+    private readonly _getAdminDashboardStatsUseCase: GetAdminDashboardStatsUseCase,
+    private readonly _getUserSolvedCountUseCase: GetUserSolvedCountUseCase
   ) { }
 
   // 
@@ -131,4 +132,32 @@ export class AdminController {
         .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
     }
   };
+
+
+  
+  getUserSolvedCount = async (req: Request, res: Response) => {
+    try {
+      const { userId } = req.params;
+
+      if (!userId) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
+      }
+
+      const stats = await this._getUserSolvedCountUseCase.execute(userId);
+
+      return res
+        .status(HttpStatus.OK)
+        .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, stats));
+
+    } catch (err: unknown) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
+    }
+  };
 }
+
+
+

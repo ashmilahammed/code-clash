@@ -2,6 +2,7 @@ import { Badge } from "../../entities/badge/Badge";
 
 export interface IBadgeRepository {
     findAll(): Promise<Badge[]>;
+    findAllPaginated(skip: number, limit: number, query?: string): Promise<{ badges: Badge[], total: number }>;
     findById(id: string): Promise<Badge | null>;
     create(badge: Badge): Promise<Badge>;
     updateEntity(badge: Badge): Promise<Badge>;

@@ -11,6 +11,7 @@ import { GetDashboardUseCase } from "../../application/use-cases/user/user/getDa
 import { GetLeaderboardUseCase } from "../../application/use-cases/user/user/getLeaderboardUseCase";
 import { ListUsersUseCase } from "../../application/use-cases/user/admin/listUsersUseCase";
 import { UpdateUserStatusUseCase } from "../../application/use-cases/user/admin/updateUserStatusUseCase";
+import { GetUserSolvedCountUseCase } from "../../application/use-cases/user/admin/getUserSolvedCountUseCase";
 import { GetAdminDashboardStatsUseCase } from "../../application/use-cases/admin/GetAdminDashboardStatsUseCase";
 import { UpdateUserAvatarUseCase } from "../../application/use-cases/user/user/updateUserAvatarUseCase";
 import { RemoveUserAvatarUseCase } from "../../application/use-cases/user/user/removeUserAvatarUseCase";
@@ -88,6 +89,11 @@ const updateUserStatusUseCase = new UpdateUserStatusUseCase(
 
 const getAdminDashboardStatsUseCase = new GetAdminDashboardStatsUseCase();
 
+const getUserSolvedCountUseCase = new GetUserSolvedCountUseCase(
+  userRepository,
+  submissionRepository
+);
+
 
 
 // middlewares
@@ -119,5 +125,6 @@ export const userController = new UserController(
 export const adminController = new AdminController(
   listUsersUseCase,
   updateUserStatusUseCase,
-  getAdminDashboardStatsUseCase
+  getAdminDashboardStatsUseCase,
+  getUserSolvedCountUseCase
 );

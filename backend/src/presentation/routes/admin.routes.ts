@@ -22,6 +22,7 @@ router.get("/dashboard/stats", adminController.getDashboardStats);
 // user management
 router.get("/users", adminController.listUsers);
 router.patch("/users/:userId/status", adminController.updateUserStatus);
+router.get("/users/:userId/solved-count", adminController.getUserSolvedCount);
 
 
 // challenge management
