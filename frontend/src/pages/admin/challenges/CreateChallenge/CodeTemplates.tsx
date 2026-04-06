@@ -30,22 +30,21 @@ const CodeTemplates = () => {
       try {
         setLoading(true);
         
+        const languages = await getChallengeLanguagesApi(id).catch(() => []);
         const existingTemplates = await getAdminChallengeTemplatesApi(id).catch(() => []);
 
-        if (existingTemplates && existingTemplates.length > 0) {
-          setTemplates(existingTemplates);
-          return;
-        }
+        const mergedTemplates = languages.map((lang) => {
+          const existing = existingTemplates.find((t) => t.language === lang);
+          return (
+            existing || {
+              language: lang,
+              starterCode: "",
+              solutionCode: "",
+            }
+          );
+        });
 
-        // Fallback: if no templates found, load from languages
-        const languages = await getChallengeLanguagesApi(id);
-        setTemplates(
-          languages.map((lang) => ({
-            language: lang,
-            starterCode: "",
-            solutionCode: "",
-          }))
-        );
+        setTemplates(mergedTemplates);
 
       } catch (err) {
         console.error(err);

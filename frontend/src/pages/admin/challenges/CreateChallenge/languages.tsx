@@ -64,7 +64,10 @@ const ChallengeLanguages = () => {
       await addChallengeLanguagesApi(id, selected);
 
       //  correct wizard flow
-      navigate(`/admin/challenges/create/${id}/test-cases`);
+      const basePath = window.location.pathname.includes("/edit/")
+        ? `/admin/challenges/edit/${id}`
+        : `/admin/challenges/create/${id}`;
+      navigate(`${basePath}/test-cases`);
     } catch {
       setError("Failed to save languages");
     } finally {
