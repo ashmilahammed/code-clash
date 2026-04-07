@@ -1,7 +1,11 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useChatStore } from '../../store/useChatStore';
 import { useAuthStore } from '../../store/useAuthStore';
-import { Send, Hash, Settings, LogOut, Paperclip, Smile, UserPlus, Trash2, Image as ImageIcon, Flag } from 'lucide-react';
+import {
+    Send, Hash,
+    //  Settings,
+    LogOut, Paperclip, Smile, UserPlus, Trash2, Image as ImageIcon, Flag
+} from 'lucide-react';
 import InviteModal from './InviteModal';
 import UserProfileCard from './UserProfileCard';
 import ReportModal from './ReportModal';
@@ -129,7 +133,7 @@ const ChatWindow = () => {
                         )}
                     </h2>
                     {isGroup && (
-                        <button 
+                        <button
                             onClick={() => setShowMemberList(!showMemberList)}
                             className="text-xs text-slate-400 hover:text-blue-400 transition-colors"
                         >
@@ -147,7 +151,9 @@ const ChatWindow = () => {
                             <UserPlus size={18} />
                         </button>
                     )}
-                    <button className="hover:text-white p-2 hover:bg-slate-800 rounded-full transition"><Settings size={18} /></button>
+
+                    {/* <button className="hover:text-white p-2 hover:bg-slate-800 rounded-full transition"><Settings size={18} /></button> */}
+
                     {isGroup && (
                         <button
                             onClick={handleLeaveGroup}
@@ -170,7 +176,7 @@ const ChatWindow = () => {
                             return (
                                 <div key={message.id} className={`group flex flex-col max-w-[75%] ${isMine ? 'ml-auto items-end' : 'mr-auto items-start'}`}>
                                     <div className="flex items-center gap-2 mb-1">
-                                        <button 
+                                        <button
                                             onClick={() => !isMine && setSelectedProfileUserId(message.senderId)}
                                             className={`text-xs font-semibold transition-colors ${isMine ? 'text-slate-300' : 'text-blue-400 hover:text-blue-300'}`}
                                             disabled={isMine}
@@ -294,8 +300,8 @@ const ChatWindow = () => {
                         </div>
                         <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
                             {activeConversation.participantDetails?.map((member) => (
-                                <div 
-                                    key={member.id} 
+                                <div
+                                    key={member.id}
                                     className="flex items-center gap-3 group cursor-pointer hover:bg-slate-800/50 p-2 rounded-xl transition-colors"
                                     onClick={() => member.id !== user?.id && setSelectedProfileUserId(member.id)}
                                 >
@@ -392,16 +398,16 @@ const ChatWindow = () => {
                 </div>
             )}
             {messageToReport && (
-                <ReportModal 
-                    messageId={messageToReport} 
-                    onClose={() => setMessageToReport(null)} 
+                <ReportModal
+                    messageId={messageToReport}
+                    onClose={() => setMessageToReport(null)}
                 />
             )}
             {/* User Profile Card */}
             {selectedProfileUserId && (
-                <UserProfileCard 
-                    userId={selectedProfileUserId} 
-                    onClose={() => setSelectedProfileUserId(null)} 
+                <UserProfileCard
+                    userId={selectedProfileUserId}
+                    onClose={() => setSelectedProfileUserId(null)}
                 />
             )}
         </div>

@@ -54,6 +54,7 @@ import { meApi } from "./api/authApi";
 import Forbidden from "./pages/errors/Forbidden";
 import NotFound from "./pages/errors/NotFound";
 
+import { ROUTES } from "./constants/routes";
 
 import "./App.css";
 import { Toaster } from "react-hot-toast";
@@ -123,9 +124,9 @@ function App() {
         <Route element={<LandingLayout />}>
           {/* <Route path="/" element={<LandingPage />} /> */}
           <Route
-            path="/"
+            path={ROUTES.HOME}
             element={
-              user ? <Navigate to="/dashboard" replace /> : <LandingPage />
+              user ? <Navigate to={ROUTES.USER.DASHBOARD} replace /> : <LandingPage />
             }
           />
         </Route>
@@ -134,12 +135,12 @@ function App() {
 
         {/* Guest-only routes */}
         <Route element={<GuestRoute />}>
-          <Route path="/auth/login" element={<Login />} />
-          <Route path="/auth/register" element={<Register />} />
-          <Route path="/auth/verify-otp" element={<VerifyOtp />} />
-          <Route path="/auth/forgot-password" element={<ForgotPassword />} />
-          <Route path="/auth/forgot-verify-otp" element={<ForgotVerifyOtp />} />
-          <Route path="/auth/reset-password" element={<ResetPassword />} />
+          <Route path={ROUTES.AUTH.LOGIN} element={<Login />} />
+          <Route path={ROUTES.AUTH.REGISTER} element={<Register />} />
+          <Route path={ROUTES.AUTH.VERIFY_OTP} element={<VerifyOtp />} />
+          <Route path={ROUTES.AUTH.FORGOT_PASSWORD} element={<ForgotPassword />} />
+          <Route path={ROUTES.AUTH.FORGOT_VERIFY_OTP} element={<ForgotVerifyOtp />} />
+          <Route path={ROUTES.AUTH.RESET_PASSWORD} element={<ResetPassword />} />
         </Route>
 
 
@@ -147,15 +148,15 @@ function App() {
         {/* User protected */}
         <Route element={<ProtectedRoute />}>
           <Route element={<UserLayout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path={ROUTES.USER.DASHBOARD} element={<Dashboard />} />
+            <Route path={ROUTES.USER.LEADERBOARD} element={<Leaderboard />} />
             {/* <Route path="/challenges/:id" element={<ChallengeDetails />} /> */}
 
-            <Route path="/challenges/:id" element={<SolveChallenge />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/messages" element={<Messages />} />
-            <Route path="/premium" element={<UpgradePremium />} />
+            <Route path={ROUTES.USER.SOLVE_CHALLENGE} element={<SolveChallenge />} />
+            <Route path={ROUTES.USER.PROFILE} element={<Profile />} />
+            <Route path={ROUTES.USER.SETTINGS} element={<Settings />} />
+            <Route path={ROUTES.USER.MESSAGES} element={<Messages />} />
+            <Route path={ROUTES.USER.PREMIUM} element={<UpgradePremium />} />
 
           </Route>
         </Route>
@@ -165,21 +166,21 @@ function App() {
         {/* Admin protected */}
         <Route element={<AdminRoute />}>
           <Route element={<AdminLayout />}>
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/users" element={<UserManagement />} />
-            <Route path="/admin/users/:id/stats" element={<UserStats />} />
-            <Route path="/admin/challenges" element={<ChallengeManagement />} />
+            <Route path={ROUTES.ADMIN.DASHBOARD} element={<AdminDashboard />} />
+            <Route path={ROUTES.ADMIN.USERS} element={<UserManagement />} />
+            <Route path={ROUTES.ADMIN.USER_STATS} element={<UserStats />} />
+            <Route path={ROUTES.ADMIN.CHALLENGES} element={<ChallengeManagement />} />
 
-            <Route path="/admin/levels" element={<LevelManagement />} />
-            <Route path="/admin/badges" element={<BadgeManagement />} />
-            <Route path="/admin/plans" element={<PlanManagement />} />
-            <Route path="/admin/groups" element={<GroupManagement />} />
-            <Route path="/admin/reports" element={<ReportManagement />} />
-            <Route path="/admin/notifications" element={<NotificationManagement />} />
+            <Route path={ROUTES.ADMIN.LEVELS} element={<LevelManagement />} />
+            <Route path={ROUTES.ADMIN.BADGES} element={<BadgeManagement />} />
+            <Route path={ROUTES.ADMIN.PLANS} element={<PlanManagement />} />
+            <Route path={ROUTES.ADMIN.GROUPS} element={<GroupManagement />} />
+            <Route path={ROUTES.ADMIN.REPORTS} element={<ReportManagement />} />
+            <Route path={ROUTES.ADMIN.NOTIFICATIONS} element={<NotificationManagement />} />
 
             {/* wizard */}
             <Route
-              path="/admin/challenges/create" element={<CreateChallengeWizard />}>
+              path={ROUTES.ADMIN.CHALLENGES_CREATE} element={<CreateChallengeWizard />}>
               {/* Step 1 */}
               <Route index element={<BasicInfo />} />
 
@@ -192,7 +193,7 @@ function App() {
             </Route>
 
             {/* Edit / Resume Draft Routes */}
-            <Route path="/admin/challenges/edit/:id" element={<CreateChallengeWizard />}>
+            <Route path={ROUTES.ADMIN.CHALLENGES_EDIT} element={<CreateChallengeWizard />}>
               <Route index element={<BasicInfo />} />
               <Route path="tags" element={<ChallengeTags />} />
               <Route path="languages" element={<ChallengeLanguages />} />
@@ -207,8 +208,8 @@ function App() {
 
 
         {/* Errors */}
-        <Route path="/403" element={<Forbidden />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path={ROUTES.ERRORS.FORBIDDEN} element={<Forbidden />} />
+        <Route path={ROUTES.ERRORS.NOT_FOUND} element={<NotFound />} />
 
 
       </Routes>

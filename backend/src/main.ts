@@ -17,6 +17,8 @@ import reportRoutes from "./presentation/routes/report.routes";
 import { WinstonLogger } from "./infrastructure/services/logger";
 import { startPremiumExpirationJob } from "./infrastructure/services/scheduler/PremiumSchedulerService";
 
+import { API_ROUTES } from "./presentation/constants/routes";
+
 dotenv.config();
 
 const app = express();
@@ -32,17 +34,17 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/admin", adminRoutes);
+app.use(API_ROUTES.AUTH, authRoutes);
+app.use(API_ROUTES.ADMIN, adminRoutes);
 
-app.use("/api/user", userRoutes);
-app.use("/api/challenges", challengeRoutes);
-app.use("/api/submissions", submissionRoutes);
-app.use("/api/levels", levelRoutes);
-app.use("/api/badges", badgeRoutes);
-app.use("/api/chat", chatRoutes);
-app.use("/api/transactions", transactionRoutes);
-app.use("/api/reports", reportRoutes);
+app.use(API_ROUTES.USER, userRoutes);
+app.use(API_ROUTES.CHALLENGES, challengeRoutes);
+app.use(API_ROUTES.SUBMISSIONS, submissionRoutes);
+app.use(API_ROUTES.LEVELS, levelRoutes);
+app.use(API_ROUTES.BADGES, badgeRoutes);
+app.use(API_ROUTES.CHAT, chatRoutes);
+app.use(API_ROUTES.TRANSACTIONS, transactionRoutes);
+app.use(API_ROUTES.REPORTS, reportRoutes);
 
 
 
