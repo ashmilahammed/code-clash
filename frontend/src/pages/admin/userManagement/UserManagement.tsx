@@ -157,14 +157,14 @@ const UserManagement = () => {
                 className="border-b border-slate-800 hover:bg-slate-800 transition"
               >
                 <td className="py-4">
-                  <div 
+                  <div
                     className="flex items-center gap-3 cursor-pointer group"
                     onClick={() => navigate(`/admin/users/${u.id}/stats`)}
                   >
                     <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 overflow-hidden shrink-0">
-                      <img 
-                        src={u.avatar || `https://ui-avatars.com/api/?name=${u.username}&background=random`} 
-                        alt={u.username} 
+                      <img
+                        src={u.avatar || `https://ui-avatars.com/api/?name=${u.username}&background=random`}
+                        alt={u.username}
                         className="w-full h-full object-cover group-hover:opacity-80 transition"
                       />
                     </div>

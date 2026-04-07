@@ -20,7 +20,7 @@ const Messages = () => {
     }, [accessToken, initializeSocket, fetchConversations, disconnectSocket]);
 
     return (
-        <div className="h-[calc(100vh-4rem)] bg-[#0B1220] flex rounded-xl border border-slate-800 overflow-hidden mx-6 my-6 shadow-2xl">
+        <div className="h-[calc(100vh-7rem)] bg-[#0B1220] flex rounded-xl border border-slate-800 overflow-hidden mx-6 my-6 shadow-2xl">
             <ChatSidebar />
             <ChatWindow />
         </div>

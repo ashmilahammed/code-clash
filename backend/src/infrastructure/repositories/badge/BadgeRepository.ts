@@ -4,8 +4,7 @@ import { BadgeModel, IBadgeDoc } from "../../database/models/badge/BadgeModel";
 import { BaseRepository } from "../BaseRepository";
 
 
-export class BadgeRepository
-  extends BaseRepository<IBadgeDoc>
+export class BadgeRepository extends BaseRepository<IBadgeDoc>
   implements IBadgeRepository {
 
   constructor() {

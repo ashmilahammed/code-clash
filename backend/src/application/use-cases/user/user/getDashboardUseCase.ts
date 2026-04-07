@@ -55,14 +55,18 @@ export class GetDashboardUseCase {
             const successfulSubmissions = await SubmissionModel.countDocuments({
                 challengeId: challengeObj._id,
                 finalStatus: "PASSED",
-                // createdAt: { $gte: startDate } // Optional: limit completion rate to recent
+                createdAt: { $gte: startDate }
             });
+            
+            let completionRate = Math.round((successfulSubmissions / challengeObj.count) * 100) || 0;
+            if (completionRate > 100) completionRate = 100;
+
             mostAttemptedChallenge = {
                 id: challengeObj.challenge._id, 
                 title: challengeObj.challenge.title,
                 difficulty: challengeObj.challenge.difficulty,
                 attempts: challengeObj.count,
-                completionRate: Math.round((successfulSubmissions / challengeObj.count) * 100) || 0,
+                completionRate: completionRate,
                 timeLimitMinutes: challengeObj.challenge.timeLimitMinutes,
                 description: challengeObj.challenge.description
             };
