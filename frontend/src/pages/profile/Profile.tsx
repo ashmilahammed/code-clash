@@ -105,13 +105,37 @@ const Profile = () => {
 
     const handleSaveChanges = async () => {
         if (!isOwnProfile) return;
+
+        let processedGithubUrl = githubUrl.trim();
+        let processedLinkedinUrl = linkedinUrl.trim();
+
+        if (processedGithubUrl && !/^https?:\/\//i.test(processedGithubUrl)) {
+            processedGithubUrl = 'https://' + processedGithubUrl;
+            setGithubUrl(processedGithubUrl);
+        }
+
+        if (processedLinkedinUrl && !/^https?:\/\//i.test(processedLinkedinUrl)) {
+            processedLinkedinUrl = 'https://' + processedLinkedinUrl;
+            setLinkedinUrl(processedLinkedinUrl);
+        }
+
+        if (processedGithubUrl && !/^https?:\/\/(www\.)?github\.com\/.+/i.test(processedGithubUrl)) {
+            toast.error("Please enter a valid GitHub URL");
+            return;
+        }
+
+        if (processedLinkedinUrl && !/^https?:\/\/(www\.)?linkedin\.com\/.+/i.test(processedLinkedinUrl)) {
+            toast.error("Please enter a valid LinkedIn URL");
+            return;
+        }
+
         try {
             setIsSaving(true);
             const updatedUser = await updateUserProfileApi({
                 username: displayName,
                 about: bio,
-                github_url: githubUrl,
-                linkedin_url: linkedinUrl
+                github_url: processedGithubUrl,
+                linkedin_url: processedLinkedinUrl
             });
             updateUser(updatedUser);
             toast.success("Profile updated successfully");
