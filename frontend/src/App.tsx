@@ -102,15 +102,10 @@ function App() {
   }, []);
 
 
-  // useEffect(() => {
-  //   // auth state is restored lazily via axios interceptor
-  //   stopLoading();
-  // }, []);
-
   if (isLoading) return null;
 
 
-  console.log('feature branch is working')
+
 
 
   return (
