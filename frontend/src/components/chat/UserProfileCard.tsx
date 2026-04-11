@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { X, Trophy, Zap, User, MessageSquare, Flame, Loader2 } from 'lucide-react';
 import { getUserProfileStatsApi } from '../../api/userApi';
 import { useChatStore } from '../../store/useChatStore';
+import { useAuthStore } from '../../store/useAuthStore';
 
 interface UserProfileCardProps {
     userId: string;
@@ -14,6 +15,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ userId, onClose }) =>
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const { startDirectMessage } = useChatStore();
+    const currentUser = useAuthStore((state) => state.user);
     const cardRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -136,24 +138,38 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ userId, onClose }) =>
 
                 {/* Actions */}
                 <div className="space-y-3">
-                    <button
-                        onClick={handleSendMessage}
-                        className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all shadow-lg shadow-blue-900/40 active:scale-[0.98]"
-                    >
-                        <MessageSquare size={20} fill="currentColor" />
-                        Send Message
-                    </button>
-                    <button
-                        onClick={() => {
-                            onClose();
-                            // navigate(`/profile?id=${userId}`);
-                            navigate(`/profile?id=${userId}&view=info`);
-                        }}
-                        className="w-full py-4 bg-slate-800/50 hover:bg-slate-800 text-slate-300 hover:text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all border border-slate-700/50 active:scale-[0.98]"
-                    >
-                        <User size={20} />
-                        View Profile
-                    </button>
+                    {userId !== currentUser?.id ? (
+                        <>
+                            <button
+                                onClick={handleSendMessage}
+                                className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all shadow-lg shadow-blue-900/40 active:scale-[0.98]"
+                            >
+                                <MessageSquare size={20} fill="currentColor" />
+                                Send Message
+                            </button>
+                            <button
+                                onClick={() => {
+                                    onClose();
+                                    navigate(`/profile?id=${userId}&view=info`);
+                                }}
+                                className="w-full py-4 bg-slate-800/50 hover:bg-slate-800 text-slate-300 hover:text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all border border-slate-700/50 active:scale-[0.98]"
+                            >
+                                <User size={20} />
+                                View Profile
+                            </button>
+                        </>
+                    ) : (
+                        <button
+                            onClick={() => {
+                                onClose();
+                                navigate('/profile');
+                            }}
+                            className="w-full py-4 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all shadow-lg shadow-indigo-900/40 active:scale-[0.98]"
+                        >
+                            <User size={20} />
+                            Manage Profile
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
