@@ -55,7 +55,7 @@ const Login: React.FC = () => {
 
       if (err?.response?.data?.needsVerification) {
         const userId = err.response.data.userId;
-        navigate(`/auth/verify-otp?userId=${userId}&email=${encodeURIComponent(email)}`);
+        navigate(`/verify-otp?userId=${userId}&email=${encodeURIComponent(email)}`);
         return;
       }
 
@@ -227,7 +227,7 @@ if(xp > 100){
             Don’t have an account?{" "}
             <span
               className="text-white cursor-pointer hover:underline"
-              onClick={() => navigate("/auth/register")}
+              onClick={() => navigate("/register")}
             >
               Create Account
             </span>
@@ -235,7 +235,7 @@ if(xp > 100){
 
           <p
             className="cursor-pointer hover:underline"
-            onClick={() => navigate("/auth/forgot-password")}
+            onClick={() => navigate("/forgot-password")}
           >
             Forgot password?
           </p>

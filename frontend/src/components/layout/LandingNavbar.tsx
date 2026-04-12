@@ -48,7 +48,7 @@ function LandingNavbar() {
               focus:ring-2 focus:ring-blue-500/40
             "
                         readOnly
-                        onClick={() => navigate("/auth/login")}
+                        onClick={() => navigate("/login")}
                     />
                 </div>
             </div>
@@ -56,7 +56,7 @@ function LandingNavbar() {
             {/* Right: Login Button */}
             <div className="flex items-center gap-4">
                 <button
-                    onClick={() => navigate("/auth/login")}
+                    onClick={() => navigate("/login")}
                     className="text-sm px-4 py-2 rounded-full bg-linear-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-medium transition"
                 >
                     Login

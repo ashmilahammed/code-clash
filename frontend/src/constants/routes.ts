@@ -1,12 +1,12 @@
 export const ROUTES = {
   HOME: '/',
   AUTH: {
-    LOGIN: '/auth/login',
-    REGISTER: '/auth/register',
-    VERIFY_OTP: '/auth/verify-otp',
-    FORGOT_PASSWORD: '/auth/forgot-password',
-    FORGOT_VERIFY_OTP: '/auth/forgot-verify-otp',
-    RESET_PASSWORD: '/auth/reset-password',
+    LOGIN: '/login',
+    REGISTER: '/register',
+    VERIFY_OTP: '/verify-otp',
+    FORGOT_PASSWORD: '/forgot-password',
+    FORGOT_VERIFY_OTP: '/forgot-verify-otp',
+    RESET_PASSWORD: '/reset-password',
   },
   USER: {
     DASHBOARD: '/dashboard',

@@ -8,7 +8,7 @@ const AdminRoute = () => {
   if (isLoading) return null;
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/auth/login" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   if (user.role !== "admin") {

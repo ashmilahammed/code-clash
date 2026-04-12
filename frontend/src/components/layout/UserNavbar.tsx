@@ -104,7 +104,7 @@ function UserNavbar() {
       console.error("Logout failed", err);
     } finally {
       logoutUser();
-      navigate("/auth/login", { replace: true });
+      navigate("/login", { replace: true });
     }
   };
 

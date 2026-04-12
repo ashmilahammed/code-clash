@@ -78,7 +78,7 @@ const Register: React.FC = () => {
       const userId = res.data?.data?.userId;
       if (!userId) throw new Error("Failed to register user. Try again.");
 
-      navigate(`/auth/verify-otp?userId=${userId}`);
+      navigate(`/verify-otp?userId=${userId}`);
 
     } catch (err: any) {
 
@@ -227,7 +227,7 @@ if(xp > 100){
           <p className="text-center text-sm text-slate-400 mt-6">
             Already have an account?{" "}
             <span
-              onClick={() => navigate("/auth/login")}
+              onClick={() => navigate("/login")}
               className="text-white cursor-pointer hover:underline"
             >
               Login

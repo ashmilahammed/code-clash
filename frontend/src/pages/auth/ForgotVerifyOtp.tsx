@@ -59,7 +59,7 @@ const ForgotVerifyOtp = () => {
     try {
       setLoading(true);
       await verifyForgotOtpApi({ userId, otp });
-      navigate(`/auth/reset-password?userId=${userId}`);
+      navigate(`/reset-password?userId=${userId}`);
     } catch (err: any) {
 
       setError(getAuthErrorMessage(err));
@@ -170,7 +170,7 @@ const ForgotVerifyOtp = () => {
         {/* Back */}
         <div className="text-center mt-6">
           <button
-            onClick={() => navigate("/auth/login")}
+            onClick={() => navigate("/login")}
             className="text-sm text-slate-400 hover:text-white transition hover:underline"
           >
             ← Back to Login

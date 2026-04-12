@@ -13,7 +13,7 @@ const AdminNavbar = () => {
             await logoutApi();
         } finally {
             logoutUser();
-            navigate("/auth/login");
+            navigate("/login");
         }
     };
 

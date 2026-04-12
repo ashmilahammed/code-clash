@@ -33,7 +33,7 @@ const VerifyOtp = () => {
           <p className="text-red-600">Error: Missing userId</p>
           <button
             className="mt-4 text-blue-600 hover:underline"
-            onClick={() => navigate("/auth/register")}
+            onClick={() => navigate("/register")}
           >
             Go to Register
           </button>
@@ -78,7 +78,7 @@ const VerifyOtp = () => {
       setLoading(true);
       await verifyOtpApi({ userId, otp });
       toast.success("Account Created Successfully");
-      navigate("/auth/login", { replace: true });
+      navigate("/login", { replace: true });
     } catch (err: any) {
 
       setError(getAuthErrorMessage(err));
@@ -195,7 +195,7 @@ const VerifyOtp = () => {
         {/* Back */}
         <div className="text-center mt-6">
           <button
-            onClick={() => navigate("/auth/login")}
+            onClick={() => navigate("/login")}
             className="text-sm text-slate-400 hover:text-white transition hover:underline"
           >
             ← Back to Login

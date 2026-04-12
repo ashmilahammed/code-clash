@@ -30,7 +30,7 @@ const ForgotPassword = () => {
         return;
       }
 
-      navigate(`/auth/forgot-verify-otp?userId=${userId}`);
+      navigate(`/forgot-verify-otp?userId=${userId}`);
     } catch (err: any) {
 
       // const msg =
@@ -97,7 +97,7 @@ const ForgotPassword = () => {
 
         <div className="text-center mt-6">
           <button
-            onClick={() => navigate("/auth/login")}
+            onClick={() => navigate("/login")}
             className="text-sm text-slate-400 hover:text-white transition hover:underline"
           >
             ← Back to Login

@@ -17,6 +17,9 @@ import reportRoutes from "./presentation/routes/report.routes";
 import { WinstonLogger } from "./infrastructure/services/logger";
 import { startPremiumExpirationJob } from "./infrastructure/services/scheduler/PremiumSchedulerService";
 
+import { createServer } from "http";
+import { SocketServer } from "./infrastructure/websocket/SocketServer";
+
 import { API_ROUTES } from "./presentation/constants/routes";
 
 dotenv.config();
@@ -26,8 +29,14 @@ const logger = new WinstonLogger();
 
 
 app.use(cors({
-  origin: "http://localhost:5173",
-  // origin: true,
+  // origin: "http://localhost:5173",
+  origin: true,
+  // origin: [
+  //   "http://localhost:5173",
+  //   "http://13.233.63.6",
+  //   "http://code-clash.ddns.net",
+  //   "https://code-clash.ddns.net"
+  // ],
   credentials: true
 }));
 app.use(express.json());
@@ -47,9 +56,11 @@ app.use(API_ROUTES.TRANSACTIONS, transactionRoutes);
 app.use(API_ROUTES.REPORTS, reportRoutes);
 
 
+app.get("/test", (req, res) => {
+  res.send("Backend is running");
+});
 
-import { createServer } from "http";
-import { SocketServer } from "./infrastructure/websocket/SocketServer";
+
 
 const PORT = process.env.PORT || 5000;
 

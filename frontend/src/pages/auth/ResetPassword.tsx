@@ -75,7 +75,7 @@ const ResetPassword = () => {
 
       toast.success("Password reset successful!");
       
-      navigate("/auth/login");
+      navigate("/login");
     } catch (err: any) {
 
       setError(getAuthErrorMessage(err));
@@ -168,7 +168,7 @@ const ResetPassword = () => {
       {/* Back */}
       <div className="text-center mt-6">
         <button
-          onClick={() => navigate("/auth/login")}
+          onClick={() => navigate("/login")}
           className="text-sm text-slate-400 hover:text-white transition hover:underline"
         >
           ← Back to Login

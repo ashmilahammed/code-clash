@@ -18,6 +18,12 @@ export class SocketServer {
         this._io = new SocketIOServer(server, {
             cors: {
                 origin: "http://localhost:5173",
+                // origin: [
+                //     "http://localhost:5173",
+                //     "http://13.233.63.6",
+                //     "http://code-clash.ddns.net",
+                //     "https://code-clash.ddns.net"
+                // ],
                 credentials: true,
             },
         });
@@ -30,7 +36,7 @@ export class SocketServer {
         this.setupEventHandlers();
     }
 
-    
+
     private setupMiddleware() {
         this._io.use(async (socket: Socket, next) => {
             try {

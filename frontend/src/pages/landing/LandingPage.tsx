@@ -75,13 +75,13 @@ const LandingPage = () => {
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                     <button 
-                        onClick={() => navigate("/auth/login")}
+                        onClick={() => navigate("/login")}
                         className="w-full sm:w-auto bg-linear-to-r from-indigo-600 to-cyan-500 hover:from-indigo-700 hover:to-cyan-600 text-white px-8 py-4 rounded-full font-bold transition-all shadow-xl shadow-cyan-500/20 flex items-center justify-center gap-2 cursor-pointer"
                     >
                         Enter Matrix
                     </button>
                     <button 
-                        onClick={() => navigate("/auth/login")}
+                        onClick={() => navigate("/login")}
                         className="w-full sm:w-auto bg-[#1E293B]/50 hover:bg-[#1E293B] border border-slate-700 text-white px-8 py-4 rounded-full font-bold transition-all backdrop-blur-sm cursor-pointer"
                     >
                         Explore Challenges
@@ -160,7 +160,7 @@ const LandingPage = () => {
                         Join thousands of developers who are leveling up their skills while having fun.
                     </p>
                     <button 
-                        onClick={() => navigate("/auth/login")}
+                        onClick={() => navigate("/login")}
                         className="bg-linear-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white px-10 py-4 rounded-full font-bold transition-all shadow-2xl shadow-cyan-500/30 cursor-pointer"
                     >
                         Create Free Account
@@ -171,10 +171,10 @@ const LandingPage = () => {
             {/* Footer */}
             <footer className="relative z-10 max-w-7xl mx-auto px-6 py-12 border-t border-slate-800/50 flex flex-col md:flex-row justify-between items-center gap-8">
                 <div className="flex items-center gap-8 text-sm font-medium">
-                    <button onClick={() => navigate("/auth/login")} className="hover:text-white transition cursor-pointer">About</button>
-                    <button onClick={() => navigate("/auth/login")} className="hover:text-white transition cursor-pointer">Privacy</button>
-                    <button onClick={() => navigate("/auth/login")} className="hover:text-white transition cursor-pointer">Terms</button>
-                    <button onClick={() => navigate("/auth/login")} className="hover:text-white transition cursor-pointer">Support</button>
+                    <button onClick={() => navigate("/login")} className="hover:text-white transition cursor-pointer">About</button>
+                    <button onClick={() => navigate("/login")} className="hover:text-white transition cursor-pointer">Privacy</button>
+                    <button onClick={() => navigate("/login")} className="hover:text-white transition cursor-pointer">Terms</button>
+                    <button onClick={() => navigate("/login")} className="hover:text-white transition cursor-pointer">Support</button>
                 </div>
                 <div className="text-sm text-slate-500 uppercase font-bold tracking-tight">
                     © 2025 <span className="text-cyan-500">CODE-CLASH</span>. All rights reserved.
@@ -255,7 +255,7 @@ export default LandingPage;
 
 //         <div className="mt-10 flex gap-4 justify-center flex-wrap">
 //           <button
-//             onClick={() => navigate("/auth/login")}
+//             onClick={() => navigate("/login")}
 //             className="bg-gradient-to-r from-purple-600 to-cyan-500 px-8 py-4 rounded-full font-bold text-white shadow-xl hover:scale-105 transition"
 //           >
 //             Solve First Challenge
@@ -355,7 +355,7 @@ export default LandingPage;
 //         </p>
 
 //         <button
-//           onClick={() => navigate("/auth/login")}
+//           onClick={() => navigate("/login")}
 //           className="bg-gradient-to-r from-yellow-500 to-orange-500 px-10 py-4 rounded-full text-white font-bold shadow-xl hover:scale-105 transition"
 //         >
 //           Upgrade Now
@@ -368,7 +368,7 @@ export default LandingPage;
 //           Ready to Become a Better Developer?
 //         </h2>
 //         <button
-//           onClick={() => navigate("/auth/login")}
+//           onClick={() => navigate("/login")}
 //           className="bg-gradient-to-r from-indigo-600 to-cyan-500 px-12 py-5 rounded-full text-white font-bold shadow-2xl hover:scale-110 transition"
 //         >
 //           Create Free Account
