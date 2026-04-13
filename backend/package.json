@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npm run lint && ts-node-dev --respawn src/main.ts",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix"
