@@ -1,12 +1,16 @@
 name: CD Pipeline
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
     branches: ["main"]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - name: Deploy to EC2
@@ -16,37 +20,26 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-
             echo "🚀 Starting Deployment..."
-
-            # Go to project folder
             cd ~/code-clash
-
-            # Pull latest code
             git pull origin main
 
-            # ================= BACKEND =================
+            # ===== BACKEND =====
             echo "⚙️ Building Backend..."
             cd backend
             npm install
             npm run build
-
-            # Restart backend
-            pm2 delete codeclash-backend || true
-            pm2 start dist/main.js --name codeclash-backend
+            pm2 restart codeclash-backend || pm2 start dist/main.js --name codeclash-backend
             pm2 save
 
-            # ================= FRONTEND =================
+            # ===== FRONTEND =====
             echo "🎨 Building Frontend..."
             cd ../frontend
             npm install
             npm run build
 
-            # Copy to nginx
             sudo rm -rf /var/www/html/*
             sudo cp -r dist/* /var/www/html/
+            sudo systemctl reload nginx
 
-            # Restart nginx
-            sudo systemctl restart nginx
-
-            echo "✅ Deployment Completed!"
+            echo "✅ Deployment Complete!"
