@@ -24,19 +24,11 @@ jobs:
 
             echo "🚀 Starting Deployment..."
 
-            # cd ~/code-clash
-            # cd /home/ubuntu/code-clash
-
-            echo "Current user: $(whoami)"
-            echo "Current dir: $(pwd)"
-            ls /home/ubuntu
-
             cd /home/ubuntu/code-clash || exit 1
 
-            echo "Now in: $(pwd)"
-            ls
-            
-            git pull origin main
+            echo "📥 Syncing code..."
+            git fetch origin
+            git reset --hard origin/main
 
             # ===== BACKEND =====
             echo "⚙️ Building Backend..."
