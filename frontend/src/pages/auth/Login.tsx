@@ -59,11 +59,7 @@ const Login: React.FC = () => {
         return;
       }
 
-      // const msg =
-      //   err?.response?.data?.message ||
-      //   err?.message ||
-      //   "Login failed. Check your credentials.";
-      // setError(msg);
+
       setError(getAuthErrorMessage(err));
 
 
@@ -122,6 +118,7 @@ const Login: React.FC = () => {
 
       <div className="relative z-10">
         <h1 className="text-3xl font-extrabold tracking-tight mb-6">
+          &lt;CODE-CLASH /&gt;
           &lt;CODE-CLASH /&gt;
         </h1>
 
