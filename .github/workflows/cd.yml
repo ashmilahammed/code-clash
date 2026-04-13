@@ -1,0 +1,52 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+
+            echo "🚀 Starting Deployment..."
+
+            # Go to project folder
+            cd ~/code-clash
+
+            # Pull latest code
+            git pull origin main
+
+            # ================= BACKEND =================
+            echo "⚙️ Building Backend..."
+            cd backend
+            npm install
+            npm run build
+
+            # Restart backend
+            pm2 delete codeclash-backend || true
+            pm2 start dist/main.js --name codeclash-backend
+            pm2 save
+
+            # ================= FRONTEND =================
+            echo "🎨 Building Frontend..."
+            cd ../frontend
+            npm install
+            npm run build
+
+            # Copy to nginx
+            sudo rm -rf /var/www/html/*
+            sudo cp -r dist/* /var/www/html/
+
+            # Restart nginx
+            sudo systemctl restart nginx
+
+            echo "✅ Deployment Completed!"

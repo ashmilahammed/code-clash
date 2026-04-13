@@ -29,14 +29,11 @@ const logger = new WinstonLogger();
 
 
 app.use(cors({
-  // origin: "http://localhost:5173",
-  origin: true,
-  // origin: [
-  //   "http://localhost:5173",
-  //   "http://13.233.63.6",
-  //   "http://code-clash.ddns.net",
-  //   "https://code-clash.ddns.net"
-  // ],
+  // origin: true,
+  origin: [
+    "http://localhost:5173",
+    "https://code-clash.ddns.net"
+  ],
   credentials: true
 }));
 app.use(express.json());
