@@ -71,11 +71,11 @@ const HeaderBar = ({ challenge, onTimeUp, isSuccess }: any) => {
   };
 
   return (
-    <div className="flex items-center justify-between px-6 py-3 bg-[#0f172a] border-b border-slate-800">
+    <div className="flex items-center justify-between px-4 md:px-6 py-2 md:py-3 bg-[#0f172a] border-b border-slate-800">
 
       {/* LEFT SIDE */}
       <div>
-        <h1 className="text-lg font-semibold">
+        <h1 className="text-base md:text-lg font-semibold">
           {challenge.title}
         </h1>
         <div className="text-sm text-slate-400">
@@ -85,7 +85,7 @@ const HeaderBar = ({ challenge, onTimeUp, isSuccess }: any) => {
 
       {/* CENTER - Timer */}
       {challenge.timeLimitMinutes && (
-        <div className="text-xl font-mono font-bold text-indigo-400">
+        <div className="text-lg md:text-xl font-mono font-bold text-indigo-400">
           ⏱️ {formatTime(timeLeft)}
         </div>
       )}
@@ -99,6 +99,7 @@ const HeaderBar = ({ challenge, onTimeUp, isSuccess }: any) => {
 
     </div>
   );
+
 };
 
 export default HeaderBar;

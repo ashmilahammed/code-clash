@@ -170,7 +170,8 @@ if(xp > 100){
 
           {/* Google */}
           {/* <div className="mb-6"> */}
-          <div className="mb-6 flex justify-center">
+          {/* <div className="mb-6 flex justify-center"> */}
+          <div className="mb-6 w-full max-w-md mx-auto">
             <GoogleLogin
               onSuccess={(credentialResponse) => {
                 if (credentialResponse.credential) {
@@ -178,8 +179,8 @@ if(xp > 100){
                 }
               }}
               onError={() => setError("Google login failed")}
-              // width="100%"
-              width="380"
+              width="100%"
+              // width="380"
               theme="filled_blue"
               size="large"
             />

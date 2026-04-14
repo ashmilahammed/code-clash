@@ -529,7 +529,7 @@ const Profile = () => {
                                                 onChange={(e) => setLinkedinUrl(e.target.value)}
                                                 readOnly={!isOwnProfile || !isEditing}
                                                 className={`w-full bg-[#1E293B]/50 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all text-sm font-medium ${(!isOwnProfile || !isEditing) ? 'cursor-default' : ''}`}
-                                                placeholder="linkedin.com/in/username"
+                                                placeholder="linkedin.com/username"
                                             />
                                         </div>
                                     </div>

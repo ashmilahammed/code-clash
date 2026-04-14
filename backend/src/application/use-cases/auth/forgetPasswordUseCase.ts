@@ -11,7 +11,7 @@ export class ForgotPasswordUseCase {
     private readonly _emailService: IEmailService
   ) { }
 
-  async execute(dto : ForgotPasswordDTO) {
+  async execute(dto: ForgotPasswordDTO) {
 
     const user = await this._userRepo.findByEmail(dto.email);
 

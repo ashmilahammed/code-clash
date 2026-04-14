@@ -57,12 +57,12 @@ export class GetDashboardUseCase {
                 finalStatus: "PASSED",
                 createdAt: { $gte: startDate }
             });
-            
+
             let completionRate = Math.round((successfulSubmissions / challengeObj.count) * 100) || 0;
             if (completionRate > 100) completionRate = 100;
 
             mostAttemptedChallenge = {
-                id: challengeObj.challenge._id, 
+                id: challengeObj.challenge._id,
                 title: challengeObj.challenge.title,
                 difficulty: challengeObj.challenge.difficulty,
                 attempts: challengeObj.count,

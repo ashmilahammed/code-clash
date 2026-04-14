@@ -6,7 +6,7 @@ import { VerifyOtpDTO } from "../../dto/auth/VerifyOtpDTO";
 export class VerifyOtpUseCase {
   constructor(
     private readonly _userRepo: IUserCoreRepository & IUserAuthRepository
-  ) {}
+  ) { }
 
   async execute(dto: VerifyOtpDTO) {
     const { userId, otp } = dto;

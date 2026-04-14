@@ -17,6 +17,7 @@ import {
   markAllAsReadApi,
   clearNotificationsApi
 } from "../../api/notificationApi";
+
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "react-hot-toast";
 

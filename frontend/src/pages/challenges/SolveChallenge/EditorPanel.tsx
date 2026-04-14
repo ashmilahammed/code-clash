@@ -152,7 +152,8 @@ const EditorPanel = ({ templates, challengeId, testCases, setResult, onSuccess, 
             fontSize: 14,
             minimap: { enabled: false },
             scrollBeyondLastLine: false,
-            readOnly: isTimeUp
+            readOnly: isTimeUp,
+            automaticLayout: true
           }}
         />
       </div>

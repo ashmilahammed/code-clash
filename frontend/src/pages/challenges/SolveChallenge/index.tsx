@@ -92,15 +92,15 @@ const SolveChallenge = () => {
           </div>
         </div>
 
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
           {/* Left Panel Skeleton (Problem Description) */}
-          <div className="flex-[1.1] min-w-[420px] border-r border-slate-800 p-6 flex flex-col gap-6">
+          <div className="flex-[1.1] md:min-w-[420px] border-b md:border-b-0 md:border-r border-slate-800 p-6 flex flex-col gap-6">
             <div className="w-3/4 h-8 bg-slate-800 rounded-lg animate-pulse"></div>
             <div className="flex gap-3">
               <div className="w-16 h-6 bg-slate-800 rounded-full animate-pulse"></div>
               <div className="w-20 h-6 bg-slate-800 rounded-full animate-pulse"></div>
             </div>
-            
+
             <div className="space-y-4 mt-4">
               <div className="w-full h-4 bg-slate-800 rounded animate-pulse"></div>
               <div className="w-full h-4 bg-slate-800 rounded animate-pulse"></div>
@@ -109,7 +109,7 @@ const SolveChallenge = () => {
               <div className="w-full h-4 bg-slate-800 rounded animate-pulse mt-4"></div>
               <div className="w-5/6 h-4 bg-slate-800 rounded animate-pulse"></div>
             </div>
-            
+
             <div className="mt-8 space-y-4">
               <div className="w-1/3 h-6 bg-slate-800 rounded animate-pulse"></div>
               <div className="w-full h-32 bg-slate-800/50 rounded-xl animate-pulse border border-slate-800"></div>
@@ -117,29 +117,29 @@ const SolveChallenge = () => {
           </div>
 
           {/* Right Panel Skeleton */}
-          <div className="flex-1 flex flex-col min-w-[450px]">
-             {/* Editor Area */}
-             <div className="flex-2 border-b border-slate-800 flex flex-col">
-                <div className="h-12 bg-[#0B1221] border-b border-slate-800 flex items-center px-4 gap-3">
-                    <div className="w-28 h-7 bg-slate-800 rounded-md animate-pulse"></div>
-                    <div className="w-20 h-7 bg-slate-800 rounded-md animate-pulse"></div>
-                    <div className="ml-auto w-8 h-8 bg-slate-800 rounded-md animate-pulse"></div>
-                </div>
-                <div className="flex-1 p-5">
-                   <div className="w-full h-full bg-slate-800/20 rounded-xl animate-pulse border border-slate-800/50"></div>
-                </div>
-             </div>
-             
-             {/* Test Cases Area */}
-             <div className="flex-1 flex flex-col bg-[#020617]">
-                <div className="h-10 bg-[#0B1221] border-b border-slate-800 flex items-center px-4">
-                    <div className="w-32 h-5 bg-slate-800 rounded animate-pulse"></div>
-                </div>
-                <div className="flex-1 p-4 flex gap-4">
-                   <div className="w-1/4 h-full bg-slate-800/30 rounded-lg animate-pulse border border-slate-800/50"></div>
-                   <div className="flex-1 h-full bg-slate-800/30 rounded-lg animate-pulse border border-slate-800/50"></div>
-                </div>
-             </div>
+          <div className="flex-1 flex flex-col md:min-w-[450px]">
+            {/* Editor Area */}
+            <div className="flex-2 border-b border-slate-800 flex flex-col">
+              <div className="h-12 bg-[#0B1221] border-b border-slate-800 flex items-center px-4 gap-3">
+                <div className="w-28 h-7 bg-slate-800 rounded-md animate-pulse"></div>
+                <div className="w-20 h-7 bg-slate-800 rounded-md animate-pulse"></div>
+                <div className="ml-auto w-8 h-8 bg-slate-800 rounded-md animate-pulse"></div>
+              </div>
+              <div className="flex-1 p-5">
+                <div className="w-full h-full bg-slate-800/20 rounded-xl animate-pulse border border-slate-800/50"></div>
+              </div>
+            </div>
+
+            {/* Test Cases Area */}
+            <div className="flex-1 flex flex-col bg-[#020617]">
+              <div className="h-10 bg-[#0B1221] border-b border-slate-800 flex items-center px-4">
+                <div className="w-32 h-5 bg-slate-800 rounded animate-pulse"></div>
+              </div>
+              <div className="flex-1 p-4 flex gap-4">
+                <div className="w-1/4 h-full bg-slate-800/30 rounded-lg animate-pulse border border-slate-800/50"></div>
+                <div className="flex-1 h-full bg-slate-800/30 rounded-lg animate-pulse border border-slate-800/50"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -169,10 +169,10 @@ const SolveChallenge = () => {
 
       <HeaderBar key={`${challenge._id || challenge.id}-${retryCount}`} challenge={challenge} onTimeUp={() => setIsTimeUp(true)} isSuccess={isSuccess} />
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
 
         {/* LEFT PANEL */}
-        <div className="flex-[1.1] min-w-[420px] overflow-y-auto border-r border-slate-800">
+        <div className="flex-[1.1] md:min-w-[420px] overflow-y-auto border-b md:border-b-0 md:border-r border-slate-800">
           <ProblemPanel
             challenge={challenge}
             hints={hints}
@@ -182,7 +182,7 @@ const SolveChallenge = () => {
         </div>
 
         {/* RIGHT PANEL */}
-        <div className="flex-1 flex flex-col min-w-[450px]">
+        <div className="flex-1 flex flex-col md:min-w-[450px]">
           <EditorPanel
             templates={templates}
             challengeId={id!}
