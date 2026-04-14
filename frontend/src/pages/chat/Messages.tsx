@@ -6,7 +6,7 @@ import { useChatStore } from '../../store/useChatStore';
 
 const Messages = () => {
     const { accessToken } = useAuthStore();
-    const { initializeSocket, disconnectSocket, fetchConversations } = useChatStore();
+    const { activeConversation, initializeSocket, disconnectSocket, fetchConversations } = useChatStore();
 
     useEffect(() => {
         if (accessToken) {
@@ -20,9 +20,13 @@ const Messages = () => {
     }, [accessToken, initializeSocket, fetchConversations, disconnectSocket]);
 
     return (
-        <div className="h-[calc(100vh-7rem)] bg-[#0B1220] flex rounded-xl border border-slate-800 overflow-hidden mx-6 my-6 shadow-2xl">
-            <ChatSidebar />
-            <ChatWindow />
+        <div className="h-[calc(100vh-4rem)] md:h-[calc(100vh-7rem)] bg-[#0B1220] flex md:rounded-xl md:border md:border-slate-800 overflow-hidden md:mx-6 md:my-6 shadow-2xl">
+            <div className={`${activeConversation ? 'hidden md:flex' : 'flex'} w-full md:w-64 h-full`}>
+                <ChatSidebar />
+            </div>
+            <div className={`${!activeConversation ? 'hidden md:flex' : 'flex'} flex-1 h-full`}>
+                <ChatWindow />
+            </div>
         </div>
     );
 };

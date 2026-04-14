@@ -14,7 +14,7 @@ import api from "../../api/axiosInstance";
 import { getUserProfileStatsApi, updateUserProfileApi } from "../../api/userApi";
 import ConfirmModal from "../../components/modals/ConfirmModal";
 import { toast } from "react-hot-toast";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 
 
@@ -23,6 +23,7 @@ import { useSearchParams } from "react-router-dom";
 const Profile = () => {
     const currentUser = useAuthStore((state) => state.user);
     const updateUser = useAuthStore((state) => state.updateUser);
+    const navigate = useNavigate();
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [loading, setLoading] = useState(false);
@@ -179,9 +180,9 @@ const Profile = () => {
 
                 {/* Settings Button */}
                 {isOwnProfile && (
-                    <div className="absolute top-4 right-50 z-10">
+                    <div className="absolute top-4 right-4 md:right-6 z-10">
                         <button
-                            onClick={() => window.location.href = '/settings'}
+                            onClick={() => navigate('/settings')}
                             className="p-2 bg-black/30 hover:bg-black/50 rounded-full transition transform hover:scale-110 hover:rotate-45 text-white hover:text-indigo-400 backdrop-blur-sm border border-white/10"
                         >
                             <Settings size={20} />
@@ -190,9 +191,9 @@ const Profile = () => {
                 )}
             </div>
 
-            <div className="max-w-6xl mx-auto px-6">
+            <div className="max-w-6xl mx-auto px-4 md:px-6">
                 {/* Profile Header */}
-                <div className="relative -mt-20 mb-8 flex flex-col md:flex-row items-end md:items-center gap-6">
+                <div className="relative -mt-16 md:-mt-20 mb-8 flex flex-col md:flex-row items-center md:items-end gap-6 text-center md:text-left">
                     {/* Avatar */}
                     <div className="relative group">
                         <div className="w-40 h-40 rounded-full border-4 border-[#0B1221] overflow-hidden bg-slate-800 shadow-xl relative">
@@ -246,13 +247,13 @@ const Profile = () => {
                         </div>
                     </div>
 
-                    <div className="flex-1 mb-2">
-                        <div className="flex items-center gap-3 mb-1">
-                            <h1 className="text-4xl font-bold tracking-tight text-white">{user.username}</h1>
-                            {user.is_premium && <Award className="text-yellow-400" size={28} fill="currentColor" />}
+                    <div className="flex-1 mb-2 w-full md:w-auto">
+                        <div className="flex flex-col md:flex-row items-center md:items-center gap-3 mb-2 md:mb-1">
+                            <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-white">{user.username}</h1>
+                            {user.is_premium && <Award className="text-yellow-400 shrink-0" size={24} fill="currentColor" />}
                         </div>
 
-                        <div className="text-slate-400 text-sm flex flex-wrap gap-x-6 gap-y-2 mb-4 font-medium">
+                        <div className="text-slate-400 text-xs md:text-sm flex flex-wrap justify-center md:justify-start gap-x-4 md:gap-x-6 gap-y-2 mb-4 font-medium">
                             <span className="flex items-center gap-1.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
                                 Rank {user.role === 'admin' ? 'Admin' : 'User'}
@@ -277,7 +278,7 @@ const Profile = () => {
                     </div>
 
                     {isOwnProfile && (
-                        <div className="mb-4">
+                        <div className="mb-4 w-full md:w-auto">
                             <button
                                 onClick={() => {
                                     const newParams: any = {};
@@ -287,7 +288,7 @@ const Profile = () => {
                                     }
                                     setSearchParams(newParams);
                                 }}
-                                className={`px-6 py-2.5 rounded-lg font-medium transition border shadow-sm hover:shadow-md active:transform active:scale-95 ${view === 'info'
+                                className={`w-full md:w-auto px-6 py-2.5 rounded-lg font-medium transition border shadow-sm hover:shadow-md active:transform active:scale-95 ${view === 'info'
                                     ? 'bg-blue-600 border-blue-500 text-white hover:bg-blue-700'
                                     : 'bg-[#1E293B] border-slate-700 text-white hover:bg-[#283548]'
                                     }`}

@@ -70,9 +70,9 @@ const SecuritySettings = () => {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex items-center gap-3 mb-8 pb-4 border-b border-white/5">
-        <Lock size={20} className="text-white" />
-        <h2 className="text-xl font-bold text-white tracking-wide">Security Settings</h2>
+      <div className="flex items-center gap-2 md:gap-3 mb-6 md:mb-8 pb-3 md:pb-4 border-b border-white/5 text-slate-300">
+        <Lock size={18} className="text-white" />
+        <h2 className="text-lg md:text-xl font-bold text-white tracking-wide">Security Settings</h2>
       </div>
 
       <div className="max-w-xl">

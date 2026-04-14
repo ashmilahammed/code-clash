@@ -42,15 +42,10 @@ const Dashboard = () => {
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let mounted = true;
-
+  const fetchDashboardData = () => {
     getDashboardData()
       .then((data) => {
-        if (!mounted) return;
-
         // auth-related → zustand
-        // updateUser(data.user);
         updateUser({
           xp: data.user.xp,
           level_id: data.user.level_id,
@@ -61,7 +56,6 @@ const Dashboard = () => {
           longest_streak: data.user.longest_streak,
           is_premium: data.user.is_premium,
         });
-
 
         // dashboard-specific → local state
         setDashboard({
@@ -74,13 +68,18 @@ const Dashboard = () => {
         console.error("Failed to load dashboard", err);
       })
       .finally(() => {
-        if (mounted) setLoading(false);
+        setLoading(false);
       });
+  };
 
-    return () => {
-      mounted = false;
-    };
+  useEffect(() => {
+    fetchDashboardData();
   }, [updateUser]);
+
+  // Handle welcome bonus claim
+  const handleWelcomeClaim = () => {
+    fetchDashboardData();
+  };
 
 
   //   Loading / Guard
@@ -99,7 +98,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-[#0B1220] px-6 py-6 space-y-8 relative">
-      <WelcomeModal />
+      <WelcomeModal onClaim={handleWelcomeClaim} />
       {/* Level / XP */}
       <LevelProgress
         level={dashboard.level.level}

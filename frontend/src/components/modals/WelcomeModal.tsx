@@ -5,7 +5,7 @@ import { Trophy, X } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { claimWelcomeXpApi } from "../../api/userApi";
 
-export const WelcomeModal = () => {
+export const WelcomeModal = ({ onClaim }: { onClaim?: () => void }) => {
     const { user, updateUser } = useAuthStore();
     const [show, setShow] = useState(false);
     const { width, height } = useWindowSize();
@@ -21,6 +21,7 @@ export const WelcomeModal = () => {
                        
                         if (res.success) {
                             updateUser({ xp: user.xp + 50 });
+                            if (onClaim) onClaim();
                         }
                     } catch (error) {
                         console.error("Failed to claim welcome XP", error);

@@ -119,16 +119,16 @@ const PremiumManagement = () => {
                 </div>
               )}
 
-              <div className="flex gap-4 mt-6 border-t border-white/10 pt-6">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 border-t border-white/10 pt-6">
                 <button
                   onClick={() => setShowCancelModal(true)}
-                  className="px-4 py-2 bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 rounded-lg text-sm font-medium transition"
+                  className="px-4 py-2 bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 rounded-lg text-sm font-medium transition order-2 sm:order-1"
                 >
                   Cancel Membership
                 </button>
                 <button
                   onClick={() => navigate("/premium")}
-                  className="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium transition shadow-lg shadow-emerald-500/20 ml-auto"
+                  className="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium transition shadow-lg shadow-emerald-500/20 sm:ml-auto order-1 sm:order-2"
                 >
                   Upgrade Membership
                 </button>

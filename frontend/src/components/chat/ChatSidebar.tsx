@@ -18,12 +18,12 @@ const ChatSidebar = () => {
 
     const allGroups = conversations.filter(c => c.type === 'group');
     const groups = allGroups.filter(g => (g.name || '').toLowerCase().includes(debouncedSearch.toLowerCase()));
-    
+
     const dms = conversations.filter(c => c.type === 'direct');
 
     // Public groups we haven't joined yet
     const joinedGroupIds = new Set(allGroups.map(g => g.id));
-    const unjoinedPublicGroups = publicGroups.filter(g => 
+    const unjoinedPublicGroups = publicGroups.filter(g =>
         !joinedGroupIds.has(g.id) && (g.name || '').toLowerCase().includes(debouncedSearch.toLowerCase())
     );
 
@@ -36,7 +36,7 @@ const ChatSidebar = () => {
     };
 
     return (
-        <div className="w-64 bg-[#141C2F] flex flex-col border-r border-slate-800 shrink-0 h-full">
+        <div className="w-full h-full bg-[#141C2F] flex flex-col md:border-r md:border-slate-800 shrink-0">
             {/* Search Bar */}
             <div className="p-4 border-b border-slate-800">
                 <div className="relative">

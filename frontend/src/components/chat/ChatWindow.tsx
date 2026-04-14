@@ -4,7 +4,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 import {
     Send, Hash,
     //  Settings,
-    LogOut, Paperclip, Smile, UserPlus, Trash2, Image as ImageIcon, Flag
+    LogOut, Paperclip, Smile, UserPlus, Trash2, Image as ImageIcon, Flag, ArrowLeft
 } from 'lucide-react';
 import InviteModal from './InviteModal';
 import UserProfileCard from './UserProfileCard';
@@ -15,7 +15,7 @@ import EmojiPicker, { Theme, type EmojiClickData } from 'emoji-picker-react';
 
 
 const ChatWindow = () => {
-    const { activeConversation, messages, sendMessage, deleteMessage, leaveGroup } = useChatStore();
+    const { activeConversation, messages, sendMessage, deleteMessage, leaveGroup, setActiveConversation } = useChatStore();
     const { user } = useAuthStore();
     const [inputText, setInputText] = useState('');
     const [showInviteModal, setShowInviteModal] = useState(false);
@@ -120,26 +120,34 @@ const ChatWindow = () => {
         <div className="flex-1 flex flex-col h-full bg-[#0B1220] relative">
             {showInviteModal && <InviteModal onClose={() => setShowInviteModal(false)} />}
             {/* Chat Header */}
-            <div className="h-16 border-b border-slate-800 flex items-center justify-between px-6 bg-[#141C2F]">
-                <div>
-                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                        {isGroup ? (
-                            <>
-                                <Hash size={18} className="text-blue-500" />
-                                {activeConversation.name}
-                            </>
-                        ) : (
-                            activeConversation.participantDetails?.find(p => p.id !== user?.id)?.username || 'Direct Message'
+            <div className="h-16 border-b border-slate-800 flex items-center justify-between px-4 md:px-6 bg-[#141C2F]">
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => setActiveConversation(null)}
+                        className="md:hidden text-slate-400 hover:text-white p-1"
+                    >
+                        <ArrowLeft size={20} />
+                    </button>
+                    <div>
+                        <h2 className="text-base md:text-lg font-bold text-white flex items-center gap-2">
+                            {isGroup ? (
+                                <>
+                                    <Hash size={18} className="text-blue-500" />
+                                    {activeConversation.name}
+                                </>
+                            ) : (
+                                activeConversation.participantDetails?.find(p => p.id !== user?.id)?.username || 'Direct Message'
+                            )}
+                        </h2>
+                        {isGroup && (
+                            <button
+                                onClick={() => setShowMemberList(!showMemberList)}
+                                className="text-xs text-slate-400 hover:text-blue-400 transition-colors"
+                            >
+                                {activeConversation.participants.length} members
+                            </button>
                         )}
-                    </h2>
-                    {isGroup && (
-                        <button
-                            onClick={() => setShowMemberList(!showMemberList)}
-                            className="text-xs text-slate-400 hover:text-blue-400 transition-colors"
-                        >
-                            {activeConversation.participants.length} members
-                        </button>
-                    )}
+                    </div>
                 </div>
                 <div className="flex items-center gap-3 text-slate-400">
                     {isGroup && activeConversation.isPrivate && (
@@ -169,7 +177,7 @@ const ChatWindow = () => {
             {/* Messages Area & Member Sidebar */}
             <div className="flex-1 flex overflow-hidden">
                 <div className="flex-1 flex flex-col min-w-0">
-                    <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
+                    <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 custom-scrollbar">
                         {messages.map((message) => {
                             const isMine = message.senderId === user?.id;
 

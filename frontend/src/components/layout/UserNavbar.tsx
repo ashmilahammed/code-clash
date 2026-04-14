@@ -10,6 +10,9 @@ import {
   Award,
   Bell,
   Check,
+  Menu,
+  X,
+  LogOut,
 } from "lucide-react";
 import {
   getUserNotificationsApi,
@@ -34,6 +37,7 @@ function UserNavbar() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const isDashboard = location.pathname === "/dashboard";
 
@@ -138,7 +142,7 @@ function UserNavbar() {
 
       {/* Center: Search */}
       {isDashboard && (
-        <div className="hidden md:flex flex-1 justify-center px-6">
+        <div className="hidden lg:flex flex-1 justify-center px-6">
           <div className="relative w-full max-w-md">
             <Search
               size={16}
@@ -164,19 +168,19 @@ function UserNavbar() {
       )}
 
       {/* Right: Icons + user */}
-      <div className="flex items-center gap-4">
-        {/* Chat */}
+      <div className="flex items-center gap-2 md:gap-4">
+        {/* Chat - Hidden on mobile */}
         <button
-          className="p-2 rounded-full hover:bg-slate-800 transition"
+          className="hidden md:flex p-2 rounded-full hover:bg-slate-800 transition"
           title="Chat"
           onClick={() => navigate("/messages")}
         >
           <MessageSquare size={18} />
         </button>
 
-        {/* Badges */}
+        {/* Badges - Hidden on mobile */}
         <button
-          className="p-2 rounded-full hover:bg-slate-800 transition"
+          className="hidden md:flex p-2 rounded-full hover:bg-slate-800 transition"
           title="Leaderboard"
           onClick={() => navigate("/leaderboard")}
         >
@@ -290,7 +294,7 @@ function UserNavbar() {
 
         {/* User Info */}
         <div
-          className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition"
+          className="flex items-center gap-2 md:gap-3 cursor-pointer hover:opacity-80 transition"
           onClick={() => navigate("/profile")}
         >
           {/* Avatar */}
@@ -302,8 +306,8 @@ function UserNavbar() {
             />
           </div>
 
-          {/* User Name & Rank */}
-          <div className="flex flex-col leading-tight text-right">
+          {/* User Name - Hidden on small mobile */}
+          <div className="hidden sm:flex flex-col leading-tight text-right">
             <span className="text-sm font-medium">
               {user?.username}
             </span>
@@ -313,14 +317,54 @@ function UserNavbar() {
           </div>
         </div>
 
-        {/* Logout */}
+        {/* Logout - Hidden on mobile */}
         <button
           onClick={handleLogout}
-          className="text-sm px-3 py-1 rounded bg-red-600 hover:bg-red-700 transition"
+          className="hidden md:block text-sm px-3 py-1 rounded bg-red-600 hover:bg-red-700 transition"
         >
           Logout
         </button>
+
+        {/* Hamburger Menu - Visible on mobile */}
+        <button
+          className="md:hidden p-2 rounded-full hover:bg-slate-800 transition text-slate-300"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      {isMenuOpen && (
+        <div className="absolute top-16 left-0 right-0 bg-[#0f172a] border-b border-slate-800 shadow-2xl md:hidden z-40 animate-in slide-in-from-top duration-200">
+          <div className="p-4 space-y-2">
+            <button
+              onClick={() => { navigate("/messages"); setIsMenuOpen(false); }}
+              className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition text-slate-300"
+            >
+              <MessageSquare size={20} />
+              <span>Messages</span>
+            </button>
+            <button
+              onClick={() => { navigate("/leaderboard"); setIsMenuOpen(false); }}
+              className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition text-slate-300"
+            >
+              <Award size={20} />
+              <span>Leaderboard</span>
+            </button>
+            <div className="pt-2 mt-2 border-t border-slate-800">
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 p-3 rounded-lg bg-red-600/10 hover:bg-red-600/20 transition text-red-500"
+              >
+                <LogOut size={20} />
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </nav>
   );
 

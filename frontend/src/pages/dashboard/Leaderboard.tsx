@@ -47,25 +47,22 @@ const NewLeaderboard = () => {
 
     
     return (
-        <div className="min-h-screen bg-[#0B1220] px-8 py-8 text-white font-sans">
+        <div className="min-h-screen bg-[#0B1220] px-4 py-6 md:px-8 md:py-8 text-white font-sans">
 
             {/* Header */}
-            <div className="flex justify-between items-center mb-8">
-                <h1 className="text-2xl font-bold flex items-center gap-2">
-                    <span className="text-2xl">🏆</span> Leaderboard
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
+                <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2 self-start sm:self-auto">
+                    <span className="text-xl md:text-2xl">🏆</span> Leaderboard
                 </h1>
 
-                <div className="flex gap-4">
+                <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-4">
                     <input
                         type="text"
                         placeholder="Search escapers..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="bg-[#1e293b] border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-300 focus:outline-none focus:border-indigo-500"
+                        className="w-full sm:w-64 bg-[#1e293b] border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-300 focus:outline-none focus:border-indigo-500"
                     />
-                    {/* <button className="bg-[#1e293b] border border-slate-700 rounded-lg px-4 py-2 text-sm flex items-center gap-2 hover:bg-slate-800 transition">
-                        <span>Filter</span>
-                    </button> */}
                 </div>
             </div>
 
@@ -76,14 +73,14 @@ const NewLeaderboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
 
                 {/* 1. XP Gainer - Dynamic */}
-                <div className="bg-linear-to-br from-indigo-900 to-indigo-800 rounded-xl p-6 relative overflow-hidden">
+                <div className="bg-linear-to-br from-indigo-900 to-indigo-800 rounded-xl p-5 md:p-6 relative overflow-hidden">
                     <div className="absolute top-4 right-4 bg-indigo-500/20 p-2 rounded-lg">
                         ⚡
                     </div>
-                    <div className="text-sm text-indigo-200 mb-1">
+                    <div className="text-xs md:text-sm text-indigo-200 mb-1">
                         {timeframe === "weekly" ? "Weekly" : timeframe === "monthly" ? "Monthly" : "All Time"} XP Gainer
                     </div>
-                    <div className="text-2xl font-bold mb-4">
+                    <div className="text-xl md:text-2xl font-bold mb-4">
                         {topXPGainer ? `+${topXPGainer.xp.toLocaleString()} XP` : "0 XP"}
                     </div>
                     <div className="flex items-center gap-3">
@@ -92,19 +89,19 @@ const NewLeaderboard = () => {
                                 <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold uppercase text-white">
                                     {topXPGainer.username[0]}
                                 </div>
-                                <span className="font-medium">{topXPGainer.username}</span>
+                                <span className="font-medium text-sm md:text-base">{topXPGainer.username}</span>
                             </>
                         )}
                     </div>
                 </div>
 
                 {/* 2. Top Solver - Replaces Fastest Solver */}
-                <div className="bg-linear-to-br from-orange-900 to-orange-800/80 rounded-xl p-6 relative overflow-hidden">
+                <div className="bg-linear-to-br from-orange-900 to-orange-800/80 rounded-xl p-5 md:p-6 relative overflow-hidden">
                     <div className="absolute top-4 right-4 bg-orange-500/20 p-2 rounded-lg">
                         🎯
                     </div>
-                    <div className="text-sm text-orange-200 mb-1">Top Solver</div>
-                    <div className="text-2xl font-bold mb-4">
+                    <div className="text-xs md:text-sm text-orange-200 mb-1">Top Solver</div>
+                    <div className="text-xl md:text-2xl font-bold mb-4">
                         {topSolver ? `${topSolver.challengesSolved || 0} Solved` : "0 Solved"}
                     </div>
                     <div className="flex items-center gap-3">
@@ -113,19 +110,19 @@ const NewLeaderboard = () => {
                                 <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold uppercase text-white">
                                     {topSolver.username[0]}
                                 </div>
-                                <span className="font-medium">{topSolver.username}</span>
+                                <span className="font-medium text-sm md:text-base">{topSolver.username}</span>
                             </>
                         )}
                     </div>
                 </div>
 
                 {/* 3. Longest Streak - Dynamic */}
-                <div className="bg-linear-to-br from-emerald-900 to-emerald-800/80 rounded-xl p-6 relative overflow-hidden">
+                <div className="bg-linear-to-br from-emerald-900 to-emerald-800/80 rounded-xl p-5 md:p-6 relative overflow-hidden">
                     <div className="absolute top-4 right-4 bg-emerald-500/20 p-2 rounded-lg">
                         🔥
                     </div>
-                    <div className="text-sm text-emerald-200 mb-1">Longest Streak</div>
-                    <div className="text-2xl font-bold mb-4">
+                    <div className="text-xs md:text-sm text-emerald-200 mb-1">Longest Streak</div>
+                    <div className="text-xl md:text-2xl font-bold mb-4">
                         {longestStreakUser ? `${longestStreakUser.longest_streak || longestStreakUser.current_streak || 0} days` : "0 days"}
                     </div>
                     <div className="flex items-center gap-3">
@@ -134,7 +131,7 @@ const NewLeaderboard = () => {
                                 <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold uppercase text-white">
                                     {longestStreakUser.username[0]}
                                 </div>
-                                <span className="font-medium">{longestStreakUser.username}</span>
+                                <span className="font-medium text-sm md:text-base">{longestStreakUser.username}</span>
                             </>
                         )}
                     </div>
@@ -144,22 +141,22 @@ const NewLeaderboard = () => {
 
 
             {/* Tabs */}
-            <div className="flex gap-8 border-b border-slate-800 text-sm text-slate-400 mb-6">
+            <div className="flex overflow-x-auto no-scrollbar gap-8 border-b border-slate-800 text-sm text-slate-400 mb-6">
                 <button
                     onClick={() => setTimeframe("weekly")}
-                    className={`pb-3 ${timeframe === "weekly" ? "border-b-2 border-indigo-500 text-white font-medium" : "hover:text-slate-300"}`}
+                    className={`pb-3 whitespace-nowrap ${timeframe === "weekly" ? "border-b-2 border-indigo-500 text-white font-medium" : "hover:text-slate-300"}`}
                 >
                     Weekly
                 </button>
                 <button
                     onClick={() => setTimeframe("monthly")}
-                    className={`pb-3 ${timeframe === "monthly" ? "border-b-2 border-indigo-500 text-white font-medium" : "hover:text-slate-300"}`}
+                    className={`pb-3 whitespace-nowrap ${timeframe === "monthly" ? "border-b-2 border-indigo-500 text-white font-medium" : "hover:text-slate-300"}`}
                 >
                     Monthly
                 </button>
                 <button
                     onClick={() => setTimeframe("all-time")}
-                    className={`pb-3 ${timeframe === "all-time" ? "border-b-2 border-indigo-500 text-white font-medium" : "hover:text-slate-300"}`}
+                    className={`pb-3 whitespace-nowrap ${timeframe === "all-time" ? "border-b-2 border-indigo-500 text-white font-medium" : "hover:text-slate-300"}`}
                 >
                     All Time
                 </button>
@@ -168,83 +165,86 @@ const NewLeaderboard = () => {
 
             {/* Table */}
             <div className="bg-[#0f172a] rounded-xl border border-slate-800 overflow-hidden">
-                <table className="w-full text-left">
-                    <thead className="bg-[#1e293b] text-xs font-bold text-slate-400 uppercase tracking-wider">
-                        <tr>
-                            <th className="py-4 px-6">Rank</th>
-                            <th className="py-4 px-6">Escaper</th>
-                            <th className="py-4 px-6 text-center">Level</th>
-                            <th className="py-4 px-6 text-center">XP</th>
-                            <th className="py-4 px-6 text-center">Badges</th>
-                            <th className="py-4 px-6 text-center">Challenges</th>
-                            <th className="py-4 px-6 text-right">Streak</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-800 text-sm text-slate-300">
-                        {users.map((user, index) => (
-                            <tr key={user.id} className={`hover:bg-slate-800/50 transition ${index < 3 ? 'bg-slate-800/20' : ''}`}>
-
-                                {/* Rank */}
-                                <td className="py-4 px-6 font-medium">
-                                    {page === 1 && index === 0 && <span className="text-yellow-400 text-lg">🥇</span>}
-                                    {page === 1 && index === 1 && <span className="text-slate-300 text-lg">🥈</span>}
-                                    {page === 1 && index === 2 && <span className="text-amber-600 text-lg">🥉</span>}
-                                    {(page > 1 || index > 2) && <span className="text-slate-500 ml-2">{(page - 1) * LIMIT + index + 1}</span>}
-                                </td>
-
-                                {/* Escaper */}
-                                <td className="py-4 px-6">
-                                    <div 
-                                        className="flex items-center gap-3 cursor-pointer group/user"
-                                        onClick={() => setSelectedProfileUserId(user.id)}
-                                    >
-                                        <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white uppercase group-hover/user:ring-2 group-hover/user:ring-indigo-400 transition-all">
-                                            {user.username[0]}
-                                        </div>
-                                        <span className="font-medium text-white group-hover/user:text-indigo-300 transition-colors">{user.username}</span>
-                                        {/* {user.is_premium && <span className="text-yellow-500 text-xs">⭐</span>} */}
-                                    </div>
-                                </td>
-
-                                {/* Level */}
-                                <td className="py-4 px-6 text-center">
-                                    <span className="inline-block bg-indigo-500/20 text-indigo-300 px-2 py-1 rounded text-xs font-bold">
-                                        {user.levelNumber || user.level_id || 1}
-                                    </span>
-                                </td>
-
-                                {/* XP */}
-                                <td className="py-4 px-6 text-center font-mono font-medium text-white">
-                                    {user.xp.toLocaleString()}
-                                </td>
-
-                                {/* Badges */}
-                                <td className="py-4 px-6 text-center text-slate-400">
-                                    {user.badgesCount || 0}
-                                </td>
-
-                                {/* Challenges */}
-                                <td className="py-4 px-6 text-center text-slate-400">
-                                    {user.challengesSolved || 0}
-                                </td>
-
-                                {/* Streak */}
-                                <td className="py-4 px-6 text-right text-emerald-400 font-medium">
-                                    ⚡ {user.current_streak} days
-                                </td>
+                <div className="overflow-x-auto no-scrollbar">
+                    <table className="w-full text-left min-w-[600px] md:min-w-full">
+                        <thead className="bg-[#1e293b] text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider">
+                            <tr>
+                                <th className="py-4 px-4 md:px-6">Rank</th>
+                                <th className="py-4 px-4 md:px-6">Escaper</th>
+                                <th className="py-4 px-4 md:px-6 text-center">Level</th>
+                                <th className="py-4 px-4 md:px-6 text-center">XP</th>
+                                <th className="py-4 px-4 md:px-6 text-center hidden sm:table-cell">Badges</th>
+                                <th className="py-4 px-4 md:px-6 text-center hidden md:table-cell">Challenges</th>
+                                <th className="py-4 px-4 md:px-6 text-right">Streak</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody className="divide-y divide-slate-800 text-xs md:text-sm text-slate-300">
+                            {users.map((user, index) => (
+                                <tr key={user.id} className={`hover:bg-slate-800/50 transition ${index < 3 ? 'bg-slate-800/20' : ''}`}>
+
+                                    {/* Rank */}
+                                    <td className="py-4 px-4 md:px-6 font-medium">
+                                        <div className="flex items-center gap-1">
+                                            {page === 1 && index === 0 && <span className="text-base md:text-lg">🥇</span>}
+                                            {page === 1 && index === 1 && <span className="text-base md:text-lg">🥈</span>}
+                                            {page === 1 && index === 2 && <span className="text-base md:text-lg">🥉</span>}
+                                            {(page > 1 || index > 2) && <span className="text-slate-500 ml-1">{(page - 1) * LIMIT + index + 1}</span>}
+                                        </div>
+                                    </td>
+
+                                    {/* Escaper */}
+                                    <td className="py-4 px-4 md:px-6">
+                                        <div 
+                                            className="flex items-center gap-2 md:gap-3 cursor-pointer group/user"
+                                            onClick={() => setSelectedProfileUserId(user.id)}
+                                        >
+                                            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white uppercase group-hover/user:ring-2 group-hover/user:ring-indigo-400 transition-all shrink-0">
+                                                {user.username[0]}
+                                            </div>
+                                            <span className="font-medium text-white group-hover/user:text-indigo-300 transition-colors truncate max-w-[80px] sm:max-w-none">{user.username}</span>
+                                        </div>
+                                    </td>
+
+                                    {/* Level */}
+                                    <td className="py-4 px-4 md:px-6 text-center">
+                                        <span className="inline-block bg-indigo-500/20 text-indigo-300 px-2 py-0.5 md:py-1 rounded text-[10px] md:text-xs font-bold">
+                                            {user.levelNumber || user.level_id || 1}
+                                        </span>
+                                    </td>
+
+                                    {/* XP */}
+                                    <td className="py-4 px-4 md:px-6 text-center font-mono font-medium text-white">
+                                        {user.xp.toLocaleString()}
+                                    </td>
+
+                                    {/* Badges */}
+                                    <td className="py-4 px-4 md:px-6 text-center text-slate-400 hidden sm:table-cell">
+                                        {user.badgesCount || 0}
+                                    </td>
+
+                                    {/* Challenges */}
+                                    <td className="py-4 px-4 md:px-6 text-center text-slate-400 hidden md:table-cell">
+                                        {user.challengesSolved || 0}
+                                    </td>
+
+                                    {/* Streak */}
+                                    <td className="py-4 px-4 md:px-6 text-right text-emerald-400 font-medium whitespace-nowrap">
+                                        ⚡ {user.current_streak}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
 
                 {(!loading && users.length === 0) && (
-                    <div className="text-center py-8 text-slate-400 text-sm border-t border-slate-800">
+                    <div className="text-center py-8 text-slate-400 text-xs md:text-sm border-t border-slate-800">
                         No escapers found for your search.
                     </div>
                 )}
 
                 {(loading && users.length === 0) && (
-                    <div className="text-center py-8 text-slate-400 text-sm border-t border-slate-800">
+                    <div className="text-center py-8 text-slate-400 text-xs md:text-sm border-t border-slate-800">
                         Loading leaderboard...
                     </div>
                 )}
@@ -252,30 +252,30 @@ const NewLeaderboard = () => {
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-                <div className="flex justify-end items-center gap-3 mt-6">
+                <div className="flex justify-center sm:justify-end items-center gap-3 mt-6">
                     <button
                         disabled={page === 1}
                         onClick={() => setPage((p) => Math.max(1, p - 1))}
-                        className="px-3 py-1 bg-slate-800 text-slate-300 rounded disabled:opacity-40 hover:bg-slate-700 transition font-medium"
+                        className="px-3 py-1 bg-slate-800 text-slate-300 rounded disabled:opacity-40 hover:bg-slate-700 transition font-medium text-xs md:text-sm"
                     >
                         Prev
                     </button>
 
-                    <span className="text-slate-400 text-sm">
+                    <span className="text-slate-400 text-xs md:text-sm">
                         Page {page} of {totalPages}
                     </span>
 
                     <button
                         disabled={page === totalPages || totalPages === 0}
                         onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                        className="px-3 py-1 bg-slate-800 text-slate-300 rounded disabled:opacity-40 hover:bg-slate-700 transition font-medium"
+                        className="px-3 py-1 bg-slate-800 text-slate-300 rounded disabled:opacity-40 hover:bg-slate-700 transition font-medium text-xs md:text-sm"
                     >
                         Next
                     </button>
                 </div>
             )}
 
-            <div className="mt-4 text-xs text-slate-500 text-right">
+            <div className="mt-4 text-[10px] md:text-xs text-slate-500 text-center sm:text-right">
                 Showing {users.length} of {totalUsers} results
             </div>
 
