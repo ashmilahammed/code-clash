@@ -55,11 +55,13 @@ jobs:
             docker build -t codeclash-backend .
 
             # Run new container
-            docker run -d -p 5000:5000 \
+            # docker run -d -p 5000:5000 \
+            docker run -d -p 127.0.0.1:5000:5000 \
             --env-file .env \
             --restart always \
             --name backend-container \
             codeclash-backend
+
 
 
 
