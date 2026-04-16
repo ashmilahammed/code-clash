@@ -43,6 +43,10 @@ jobs:
 
             cd backend
 
+            # Kill anything using port 5000
+            docker ps -q --filter "publish=5000" | xargs -r docker stop
+            docker ps -aq --filter "publish=5000" | xargs -r docker rm
+
             # Stop old container if exists
             docker stop backend-container || true
             docker rm backend-container || true
@@ -56,7 +60,6 @@ jobs:
             --restart always \
             --name backend-container \
             codeclash-backend
-
 
 
 
