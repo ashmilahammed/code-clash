@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./backend
+    container_name: backend-container
+    ports:
+      - "127.0.0.1:5000:5000"
+    env_file:
+      - ./backend/.env
+    restart: always
+    depends_on:
+      - piston
+
+  piston:
+    image: ghcr.io/engineer-man/piston
+    container_name: piston-container
+    ports:
+      - "2000:2000"
+    restart: always
