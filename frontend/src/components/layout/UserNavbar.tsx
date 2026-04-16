@@ -210,7 +210,7 @@ function UserNavbar() {
                 onClick={() => setShowNotifications(false)}
               />
 
-              <div className="absolute right-0 mt-2 w-80 bg-[#0f172a] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50">
+              <div className="fixed inset-x-4 top-[70px] md:absolute md:inset-auto md:right-0 md:top-full md:mt-2 md:w-80 bg-[#0f172a] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50">
                 <div className="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
                   <h3 className="font-semibold text-sm">Notifications</h3>
                   {unreadCount > 0 && (
@@ -220,7 +220,7 @@ function UserNavbar() {
                   )}
                 </div>
 
-                <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
+                <div className="max-h-[70vh] md:max-h-[400px] overflow-y-auto custom-scrollbar">
                   {notifications.length > 0 ? (
                     <div className="divide-y divide-slate-800/50">
                       {notifications.map((n) => (

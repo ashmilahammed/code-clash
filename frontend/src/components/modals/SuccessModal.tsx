@@ -23,8 +23,8 @@ const SuccessModal = ({
     const navigate = useNavigate();
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-            <div className="relative w-full max-w-4xl bg-[#0f172a] rounded-xl overflow-hidden shadow-2xl border border-slate-800 flex flex-col md:flex-row animate-in fade-in zoom-in duration-300">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
+            <div className="relative w-full max-w-4xl max-h-[90vh] md:max-h-none overflow-y-auto md:overflow-visible bg-[#0f172a] rounded-xl shadow-2xl border border-slate-800 flex flex-col md:flex-row animate-in fade-in zoom-in duration-300">
 
                 {/* Close Button */}
                 <button
@@ -37,7 +37,7 @@ const SuccessModal = ({
                 </button>
 
                 {/* Left Panel - Summary */}
-                <div className="md:w-5/12 bg-linear-to-br from-blue-900/40 to-indigo-900/40 p-8 flex flex-col justify-center items-center text-center relative overflow-hidden">
+                <div className="md:w-5/12 bg-linear-to-br from-blue-900/40 to-indigo-900/40 p-6 md:p-8 flex flex-col justify-center items-center text-center relative overflow-hidden">
                     {/* Background Decorations */}
                     <div className="absolute top-0 left-0 w-full h-full bg-[url('/grid.svg')] opacity-10"></div>
                     <div className="absolute -top-10 -left-10 w-32 h-32 bg-blue-500 rounded-full mix-blend-screen filter blur-3xl opacity-20"></div>
@@ -49,7 +49,7 @@ const SuccessModal = ({
                             </svg>
                         </div>
 
-                        <h2 className="text-2xl font-bold text-white mb-2">Challenge Completed!</h2>
+                        <h2 className="text-xl md:text-2xl font-bold text-white mb-2">Challenge Completed!</h2>
                         <p className="text-slate-300 text-lg mb-8 px-4">{challengeTitle}</p>
 
                         {/* Stats Grid */}
@@ -86,10 +86,10 @@ const SuccessModal = ({
                 </div>
 
                 {/* Right Panel - Rewards & Actions */}
-                <div className="md:w-7/12 p-8 bg-[#0f172a] flex flex-col justify-center">
+                <div className="md:w-7/12 p-6 md:p-8 bg-[#0f172a] flex flex-col justify-center">
                     <h3 className="text-xl font-bold text-white mb-6 border-b border-slate-800 pb-4">Rewards Earned</h3>
 
-                    <div className="grid grid-cols-3 gap-4 mb-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 mb-8">
                         {/* XP Reward */}
                         <div className="bg-linear-to-br from-blue-600 to-blue-700 rounded-xl p-4 flex flex-col items-center justify-center text-center shadow-lg shadow-blue-900/20 transform hover:-translate-y-1 transition-all duration-300">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white mb-2" viewBox="0 0 20 20" fill="currentColor">
@@ -116,7 +116,7 @@ const SuccessModal = ({
                     </div>
 
                     {/* Next Challenge Section */}
-                    <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-5 flex items-center justify-between mb-8 hover:bg-slate-800 transition-colors cursor-pointer group" onClick={() => navigate(`/dashboard`)}>
+                    <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-3 md:p-5 flex items-center justify-between mb-8 hover:bg-slate-800 transition-colors cursor-pointer group" onClick={() => navigate(`/dashboard`)}>
                         <div className="flex items-center gap-4">
                             <div className="h-12 w-12 rounded-full bg-slate-700 flex items-center justify-center group-hover:bg-blue-600 transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-slate-300 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -136,7 +136,7 @@ const SuccessModal = ({
                     </div>
 
                     {/* Footer Buttons */}
-                    <div className="mt-auto flex gap-3">
+                    <div className="mt-auto flex flex-col sm:flex-row gap-3">
                         <button
                             onClick={() => navigate('/leaderboard')}
                             className="flex-1 px-4 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg font-semibold text-white transition-colors flex items-center justify-center gap-2"
@@ -149,7 +149,7 @@ const SuccessModal = ({
 
                         <button
                             onClick={() => navigate('/dashboard')}
-                            className="flex-[1.5] px-4 py-3 bg-green-600 hover:bg-green-500 rounded-lg font-bold text-white transition-colors flex items-center justify-center gap-2 shadow-lg shadow-green-900/20"
+                            className="flex-1 sm:flex-[1.5] px-4 py-3 bg-green-600 hover:bg-green-500 rounded-lg font-bold text-white transition-colors flex items-center justify-center gap-2 shadow-lg shadow-green-900/20"
                         >
                             Next Challenge
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
