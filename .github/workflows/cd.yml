@@ -43,13 +43,12 @@ jobs:
 
             cd backend
 
-            # Kill anything using port 5000
-            docker ps -q --filter "publish=5000" | xargs -r docker stop
-            docker ps -aq --filter "publish=5000" | xargs -r docker rm
+            # Kill any process using port 5000 
+            sudo fuser -k 5000/tcp || true
 
-            # Stop old container if exists
-            docker stop backend-container || true
-            docker rm backend-container || true
+            # Remove all docker containers
+            docker kill $(docker ps -q) || true
+            docker rm $(docker ps -aq) || true
 
             # Build new image
             docker build -t codeclash-backend .
