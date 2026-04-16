@@ -32,35 +32,24 @@ jobs:
 
 
 
-            # ===== BACKEND =====
+            # ===== BACKEND (DOCKER COMPOSE) =====
             echo "🐳 Checking backend changes..."
 
-            if git diff --name-only HEAD~1 | grep backend; then
-            echo "Backend changed → deploying..."
+            if git diff --name-only HEAD~1 | grep -E "backend|docker-compose.yml"; then
+            echo "Backend or compose changed → deploying..."
 
-            cd backend
+            cd /home/ubuntu/code-clash
 
-            # Kill any process using port 5000 
-            sudo fuser -k 5000/tcp || true
+            # Stop old services
+            docker compose down
 
-            # Stop & remove ONLY backend container (not all containers)
-            docker stop backend-container || true
-            docker rm backend-container || true
-
-            # Build new image
-            docker build -t codeclash-backend .
-
-            # Run new container
-            docker run -d -p 127.0.0.1:5000:5000 \
-            --env-file .env \
-            --restart always \
-            --name backend-container \
-            codeclash-backend
+            # Start fresh (build + run)
+            docker compose up -d --build
 
             else
             echo "No backend changes → skipping deployment"
-            fi
-
+            fi 
+            
 
             # ===== FRONTEND =====
             # echo "🎨 Building Frontend..."
