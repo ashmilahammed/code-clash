@@ -41,10 +41,10 @@ jobs:
             cd /home/ubuntu/code-clash
 
             # Stop old services
-            docker compose down
+            docker-compose down
 
             # Start fresh (build + run)
-            docker compose up -d --build
+            docker-compose up -d --build
 
             else
             echo "No backend changes → skipping deployment"
