@@ -4,24 +4,26 @@ import { authController,authMiddleware } from "../../infrastructure/di/auth.di";
 
 import { registerValidator } from "../validators/register.validators";
 import { loginValidator } from "../validators/login.validator";
+import { authLimiter } from "../middlewares/rateLimiter";
 
 
 const router = Router();
 
 //public 
-router.post("/register", registerValidator, authController.register);
-router.post("/verify-otp", authController.verifyOtp);
-router.post("/resend-otp", authController.resendOtp);
+router.post("/register", authLimiter, registerValidator, authController.register);
+router.post("/verify-otp", authLimiter, authController.verifyOtp);
+router.post("/resend-otp", authLimiter, authController.resendOtp);
 
-router.post("/login", loginValidator, authController.login);
-router.post("/google", authController.googleLogin);
+router.post("/login", authLimiter, loginValidator, authController.login);
+router.post("/google", authLimiter, authController.googleLogin);
 
-router.post("/forgot-password", authController.forgotPassword);
+router.post("/forgot-password", authLimiter, authController.forgotPassword);
 router.post(
   "/forgot-password/verify-otp",
+  authLimiter,
   authController.verifyForgotOtp
 );
-router.post("/reset-password", authController.resetPassword);
+router.post("/reset-password", authLimiter, authController.resetPassword);
 
 //session
 router.get("/refresh-session", authController.refreshSession);

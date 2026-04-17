@@ -27,6 +27,14 @@ api.interceptors.response.use(
     const originalRequest: any = err.config;
 
     if (
+      err.response?.status === 403 &&
+      (err.response?.data as any)?.code === "ACCOUNT_BLOCKED"
+    ) {
+      useAuthStore.getState().logoutUser();
+      return Promise.reject(err);
+    }
+
+    if (
       err.response?.status === 401 &&
       !originalRequest?._retry &&
       !originalRequest?.url?.includes("/auth/refresh-session")

@@ -43,10 +43,13 @@ const UpgradePremium = () => {
     const fetchPlans = async () => {
         try {
             const plans = await getPublicPlansApi();
-            setPlans(plans);
+            
+            // Sort plans by price: low to high
+            const sortedPlans = [...plans].sort((a, b) => a.price - b.price);
+            setPlans(sortedPlans);
 
-            if (plans.length > 0) {
-                setSelectedPlanId(plans[0].id);
+            if (sortedPlans.length > 0) {
+                setSelectedPlanId(sortedPlans[0].id);
             }
 
         } catch (error) {

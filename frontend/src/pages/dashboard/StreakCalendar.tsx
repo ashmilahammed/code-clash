@@ -29,8 +29,8 @@ const StreakCalendar: React.FC<StreakCalendarProps> = ({
 
       {/* Weekday labels */}
       <div className="grid grid-cols-7 text-center text-xs text-slate-400 mb-2">
-        {WEEK_DAYS.map((day) => (
-          <span key={day}>{day}</span>
+        {WEEK_DAYS.map((day, index) => (
+          <span key={`${day}-${index}`}>{day}</span>
         ))}
       </div>
 
