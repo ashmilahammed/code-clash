@@ -61,8 +61,6 @@ app.get("/test", (req, res) => {
 
 
 
-console.log('hii')
-
 const PORT = process.env.PORT || 5000;
 
 // DB + server
