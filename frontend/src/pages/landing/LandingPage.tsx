@@ -93,7 +93,7 @@ const LandingPage = () => {
                     <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="mt-20 bg-[#0F172A] border border-slate-800 rounded-2xl p-6 shadow-2xl text-left max-w-3xl mx-auto"
+          className="mt-20 bg-[#0F172A] border border-slate-800 rounded-2xl p-6 shadow-2xl text-left w-full max-w-3xl mx-auto overflow-hidden"
         >
           <div className="flex gap-2 mb-4">
             <div className="w-3 h-3 bg-red-500 rounded-full" />
@@ -101,7 +101,7 @@ const LandingPage = () => {
             <div className="w-3 h-3 bg-green-500 rounded-full" />
           </div>
 
-          <pre className="text-sm text-cyan-400">
+          <pre className="text-sm text-cyan-400 overflow-x-auto pb-2">
 {`function twoSum(nums, target) {
   const map = new Map();
   for (let i = 0; i < nums.length; i++) {
