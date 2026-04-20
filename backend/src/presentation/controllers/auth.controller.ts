@@ -205,9 +205,6 @@ export class AuthController {
   forgotPassword = async (req: Request, res: Response) => {
     try {
 
-      // const { email } = req.body;
-      // const result = await this._forgotPasswordUseCase.execute(email);
-
       const dto = new ForgotPasswordDTO(req.body.email);
 
       const result = await this._forgotPasswordUseCase.execute(dto);
