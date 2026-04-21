@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { logoutApi } from "../../api/authApi";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useSearchStore } from "../../store/useSearchStore";
+import { useChatStore } from "../../store/useChatStore";
 
 import {
   Search,
@@ -31,6 +32,7 @@ function UserNavbar() {
 
   const user = useAuthStore((state) => state.user);
   const logoutUser = useAuthStore((state) => state.logoutUser);
+  const resetChat = useChatStore((state) => state.reset);
   const location = useLocation();
   const { searchQuery, setSearchQuery } = useSearchStore();
 
@@ -109,6 +111,7 @@ function UserNavbar() {
       console.error("Logout failed", err);
     } finally {
       logoutUser();
+      resetChat();
       navigate("/login", { replace: true });
     }
   };

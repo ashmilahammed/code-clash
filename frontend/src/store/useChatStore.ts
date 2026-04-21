@@ -28,6 +28,7 @@ interface ChatState {
     leaveGroup: (conversationId: string) => Promise<void>;
     inviteToGroup: (conversationId: string, participants: string[]) => Promise<void>;
     startDirectMessage: (receiverId: string) => Promise<void>;
+    reset: () => void;
 }
 
 export const useChatStore = create<ChatState>((set, get) => ({
@@ -263,5 +264,16 @@ export const useChatStore = create<ChatState>((set, get) => ({
             console.error('Failed to invite to group:', error);
             throw error;
         }
+    },
+
+    reset: () => {
+        set({
+            conversations: [],
+            publicGroups: [],
+            activeConversation: null,
+            messages: [],
+            isLoading: false
+        });
+        get().disconnectSocket();
     }
 }));

@@ -26,7 +26,7 @@ export class ConversationRepository implements IConversationRepository {
                 $all: objectIds,
                 $size: objectIds.length
             }
-        });
+        }).populate('participants', 'username avatar');
 
         return doc ? ConversationMapper.toDomain(doc) : null;
     }

@@ -5,7 +5,11 @@ import { defineConfig } from "eslint/config";
 
 export default defineConfig([
   {
-    files: ["**/*.{ts,js}"],
+    ignores: ["dist"]
+  },
+  {
+    // files: ["**/*.{ts,js}"],
+    files: ["src/**/*.{ts,js}"], // only src
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {

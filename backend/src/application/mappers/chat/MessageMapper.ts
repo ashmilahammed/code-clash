@@ -10,7 +10,7 @@ export class MessageMapper {
         const sender = isPopulated ? {
             _id: doc.senderId._id.toString(),
             username: doc.senderId.username,
-            profilePic: doc.senderId.profilePic
+            avatar: doc.senderId.avatar
         } : undefined;
 
         return new Message(

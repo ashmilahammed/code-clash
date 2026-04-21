@@ -217,8 +217,12 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ onClose }) => {
                                                 className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${isSelected ? 'border-blue-500 bg-blue-500/10' : 'border-slate-700 bg-[#0B1220] hover:border-slate-500'}`}
                                             >
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shrink-0">
-                                                        <span className="font-bold text-slate-300">{user.username.charAt(0).toUpperCase()}</span>
+                                                    <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shrink-0 overflow-hidden border border-slate-700">
+                                                        {user.avatar ? (
+                                                            <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
+                                                        ) : (
+                                                            <span className="font-bold text-slate-300">{user.username.charAt(0).toUpperCase()}</span>
+                                                        )}
                                                     </div>
                                                     <div className="text-left leading-tight">
                                                         <p className="font-semibold text-slate-200">{user.username}</p>

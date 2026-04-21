@@ -45,7 +45,8 @@ const Login: React.FC = () => {
         accessToken: res.data.data.accessToken,
       });
 
-      if (res.data.user.role === "admin") {
+      // if (res.data.user.role === "admin") {
+      if (res.data.data.user.role === "admin") {
         navigate("/admin", { replace: true });
       } else {
         navigate("/dashboard", { replace: true });
@@ -83,8 +84,8 @@ const Login: React.FC = () => {
         accessToken: res.data.data.accessToken,
       });
 
-      // navigate("/dashboard", { replace: true });
-      if (res.data.user.role === "admin") {
+      // if (res.data.user.role === "admin") {
+      if (res.data.data.user.role === "admin") {
         navigate("/admin", { replace: true });
       } else {
         navigate("/dashboard", { replace: true });

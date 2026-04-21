@@ -27,7 +27,7 @@ export interface Message {
     sender?: {
         _id: string;
         username: string;
-        profilePic?: string;
+        avatar?: string;
     };
 }
 

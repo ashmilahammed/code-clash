@@ -10,7 +10,7 @@ export class Message {
         public readonly readBy: string[], // Array of user IDs who have read the message
         public readonly createdAt?: Date,
         public readonly updatedAt?: Date,
-        public readonly sender?: { _id: string; username: string; profilePic?: string; }
+        public readonly sender?: { _id: string; username: string; avatar?: string; }
     ) {
         this.validate();
     }

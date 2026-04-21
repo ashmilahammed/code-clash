@@ -18,7 +18,7 @@ export class MessageRepository implements IMessageRepository {
         if (!Types.ObjectId.isValid(conversationId)) return [];
 
         const docs = await MessageModel.find({ conversationId: new Types.ObjectId(conversationId) })
-            .populate('senderId', 'username profilePic')
+            .populate('senderId', 'username avatar')
             .sort({ createdAt: -1 }) // get newest first
             .skip(skip)
             .limit(limit);
@@ -32,7 +32,7 @@ export class MessageRepository implements IMessageRepository {
     async create(message: Message): Promise<Message> {
         const persistenceData = MessageMapper.toPersistence(message);
         const created = await MessageModel.create(persistenceData);
-        await created.populate('senderId', 'username profilePic');
+        await created.populate('senderId', 'username avatar');
         return MessageMapper.toDomain(created);
     }
 
@@ -43,7 +43,7 @@ export class MessageRepository implements IMessageRepository {
         const persistenceData = MessageMapper.toPersistence(message);
         const updated = await MessageModel.findByIdAndUpdate(message.id, persistenceData, { new: true });
         if (!updated) throw new Error('Message not found');
-        await updated.populate('senderId', 'username profilePic');
+        await updated.populate('senderId', 'username avatar');
         return MessageMapper.toDomain(updated);
     }
 
