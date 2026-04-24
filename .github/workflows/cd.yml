@@ -13,75 +13,47 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
-      - name: Deploy to EC2
+      - name: Download Frontend Dist       # ADD THIS
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend-dist
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Copy dist to EC2             # ADD THIS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "frontend-dist/*"
+          target: "/var/www/html/"
+          strip_components: 1
+
+      - name: Deploy Backend to EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          timeout: 20m  
+          timeout: 10m
           script: |
             set -e
-
             echo "🚀 Starting Deployment..."
-
-            cd /home/ubuntu/code-clash || exit 1
-
-            echo "📥 Syncing code..."
+            cd /home/ubuntu/code-clash
             git fetch origin
             git reset --hard origin/main
 
-
-            # ===== BACKEND (DOCKER COMPOSE) =====
+            # ===== BACKEND =====
             echo "🐳 Checking backend changes..."
-
-            # if git diff --name-only HEAD~1 | grep -E "backend|docker-compose.yml"; then
             if git diff --name-only HEAD~1 HEAD | grep -E "backend|docker-compose.yml"; then
-            echo "Backend or compose changed → deploying..."
-
-            cd /home/ubuntu/code-clash
-
-            # # Stop old services
-            # docker-compose down
-            # # Start fresh (build + run)
-            # docker-compose up -d --build
-
-            # faster rebuild
-            docker-compose up -d --build backend
-
+              echo "Backend changed → deploying..."
+              docker-compose up -d --build backend
             else
-            echo "No backend changes → skipping deployment"
-            fi 
-            
+              echo "No backend changes → skipping"
+            fi
 
-
-            # ===== FRONTEND =====
-            # echo "🎨 Checking frontend changes..."
-
-            # # if git diff --name-only HEAD~1 | grep frontend; then
-            # if git diff --name-only HEAD~1 HEAD | grep frontend; then
-            # echo "Frontend changed → building..."
-
-            # # cd ../frontend
-            # cd /home/ubuntu/code-clash/frontend
-            # npm ci
-            # npm run build
-
-            # sudo rm -rf /var/www/html/*
-            # sudo cp -r dist/* /var/www/html/
-            # sudo systemctl reload nginx
-
-            # else
-            # echo "No frontend changes → skipping build"
-            # fi
-
-
-            echo "🎨 Building frontend..."
-            cd /home/ubuntu/code-clash/frontend
-            npm ci
-            npm run build
-            sudo rm -rf /var/www/html/*
-            sudo cp -r dist/* /var/www/html/
+            # ===== FRONTEND — just reload nginx =====
             sudo systemctl reload nginx
-
             echo "✅ Deployment Complete!"

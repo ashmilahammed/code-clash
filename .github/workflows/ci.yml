@@ -37,3 +37,10 @@ jobs:
           VITE_SOCKET_URL: ${{ secrets.VITE_SOCKET_URL }}
           VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
           VITE_RAZORPAY_KEY_ID: ${{ secrets.VITE_RAZORPAY_KEY_ID }}
+
+
+      - name: Upload Frontend Dist      
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist
