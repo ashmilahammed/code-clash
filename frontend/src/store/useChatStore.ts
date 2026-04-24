@@ -210,8 +210,15 @@ export const useChatStore = create<ChatState>((set, get) => ({
     joinGroup: async (conversationId: string) => {
         try {
             const group = await chatApi.joinGroup(conversationId);
-            get().fetchConversations(); // refresh list
-            get().setActiveConversation(group);
+            await get().fetchConversations(); // refresh list
+            
+            // Find the populated group from the updated list
+            const fullGroup = get().conversations.find(c => c.id === group.id);
+            if (fullGroup) {
+                get().setActiveConversation(fullGroup);
+            } else {
+                get().setActiveConversation(group);
+            }
 
             const { socket } = get();
             if (socket) {
@@ -227,8 +234,14 @@ export const useChatStore = create<ChatState>((set, get) => ({
     startDirectMessage: async (receiverId: string) => {
         try {
             const conversation = await chatApi.getOrCreateDirectConversation(receiverId);
-            get().fetchConversations();
-            get().setActiveConversation(conversation);
+            await get().fetchConversations();
+            
+            const fullConversation = get().conversations.find(c => c.id === conversation.id);
+            if (fullConversation) {
+                get().setActiveConversation(fullConversation);
+            } else {
+                get().setActiveConversation(conversation);
+            }
         } catch (error) {
             console.error('Failed to start direct message:', error);
             throw error;
@@ -254,11 +267,12 @@ export const useChatStore = create<ChatState>((set, get) => ({
     inviteToGroup: async (conversationId: string, participants: string[]) => {
         try {
             const updatedGroup = await chatApi.inviteToGroup(conversationId, participants);
-            get().fetchConversations();
+            await get().fetchConversations();
 
             const { activeConversation } = get();
             if (activeConversation?.id === conversationId) {
-                get().setActiveConversation(updatedGroup);
+                const fullGroup = get().conversations.find(c => c.id === conversationId);
+                get().setActiveConversation(fullGroup || updatedGroup);
             }
         } catch (error) {
             console.error('Failed to invite to group:', error);

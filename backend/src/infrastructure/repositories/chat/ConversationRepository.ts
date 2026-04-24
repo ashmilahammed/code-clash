@@ -59,6 +59,7 @@ export class ConversationRepository implements IConversationRepository {
 
         const doc = new ConversationModel(persistenceData);
         const created = await doc.save();
+        await created.populate('participants', 'username avatar');
 
         return ConversationMapper.toDomain(created);
     }
@@ -70,7 +71,7 @@ export class ConversationRepository implements IConversationRepository {
             id,
             { $set: data },
             { new: true }
-        );
+        ).populate('participants', 'username avatar');
 
         return updated ? ConversationMapper.toDomain(updated) : null;
     }
