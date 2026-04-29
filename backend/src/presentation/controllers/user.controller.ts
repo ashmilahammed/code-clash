@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 
-import { GetDashboardUseCase } from "../../application/use-cases/user/user/getDashboardUseCase";
-import { GetLeaderboardUseCase } from "../../application/use-cases/user/user/getLeaderboardUseCase";
-import { UpdateUserAvatarUseCase } from "../../application/use-cases/user/user/updateUserAvatarUseCase";
-import { RemoveUserAvatarUseCase } from "../../application/use-cases/user/user/removeUserAvatarUseCase";
-import { GetUserProfileStatsUseCase } from "../../application/use-cases/user/user/getUserProfileStatsUseCase";
-import { CancelPremiumUseCase } from "../../application/use-cases/user/user/CancelPremiumUseCase";
-import { UpdateUserProfileUseCase } from "../../application/use-cases/user/user/UpdateUserProfileUseCase";
-import { ClaimWelcomeXpUseCase } from "../../application/use-cases/user/user/ClaimWelcomeXpUseCase";
+import { IGetDashboardUseCase } from "../../application/interfaces/user/user/IGetDashboardUseCase";
+import { IGetLeaderboardUseCase } from "../../application/interfaces/user/user/IGetLeaderboardUseCase";
+import { IUpdateUserAvatarUseCase } from "../../application/interfaces/user/user/IUpdateUserAvatarUseCase";
+import { IRemoveUserAvatarUseCase } from "../../application/interfaces/user/user/IRemoveUserAvatarUseCase";
+import { IGetUserProfileStatsUseCase } from "../../application/interfaces/user/user/IGetUserProfileStatsUseCase";
+import { ICancelPremiumUseCase } from "../../application/interfaces/user/user/ICancelPremiumUseCase";
+import { IUpdateUserProfileUseCase } from "../../application/interfaces/user/user/IUpdateUserProfileUseCase";
+import { IClaimWelcomeXpUseCase } from "../../application/interfaces/user/user/IClaimWelcomeXpUseCase";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
@@ -24,14 +24,14 @@ interface AuthUserContext {
 
 export class UserController {
   constructor(
-    private readonly _getDashboardUseCase: GetDashboardUseCase,
-    private readonly _getLeaderboardUseCase: GetLeaderboardUseCase,
-    private readonly _updateUserAvatarUseCase: UpdateUserAvatarUseCase,
-    private readonly _removeUserAvatarUseCase: RemoveUserAvatarUseCase,
-    private readonly _getUserProfileStatsUseCase: GetUserProfileStatsUseCase,
-    private readonly _cancelPremiumUseCase: CancelPremiumUseCase,
-    private readonly _updateUserProfileUseCase: UpdateUserProfileUseCase,
-    private readonly _claimWelcomeXpUseCase: ClaimWelcomeXpUseCase
+    private readonly _getDashboardUseCase: IGetDashboardUseCase,
+    private readonly _getLeaderboardUseCase: IGetLeaderboardUseCase,
+    private readonly _updateUserAvatarUseCase: IUpdateUserAvatarUseCase,
+    private readonly _removeUserAvatarUseCase: IRemoveUserAvatarUseCase,
+    private readonly _getUserProfileStatsUseCase: IGetUserProfileStatsUseCase,
+    private readonly _cancelPremiumUseCase: ICancelPremiumUseCase,
+    private readonly _updateUserProfileUseCase: IUpdateUserProfileUseCase,
+    private readonly _claimWelcomeXpUseCase: IClaimWelcomeXpUseCase
   ) { }
 
   // Dashboard
@@ -78,7 +78,7 @@ export class UserController {
       const result = await this._getLeaderboardUseCase.execute(
         dto.page,
         dto.limit,
-        dto.search,
+        dto.search ?? "",
         dto.timeframe
       );
 

@@ -1,6 +1,8 @@
 import { ILevelRepository } from "../../../../domain/repositories/level/ILevelRepository";
+import { IDeleteLevelUseCase } from "../../../interfaces/level/admin/IDeleteLevelUseCase";
 
-export class DeleteLevelUseCase {
+
+export class DeleteLevelUseCase implements IDeleteLevelUseCase {
     constructor(
         private readonly _levelRepository: ILevelRepository
     ) { }

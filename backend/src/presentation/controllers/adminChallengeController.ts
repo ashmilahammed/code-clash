@@ -1,22 +1,22 @@
 import { Request, Response } from "express";
-import { CreateChallengeUseCase } from "../../application/use-cases/challenge/admin/createChallengeUseCase";
-import { ListAdminChallengesUseCase } from "../../application/use-cases/challenge/admin/listAdminChallengesUseCase";
-import { ToggleChallengeStatusUseCase } from "../../application/use-cases/challenge/admin/toggleChallengeStatusUseCase";
-import { AddChallengeTagsUseCase } from "../../application/use-cases/challenge/admin/addChallengeTagsUseCase";
+import { ICreateChallengeUseCase } from "../../application/interfaces/challenge/admin/ICreateChallengeUseCase";
+import { IListAdminChallengesUseCase } from "../../application/interfaces/challenge/admin/IListAdminChallengesUseCase";
+import { IToggleChallengeStatusUseCase } from "../../application/interfaces/challenge/admin/IToggleChallengeStatusUseCase";
+import { IAddChallengeTagsUseCase } from "../../application/interfaces/challenge/admin/IAddChallengeTagsUseCase";
 
-import { GetAvailableLanguagesUseCase } from "../../application/use-cases/challenge/admin/getAvailableLanguagesUseCase";
-import { GetChallengeLanguagesUseCase } from "../../application/use-cases/challenge/user/getChallengeLanguagesUseCase";
-import { AddChallengeLanguagesUseCase } from "../../application/use-cases/challenge/admin/addChallengeLanguagesUseCase";
+import { IGetAvailableLanguagesUseCase } from "../../application/interfaces/challenge/admin/IGetAvailableLanguagesUseCase";
+import { IGetChallengeLanguagesUseCase } from "../../application/interfaces/challenge/user/IGetChallengeLanguagesUseCase";
+import { IAddChallengeLanguagesUseCase } from "../../application/interfaces/challenge/admin/IAddChallengeLanguagesUseCase";
 
-import { AddChallengeTestCasesUseCase } from "../../application/use-cases/challenge/admin/addChallengeTestCasesUseCase";
-import { AddChallengeHintsUseCase } from "../../application/use-cases/challenge/admin/addChallengeHintsUseCase";
-import { UpdateChallengeScheduleUseCase } from "../../application/use-cases/challenge/admin/updateChallengeScheduleUseCase";
-import { AddChallengeCodeTemplatesUseCase } from "../../application/use-cases/challenge/admin/addChallengeCodeTemplatesUseCase";
-import { UpdateChallengeUseCase } from "../../application/use-cases/challenge/admin/updateChallengeUseCase";
-import { GetAdminChallengeCodeTemplatesUseCase } from "../../application/use-cases/challenge/admin/getAdminChallengeCodeTemplatesUseCase";
-import { GetAdminChallengeTestCasesUseCase } from "../../application/use-cases/challenge/admin/getAdminChallengeTestCasesUseCase";
-import { GetAdminChallengeByIdUseCase } from "../../application/use-cases/challenge/admin/getAdminChallengeByIdUseCase";
-import { DeleteChallengeUseCase } from "../../application/use-cases/challenge/admin/deleteChallengeUseCase";
+import { IAddChallengeTestCasesUseCase } from "../../application/interfaces/challenge/admin/IAddChallengeTestCasesUseCase";
+import { IAddChallengeHintsUseCase } from "../../application/interfaces/challenge/admin/IAddChallengeHintsUseCase";
+import { IUpdateChallengeScheduleUseCase } from "../../application/interfaces/challenge/admin/IUpdateChallengeScheduleUseCase";
+import { IAddChallengeCodeTemplatesUseCase } from "../../application/interfaces/challenge/admin/IAddChallengeCodeTemplatesUseCase";
+import { IUpdateChallengeUseCase } from "../../application/interfaces/challenge/admin/IUpdateChallengeUseCase";
+import { IGetAdminChallengeCodeTemplatesUseCase } from "../../application/interfaces/challenge/admin/IGetAdminChallengeCodeTemplatesUseCase";
+import { IGetAdminChallengeTestCasesUseCase } from "../../application/interfaces/challenge/admin/IGetAdminChallengeTestCasesUseCase";
+import { IGetAdminChallengeByIdUseCase } from "../../application/interfaces/challenge/admin/IGetAdminChallengeByIdUseCase";
+import { IDeleteChallengeUseCase } from "../../application/interfaces/challenge/admin/IDeleteChallengeUseCase";
 
 
 import { CreateChallengeDTO } from "../../application/dto/challenge/CreateChallengeDTO";
@@ -35,22 +35,22 @@ import { MESSAGES } from "../constants/messages";
 
 export class AdminChallengeController {
     constructor(
-        private readonly _createChallenge: CreateChallengeUseCase,
-        private readonly _adminListChallenges: ListAdminChallengesUseCase,
-        private readonly _toggleChallenge: ToggleChallengeStatusUseCase,
-        private readonly _addTags: AddChallengeTagsUseCase,
-        private readonly _getLanguages: GetAvailableLanguagesUseCase,
-        private readonly _getChallengeLanguages: GetChallengeLanguagesUseCase,
-        private readonly _addLanguages: AddChallengeLanguagesUseCase,
-        private readonly _addTestCases: AddChallengeTestCasesUseCase,
-        private readonly _addHints: AddChallengeHintsUseCase,
-        private readonly _updateSchedule: UpdateChallengeScheduleUseCase,
-        private readonly _addTemplates: AddChallengeCodeTemplatesUseCase,
-        private readonly _updateChallenge: UpdateChallengeUseCase,
-        private readonly _getAdminChallengeCodeTemplates: GetAdminChallengeCodeTemplatesUseCase,
-        private readonly _getAdminChallengeTestCases: GetAdminChallengeTestCasesUseCase,
-        private readonly _getAdminChallengeById: GetAdminChallengeByIdUseCase,
-        private readonly _deleteChallenge: DeleteChallengeUseCase,
+        private readonly _createChallenge: ICreateChallengeUseCase,
+        private readonly _adminListChallenges: IListAdminChallengesUseCase,
+        private readonly _toggleChallenge: IToggleChallengeStatusUseCase,
+        private readonly _addTags: IAddChallengeTagsUseCase,
+        private readonly _getLanguages: IGetAvailableLanguagesUseCase,
+        private readonly _getChallengeLanguages: IGetChallengeLanguagesUseCase,
+        private readonly _addLanguages: IAddChallengeLanguagesUseCase,
+        private readonly _addTestCases: IAddChallengeTestCasesUseCase,
+        private readonly _addHints: IAddChallengeHintsUseCase,
+        private readonly _updateSchedule: IUpdateChallengeScheduleUseCase,
+        private readonly _addTemplates: IAddChallengeCodeTemplatesUseCase,
+        private readonly _updateChallenge: IUpdateChallengeUseCase,
+        private readonly _getAdminChallengeCodeTemplates: IGetAdminChallengeCodeTemplatesUseCase,
+        private readonly _getAdminChallengeTestCases: IGetAdminChallengeTestCasesUseCase,
+        private readonly _getAdminChallengeById: IGetAdminChallengeByIdUseCase,
+        private readonly _deleteChallenge: IDeleteChallengeUseCase,
     ) { }
 
 

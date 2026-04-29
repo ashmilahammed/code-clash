@@ -3,9 +3,9 @@ import { IUserAuthRepository } from "../../../domain/repositories/user/IUserAuth
 import { IEmailService } from "../../../domain/services/IEmailService";
 import { generateOtp } from "../../../utils/generateOtp";
 import { ForgotPasswordDTO } from "../../dto/auth/ForgotPasswordDTO";
+import { IForgotPasswordUseCase } from "../../interfaces/auth/IForgotPasswordUseCase";
 
-
-export class ForgotPasswordUseCase {
+export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
   constructor(
     private readonly _userRepo: IUserCoreRepository & IUserAuthRepository,
     private readonly _emailService: IEmailService
@@ -15,8 +15,11 @@ export class ForgotPasswordUseCase {
 
     const user = await this._userRepo.findByEmail(dto.email);
 
-    if (!user) throw new Error("No account found with this email");
-
+    // if (!user) throw new Error("No account found with this email");
+    if (!user || !user.id) {
+      throw new Error("No account found with this email");
+    }
+    
     const { otp, expires } = generateOtp();
 
     await this._userRepo.saveOtp(user.id!, otp, expires, false);

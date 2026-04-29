@@ -2,9 +2,10 @@ import { IPlanRepository } from "../../../domain/repositories/plan/IPlanReposito
 import { IRazorpayService } from "../../../domain/services/IRazorpayService";
 import { CreateOrderDTO } from "../../dto/transaction/CreateOrderDTO";
 
+import { ICreateRazorpayOrderUseCase } from "../../interfaces/transaction/ICreateRazorpayOrderUseCase";
 
 
-export class CreateRazorpayOrderUseCase {
+export class CreateRazorpayOrderUseCase implements ICreateRazorpayOrderUseCase {
     constructor(
         private readonly _planRepository: IPlanRepository,
         private readonly _razorpayService: IRazorpayService

@@ -1,6 +1,8 @@
 import { INotificationRepository } from "../../../../domain/repositories/notification/INotificationRepository";
+import { ISendNotificationUseCase } from "../../../interfaces/notification/admin/ISendNotificationUseCase";
 
-export class SendNotificationUseCase {
+
+export class SendNotificationUseCase implements ISendNotificationUseCase {
   constructor(
     private readonly _notificationRepository: INotificationRepository
   ) { }

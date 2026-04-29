@@ -1,8 +1,9 @@
 import { IUserAdminRepository } from "../../../../domain/repositories/user/IUserAdminRepository";
 import { Logger } from "../../../../infrastructure/services/logger";
+import { IUpdateUserStatusUseCase } from "../../../interfaces/user/admin/IUpdateUserStatusUseCase";
 
 
-export class UpdateUserStatusUseCase {
+export class UpdateUserStatusUseCase implements IUpdateUserStatusUseCase {
   constructor(
     private readonly _userRepo: IUserAdminRepository,
     private readonly _logger: Logger

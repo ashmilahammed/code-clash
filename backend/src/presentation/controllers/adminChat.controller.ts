@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 
-import { GetAdminGroupsUseCase } from "../../application/use-cases/chat/admin/GetAdminGroupsUseCase";
-import { UpdateGroupStatusUseCase } from "../../application/use-cases/chat/admin/UpdateGroupStatusUseCase";
-import { DeleteGroupUseCase } from "../../application/use-cases/chat/admin/DeleteGroupUseCase";
+import { IGetAdminGroupsUseCase } from "../../application/interfaces/chat/admin/IGetAdminGroupsUseCase";
+import { IUpdateGroupStatusUseCase } from "../../application/interfaces/chat/admin/IUpdateGroupStatusUseCase";
+import { IDeleteGroupUseCase } from "../../application/interfaces/chat/admin/IDeleteGroupUseCase";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
@@ -14,9 +14,9 @@ import { AdminGroupQueryDTO } from "../../application/dto/chat/AdminGroupQueryDT
 
 export class AdminChatController {
     constructor(
-        private readonly _getAdminGroupsUseCase: GetAdminGroupsUseCase,
-        private readonly _updateGroupStatusUseCase: UpdateGroupStatusUseCase,
-        private readonly _deleteGroupUseCase: DeleteGroupUseCase
+        private readonly _getAdminGroupsUseCase: IGetAdminGroupsUseCase,
+        private readonly _updateGroupStatusUseCase: IUpdateGroupStatusUseCase,
+        private readonly _deleteGroupUseCase: IDeleteGroupUseCase
     ) { }
 
 
@@ -45,7 +45,7 @@ export class AdminChatController {
 
             return res.status(HttpStatus.OK).json(
                 ApiResponse.success(MESSAGES.CHAT.GROUPS_FETCH_SUCCESS, {
-                    data: result.data,
+                    data: result.groups,
                     total: result.total,
                     page,
                     limit,

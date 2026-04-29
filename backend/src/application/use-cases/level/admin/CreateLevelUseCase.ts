@@ -1,9 +1,10 @@
 import { ILevelRepository } from "../../../../domain/repositories/level/ILevelRepository";
 import { Level } from "../../../../domain/entities/level/Level";
 import { CreateLevelDTO } from "../../../dto/level/CreateLevelDTO";
+import { ICreateLevelUseCase } from "../../../interfaces/level/admin/ICreateLevelUseCase";
+ 
 
-
-export class CreateLevelUseCase {
+export class CreateLevelUseCase implements ICreateLevelUseCase {
   constructor(
     private readonly _levelRepository: ILevelRepository
   ) { }

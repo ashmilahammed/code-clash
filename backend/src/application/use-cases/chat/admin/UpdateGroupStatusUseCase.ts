@@ -1,7 +1,8 @@
 import { IConversationRepository } from "../../../../domain/repositories/chat/IConversationRepository";
+import { IUpdateGroupStatusUseCase } from "../../../interfaces/chat/admin/IUpdateGroupStatusUseCase";
 
 
-export class UpdateGroupStatusUseCase {
+export class UpdateGroupStatusUseCase implements IUpdateGroupStatusUseCase {
     constructor(
         private readonly _conversationRepository: IConversationRepository
     ) { }

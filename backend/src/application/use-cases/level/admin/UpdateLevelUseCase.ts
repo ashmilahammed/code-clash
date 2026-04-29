@@ -1,9 +1,10 @@
 import { Level } from "../../../../domain/entities/level/Level";
 import { ILevelRepository } from "../../../../domain/repositories/level/ILevelRepository";
 import { UpdateLevelDTO } from "../../../dto/level/UpdateLevelDTO";
+import { IUpdateLevelUseCase } from "../../../interfaces/level/admin/IUpdateLevelUseCase";
 
 
-export class UpdateLevelUseCase {
+export class UpdateLevelUseCase implements IUpdateLevelUseCase {
     constructor(
         private readonly _levelRepository: ILevelRepository
     ) { }

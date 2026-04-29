@@ -1,9 +1,9 @@
 import { IUserCoreRepository } from "../../../domain/repositories/user/IUserCoreRepository";
 import { IJwtService } from "../../../domain/services/IJwtService";
 import { JwtPayload } from "../../../domain/types/JwtPayload";
+import { IRefreshSessionUseCase } from "../../interfaces/auth/IRefreshSessionUseCase";
 
-
-export class RefreshSessionUseCase {
+export class RefreshSessionUseCase implements IRefreshSessionUseCase {
   constructor(
     private readonly _userRepo: IUserCoreRepository,
     private readonly _jwtService: IJwtService
@@ -44,5 +44,3 @@ export class RefreshSessionUseCase {
     return { accessToken: newAccessToken };
   }
 }
-
-

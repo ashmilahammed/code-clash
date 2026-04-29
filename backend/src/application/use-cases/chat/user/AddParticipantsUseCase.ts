@@ -1,9 +1,9 @@
 import { IConversationRepository } from "../../../../domain/repositories/chat/IConversationRepository";
 import { Conversation } from "../../../../domain/entities/chat/Conversation";
 import { AddParticipantsDTO } from "../../../dto/chat/AddParticipantsDTO";
+import { IAddParticipantsUseCase } from "../../../interfaces/chat/user/IAddParticipantsUseCase";
 
-
-export class AddParticipantsUseCase {
+export class AddParticipantsUseCase implements IAddParticipantsUseCase {
   constructor(
     private readonly _conversationRepository: IConversationRepository
   ) {}

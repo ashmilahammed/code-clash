@@ -1,7 +1,9 @@
 import { INotificationRepository } from "../../../../domain/repositories/notification/INotificationRepository";
 import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
 
-export class MarkAllReadUseCase {
+import { IMarkAllReadUseCase } from "../../../interfaces/notification/user/IMarkAllReadUseCase";
+
+export class MarkAllReadUseCase implements IMarkAllReadUseCase {
   constructor(
     private readonly _notificationRepository: INotificationRepository,
     private readonly _userRepository: IUserRepository

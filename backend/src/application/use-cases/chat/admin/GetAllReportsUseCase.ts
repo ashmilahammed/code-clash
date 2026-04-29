@@ -1,7 +1,9 @@
 import { IReportRepository } from "../../../../domain/repositories/chat/IReportRepository";
 import { Report } from "../../../../domain/entities/chat/Report";
+import { IGetAllReportsUseCase } from "../../../interfaces/chat/admin/IGetAllReportsUseCase";
 
-export class GetAllReportsUseCase {
+
+export class GetAllReportsUseCase implements IGetAllReportsUseCase {
     constructor(
         private readonly _reportRepository: IReportRepository
     ) {}

@@ -101,13 +101,4 @@ export const authController = new AuthController(
     refreshSessionUseCase,
     getCurrentUserUseCase,
     changePasswordUseCase
-);
-
-
-
-
-
-
-
-
-
+);  

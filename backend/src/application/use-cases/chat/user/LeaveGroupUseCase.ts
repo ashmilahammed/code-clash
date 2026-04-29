@@ -1,7 +1,10 @@
 import { IConversationRepository } from "../../../../domain/repositories/chat/IConversationRepository";
 import { Conversation } from "../../../../domain/entities/chat/Conversation";
 
-export class LeaveGroupUseCase {
+import { ILeaveGroupUseCase } from "../../../interfaces/chat/user/ILeaveGroupUseCase";
+
+
+export class LeaveGroupUseCase implements ILeaveGroupUseCase {
     constructor(
         private readonly _conversationRepository: IConversationRepository
     ) { }

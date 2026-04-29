@@ -1,9 +1,9 @@
 import { IUserCoreRepository } from "../../../../domain/repositories/user/IUserCoreRepository";
 import { IXpService } from "../../../../domain/services/IXpService";
 import { ILevelRepository } from "../../../../domain/repositories/level/ILevelRepository";
-import { SubmissionModel } from "../../../../infrastructure/database/models/submission/SubmissionModel";
+import { SubmissionModel } from "../../../../infrastructure/database/models/submission/SubmissionModel";import { IGetDashboardUseCase } from "../../../interfaces/user/user/IGetDashboardUseCase";
 
-export class GetDashboardUseCase {
+export class GetDashboardUseCase implements IGetDashboardUseCase {
     constructor(
         private readonly _userRepo: IUserCoreRepository,
         private readonly _xpService: IXpService,

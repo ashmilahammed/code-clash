@@ -1,6 +1,8 @@
 import { CloudinaryStorageService } from "../../../../infrastructure/adapters/fileStorage/CloudinaryStorageService";
+import { IUploadChatImageUseCase } from "../../../interfaces/chat/user/IUploadChatImageUseCase";
 
-export class UploadChatImageUseCase {
+
+export class UploadChatImageUseCase implements IUploadChatImageUseCase {
     constructor(
         private readonly _storageService: CloudinaryStorageService) { }
 

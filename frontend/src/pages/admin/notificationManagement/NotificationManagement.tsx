@@ -15,6 +15,7 @@ import {
 } from "../../../api/notificationApi";
 import { toast } from "react-hot-toast";
 
+
 const NotificationManagement = () => {
   const [activeTab, setActiveTab] = useState<"compose" | "history">("compose");
   const [title, setTitle] = useState("");
@@ -37,13 +38,11 @@ const NotificationManagement = () => {
     setLoading(true);
     try {
 
-      // const res = await getAdminNotificationHistoryApi(page, 10);
-      // setHistory(res.data.data);
-      // setTotalPages(Math.ceil(res.data.total / 10));
-
       const result = await getAdminNotificationHistoryApi(page, 10);
-      setHistory(result.data);     
-      setTotalPages(Math.ceil(result.total / 10));
+      // setHistory(result.data);     
+      // setTotalPages(Math.ceil(result.total / 10));
+      setHistory(result.notifications);
+      setTotalPages(result.totalPages);
 
     } catch (err) {
       toast.error("Failed to fetch notification history");

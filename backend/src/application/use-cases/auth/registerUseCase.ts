@@ -7,9 +7,10 @@ import { generateOtp } from "../../../utils/generateOtp";
 import { UserFactory } from "../../../domain/entities/user/userFactory";
 import { RegisterDTO } from "../../dto/auth/RegisterDTO";
 
+import { IRegisterUseCase } from "../../interfaces/auth/IRegisterUseCase";
 
 
-export class RegisterUseCase {
+export class RegisterUseCase implements IRegisterUseCase {
   constructor(
     private readonly _userRepo: IUserCoreRepository & IUserAuthRepository,
     private readonly _emailService: IEmailService,
@@ -34,6 +35,10 @@ export class RegisterUseCase {
     // Email exists but not verified 
     if (existing && !existing.isVerified) {
 
+      if (!existing.id) {
+        throw new Error("Invalid user data");
+      }
+
       await this._userRepo.updatePassword(existing.id!, hashedPassword);
 
       await this._userRepo.saveOtp(
@@ -44,7 +49,6 @@ export class RegisterUseCase {
       );
 
       await this._emailService.sendOtpEmail(email, otp);
-
       return { userId: existing.id };
     }
 
@@ -58,6 +62,10 @@ export class RegisterUseCase {
     });
 
     const createdUser = await this._userRepo.createUser(newUser);
+
+    if (!createdUser.id) {
+      throw new Error("User creation failed");
+    }
 
     await this._emailService.sendOtpEmail(email, otp);
 

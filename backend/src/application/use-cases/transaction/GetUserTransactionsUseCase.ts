@@ -1,6 +1,8 @@
 import { ITransactionRepository } from "../../../domain/repositories/transaction/ITransactionRepository";
+import { IGetUserTransactionsUseCase } from "../../interfaces/transaction/IGetUserTransactionsUseCase";
 
-export class GetUserTransactionsUseCase {
+
+export class GetUserTransactionsUseCase implements IGetUserTransactionsUseCase {
     constructor(
         private readonly _transactionRepository: ITransactionRepository
     ) { }

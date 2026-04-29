@@ -8,9 +8,9 @@ import { generateOtp } from "../../../utils/generateOtp";
 import { UpdateLoginStreakUseCase } from "../user/user/updateLoginStreakUseCase";
 import { LoginDTO } from "../../dto/auth/LoginDTO";
 
+import { ILoginUseCase } from "../../interfaces/auth/ILoginUseCase";
 
-
-export class LoginUseCase {
+export class LoginUseCase implements ILoginUseCase {
   constructor(
     private readonly _userRepository: IUserCoreRepository & IUserAuthRepository,
     private readonly _emailService: IEmailService,
@@ -67,8 +67,3 @@ export class LoginUseCase {
     return { user, accessToken, refreshToken };
   }
 }
-
-
-
-
-

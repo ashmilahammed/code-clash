@@ -1,8 +1,9 @@
 import { IChallengeRepository } from "../../../../domain/repositories/challenge/IChallengeRepository";
 import { Challenge } from "../../../../domain/entities/challenge/Challenge";
+import { IGetChallengeByIdUseCase } from "../../../interfaces/challenge/user/IGetChallengeByIdUseCase";
 
 
-export class GetChallengeByIdUseCase {
+export class GetChallengeByIdUseCase implements IGetChallengeByIdUseCase {
   constructor(
     private readonly _challengeRepo: IChallengeRepository
   ) {}

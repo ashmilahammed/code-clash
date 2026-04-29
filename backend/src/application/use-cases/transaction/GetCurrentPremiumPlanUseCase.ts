@@ -1,6 +1,8 @@
 import { ITransactionRepository } from "../../../domain/repositories/transaction/ITransactionRepository";
+import { IGetCurrentPremiumPlanUseCase } from "../../interfaces/transaction/IGetCurrentPremiumPlanUseCase";
 
-export class GetCurrentPremiumPlanUseCase {
+
+export class GetCurrentPremiumPlanUseCase implements IGetCurrentPremiumPlanUseCase {
     constructor(
         private readonly _transactionRepository: ITransactionRepository
     ) { }

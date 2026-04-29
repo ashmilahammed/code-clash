@@ -2,10 +2,10 @@ import { IMessageRepository } from "../../../../domain/repositories/chat/IMessag
 import { IConversationRepository } from "../../../../domain/repositories/chat/IConversationRepository";
 import { Message } from "../../../../domain/entities/chat/Message";
 import { GetMessagesQueryDTO } from "../../../dto/chat/GetMessagesQueryDTO";
+import { IGetMessagesUseCase } from "../../../interfaces/chat/user/IGetMessagesUseCase";
 
 
-
-export class GetMessagesUseCase {
+export class GetMessagesUseCase implements IGetMessagesUseCase {
     constructor(
         private readonly _messageRepository: IMessageRepository,
         private readonly _conversationRepository: IConversationRepository

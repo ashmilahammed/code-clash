@@ -1,7 +1,8 @@
 import { User } from "../../../domain/entities/user/User";
 import { IUserCoreRepository } from "../../../domain/repositories/user/IUserCoreRepository";
+import { IGetCurrentUserUseCase } from "../../interfaces/auth/IGetCurrentUserUseCase";
 
-export class GetCurrentUserUseCase {
+export class GetCurrentUserUseCase implements IGetCurrentUserUseCase {
   constructor(
     private readonly _userRepository: IUserCoreRepository
   ) {}
@@ -16,5 +17,3 @@ export class GetCurrentUserUseCase {
     return user; // domain entity
   }
 }
-
-

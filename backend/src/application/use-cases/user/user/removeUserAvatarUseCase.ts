@@ -1,7 +1,7 @@
 import { IUserCoreRepository } from "../../../../domain/repositories/user/IUserCoreRepository";
-import { IFileStorageService } from "../../../../domain/services/IFileStorageService";
+import { IFileStorageService } from "../../../../domain/services/IFileStorageService";import { IRemoveUserAvatarUseCase } from "../../../interfaces/user/user/IRemoveUserAvatarUseCase";
 
-export class RemoveUserAvatarUseCase {
+export class RemoveUserAvatarUseCase implements IRemoveUserAvatarUseCase {
     constructor(
         private readonly _userRepository: IUserCoreRepository,
         private readonly _fileStorage: IFileStorageService

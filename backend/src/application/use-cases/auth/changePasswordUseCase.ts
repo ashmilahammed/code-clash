@@ -2,9 +2,10 @@ import { IUserCoreRepository } from "../../../domain/repositories/user/IUserCore
 import { IUserAuthRepository } from "../../../domain/repositories/user/IUserAuthRepository";
 import { IPasswordService } from "../../../domain/services/IPasswordService";
 import { ChangePasswordDTO } from "../../dto/auth/ChangePasswordDTO";
+import { IChangePasswordUseCase } from "../../interfaces/auth/IChangePasswordUseCase";
 
 
-export class ChangePasswordUseCase {
+export class ChangePasswordUseCase implements IChangePasswordUseCase {
   constructor(
     private readonly _userRepository: IUserCoreRepository & IUserAuthRepository,
     private readonly _passwordService: IPasswordService
@@ -31,4 +32,3 @@ export class ChangePasswordUseCase {
     await this._userRepository.updatePassword(userId, newHashedPassword);
   }
 }
-

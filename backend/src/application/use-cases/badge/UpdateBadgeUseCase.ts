@@ -2,7 +2,10 @@ import { Badge } from "../../../domain/entities/badge/Badge";
 import { IBadgeRepository } from "../../../domain/repositories/badge/IBadgeRepository";
 import { UpdateBadgeDTO } from "../../dto/badge/UpdateBadgeDTO";
 
-export class UpdateBadgeUseCase {
+import { IUpdateBadgeUseCase } from "../../interfaces/badge/IUpdateBadgeUseCase";
+
+
+export class UpdateBadgeUseCase implements IUpdateBadgeUseCase {
   constructor(
     private readonly _badgeRepository: IBadgeRepository
   ) {}

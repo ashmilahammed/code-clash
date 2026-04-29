@@ -1,9 +1,10 @@
 import { IConversationRepository } from "../../../../domain/repositories/chat/IConversationRepository";
 import { Conversation, ConversationType } from "../../../../domain/entities/chat/Conversation";
 import { DirectConversationDTO } from "../../../dto/chat/DirectConversationDTO";
+import { IGetOrCreateDirectConversationUseCase } from "../../../interfaces/chat/user/IGetOrCreateDirectConversationUseCase";
 
 
-export class GetOrCreateDirectConversationUseCase {
+export class GetOrCreateDirectConversationUseCase implements IGetOrCreateDirectConversationUseCase {
     constructor(
         private readonly _conversationRepository: IConversationRepository
     ) { }

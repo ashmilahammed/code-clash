@@ -1,7 +1,9 @@
 import { INotificationRepository } from "../../../../domain/repositories/notification/INotificationRepository";
 import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
 
-export class ClearNotificationsUseCase {
+import { IClearNotificationsUseCase } from "../../../interfaces/notification/user/IClearNotificationsUseCase";
+
+export class ClearNotificationsUseCase implements IClearNotificationsUseCase {
   constructor(
     private readonly _notificationRepository: INotificationRepository,
     private readonly _userRepository: IUserRepository

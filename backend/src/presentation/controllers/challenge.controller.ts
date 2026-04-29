@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 
-import { ListChallengesUseCase } from "../../application/use-cases/challenge/user/listChallengesUseCase";
-import { GetChallengeLanguagesUseCase } from "../../application/use-cases/challenge/user/getChallengeLanguagesUseCase";
+import { IListChallengesUseCase } from "../../application/interfaces/challenge/user/IListChallengesUseCase";
+import { IGetChallengeLanguagesUseCase } from "../../application/interfaces/challenge/user/IGetChallengeLanguagesUseCase";
 
-import { GetChallengeByIdUseCase } from "../../application/use-cases/challenge/user/getChallengeByIdUseCase";
-import { GetChallengeCodeTemplatesUseCase } from "../../application/use-cases/challenge/user/getChallengeCodeTemplatesUseCase";
-import { GetChallengeHintsUseCase } from "../../application/use-cases/challenge/user/getChallengeHintsUseCase";
-import { GetChallengeTestCasesUseCase } from "../../application/use-cases/challenge/user/getChallengeTestCasesUseCase";
+import { IGetChallengeByIdUseCase } from "../../application/interfaces/challenge/user/IGetChallengeByIdUseCase";
+import { IGetChallengeCodeTemplatesUseCase } from "../../application/interfaces/challenge/user/IGetChallengeCodeTemplatesUseCase";
+import { IGetChallengeHintsUseCase } from "../../application/interfaces/challenge/user/IGetChallengeHintsUseCase";
+import { IGetChallengeTestCasesUseCase } from "../../application/interfaces/challenge/user/IGetChallengeTestCasesUseCase";
 
 // import { ChallengeDifficulty, ChallengeDomain } from "../../domain/entities/challenge/Challenge";
 
@@ -19,12 +19,12 @@ import { MESSAGES } from "../constants/messages";
 
 export class ChallengeController {
     constructor(
-        private readonly _userListChallenges: ListChallengesUseCase,
-        private readonly _getChallengeLanguages: GetChallengeLanguagesUseCase,
-        private readonly _getChallengeById: GetChallengeByIdUseCase,
-        private readonly _getChallengeTemplates: GetChallengeCodeTemplatesUseCase,
-        private readonly _getHints: GetChallengeHintsUseCase,
-        private readonly _getTestCases: GetChallengeTestCasesUseCase,
+        private readonly _userListChallenges: IListChallengesUseCase,
+        private readonly _getChallengeLanguages: IGetChallengeLanguagesUseCase,
+        private readonly _getChallengeById: IGetChallengeByIdUseCase,
+        private readonly _getChallengeTemplates: IGetChallengeCodeTemplatesUseCase,
+        private readonly _getHints: IGetChallengeHintsUseCase,
+        private readonly _getTestCases: IGetChallengeTestCasesUseCase,
     ) { }
 
 

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { SubmitSolutionUseCase } from "../../application/use-cases/submission/SubmitSolutionUseCase";
-import { RunCodeUseCase } from "../../application/use-cases/submission/RunCodeUseCase";
+import { ISubmitSolutionUseCase } from "../../application/interfaces/submission/ISubmitSolutionUseCase";
+import { IRunCodeUseCase } from "../../application/interfaces/submission/IRunCodeUseCase";
 
 import { RunCodeDTO } from "../../application/dto/submission/RunCodeDTO";
 import { SubmitSolutionDTO } from "../../application/dto/submission/SubmitSolutionDTO";
@@ -17,8 +17,8 @@ interface AuthUserContext {
 
 export class SubmissionController {
     constructor(
-        private readonly _submitUseCase: SubmitSolutionUseCase,
-        private readonly _runUseCase: RunCodeUseCase
+        private readonly _submitUseCase: ISubmitSolutionUseCase,
+        private readonly _runUseCase: IRunCodeUseCase
     ) { }
 
 

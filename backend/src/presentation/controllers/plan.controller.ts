@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { CreatePlanUseCase } from "../../application/use-cases/plans/admin/CreatePlanUseCase";
-import { GetPlansUseCase } from "../../application/use-cases/plans/admin/GetPlansUseCase";
-import { UpdatePlanUseCase } from "../../application/use-cases/plans/admin/UpdatePlanUseCase";
-import { DeletePlanUseCase } from "../../application/use-cases/plans/admin/DeletePlanUseCase";
+import { ICreatePlanUseCase } from "../../application/interfaces/plans/admin/ICreatePlanUseCase";
+import { IGetPlansUseCase } from "../../application/interfaces/plans/admin/IGetPlansUseCase";
+import { IUpdatePlanUseCase } from "../../application/interfaces/plans/admin/IUpdatePlanUseCase";
+import { IDeletePlanUseCase } from "../../application/interfaces/plans/admin/IDeletePlanUseCase";
 
 import { CreatePlanDTO } from "../../application/dto/plan/CreatePlanDTO";
 import { UpdatePlanDTO } from "../../application/dto/plan/UpdatePlanDTO";
@@ -15,10 +15,10 @@ import { MESSAGES } from "../constants/messages";
 
 export class PlanController {
     constructor(
-        private readonly _createPlanUseCase: CreatePlanUseCase,
-        private readonly _getPlansUseCase: GetPlansUseCase,
-        private readonly _updatePlanUseCase: UpdatePlanUseCase,
-        private readonly _deletePlanUseCase: DeletePlanUseCase
+        private readonly _createPlanUseCase: ICreatePlanUseCase,
+        private readonly _getPlansUseCase: IGetPlansUseCase,
+        private readonly _updatePlanUseCase: IUpdatePlanUseCase,
+        private readonly _deletePlanUseCase: IDeletePlanUseCase
     ) { }
 
 

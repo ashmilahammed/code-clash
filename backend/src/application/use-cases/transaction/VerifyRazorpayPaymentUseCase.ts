@@ -8,9 +8,10 @@ import { IBadgeRewardService } from "../../../domain/services/IBadgeRewardServic
 import { Badge } from "../../../domain/entities/badge/Badge";
 
 import { VerifyPaymentDTO } from "../../dto/transaction/VerifyPaymentDTO";
+import { IVerifyRazorpayPaymentUseCase } from "../../interfaces/transaction/IVerifyRazorpayPaymentUseCase";
 
 
-export class VerifyRazorpayPaymentUseCase {
+export class VerifyRazorpayPaymentUseCase implements IVerifyRazorpayPaymentUseCase {
     constructor(
         private readonly _transactionRepository: ITransactionRepository,
         private readonly _userRepository: IUserRepository,

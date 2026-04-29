@@ -2,8 +2,10 @@ import { ChallengeCodeTemplate } from "../../../../domain/entities/challenge/Cha
 import { IChallengeCodeTemplateRepository } from "../../../../domain/repositories/challenge/IChallengeCodeTemplateRepository";
 import { IChallengeRepository } from "../../../../domain/repositories/challenge/IChallengeRepository";
 
+import { IAddChallengeCodeTemplatesUseCase } from "../../../interfaces/challenge/admin/IAddChallengeCodeTemplatesUseCase";
 
-export class AddChallengeCodeTemplatesUseCase {
+
+export class AddChallengeCodeTemplatesUseCase implements IAddChallengeCodeTemplatesUseCase {
   constructor(
     private readonly _repo: IChallengeCodeTemplateRepository,
     private readonly _challengeRepo: IChallengeRepository

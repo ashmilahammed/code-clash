@@ -5,10 +5,10 @@ import {
   ChallengeDomain,
 } from "../../../../domain/entities/challenge/Challenge";
 import { CreateChallengeDTO } from "../../../dto/challenge/CreateChallengeDTO";
+import { ICreateChallengeUseCase } from "../../../interfaces/challenge/admin/ICreateChallengeUseCase";
 
 
-
-export class CreateChallengeUseCase {
+export class CreateChallengeUseCase implements ICreateChallengeUseCase {
   constructor(
     private readonly _challengeRepo: IChallengeRepository
   ) {}

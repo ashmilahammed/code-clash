@@ -1,17 +1,17 @@
 import { Request, Response } from "express";
 
-import { RegisterUseCase } from "../../application/use-cases/auth/registerUseCase";
-import { VerifyOtpUseCase } from "../../application/use-cases/auth/verifyOtpUseCase";
-import { ResendOtpUseCase } from "../../application/use-cases/auth/resendOtpUseCase";
-import { LoginUseCase } from "../../application/use-cases/auth/loginUseCase";
-import { LogoutUseCase } from "../../application/use-cases/auth/logoutUseCase";
-import { ForgotPasswordUseCase } from "../../application/use-cases/auth/forgetPasswordUseCase";
-import { VerifyForgotOtpUseCase } from "../../application/use-cases/auth/verifyForgotOtpUseCase";
-import { ResetPasswordUseCase } from "../../application/use-cases/auth/resetPasswordUseCase";
-import { GoogleLoginUseCase } from "../../application/use-cases/auth/googleLoginUseCase";
-import { RefreshSessionUseCase } from "../../application/use-cases/auth/refreshSessionUseCase";
-import { GetCurrentUserUseCase } from "../../application/use-cases/auth/getCurrentUserUseCase";
-import { ChangePasswordUseCase } from "../../application/use-cases/auth/changePasswordUseCase";
+import { IRegisterUseCase } from "../../application/interfaces/auth/IRegisterUseCase";
+import { IVerifyOtpUseCase } from "../../application/interfaces/auth/IVerifyOtpUseCase";
+import { IResendOtpUseCase } from "../../application/interfaces/auth/IResendOtpUseCase";
+import { ILoginUseCase } from "../../application/interfaces/auth/ILoginUseCase";
+import { ILogoutUseCase } from "../../application/interfaces/auth/ILogoutUseCase";
+import { IForgotPasswordUseCase } from "../../application/interfaces/auth/IForgotPasswordUseCase";
+import { IVerifyForgotOtpUseCase } from "../../application/interfaces/auth/IVerifyForgotOtpUseCase";
+import { IResetPasswordUseCase } from "../../application/interfaces/auth/IResetPasswordUseCase";
+import { IGoogleLoginUseCase } from "../../application/interfaces/auth/IGoogleLoginUseCase";
+import { IRefreshSessionUseCase } from "../../application/interfaces/auth/IRefreshSessionUseCase";
+import { IGetCurrentUserUseCase } from "../../application/interfaces/auth/IGetCurrentUserUseCase";
+import { IChangePasswordUseCase } from "../../application/interfaces/auth/IChangePasswordUseCase";
 
 import { RegisterDTO } from "../../application/dto/auth/RegisterDTO";
 import { LoginDTO } from "../../application/dto/auth/LoginDTO";
@@ -32,18 +32,18 @@ import { HttpStatus } from "../constants/httpStatus";
 
 export class AuthController {
   constructor(
-    private readonly _registerUseCase: RegisterUseCase,
-    private readonly _verifyOtpUseCase: VerifyOtpUseCase,
-    private readonly _resendOtpUseCase: ResendOtpUseCase,
-    private readonly _loginUseCase: LoginUseCase,
-    private readonly _logoutUseCase: LogoutUseCase,
-    private readonly _forgotPasswordUseCase: ForgotPasswordUseCase,
-    private readonly _verifyForgotOtpUseCase: VerifyForgotOtpUseCase,
-    private readonly _resetPasswordUseCase: ResetPasswordUseCase,
-    private readonly _googleLoginUseCase: GoogleLoginUseCase,
-    private readonly _refreshSessionUseCase: RefreshSessionUseCase,
-    private readonly _getCurrentUserUseCase: GetCurrentUserUseCase,
-    private readonly _changePasswordUseCase: ChangePasswordUseCase
+    private readonly _registerUseCase: IRegisterUseCase,
+    private readonly _verifyOtpUseCase: IVerifyOtpUseCase,
+    private readonly _resendOtpUseCase: IResendOtpUseCase,
+    private readonly _loginUseCase: ILoginUseCase,
+    private readonly _logoutUseCase: ILogoutUseCase,
+    private readonly _forgotPasswordUseCase: IForgotPasswordUseCase,
+    private readonly _verifyForgotOtpUseCase: IVerifyForgotOtpUseCase,
+    private readonly _resetPasswordUseCase: IResetPasswordUseCase,
+    private readonly _googleLoginUseCase: IGoogleLoginUseCase,
+    private readonly _refreshSessionUseCase: IRefreshSessionUseCase,
+    private readonly _getCurrentUserUseCase: IGetCurrentUserUseCase,
+    private readonly _changePasswordUseCase: IChangePasswordUseCase
   ) { }
 
 
@@ -404,11 +404,3 @@ export class AuthController {
 
 
 }
-
-
-
-
-
-
-
-

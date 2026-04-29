@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { GetBadgesUseCase } from "../../application/use-cases/badge/GetBadgesUseCase";
-import { CreateBadgeUseCase } from "../../application/use-cases/badge/CreateBadgeUseCase";
-import { UpdateBadgeUseCase } from "../../application/use-cases/badge/UpdateBadgeUseCase";
-import { DeleteBadgeUseCase } from "../../application/use-cases/badge/DeleteBadgeUseCase";
+import { IGetBadgesUseCase } from "../../application/interfaces/badge/IGetBadgesUseCase";
+import { ICreateBadgeUseCase } from "../../application/interfaces/badge/ICreateBadgeUseCase";
+import { IUpdateBadgeUseCase } from "../../application/interfaces/badge/IUpdateBadgeUseCase";
+import { IDeleteBadgeUseCase } from "../../application/interfaces/badge/IDeleteBadgeUseCase";
 
 import { CreateBadgeDTO } from "../../application/dto/badge/CreateBadgeDTO";
 import { UpdateBadgeDTO } from "../../application/dto/badge/UpdateBadgeDTO";
@@ -14,10 +14,10 @@ import { MESSAGES } from "../constants/messages";
 
 export class BadgeController {
     constructor(
-        private readonly _getBadgesUseCase: GetBadgesUseCase,
-        private readonly _createBadgeUseCase: CreateBadgeUseCase,
-        private readonly _updateBadgeUseCase: UpdateBadgeUseCase,
-        private readonly _deleteBadgeUseCase: DeleteBadgeUseCase
+        private readonly _getBadgesUseCase: IGetBadgesUseCase,
+        private readonly _createBadgeUseCase: ICreateBadgeUseCase,
+        private readonly _updateBadgeUseCase: IUpdateBadgeUseCase,
+        private readonly _deleteBadgeUseCase: IDeleteBadgeUseCase
     ) { }
 
 

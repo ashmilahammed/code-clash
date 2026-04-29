@@ -5,8 +5,9 @@ import { IJwtService } from "../../../domain/services/IJwtService";
 import { JwtPayload } from "../../../domain/types/JwtPayload";
 import { UserFactory } from "../../../domain/entities/user/userFactory";
 import { GoogleLoginDTO } from "../../dto/auth/GoogleLoginDTO";
+import { IGoogleLoginUseCase } from "../../interfaces/auth/IGoogleLoginUseCase";
 
-export class GoogleLoginUseCase {
+export class GoogleLoginUseCase implements IGoogleLoginUseCase {
     constructor(
         private readonly _userRepo: IUserCoreRepository & IUserAuthRepository,
         private readonly _jwtService: IJwtService,
@@ -68,5 +69,3 @@ export class GoogleLoginUseCase {
         return { user, accessToken, refreshToken };
     }
 }
-
-

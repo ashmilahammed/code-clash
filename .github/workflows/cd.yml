@@ -13,7 +13,7 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
-      - name: Download Frontend Dist       # ADD THIS
+      - name: Download Frontend Dist       
         uses: actions/download-artifact@v4
         with:
           name: frontend-dist
@@ -31,9 +31,9 @@ jobs:
           script: |
             sudo rm -rf /var/www/html/*
             sudo chown -R ubuntu:ubuntu /var/www/html     
-            
 
-      - name: Copy dist to EC2             # ADD THIS
+
+      - name: Copy dist to EC2             
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}

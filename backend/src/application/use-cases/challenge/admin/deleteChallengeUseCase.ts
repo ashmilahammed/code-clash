@@ -1,6 +1,8 @@
 import { IChallengeRepository } from "../../../../domain/repositories/challenge/IChallengeRepository";
+import { IDeleteChallengeUseCase } from "../../../interfaces/challenge/admin/IDeleteChallengeUseCase";
 
-export class DeleteChallengeUseCase {
+
+export class DeleteChallengeUseCase implements IDeleteChallengeUseCase {
   constructor(
     private readonly _repo: IChallengeRepository
   ) { }

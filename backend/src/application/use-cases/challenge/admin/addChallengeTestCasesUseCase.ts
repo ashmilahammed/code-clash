@@ -1,7 +1,8 @@
 import { IChallengeTestCaseRepository } from "../../../../domain/repositories/challenge/IChallengeTestCaseRepository";
+import { IAddChallengeTestCasesUseCase } from "../../../interfaces/challenge/admin/IAddChallengeTestCasesUseCase";
 
 
-export class AddChallengeTestCasesUseCase {
+export class AddChallengeTestCasesUseCase implements IAddChallengeTestCasesUseCase {
     constructor(
         private readonly _repo: IChallengeTestCaseRepository
     ) { }

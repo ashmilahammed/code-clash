@@ -2,10 +2,10 @@ import { IConversationRepository } from "../../../../domain/repositories/chat/IC
 import { Conversation, ConversationType } from "../../../../domain/entities/chat/Conversation";
 import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
 import { CreateGroupDTO } from "../../../dto/chat/CreateGroupDTO";
+import { ICreateGroupUseCase } from "../../../interfaces/chat/user/ICreateGroupUseCase";
 
 
-
-export class CreateGroupUseCase {
+export class CreateGroupUseCase implements ICreateGroupUseCase {
     constructor(
         private readonly _conversationRepository: IConversationRepository,
         private readonly _userRepository: IUserRepository

@@ -4,9 +4,10 @@ import { IUserRepository } from "../../../../domain/repositories/user/IUserRepos
 import { IBadgeRewardService } from "../../../../domain/services/IBadgeRewardService";
 import { Badge } from "../../../../domain/entities/badge/Badge";
 
+import { IJoinGroupUseCase } from "../../../interfaces/chat/user/IJoinGroupUseCase";
 
 
-export class JoinGroupUseCase {
+export class JoinGroupUseCase implements IJoinGroupUseCase {
     constructor(
         private readonly _conversationRepository: IConversationRepository,
         private readonly _userRepository: IUserRepository,

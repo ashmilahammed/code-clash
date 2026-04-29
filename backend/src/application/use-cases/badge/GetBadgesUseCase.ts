@@ -1,7 +1,9 @@
 import { Badge } from "../../../domain/entities/badge/Badge";
 import { IBadgeRepository } from "../../../domain/repositories/badge/IBadgeRepository";
 
-export class GetBadgesUseCase {
+import { IGetBadgesUseCase } from "../../interfaces/badge/IGetBadgesUseCase";
+
+export class GetBadgesUseCase implements IGetBadgesUseCase {
     constructor(
         private readonly _badgeRepository: IBadgeRepository
     ) { }

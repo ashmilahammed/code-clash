@@ -1,7 +1,9 @@
 import { IMessageRepository } from "../../../../domain/repositories/chat/IMessageRepository";
 import { Message } from "../../../../domain/entities/chat/Message";
 
-export class GetMessageByIdUseCase {
+import { IGetMessageByIdUseCase } from "../../../interfaces/chat/user/IGetMessageByIdUseCase";
+
+export class GetMessageByIdUseCase implements IGetMessageByIdUseCase {
     constructor(
         private readonly _messageRepository: IMessageRepository
     ) {}

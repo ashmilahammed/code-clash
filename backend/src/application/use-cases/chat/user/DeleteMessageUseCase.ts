@@ -1,7 +1,9 @@
 import { IMessageRepository } from "../../../../domain/repositories/chat/IMessageRepository";
 import { Message } from "../../../../domain/entities/chat/Message";
 
-export class DeleteMessageUseCase {
+import { IDeleteMessageUseCase } from "../../../interfaces/chat/user/IDeleteMessageUseCase";
+
+export class DeleteMessageUseCase implements IDeleteMessageUseCase {
     constructor(
         private readonly _messageRepository: IMessageRepository
     ) { }

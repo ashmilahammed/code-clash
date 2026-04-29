@@ -4,9 +4,9 @@ import { PaginatedResult } from "../../../../domain/types/PaginatedResult";
 import { UserResponseDTO } from "../../../dto/user/UserResponseDTO";
 import { UserMapper } from "../../../mappers/UserMapper";
 
+import { IListUsersUseCase } from "../../../interfaces/user/admin/IListUsersUseCase";
 
-
-export class ListUsersUseCase {
+export class ListUsersUseCase implements IListUsersUseCase {
   constructor(
     private readonly _userRepo: IUserAdminRepository
   ) {}
@@ -31,21 +31,3 @@ export class ListUsersUseCase {
 
 
 
-
-
-// import { IUserRepository } from "../../../domain/repositories/IUserRepository";
-
-
-// export class ListUsersUseCase {
-//     constructor(private userRepo: IUserRepository) { }
-
-//     async execute(
-//         page: number,
-//         limit: number,
-//         status?: "active" | "blocked"
-//     ) {
-//         const filter = status ? { status } : undefined;
-
-//         return this.userRepo.findAll(page, limit, filter);
-//     }
-// }

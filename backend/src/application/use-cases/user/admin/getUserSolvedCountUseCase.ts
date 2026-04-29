@@ -1,7 +1,9 @@
 import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
 import { ISubmissionRepository } from "../../../../domain/repositories/submission/ISubmissionRepository";
+import { IGetUserSolvedCountUseCase } from "../../../interfaces/user/admin/IGetUserSolvedCountUseCase";
 
-export class GetUserSolvedCountUseCase {
+
+export class GetUserSolvedCountUseCase implements IGetUserSolvedCountUseCase {
   constructor(
     private readonly _userRepository: IUserRepository,
     private readonly _submissionRepository: ISubmissionRepository

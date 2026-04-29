@@ -1,9 +1,9 @@
 import { IUserGamificationRepository } from "../../../../domain/repositories/user/IUserGamificationRepository";
 import { ISubmissionRepository } from "../../../../domain/repositories/submission/ISubmissionRepository";
 import { ILevelRepository } from "../../../../domain/repositories/level/ILevelRepository";
+import { IGetLeaderboardUseCase } from "../../../interfaces/user/user/IGetLeaderboardUseCase";
 
-
-export class GetLeaderboardUseCase {
+export class GetLeaderboardUseCase implements IGetLeaderboardUseCase {
     constructor(
         private readonly _userRepo: IUserGamificationRepository,
         private readonly _submissionRepo: ISubmissionRepository,

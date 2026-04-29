@@ -1,8 +1,8 @@
 import { IUserCoreRepository } from "../../../domain/repositories/user/IUserCoreRepository";
 import { IUserAuthRepository } from "../../../domain/repositories/user/IUserAuthRepository";
+import { IVerifyForgotOtpUseCase } from "../../interfaces/auth/IVerifyForgotOtpUseCase";
 
-
-export class VerifyForgotOtpUseCase {
+export class VerifyForgotOtpUseCase implements IVerifyForgotOtpUseCase {
   constructor(
     private readonly _userRepo: IUserCoreRepository & IUserAuthRepository
   ) { }
@@ -24,6 +24,5 @@ export class VerifyForgotOtpUseCase {
     // clear OTP so it cannot be reused
     await this._userRepo.saveOtp(userId, null, null);
 
-    return { success: true };
   }
 }

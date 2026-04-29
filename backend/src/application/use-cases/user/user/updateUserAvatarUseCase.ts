@@ -1,9 +1,9 @@
 import { IUserCoreRepository } from "../../../../domain/repositories/user/IUserCoreRepository";
 import { IFileStorageService } from "../../../../domain/services/IFileStorageService";
 
+import { IUpdateUserAvatarUseCase } from "../../../interfaces/user/user/IUpdateUserAvatarUseCase";
 
-
-export class UpdateUserAvatarUseCase {
+export class UpdateUserAvatarUseCase implements IUpdateUserAvatarUseCase {
   constructor(
     private readonly _userRepository: IUserCoreRepository,
     private readonly _fileStorage: IFileStorageService

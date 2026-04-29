@@ -2,7 +2,10 @@ import { INotificationRepository } from "../../../../domain/repositories/notific
 import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
 import { UserNotificationsQueryDTO } from "../../../dto/notification/UserNotificationsQueryDTO";
 
-export class GetUserNotificationsUseCase {
+import { IGetUserNotificationsUseCase } from "../../../interfaces/notification/user/IGetUserNotificationsUseCase";
+
+
+export class GetUserNotificationsUseCase implements IGetUserNotificationsUseCase {
   constructor(
     private readonly _notificationRepository: INotificationRepository,
     private readonly _userRepository: IUserRepository
@@ -11,16 +14,40 @@ export class GetUserNotificationsUseCase {
   async execute(dto: UserNotificationsQueryDTO) {
     const { userId, page, limit } = dto;
 
+    // const user = await this._userRepository.findById(userId);
+    // const isPremium = user?.is_premium ?? false;
+    // const dateJoined = user?.date_joined ?? new Date();
+
+    // return await this._notificationRepository.getUserNotifications(
+    //   userId,
+    //   isPremium,
+    //   dateJoined,
+    //   page,
+    //   limit
+    // );
+
     const user = await this._userRepository.findById(userId);
+
     const isPremium = user?.is_premium ?? false;
     const dateJoined = user?.date_joined ?? new Date();
 
-    return await this._notificationRepository.getUserNotifications(
-      userId,
-      isPremium,
-      dateJoined,
-      page,
-      limit
-    );
+    const { data, total } =
+      await this._notificationRepository.getUserNotifications(
+        userId,
+        isPremium,
+        dateJoined,
+        page,
+        limit
+      );
+
+    const unreadCount = data.filter((n: any) => !n.isRead).length;
+
+    return {
+      notifications: data,
+      unreadCount,
+      total,
+      totalPages: Math.ceil(total / limit),
+    };
+
   }
 }

@@ -1,6 +1,7 @@
 import { IReportRepository } from "../../../../domain/repositories/chat/IReportRepository";
+import { IDismissReportUseCase } from "../../../interfaces/chat/admin/IDismissReportUseCase";
 
-export class DismissReportUseCase {
+export class DismissReportUseCase implements IDismissReportUseCase {
     constructor(
         private readonly _reportRepository: IReportRepository
     ) {}

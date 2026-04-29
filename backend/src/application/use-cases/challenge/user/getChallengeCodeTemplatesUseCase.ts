@@ -1,8 +1,9 @@
 import { IChallengeCodeTemplateRepository } from "../../../../domain/repositories/challenge/IChallengeCodeTemplateRepository";
 import { ISubmissionRepository } from "../../../../domain/repositories/submission/ISubmissionRepository";
+import { IGetChallengeCodeTemplatesUseCase } from "../../../interfaces/challenge/user/IGetChallengeCodeTemplatesUseCase";
 
 
-export class GetChallengeCodeTemplatesUseCase {
+export class GetChallengeCodeTemplatesUseCase implements IGetChallengeCodeTemplatesUseCase {
   constructor(
     private readonly _repo: IChallengeCodeTemplateRepository,
     private readonly _submissionRepo: ISubmissionRepository,

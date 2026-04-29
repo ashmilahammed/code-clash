@@ -3,18 +3,15 @@ import { IUserAuthRepository } from "../../../domain/repositories/user/IUserAuth
 import { IEmailService } from "../../../domain/services/IEmailService";
 import { generateOtp } from "../../../utils/generateOtp";
 
+import { IResendOtpUseCase } from "../../interfaces/auth/IResendOtpUseCase";
 
-
-export class ResendOtpUseCase {
+export class ResendOtpUseCase implements IResendOtpUseCase {
   constructor(
     private readonly _userRepo: IUserCoreRepository & IUserAuthRepository,
     private readonly _emailService: IEmailService
   ) { }
 
-  async execute(
-    userId: string,
-    options?: { ignoreVerified?: boolean }
-  ) {
+  async execute(userId: string, options?: { ignoreVerified?: boolean }) {
 
     const user = await this._userRepo.findById(userId);
     if (!user) throw new Error("User not found");
@@ -33,6 +30,5 @@ export class ResendOtpUseCase {
     //
     console.log(`Resent OTP to ${user.email}: ${otp}`);
 
-    return { message: "New OTP sent to email" };
   }
 }

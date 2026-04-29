@@ -1,7 +1,8 @@
 import { IChallengeRepository } from "../../../../domain/repositories/challenge/IChallengeRepository";
+import { IUpdateChallengeScheduleUseCase } from "../../../interfaces/challenge/admin/IUpdateChallengeScheduleUseCase";
+ 
 
-
-export class UpdateChallengeScheduleUseCase {
+export class UpdateChallengeScheduleUseCase implements IUpdateChallengeScheduleUseCase {
   constructor(
     private readonly _challengeRepo: IChallengeRepository
   ) { }

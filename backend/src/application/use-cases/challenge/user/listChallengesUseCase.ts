@@ -2,9 +2,10 @@ import { IChallengeRepository } from "../../../../domain/repositories/challenge/
 import { ListQuery } from "../../../../domain/types/ListQuery";
 import { PaginatedResult } from "../../../../domain/types/PaginatedResult";
 import { Challenge } from "../../../../domain/entities/challenge/Challenge";
+import { IListChallengesUseCase } from "../../../interfaces/challenge/user/IListChallengesUseCase";
 
 
-export class ListChallengesUseCase {
+export class ListChallengesUseCase implements IListChallengesUseCase {
   constructor(
     private readonly _challengeRepo: IChallengeRepository
   ) {}

@@ -2,7 +2,10 @@ import { IChallengeRepository } from "../../../../domain/repositories/challenge/
 import { INotificationRepository } from "../../../../domain/repositories/notification/INotificationRepository";
 import { ToggleChallengeDTO } from "../../../dto/challenge/ToggleChallengeDTO";
 
-export class ToggleChallengeStatusUseCase {
+import { IToggleChallengeStatusUseCase } from "../../../interfaces/challenge/admin/IToggleChallengeStatusUseCase";
+
+
+export class ToggleChallengeStatusUseCase implements IToggleChallengeStatusUseCase {
 
   constructor(
     private readonly _challengeRepo: IChallengeRepository,

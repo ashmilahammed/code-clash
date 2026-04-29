@@ -1,7 +1,8 @@
 import { IChallengeHintRepository } from "../../../../domain/repositories/challenge/IChallengeHintRepository";
+import { IAddChallengeHintsUseCase } from "../../../interfaces/challenge/admin/IAddChallengeHintsUseCase";
 
 
-export class AddChallengeHintsUseCase {
+export class AddChallengeHintsUseCase implements IAddChallengeHintsUseCase {
   constructor(
     private readonly _repo: IChallengeHintRepository
   ) { }

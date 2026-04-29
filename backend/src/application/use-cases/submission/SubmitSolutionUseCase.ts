@@ -9,9 +9,10 @@ import { ILevelRepository } from "../../../domain/repositories/level/ILevelRepos
 import { IBadgeRewardService } from "../../../domain/services/IBadgeRewardService";
 import { Badge } from "../../../domain/entities/badge/Badge";
 
+import { ISubmitSolutionUseCase } from "../../interfaces/submission/ISubmitSolutionUseCase";
 
 
-export class SubmitSolutionUseCase {
+export class SubmitSolutionUseCase implements ISubmitSolutionUseCase {
     constructor(
         private readonly _challengeRepo: IChallengeRepository,
         private readonly _testCaseRepo: IChallengeTestCaseRepository,

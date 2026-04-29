@@ -1,7 +1,8 @@
 import { IConversationRepository } from "../../../../domain/repositories/chat/IConversationRepository";
 import { MessageModel } from "../../../../infrastructure/database/models/chat/MessageModel";
+import { IDeleteGroupUseCase } from "../../../interfaces/chat/admin/IDeleteGroupUseCase";
 
-export class DeleteGroupUseCase {
+export class DeleteGroupUseCase implements IDeleteGroupUseCase {
     constructor(
         private readonly _conversationRepository: IConversationRepository
     ) { }

@@ -5,9 +5,10 @@ import {
 } from "../../../../domain/entities/chat/Report";
 import { IMessageRepository } from "../../../../domain/repositories/chat/IMessageRepository";
 import { ReportMessageDTO } from "../../../dto/report/ReportMessageDTO";
+import { IReportMessageUseCase } from "../../../interfaces/chat/user/IReportMessageUseCase";
 
 
-export class ReportMessageUseCase {
+export class ReportMessageUseCase implements IReportMessageUseCase {
     constructor(
         private readonly _reportRepository: IReportRepository,
         private readonly _messageRepository: IMessageRepository

@@ -1,8 +1,8 @@
 import { IChallengeRepository } from "../../../../domain/repositories/challenge/IChallengeRepository";
 import { IProgrammingLanguageRepository } from "../../../../domain/repositories/language/IProgrammingLanguageRepository";
+import { IAddChallengeLanguagesUseCase } from "../../../interfaces/challenge/admin/IAddChallengeLanguagesUseCase";
 
-
-export class AddChallengeLanguagesUseCase {
+export class AddChallengeLanguagesUseCase implements IAddChallengeLanguagesUseCase {
   constructor(
     private readonly _challengeRepo: IChallengeRepository,
     private readonly _langRepo: IProgrammingLanguageRepository

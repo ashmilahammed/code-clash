@@ -1,7 +1,9 @@
 import { IChallengeRepository } from "../../../../domain/repositories/challenge/IChallengeRepository";
 import { IChallengeTagRepository } from "../../../../domain/repositories/challenge/IChallengeTagRepository";
+import { IAddChallengeTagsUseCase } from "../../../interfaces/challenge/admin/IAddChallengeTagsUseCase";
 
-export class AddChallengeTagsUseCase {
+
+export class AddChallengeTagsUseCase implements IAddChallengeTagsUseCase {
   constructor(
     private readonly _challengeRepo: IChallengeRepository,
     private readonly _tagRepo: IChallengeTagRepository

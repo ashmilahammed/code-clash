@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
 
-import { CreateGroupUseCase } from "../../application/use-cases/chat/user/CreateGroupUseCase";
-import { JoinGroupUseCase } from "../../application/use-cases/chat/user/JoinGroupUseCase";
-import { GetConversationsUseCase } from "../../application/use-cases/chat/user/GetConversationsUseCase";
-import { GetMessagesUseCase } from "../../application/use-cases/chat/user/GetMessagesUseCase";
-import { GetOrCreateDirectConversationUseCase } from "../../application/use-cases/chat/user/GetOrCreateDirectConversationUseCase";
-import { GetPublicConversationsUseCase } from "../../application/use-cases/chat/user/GetPublicConversationsUseCase";
-import { LeaveGroupUseCase } from "../../application/use-cases/chat/user/LeaveGroupUseCase";
-import { AddParticipantsUseCase } from "../../application/use-cases/chat/user/AddParticipantsUseCase";
-import { UploadChatImageUseCase } from "../../application/use-cases/chat/user/UploadChatImageUseCase";
+import { ICreateGroupUseCase } from "../../application/interfaces/chat/user/ICreateGroupUseCase";
+import { IJoinGroupUseCase } from "../../application/interfaces/chat/user/IJoinGroupUseCase";
+import { IGetConversationsUseCase } from "../../application/interfaces/chat/user/IGetConversationsUseCase";
+import { IGetMessagesUseCase } from "../../application/interfaces/chat/user/IGetMessagesUseCase";
+import { IGetOrCreateDirectConversationUseCase } from "../../application/interfaces/chat/user/IGetOrCreateDirectConversationUseCase";
+import { IGetPublicConversationsUseCase } from "../../application/interfaces/chat/user/IGetPublicConversationsUseCase";
+import { ILeaveGroupUseCase } from "../../application/interfaces/chat/user/ILeaveGroupUseCase";
+import { IAddParticipantsUseCase } from "../../application/interfaces/chat/user/IAddParticipantsUseCase";
+import { IUploadChatImageUseCase } from "../../application/interfaces/chat/user/IUploadChatImageUseCase";
 
 import { CreateGroupDTO } from "../../application/dto/chat/CreateGroupDTO";
 import { AddParticipantsDTO } from "../../application/dto/chat/AddParticipantsDTO";
@@ -24,15 +24,15 @@ import { MESSAGES } from "../constants/messages";
 
 export class ChatController {
     constructor(
-        private readonly _createGroupUseCase: CreateGroupUseCase,
-        private readonly _joinGroupUseCase: JoinGroupUseCase,
-        private readonly _getConversationsUseCase: GetConversationsUseCase,
-        private readonly _getMessagesUseCase: GetMessagesUseCase,
-        private readonly _getOrCreateDirectConversationUseCase: GetOrCreateDirectConversationUseCase,
-        private readonly _getPublicConversationsUseCase: GetPublicConversationsUseCase,
-        private readonly _leaveGroupUseCase: LeaveGroupUseCase,
-        private readonly _addParticipantsUseCase: AddParticipantsUseCase,
-        private readonly _uploadChatImageUseCase: UploadChatImageUseCase
+        private readonly _createGroupUseCase: ICreateGroupUseCase,
+        private readonly _joinGroupUseCase: IJoinGroupUseCase,
+        private readonly _getConversationsUseCase: IGetConversationsUseCase,
+        private readonly _getMessagesUseCase: IGetMessagesUseCase,
+        private readonly _getOrCreateDirectConversationUseCase: IGetOrCreateDirectConversationUseCase,
+        private readonly _getPublicConversationsUseCase: IGetPublicConversationsUseCase,
+        private readonly _leaveGroupUseCase: ILeaveGroupUseCase,
+        private readonly _addParticipantsUseCase: IAddParticipantsUseCase,
+        private readonly _uploadChatImageUseCase: IUploadChatImageUseCase
     ) { }
 
 

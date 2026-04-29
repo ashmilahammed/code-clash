@@ -1,9 +1,9 @@
 import { IUserAuthRepository } from "../../../domain/repositories/user/IUserAuthRepository";
 import { IPasswordService } from "../../../domain/services/IPasswordService";
 import { ResetPasswordDTO } from "../../dto/auth/ResetPasswordDTO";
+import { IResetPasswordUseCase } from "../../interfaces/auth/IResetPasswordUseCase";
 
-
-export class ResetPasswordUseCase {
+export class ResetPasswordUseCase implements IResetPasswordUseCase {
   constructor(
     private readonly _userRepo: IUserAuthRepository,
     private readonly _passwordService: IPasswordService

@@ -1,8 +1,8 @@
 import { IUserCoreRepository } from "../../../../domain/repositories/user/IUserCoreRepository";
 import { User } from "../../../../domain/entities/user/User";
+import { IUpdateUserProfileUseCase } from "../../../interfaces/user/user/IUpdateUserProfileUseCase";
 
-
-export class UpdateUserProfileUseCase {
+export class UpdateUserProfileUseCase implements IUpdateUserProfileUseCase {
   constructor(
     private readonly _userRepository: IUserCoreRepository
   ) {}

@@ -1,6 +1,7 @@
 import { IUserCoreRepository } from "../../../../domain/repositories/user/IUserCoreRepository";
+import { IClaimWelcomeXpUseCase } from "../../../interfaces/user/user/IClaimWelcomeXpUseCase";
 
-export class ClaimWelcomeXpUseCase {
+export class ClaimWelcomeXpUseCase implements IClaimWelcomeXpUseCase {
   constructor(
     private readonly _userRepository: IUserCoreRepository
   ) {}

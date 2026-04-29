@@ -3,9 +3,9 @@ import { ISubmissionRepository } from "../../../../domain/repositories/submissio
 import { IXpService } from "../../../../domain/services/IXpService";
 import { ILevelRepository } from "../../../../domain/repositories/level/ILevelRepository";
 import { IBadgeRepository } from "../../../../domain/repositories/badge/IBadgeRepository";
-import { UserMapper } from "../../../mappers/UserMapper";
+import { UserMapper } from "../../../mappers/UserMapper";import { IGetUserProfileStatsUseCase } from "../../../interfaces/user/user/IGetUserProfileStatsUseCase";
 
-export class GetUserProfileStatsUseCase {
+export class GetUserProfileStatsUseCase implements IGetUserProfileStatsUseCase {
     constructor(
         private readonly _userRepo: IUserCoreRepository,
         private readonly _submissionRepo: ISubmissionRepository,

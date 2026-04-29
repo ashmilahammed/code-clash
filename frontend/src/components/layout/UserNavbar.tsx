@@ -50,21 +50,21 @@ function UserNavbar() {
   const fetchNotifications = async () => {
     try {
 
-      // const res = await getUserNotificationsApi(1, 10);
-      // setNotifications(res.data.data);
-      // setUnreadCount(res.data.data.filter((n: any) => !n.isRead).length);
+      const result = await getUserNotificationsApi(1, 10);
 
-      const notifications = await getUserNotificationsApi(1, 10);
+      // setNotifications(notifications);
+      // setUnreadCount(
+      //   notifications.filter((n: any) => !n.isRead).length
+      // );
 
-      setNotifications(notifications);
-      setUnreadCount(
-        notifications.filter((n: any) => !n.isRead).length
-      );
+      setNotifications(result.notifications);
+      setUnreadCount(result.unreadCount);
 
     } catch (err) {
       console.error("Failed to fetch notifications", err);
     }
   };
+
 
   const handleMarkAsRead = async (id: string) => {
     try {

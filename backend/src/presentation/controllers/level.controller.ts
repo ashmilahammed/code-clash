@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { CreateLevelUseCase } from "../../application/use-cases/level/admin/CreateLevelUseCase";
-import { GetLevelsUseCase } from "../../application/use-cases/level/user/GetLevelsUseCase";
-import { UpdateLevelUseCase } from "../../application/use-cases/level/admin/UpdateLevelUseCase";
-import { DeleteLevelUseCase } from "../../application/use-cases/level/admin/DeleteLevelUseCase";
+import { ICreateLevelUseCase } from "../../application/interfaces/level/admin/ICreateLevelUseCase";
+import { IGetLevelsUseCase } from "../../application/interfaces/level/user/IGetLevelsUseCase";
+import { IUpdateLevelUseCase } from "../../application/interfaces/level/admin/IUpdateLevelUseCase";
+import { IDeleteLevelUseCase } from "../../application/interfaces/level/admin/IDeleteLevelUseCase";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
@@ -14,10 +14,10 @@ import { UpdateLevelDTO } from "../../application/dto/level/UpdateLevelDTO";
 
 export class LevelController {
   constructor(
-    private readonly _createLevel: CreateLevelUseCase,
-    private readonly _getLevels: GetLevelsUseCase,
-    private readonly _updateLevel: UpdateLevelUseCase,
-    private readonly _deleteLevel: DeleteLevelUseCase
+    private readonly _createLevel: ICreateLevelUseCase,
+    private readonly _getLevels: IGetLevelsUseCase,
+    private readonly _updateLevel: IUpdateLevelUseCase,
+    private readonly _deleteLevel: IDeleteLevelUseCase
   ) { }
 
 

@@ -1,9 +1,9 @@
 import { IUserCoreRepository } from "../../../../domain/repositories/user/IUserCoreRepository";
 import { IUserGamificationRepository } from "../../../../domain/repositories/user/IUserGamificationRepository";
 import { IBadgeRewardService } from "../../../../domain/services/IBadgeRewardService";
-import { Badge } from "../../../../domain/entities/badge/Badge";
+import { Badge } from "../../../../domain/entities/badge/Badge";import { IUpdateLoginStreakUseCase } from "../../../interfaces/user/user/IUpdateLoginStreakUseCase";
 
-export class UpdateLoginStreakUseCase {
+export class UpdateLoginStreakUseCase implements IUpdateLoginStreakUseCase {
   constructor(
     private readonly _userRepo: IUserCoreRepository & IUserGamificationRepository,
     private readonly _badgeRewardService: IBadgeRewardService

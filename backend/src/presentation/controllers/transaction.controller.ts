@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { GetTransactionsUseCase } from "../../application/use-cases/transaction/GetTransactionsUseCase";
-import { CreateRazorpayOrderUseCase } from "../../application/use-cases/transaction/CreateRazorpayOrderUseCase";
-import { VerifyRazorpayPaymentUseCase } from "../../application/use-cases/transaction/VerifyRazorpayPaymentUseCase";
-import { GetUserTransactionsUseCase } from "../../application/use-cases/transaction/GetUserTransactionsUseCase";
-import { GetCurrentPremiumPlanUseCase } from "../../application/use-cases/transaction/GetCurrentPremiumPlanUseCase";
+import { IGetTransactionsUseCase } from "../../application/interfaces/transaction/IGetTransactionsUseCase";
+import { ICreateRazorpayOrderUseCase } from "../../application/interfaces/transaction/ICreateRazorpayOrderUseCase";
+import { IVerifyRazorpayPaymentUseCase } from "../../application/interfaces/transaction/IVerifyRazorpayPaymentUseCase";
+import { IGetUserTransactionsUseCase } from "../../application/interfaces/transaction/IGetUserTransactionsUseCase";
+import { IGetCurrentPremiumPlanUseCase } from "../../application/interfaces/transaction/IGetCurrentPremiumPlanUseCase";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
@@ -21,11 +21,11 @@ interface AuthUserContext {
 
 export class TransactionController {
     constructor(
-        private readonly _getTransactionsUseCase: GetTransactionsUseCase,
-        private readonly _createOrderUseCase: CreateRazorpayOrderUseCase,
-        private readonly _verifyPaymentUseCase: VerifyRazorpayPaymentUseCase,
-        private readonly _getUserTransactionsUseCase: GetUserTransactionsUseCase,
-        private readonly _getCurrentPremiumPlanUseCase: GetCurrentPremiumPlanUseCase
+        private readonly _getTransactionsUseCase: IGetTransactionsUseCase,
+        private readonly _createOrderUseCase: ICreateRazorpayOrderUseCase,
+        private readonly _verifyPaymentUseCase: IVerifyRazorpayPaymentUseCase,
+        private readonly _getUserTransactionsUseCase: IGetUserTransactionsUseCase,
+        private readonly _getCurrentPremiumPlanUseCase: IGetCurrentPremiumPlanUseCase
     ) { }
 
 

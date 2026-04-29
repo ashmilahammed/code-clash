@@ -1,7 +1,8 @@
 import { ICodeExecutionService } from "../../../domain/services/ICodeExecutionService";
+import { IRunCodeUseCase } from "../../interfaces/submission/IRunCodeUseCase";
 
 
-export class RunCodeUseCase {
+export class RunCodeUseCase implements IRunCodeUseCase {
   constructor(
     private readonly _executionService: ICodeExecutionService
   ) { }
@@ -15,6 +16,15 @@ export class RunCodeUseCase {
       throw new Error("Language is required");
     }
 
-    return this._executionService.execute(language, code, input);
+    // return this._executionService.execute(language, code, input);
+    
+    const result = await this._executionService.execute(language, code, input);
+
+    return {
+      output: result.stdout,
+      error: result.stderr ?? null,
+      memory: result.memory,
+      time: result.runtime,
+    };
   }
 }

@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 
-import { ListUsersUseCase } from "../../application/use-cases/user/admin/listUsersUseCase";
-import { UpdateUserStatusUseCase } from "../../application/use-cases/user/admin/updateUserStatusUseCase";
-import { GetAdminDashboardStatsUseCase } from "../../application/use-cases/admin/GetAdminDashboardStatsUseCase";
-import { GetUserSolvedCountUseCase } from "../../application/use-cases/user/admin/getUserSolvedCountUseCase";
+import { IListUsersUseCase } from "../../application/interfaces/user/admin/IListUsersUseCase";
+import { IUpdateUserStatusUseCase } from "../../application/interfaces/user/admin/IUpdateUserStatusUseCase";
+import { IGetAdminDashboardStatsUseCase } from "../../application/interfaces/admin-Dashboard/IGetAdminDashboardStatsUseCase";
+import { IGetUserSolvedCountUseCase } from "../../application/interfaces/user/admin/IGetUserSolvedCountUseCase";
 import { ApiResponse } from "../common/ApiResponse";
 import { MESSAGES } from "../constants/messages";
 import { HttpStatus } from "../constants/httpStatus";
@@ -19,10 +19,10 @@ interface AuthUserContext {
 
 export class AdminController {
   constructor(
-    private readonly _listUsersUseCase: ListUsersUseCase,
-    private readonly _updateUserStatusUseCase: UpdateUserStatusUseCase,
-    private readonly _getAdminDashboardStatsUseCase: GetAdminDashboardStatsUseCase,
-    private readonly _getUserSolvedCountUseCase: GetUserSolvedCountUseCase
+    private readonly _listUsersUseCase: IListUsersUseCase,
+    private readonly _updateUserStatusUseCase: IUpdateUserStatusUseCase,
+    private readonly _getAdminDashboardStatsUseCase: IGetAdminDashboardStatsUseCase,
+    private readonly _getUserSolvedCountUseCase: IGetUserSolvedCountUseCase
   ) { }
 
   // 

@@ -1,7 +1,9 @@
 import { IPlanRepository } from "../../../../domain/repositories/plan/IPlanRepository";
 import { Plan } from "../../../../domain/entities/plan/Plan";
 
-export class UpdatePlanUseCase {
+import { IUpdatePlanUseCase } from "../../../interfaces/plans/admin/IUpdatePlanUseCase";
+
+export class UpdatePlanUseCase implements IUpdatePlanUseCase {
     constructor(
         private readonly _planRepository: IPlanRepository
     ) { }

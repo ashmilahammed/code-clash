@@ -1,7 +1,8 @@
 import { IChallengeCodeTemplateRepository } from "../../../../domain/repositories/challenge/IChallengeCodeTemplateRepository";
+import { IGetAdminChallengeCodeTemplatesUseCase } from "../../../interfaces/challenge/admin/IGetAdminChallengeCodeTemplatesUseCase";
 
 
-export class GetAdminChallengeCodeTemplatesUseCase {
+export class GetAdminChallengeCodeTemplatesUseCase implements IGetAdminChallengeCodeTemplatesUseCase {
     constructor(
         private readonly _repo: IChallengeCodeTemplateRepository
     ) { }

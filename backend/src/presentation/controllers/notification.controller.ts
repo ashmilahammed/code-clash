@@ -3,12 +3,12 @@ import { HttpStatus } from "../constants/httpStatus";
 import { MESSAGES } from "../constants/messages";
 import { ApiResponse } from "../common/ApiResponse";
 
-import { SendNotificationUseCase } from "../../application/use-cases/notification/admin/SendNotificationUseCase";
-import { GetAdminNotificationHistoryUseCase } from "../../application/use-cases/notification/admin/GetAdminNotificationHistoryUseCase";
-import { GetUserNotificationsUseCase } from "../../application/use-cases/notification/user/GetUserNotificationsUseCase";
-import { MarkNotificationReadUseCase } from "../../application/use-cases/notification/user/MarkNotificationReadUseCase";
-import { MarkAllReadUseCase } from "../../application/use-cases/notification/user/MarkAllReadUseCase";
-import { ClearNotificationsUseCase } from "../../application/use-cases/notification/user/ClearNotificationsUseCase";
+import { ISendNotificationUseCase } from "../../application/interfaces/notification/admin/ISendNotificationUseCase";
+import { IGetAdminNotificationHistoryUseCase } from "../../application/interfaces/notification/admin/IGetAdminNotificationHistoryUseCase";
+import { IGetUserNotificationsUseCase } from "../../application/interfaces/notification/user/IGetUserNotificationsUseCase";
+import { IMarkNotificationReadUseCase } from "../../application/interfaces/notification/user/IMarkNotificationReadUseCase";
+import { IMarkAllReadUseCase } from "../../application/interfaces/notification/user/IMarkAllReadUseCase";
+import { IClearNotificationsUseCase } from "../../application/interfaces/notification/user/IClearNotificationsUseCase";
 
 import { SendNotificationDTO } from "../../application/dto/notification/SendNotificationDTO";
 import { AdminNotificationHistoryQueryDTO } from "../../application/dto/notification/AdminNotificationHistoryQueryDTO";
@@ -23,12 +23,12 @@ interface AuthUserContext {
 
 export class NotificationController {
   constructor(
-    private readonly _sendNotificationUseCase: SendNotificationUseCase,
-    private readonly _getAdminNotificationHistoryUseCase: GetAdminNotificationHistoryUseCase,
-    private readonly _getUserNotificationsUseCase: GetUserNotificationsUseCase,
-    private readonly _markNotificationReadUseCase: MarkNotificationReadUseCase,
-    private readonly _markAllReadUseCase: MarkAllReadUseCase,
-    private readonly _clearNotificationsUseCase: ClearNotificationsUseCase
+    private readonly _sendNotificationUseCase: ISendNotificationUseCase,
+    private readonly _getAdminNotificationHistoryUseCase: IGetAdminNotificationHistoryUseCase,
+    private readonly _getUserNotificationsUseCase: IGetUserNotificationsUseCase,
+    private readonly _markNotificationReadUseCase: IMarkNotificationReadUseCase,
+    private readonly _markAllReadUseCase: IMarkAllReadUseCase,
+    private readonly _clearNotificationsUseCase: IClearNotificationsUseCase
   ) { }
 
 
@@ -96,6 +96,12 @@ export class NotificationController {
     try {
       const userContext = res.locals.user as AuthUserContext;
 
+      if (!userContext) {
+        return res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
+      }
+
       const page = Number(req.query.page ?? 1);
       const limit = Number(req.query.limit ?? 10);
 
@@ -109,7 +115,7 @@ export class NotificationController {
 
       return res
         .status(HttpStatus.OK)
-        .json(ApiResponse.success(MESSAGES.NOTIFICATION.FETCH_SUCCESS, result.data));
+        .json(ApiResponse.success(MESSAGES.NOTIFICATION.FETCH_SUCCESS, result));
     } catch (err: unknown) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)

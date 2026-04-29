@@ -2,6 +2,9 @@ import { UserRepository } from "../repositories/user/UserRepository";
 import { SubmissionRepository } from "../repositories/submission/SubmissionRepository";
 import { LevelRepository } from "../repositories/level/LevelRepository";
 import { BadgeRepository } from "../repositories/badge/BadgeRepository";
+
+import { AdminDashboardRepository } from "../repositories/admin-Dashboard/AdminDashboardRepository";
+
 import { XpService } from "../services/xpService";
 import { WinstonLogger } from "../services/logger";
 
@@ -12,7 +15,7 @@ import { GetLeaderboardUseCase } from "../../application/use-cases/user/user/get
 import { ListUsersUseCase } from "../../application/use-cases/user/admin/listUsersUseCase";
 import { UpdateUserStatusUseCase } from "../../application/use-cases/user/admin/updateUserStatusUseCase";
 import { GetUserSolvedCountUseCase } from "../../application/use-cases/user/admin/getUserSolvedCountUseCase";
-import { GetAdminDashboardStatsUseCase } from "../../application/use-cases/admin/GetAdminDashboardStatsUseCase";
+import { GetAdminDashboardStatsUseCase } from "../../application/use-cases/admin-Dashboard/GetAdminDashboardStatsUseCase";
 import { UpdateUserAvatarUseCase } from "../../application/use-cases/user/user/updateUserAvatarUseCase";
 import { RemoveUserAvatarUseCase } from "../../application/use-cases/user/user/removeUserAvatarUseCase";
 import { GetUserProfileStatsUseCase } from "../../application/use-cases/user/user/getUserProfileStatsUseCase";
@@ -37,6 +40,7 @@ const xpService = new XpService();
 const logger = new WinstonLogger();
 const fileStorage = new CloudinaryStorageService();
 
+const adminDashboardRepository = new AdminDashboardRepository()
 
 // user
 const getDashboardUseCase = new GetDashboardUseCase(
@@ -87,7 +91,10 @@ const updateUserStatusUseCase = new UpdateUserStatusUseCase(
   logger
 );
 
-const getAdminDashboardStatsUseCase = new GetAdminDashboardStatsUseCase();
+// const getAdminDashboardStatsUseCase = new GetAdminDashboardStatsUseCase();
+const getAdminDashboardStatsUseCase = new GetAdminDashboardStatsUseCase(
+  adminDashboardRepository  // pass it in, no longer empty constructor
+);
 
 const getUserSolvedCountUseCase = new GetUserSolvedCountUseCase(
   userRepository,

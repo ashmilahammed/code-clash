@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { ReportMessageUseCase } from "../../application/use-cases/chat/user/ReportMessageUseCase";
-import { GetAllReportsUseCase } from "../../application/use-cases/chat/admin/GetAllReportsUseCase";
-import { BanUserUseCase } from "../../application/use-cases/chat/admin/BanUserUseCase";
-import { DismissReportUseCase } from "../../application/use-cases/chat/admin/DismissReportUseCase";
-import { GetMessageByIdUseCase } from "../../application/use-cases/chat/user/GetMessageByIdUseCase";
+import { IReportMessageUseCase } from "../../application/interfaces/chat/user/IReportMessageUseCase";
+import { IGetAllReportsUseCase } from "../../application/interfaces/chat/admin/IGetAllReportsUseCase";
+import { IBanUserUseCase } from "../../application/interfaces/chat/admin/IBanUserUseCase";
+import { IDismissReportUseCase } from "../../application/interfaces/chat/admin/IDismissReportUseCase";
+import { IGetMessageByIdUseCase } from "../../application/interfaces/chat/user/IGetMessageByIdUseCase";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
@@ -22,11 +22,11 @@ interface AuthUserContext {
 
 export class ReportController {
     constructor(
-        private readonly _reportMessageUseCase: ReportMessageUseCase,
-        private readonly _getAllReportsUseCase: GetAllReportsUseCase,
-        private readonly _banUserUseCase: BanUserUseCase,
-        private readonly _dismissReportUseCase: DismissReportUseCase,
-        private readonly _getMessageByIdUseCase: GetMessageByIdUseCase
+        private readonly _reportMessageUseCase: IReportMessageUseCase,
+        private readonly _getAllReportsUseCase: IGetAllReportsUseCase,
+        private readonly _banUserUseCase: IBanUserUseCase,
+        private readonly _dismissReportUseCase: IDismissReportUseCase,
+        private readonly _getMessageByIdUseCase: IGetMessageByIdUseCase
     ) { }
 
 

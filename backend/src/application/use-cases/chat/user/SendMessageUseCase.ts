@@ -4,9 +4,10 @@ import { Message } from "../../../../domain/entities/chat/Message";
 import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
 import { SendMessageDTO } from "../../../dto/chat/SendMessageDTO";
 
+import { ISendMessageUseCase } from "../../../interfaces/chat/user/ISendMessageUseCase";
 
 
-export class SendMessageUseCase {
+export class SendMessageUseCase implements ISendMessageUseCase {
     constructor(
         private messageRepository: IMessageRepository,
         private conversationRepository: IConversationRepository,

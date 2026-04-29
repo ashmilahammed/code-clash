@@ -1,9 +1,10 @@
 import { IUserRepository } from "../../../../domain/repositories/user/IUserRepository";
 import { IReportRepository } from "../../../../domain/repositories/chat/IReportRepository";
 import { BanUserFromReportDTO } from "../../../dto/report/BanUserFromReportDTO";
+import { IBanUserUseCase } from "../../../interfaces/chat/admin/IBanUserUseCase";
 
 
-export class BanUserUseCase {
+export class BanUserUseCase implements IBanUserUseCase {
     constructor(
         private readonly _userRepository: IUserRepository,
         private readonly _reportRepository: IReportRepository

@@ -1,6 +1,7 @@
 import { IUserCoreRepository } from "../../../../domain/repositories/user/IUserCoreRepository";
+import { ICancelPremiumUseCase } from "../../../interfaces/user/user/ICancelPremiumUseCase";
 
-export class CancelPremiumUseCase {
+export class CancelPremiumUseCase implements ICancelPremiumUseCase {
     constructor(
         private readonly _userRepository: IUserCoreRepository
     ) {}
