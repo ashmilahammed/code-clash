@@ -45,6 +45,7 @@ const adminDashboardRepository = new AdminDashboardRepository()
 // user
 const getDashboardUseCase = new GetDashboardUseCase(
   userRepository,
+  badgeRepositoryForStats,
   xpService,
   levelRepository
 );

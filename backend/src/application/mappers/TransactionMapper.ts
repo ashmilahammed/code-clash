@@ -1,8 +1,9 @@
+import { Types } from "mongoose";
 import { Transaction } from "../../domain/entities/transaction/Transaction";
 import { ITransactionDoc } from "../../infrastructure/database/models/transactions/TransactionModel";
 
 export class TransactionMapper {
-    static toDomain(doc: ITransactionDoc | any): Transaction {
+    static toDomain(doc: ITransactionDoc): Transaction {
         return new Transaction(
             doc._id.toString(),
             doc.userId.toString(),
@@ -14,10 +15,10 @@ export class TransactionMapper {
         );
     }
 
-    static toPersistence(transaction: Transaction) {
-        const payload: any = {
-            userId: transaction.userId,
-            planId: transaction.planId,
+    static toPersistence(transaction: Transaction): Partial<ITransactionDoc> {
+        const payload: Partial<ITransactionDoc> = {
+            userId: new Types.ObjectId(transaction.userId), // Cast for ObjectId conversion
+            planId: new Types.ObjectId(transaction.planId),
             amount: transaction.amount,
             paymentMethod: transaction.paymentMethod,
             status: transaction.status

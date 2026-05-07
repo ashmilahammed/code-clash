@@ -4,13 +4,14 @@ import { IMessageDoc } from "../../../infrastructure/database/models/chat/Messag
 
 export class MessageMapper {
     static toDomain(doc: IMessageDoc): Message {
-        const isPopulated = doc.senderId && typeof doc.senderId === 'object' && doc.senderId.username;
-        const senderIdStr = isPopulated ? doc.senderId._id.toString() : doc.senderId.toString();
+        const isPopulated = doc.senderId && typeof doc.senderId === 'object' && 'username' in doc.senderId;
+        const senderDoc = doc.senderId as unknown as { _id: Types.ObjectId; username: string; avatar?: string };
+        const senderIdStr = isPopulated ? senderDoc._id.toString() : doc.senderId.toString();
 
         const sender = isPopulated ? {
-            _id: doc.senderId._id.toString(),
-            username: doc.senderId.username,
-            avatar: doc.senderId.avatar
+            _id: senderDoc._id.toString(),
+            username: senderDoc.username,
+            ...(senderDoc.avatar !== undefined && { avatar: senderDoc.avatar })
         } : undefined;
 
         return new Message(

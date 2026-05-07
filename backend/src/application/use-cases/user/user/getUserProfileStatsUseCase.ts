@@ -5,6 +5,8 @@ import { ILevelRepository } from "../../../../domain/repositories/level/ILevelRe
 import { IBadgeRepository } from "../../../../domain/repositories/badge/IBadgeRepository";
 import { UserMapper } from "../../../mappers/UserMapper";import { IGetUserProfileStatsUseCase } from "../../../interfaces/user/user/IGetUserProfileStatsUseCase";
 
+import { Badge } from "../../../../domain/entities/badge/Badge";
+
 export class GetUserProfileStatsUseCase implements IGetUserProfileStatsUseCase {
     constructor(
         private readonly _userRepo: IUserCoreRepository,
@@ -28,7 +30,7 @@ export class GetUserProfileStatsUseCase implements IGetUserProfileStatsUseCase {
         const recentActivity = await this._submissionRepo.getRecentActivity(userId, 10);
 
         // Fetch populated badges
-        let populatedBadges: any[] = [];
+        let populatedBadges: Badge[] = [];
         if (user.badges && user.badges.length > 0) {
             populatedBadges = await this._badgeRepo.findByIds(user.badges);
         }

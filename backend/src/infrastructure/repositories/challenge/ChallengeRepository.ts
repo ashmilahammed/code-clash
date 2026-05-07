@@ -54,7 +54,7 @@ export class ChallengeRepository extends BaseRepository<IChallengeDoc>
         }
 
         const skip = (page - 1) * limit;
-        const sort = { [sortBy]: sortOrder === "asc" ? 1 : -1 };
+        const sort: Record<string, 1 | -1> = { [sortBy]: sortOrder === "asc" ? 1 : -1 };
 
         const [docs, total] = await Promise.all([
             this.findManyRaw(mongoQuery, skip, limit, sort),
@@ -85,7 +85,7 @@ export class ChallengeRepository extends BaseRepository<IChallengeDoc>
             challengeId,
             {
                 $set: { tags: tagIds },
-            } as any
+            } as unknown as Partial<IChallengeDoc>
         );
     }
 
@@ -99,7 +99,7 @@ export class ChallengeRepository extends BaseRepository<IChallengeDoc>
             challengeId,
             {
                 $set: { languages: languageIds },
-            } as any
+            } as unknown as Partial<IChallengeDoc>
         );
     }
 
@@ -128,7 +128,7 @@ export class ChallengeRepository extends BaseRepository<IChallengeDoc>
 
         return {
             id: doc._id.toString(),
-            languages: (doc.languages as any[]).map((l) => ({
+            languages: (doc.languages as unknown as { key: string }[]).map((l) => ({
                 key: l.key,
             })),
         };

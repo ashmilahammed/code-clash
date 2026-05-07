@@ -1,4 +1,4 @@
-import { IConversationRepository } from "../../../domain/repositories/chat/IConversationRepository";
+import { IConversationRepository, IAdminGroupDetail } from "../../../domain/repositories/chat/IConversationRepository";
 import { Conversation } from "../../../domain/entities/chat/Conversation";
 import { ConversationModel } from "../../database/models/chat/ConversationModel";
 import { ConversationMapper } from "../../../application/mappers/chat/ConversationMapper";
@@ -81,8 +81,8 @@ export class ConversationRepository implements IConversationRepository {
         await ConversationModel.findByIdAndUpdate(id, { $set: { lastMessageAt: timestamp } });
     }
 
-    async findAdminGroups(page: number, limit: number, search?: string): Promise<{ data: any[], total: number }> {
-        const query: any = { type: 'group' };
+    async findAdminGroups(page: number, limit: number, search?: string): Promise<{ data: IAdminGroupDetail[], total: number }> {
+        const query: Record<string, unknown> = { type: 'group' };
 
         if (search) {
             query.name = { $regex: search, $options: 'i' };

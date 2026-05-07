@@ -1,3 +1,5 @@
+import type { Badge } from "./Level";
+
 export interface User {
   id: string;
   username: string;
@@ -14,7 +16,7 @@ export interface User {
   linkedin_url: string | null;
 
   badge_id: string | null;
-  badges?: any[];
+  badges?: Badge[];
 
   current_streak: number;
   longest_streak: number;

@@ -12,12 +12,13 @@ const EditorPanel = ({ templates, challengeId, testCases, setResult, onSuccess, 
 
   // Update local state 
   useEffect(() => {
-    if (templates.length > 0) {
+    // Only initialize if we don't have code yet
+    if (templates.length > 0 && !code) {
       const initialLang = templates[0].language;
       setSelectedLang(initialLang);
       setCode(templates[0].starterCode);
     }
-  }, [templates]);
+  }, [templates, code]);
 
 
   //
@@ -32,12 +33,11 @@ const EditorPanel = ({ templates, challengeId, testCases, setResult, onSuccess, 
       input: sampleInput
     });
 
-    // console.log(res);
     setResult({
-      status: res.stderr ? "ERROR" : "RUN",
-      stdout: res.stdout,
-      stderr: res.stderr,
-      runtime: res.runtime,
+      status: res.error ? "ERROR" : "RUN",
+      stdout: res.output,
+      stderr: res.error,
+      runtime: res.time,
       memory: res.memory
     });
     setLoading(false);

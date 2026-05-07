@@ -1,7 +1,16 @@
 import { IReportRepository } from "../../../domain/repositories/chat/IReportRepository";
 import { Report, ReportReason, ReportStatus, UserBasicInfo } from "../../../domain/entities/chat/Report";
-import { ReportModel } from "../../database/models/chat/ReportModel";
+import { IReportDoc, ReportModel } from "../../database/models/chat/ReportModel";
 
+interface PopulatedUser {
+    _id: { toString(): string };
+    username: string;
+}
+
+interface PopulatedReportDoc extends Omit<IReportDoc, 'reportedUserId' | 'reportedById'> {
+    reportedUserId: PopulatedUser | string;
+    reportedById: PopulatedUser | string;
+}
 
 export class ReportRepository implements IReportRepository {
 
@@ -16,7 +25,7 @@ export class ReportRepository implements IReportRepository {
             status: report.status
         });
 
-        return this.toEntity(doc);
+        return this.toEntity(doc as unknown as IReportDoc);
     }
 
     async findAll(): Promise<Report[]> {
@@ -24,11 +33,11 @@ export class ReportRepository implements IReportRepository {
             .populate('reportedUserId', 'username')
             .populate('reportedById', 'username')
             .sort({ createdAt: -1 });
-        return docs.map(doc => this.toEntity(doc));
+        return (docs as unknown as PopulatedReportDoc[]).map(doc => this.toEntity(doc));
     }
 
     async findPaginated(page: number, limit: number, status?: string): Promise<{ data: Report[], total: number }> {
-        const query: any = {};
+        const query: Record<string, unknown> = {};
         if (status && status !== 'all') {
             query.status = status;
         }
@@ -46,28 +55,28 @@ export class ReportRepository implements IReportRepository {
         ]);
 
         return {
-            data: results.map(doc => this.toEntity(doc)),
+            data: (results as unknown as PopulatedReportDoc[]).map(doc => this.toEntity(doc)),
             total
         };
     }
 
     async findById(id: string): Promise<Report | null> {
         const doc = await ReportModel.findById(id);
-        return doc ? this.toEntity(doc) : null;
+        return doc ? this.toEntity(doc as unknown as IReportDoc) : null;
     }
 
     async updateStatus(id: string, status: ReportStatus): Promise<Report | null> {
         const doc = await ReportModel.findByIdAndUpdate(id, { status }, { new: true });
-        return doc ? this.toEntity(doc) : null;
+        return doc ? this.toEntity(doc as unknown as IReportDoc) : null;
     }
 
-    private toEntity(doc: any): Report {
-        const mapUser = (user: any) => {
+    private toEntity(doc: IReportDoc | PopulatedReportDoc): Report {
+        const mapUser = (user: PopulatedUser | string | undefined): string | UserBasicInfo => {
             if (!user) return "";
-            if (user._id) {
+            if (typeof user !== 'string' && (user as PopulatedUser)._id) {
                 return { 
-                    id: user._id.toString(), 
-                    username: user.username 
+                    id: (user as PopulatedUser)._id.toString(), 
+                    username: (user as PopulatedUser).username 
                 };
             }
             return user.toString();
@@ -75,8 +84,8 @@ export class ReportRepository implements IReportRepository {
 
         return new Report(
             doc._id.toString(),
-            mapUser(doc.reportedUserId),
-            mapUser(doc.reportedById),
+            mapUser(doc.reportedUserId as PopulatedUser | string),
+            mapUser(doc.reportedById as PopulatedUser | string),
             doc.messageId.toString(),
             doc.conversationId.toString(),
             doc.reason as ReportReason,

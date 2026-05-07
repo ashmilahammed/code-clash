@@ -1,8 +1,8 @@
 import { SubmissionModel } from "../../database/models/submission/SubmissionModel";
-import { ISubmissionRepository } from "../../../domain/repositories/submission/ISubmissionRepository";
+import { ISubmissionRepository, IUserSubmissionStats, IRecentActivity, ILeaderboardEntry } from "../../../domain/repositories/submission/ISubmissionRepository";
 import { Submission } from "../../../domain/entities/submission/Submission";
-import { Types } from "mongoose";
-import { SubmissionMapper } from "../../../application/mappers/SubmissionMapper";
+import { Types, PipelineStage } from "mongoose";
+import { SubmissionMapper, ILeaderboardItem } from "../../../application/mappers/SubmissionMapper";
 
 
 export class SubmissionRepository implements ISubmissionRepository {
@@ -56,7 +56,7 @@ export class SubmissionRepository implements ISubmissionRepository {
     return distinctChallenges.length;
   }
 
-  async getUserStats(userId: string): Promise<any> {
+  async getUserStats(userId: string): Promise<IUserSubmissionStats> {
     const objectId = new Types.ObjectId(userId);
 
     const submissionStats = await SubmissionModel.aggregate([
@@ -133,7 +133,7 @@ export class SubmissionRepository implements ISubmissionRepository {
     };
   }
 
-  async getRecentActivity(userId: string, limit: number): Promise<any[]> {
+  async getRecentActivity(userId: string, limit: number): Promise<IRecentActivity[]> {
     const objectId = new Types.ObjectId(userId);
     const activity = await SubmissionModel.aggregate([
       { $match: { userId: objectId } },
@@ -166,9 +166,9 @@ export class SubmissionRepository implements ISubmissionRepository {
   async getLeaderboardByTimeframe(
     page: number,
     limit: number,
-    timeframe: "weekly" | "monthly",
+    timeframe: "weekly" | "monthly" | "all-time",
     search: string
-  ): Promise<{ data: any[]; total: number }> {
+  ): Promise<{ data: ILeaderboardEntry[]; total: number }> {
     const skip = (page - 1) * limit;
 
     const startDate = new Date();
@@ -179,12 +179,12 @@ export class SubmissionRepository implements ISubmissionRepository {
     }
     startDate.setHours(0, 0, 0, 0);
 
-    const matchStage: any = {
+    const matchStage = {
       submittedAt: { $gte: startDate },
       // finalStatus: "PASSED"
     };
 
-    const pipeline: any[] = [
+    const pipeline: PipelineStage[] = [
       { $match: matchStage },
       {
         $group: {
@@ -231,12 +231,12 @@ export class SubmissionRepository implements ISubmissionRepository {
     if (search) {
       pipeline.push({
         $match: { "user.username": { $regex: search, $options: "i" } }
-      });
+      } as PipelineStage.Match);
     }
 
-    const sortStage = { $sort: { xp: -1 } };
+    const sortStage: PipelineStage.Sort = { $sort: { xp: -1 } };
 
-    const facetStage = {
+    const facetStage: PipelineStage.Facet = {
       $facet: {
         data: [sortStage, { $skip: skip }, { $limit: limit }],
         totalCount: [{ $count: "count" }]
@@ -251,7 +251,7 @@ export class SubmissionRepository implements ISubmissionRepository {
     const total = result[0]?.totalCount[0]?.count || 0;
 
     // Map the result to resemble the existing user snapshot with calculated XP
-    const mappedData = data.map((item: any) => SubmissionMapper.toLeaderboardDTO(item));
+    const mappedData = (data as unknown as ILeaderboardItem[]).map((item) => SubmissionMapper.toLeaderboardDTO(item));
 
     return {
       data: mappedData,

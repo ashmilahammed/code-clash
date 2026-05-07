@@ -1,7 +1,12 @@
 import { User } from "../../domain/entities/user/User";
 import { IUserDoc } from "../../infrastructure/database/models/user/UserModel";
+import { IBadgeDoc } from "../../infrastructure/database/models/badge/BadgeModel";
+import { Badge } from "../../domain/entities/badge/Badge";
+
 import { UserResponseDTO } from "../dto/user/UserResponseDTO";
 import { AuthUserDTO } from "../dto/auth/AuthUserDTO";
+
+import { BadgeMapper } from "./BadgeMapper";
 
 
 export class UserMapper {
@@ -47,11 +52,12 @@ export class UserMapper {
     );
   }
 
-  static toResponse(user: User, populatedBadges?: any[]): UserResponseDTO {
+  static toResponse(user: User, populatedBadges?: Badge[] | IBadgeDoc[]): UserResponseDTO {
+
     const snap = user.snapshot();
     return {
       ...snap,
-      badges: populatedBadges ?? null,
+      badges: populatedBadges ? populatedBadges.map(b => BadgeMapper.toResponse(b)) : null,
       badgesCount: snap.badges.length
     };
   }

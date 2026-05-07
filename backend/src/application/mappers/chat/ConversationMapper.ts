@@ -8,15 +8,15 @@ import { IConversationDoc } from "../../../infrastructure/database/models/chat/C
 export class ConversationMapper {
     static toDomain(doc: IConversationDoc): Conversation {
         const isPopulated = doc.participants && doc.participants.length > 0 && typeof doc.participants[0] === 'object';
-        
-        const participantDetails = isPopulated ? (doc.participants as any[]).map(p => ({
+
+        const participantDetails = isPopulated ? (doc.participants as unknown as Array<{ _id: Types.ObjectId; username: string; avatar?: string }>).map(p => ({
             id: p._id.toString(),
             username: p.username,
-            avatar: p.avatar
+            ...(p.avatar !== undefined && { avatar: p.avatar })
         })) : undefined;
 
         const participantIds = isPopulated 
-            ? (doc.participants as any[]).map(p => p._id.toString())
+            ? (doc.participants as unknown as Array<{ _id: Types.ObjectId }>).map(p => p._id.toString())
             : doc.participants.map(p => p.toString());
 
         return new Conversation(
@@ -37,7 +37,7 @@ export class ConversationMapper {
     }
 
     static toPersistence(entity: Conversation) {
-        const doc: any = {
+        const doc: Record<string, unknown> = {
             type: entity.type,
             participants: entity.participants.map(p => new Types.ObjectId(p)),
         };
@@ -51,3 +51,9 @@ export class ConversationMapper {
         return doc;
     }
 }
+
+
+
+
+
+

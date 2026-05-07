@@ -1,4 +1,4 @@
-import { INotificationRepository } from "../../../domain/repositories/notification/INotificationRepository";
+import { INotificationRepository, IUserNotificationDetail } from "../../../domain/repositories/notification/INotificationRepository";
 import { Notification } from "../../../domain/entities/notification/Notification";
 import { NotificationModel, INotificationDoc } from "../../database/models/notification/NotificationModel";
 import { UserNotificationModel } from "../../database/models/notification/UserNotificationModel";
@@ -64,7 +64,7 @@ export class NotificationRepository extends BaseRepository<INotificationDoc>
     dateJoined: Date,
     page: number,
     limit: number
-  ): Promise<{ data: any[]; total: number }> {
+  ): Promise<{ data: IUserNotificationDetail[]; total: number }> {
     const recipientTypes = ["all", isPremium ? "premium" : "normal"];
 
     const skip = (page - 1) * limit;
@@ -108,7 +108,7 @@ export class NotificationRepository extends BaseRepository<INotificationDoc>
         const status = statusMap.get(n._id.toString());
         if (status?.isCleared) return null;
         return {
-          id: n._id,
+          id: n._id.toString(),
           title: n.title,
           message: n.message,
           createdAt: n.createdAt,

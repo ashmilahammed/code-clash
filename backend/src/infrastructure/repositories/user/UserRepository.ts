@@ -76,7 +76,6 @@ export class UserRepository extends BaseRepository<IUserDoc>
             sortOrder = "desc",
         } = query;
 
-        // const mongoQuery: any = {};
         const mongoQuery: Record<string, unknown> = {};
 
 
@@ -91,7 +90,7 @@ export class UserRepository extends BaseRepository<IUserDoc>
         }
 
         const skip = (page - 1) * limit;
-        const sort = { [sortBy]: sortOrder === "asc" ? 1 : -1 };
+        const sort: Record<string, 1 | -1> = { [sortBy]: sortOrder === "asc" ? 1 : -1 };
 
         const [docs, total] = await Promise.all([
             this.findManyRaw(mongoQuery, skip, limit, sort),
@@ -185,7 +184,7 @@ export class UserRepository extends BaseRepository<IUserDoc>
         limit: number = 10,
         search: string = ""
     ): Promise<{ data: User[]; total: number }> {
-        const filter: any = { role: "user", status: "active" };
+        const filter: Record<string, unknown> = { role: "user", status: "active" };
 
         if (search) {
             filter.username = { $regex: search, $options: "i" };

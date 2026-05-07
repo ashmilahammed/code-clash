@@ -1,8 +1,35 @@
-import { ITransactionRepository } from "../../../domain/repositories/transaction/ITransactionRepository";
+import { ITransactionRepository, IAdminTransactionDetail, IUserTransactionDetail } from "../../../domain/repositories/transaction/ITransactionRepository";
 import { Transaction } from "../../../domain/entities/transaction/Transaction";
 import { TransactionModel } from "../../database/models/transactions/TransactionModel";
 import { TransactionMapper } from "../../../application/mappers/TransactionMapper";
 
+
+interface PopulatedAdminTransaction {
+    _id: { toString(): string };
+    userId: { name: string; email: string; profileImage?: string } | null;
+    planId: { name: string } | null;
+    amount: number;
+    paymentMethod: string;
+    status: string;
+    date?: Date;
+    createdAt: Date;
+}
+
+interface PopulatedUserTransaction {
+    _id: { toString(): string };
+    planId: {
+        _id: { toString(): string };
+        name: string;
+        features: string[];
+        duration: number;
+        price: number;
+    } | null;
+    amount: number;
+    paymentMethod: string;
+    status: string;
+    date?: Date;
+    createdAt: Date;
+}
 
 export class TransactionRepository implements ITransactionRepository {
     
@@ -12,14 +39,14 @@ export class TransactionRepository implements ITransactionRepository {
         return TransactionMapper.toDomain(createdModel);
     }
 
-    async findAllWithDetails(): Promise<any[]> {
+    async findAllWithDetails(): Promise<IAdminTransactionDetail[]> {
         const docs = await TransactionModel.find()
             .populate('userId', 'name email profileImage')
             .populate('planId', 'name')
             .sort({ createdAt: -1 })
             .lean();
 
-        return docs.map((doc: any) => ({
+        return (docs as unknown as PopulatedAdminTransaction[]).map((doc) => ({
             id: doc._id.toString(),
             user: doc.userId ? {
                 name: doc.userId.name,
@@ -36,7 +63,7 @@ export class TransactionRepository implements ITransactionRepository {
         }));
     }
 
-    async findUserTransactions(userId: string, page: number, limit: number): Promise<{ data: any[], total: number }> {
+    async findUserTransactions(userId: string, page: number, limit: number): Promise<{ data: IUserTransactionDetail[], total: number }> {
         const skip = (page - 1) * limit;
         
         const [docs, total] = await Promise.all([
@@ -49,12 +76,12 @@ export class TransactionRepository implements ITransactionRepository {
             TransactionModel.countDocuments({ userId })
         ]);
 
-        const data = docs.map((doc: any) => {
-            const planDoc = doc.planId as any;
+        const data = (docs as unknown as PopulatedUserTransaction[]).map((doc) => {
+            const planDoc = doc.planId;
             return {
                 id: doc._id.toString(),
                 plan: planDoc ? {
-                    id: planDoc._id?.toString(),
+                    id: planDoc._id.toString(),
                     name: planDoc.name,
                     features: planDoc.features,
                     duration: planDoc.duration,
@@ -70,7 +97,7 @@ export class TransactionRepository implements ITransactionRepository {
         return { data, total };
     }
 
-    async findLatestSuccessfulTransaction(userId: string): Promise<any> {
+    async findLatestSuccessfulTransaction(userId: string): Promise<IUserTransactionDetail | null> {
         const doc = await TransactionModel.findOne({ userId, status: 'Completed' })
             .populate('planId', 'name features duration price')
             .sort({ createdAt: -1 })
@@ -78,21 +105,22 @@ export class TransactionRepository implements ITransactionRepository {
 
         if (!doc) return null;
 
-        const planDoc = doc.planId as any;
+        const populatedDoc = doc as unknown as PopulatedUserTransaction;
+        const planDoc = populatedDoc.planId;
 
         return {
-            id: doc._id.toString(),
+            id: populatedDoc._id.toString(),
             plan: planDoc ? {
-                id: planDoc._id?.toString(),
+                id: planDoc._id.toString(),
                 name: planDoc.name,
                 features: planDoc.features,
                 duration: planDoc.duration,
                 price: planDoc.price
             } : null,
-            amount: doc.amount,
-            paymentMethod: doc.paymentMethod,
-            status: doc.status,
-            date: doc.date || doc.createdAt
+            amount: populatedDoc.amount,
+            paymentMethod: populatedDoc.paymentMethod,
+            status: populatedDoc.status,
+            date: populatedDoc.date || populatedDoc.createdAt
         };
     }
 }

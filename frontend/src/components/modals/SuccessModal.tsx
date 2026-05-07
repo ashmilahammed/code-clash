@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getUserProfileStatsApi } from "../../api/userApi";
 
 interface SuccessModalProps {
     onClose: () => void;
@@ -21,6 +23,19 @@ const SuccessModal = ({
     badge = null
 }: SuccessModalProps) => {
     const navigate = useNavigate();
+    const [levelData, setLevelData] = useState<{ level: number, currentXp: number, minXp: number, maxXp: number } | null>(null);
+
+    useEffect(() => {
+        getUserProfileStatsApi().then(data => {
+            if (data?.level) {
+                setLevelData(data.level);
+            }
+        }).catch(err => console.error("Failed to fetch level stats", err));
+    }, []);
+
+    const progress = levelData 
+        ? Math.min(((levelData.currentXp - levelData.minXp) / (levelData.maxXp - levelData.minXp + 1)) * 100, 100)
+        : 0;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
@@ -72,14 +87,14 @@ const SuccessModal = ({
                                 }`}>{difficulty}</p>
                         </div>
 
-                        {/* Progress Bar (Mock) */}
+                        {/* Progress Bar */}
                         <div className="w-full mt-8">
                             <div className="flex justify-between text-xs text-slate-400 mb-2">
-                                <span>Lvl 4</span>
-                                <span>68%</span>
+                                <span>Lvl {levelData ? levelData.level : '...'}</span>
+                                <span>{levelData ? `${Math.round(progress)}%` : '...'}</span>
                             </div>
                             <div className="w-full bg-slate-800/50 rounded-full h-2 overflow-hidden">
-                                <div className="bg-blue-500 h-full rounded-full animate-pulse" style={{ width: '68%' }}></div>
+                                <div className="bg-blue-500 h-full rounded-full animate-pulse transition-all duration-1000" style={{ width: `${progress}%` }}></div>
                             </div>
                         </div>
                     </div>

@@ -52,10 +52,11 @@ const Login: React.FC = () => {
         navigate("/dashboard", { replace: true });
       }
 
-    } catch (err: any) {
+    } catch (err: unknown) {
 
-      if (err?.response?.data?.needsVerification) {
-        const userId = err.response.data.userId;
+      const error = err as { response?: { data?: { needsVerification?: boolean; userId?: string } } };
+      if (error?.response?.data?.needsVerification) {
+        const userId = error.response.data.userId;
         navigate(`/verify-otp?userId=${userId}&email=${encodeURIComponent(email)}`);
         return;
       }
@@ -92,7 +93,7 @@ const Login: React.FC = () => {
       }
 
 
-    } catch (err: any) {
+    } catch (err: unknown) {
 
       // const msg =
       //   err?.response?.data?.message || err?.message || "Google login failed.";

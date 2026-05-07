@@ -10,7 +10,16 @@ export interface IConversationRepository {
     updateLastMessage(id: string, timestamp: Date): Promise<void>;
 
     // Admin
-    findAdminGroups(page: number, limit: number, search?: string): Promise<{ data: any[], total: number }>;
+    findAdminGroups(page: number, limit: number, search?: string): Promise<{ data: IAdminGroupDetail[], total: number }>;
     delete(id: string): Promise<void>;
     countUserGroups(userId: string): Promise<number>;
+}
+
+export interface IAdminGroupDetail {
+    id: string;
+    name: string;
+    isPrivate: boolean;
+    status: string;
+    memberCount: number;
+    createdAt: Date;
 }

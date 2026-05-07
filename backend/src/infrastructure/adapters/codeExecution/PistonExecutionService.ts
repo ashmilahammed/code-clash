@@ -46,8 +46,9 @@ export class PistonExecutionService implements ICodeExecutionService {
         runtime: run.time ?? 0,
         memory: run.memory ?? 0,
       };
-    } catch (error: any) {
-      console.error("Piston Execution Error:", error?.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      console.error("Piston Execution Error:", errorMessage);
 
       return {
         stdout: "",

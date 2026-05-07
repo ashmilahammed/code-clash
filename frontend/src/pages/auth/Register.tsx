@@ -80,7 +80,7 @@ const Register: React.FC = () => {
 
       navigate(`/verify-otp?userId=${userId}`);
 
-    } catch (err: any) {
+    } catch (err: unknown) {
 
       // setError(
       //   err?.response?.data?.message ||

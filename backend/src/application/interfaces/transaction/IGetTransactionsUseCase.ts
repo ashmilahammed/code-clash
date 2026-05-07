@@ -1,5 +1,5 @@
-import { Transaction } from "../../../domain/entities/transaction/Transaction";
+import { IAdminTransactionDetail } from "../../../domain/repositories/transaction/ITransactionRepository";
 
 export interface IGetTransactionsUseCase {
-  execute(): Promise<Transaction[]>;
+  execute(): Promise<IAdminTransactionDetail[]>;
 }

@@ -15,6 +15,7 @@ import { getUserProfileStatsApi, updateUserProfileApi } from "../../api/userApi"
 import ConfirmModal from "../../components/modals/ConfirmModal";
 import { toast } from "react-hot-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import type { Badge } from "../../types/Level";
 
 
 
@@ -363,8 +364,8 @@ const Profile = () => {
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {profileData.user.badges && profileData.user.badges.length > 0 ? (
-                                        profileData.user.badges.map((badge: any, idx: number) => (
-                                            <div key={badge.id || idx} className="bg-[#1E293B]/50 border border-slate-800 p-4 rounded-xl flex gap-4 items-center hover:bg-[#1E293B] transition group">
+                                        profileData.user.badges.map((badge: Badge, idx: number) => (
+                                            <div key={badge.id || badge._id || idx} className="bg-[#1E293B]/50 border border-slate-800 p-4 rounded-xl flex gap-4 items-center hover:bg-[#1E293B] transition group">
                                                 <div className="p-3 bg-blue-500/10 text-blue-400 rounded-lg group-hover:scale-110 transition duration-300">
                                                     {badge.icon ? (
                                                         badge.icon.startsWith('http') ? (

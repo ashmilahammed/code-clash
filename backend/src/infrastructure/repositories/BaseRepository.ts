@@ -53,11 +53,10 @@ export abstract class BaseRepository<TDoc extends Document> {
   }
 
   async findManyRaw(
-    // filter: any,
     filter: Record<string, unknown>,
     skip: number,
     limit: number,
-    sort: any
+    sort: Record<string, 1 | -1>
   ): Promise<TDoc[]> {
     return this._model
       .find(filter)

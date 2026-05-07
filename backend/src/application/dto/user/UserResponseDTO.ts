@@ -1,3 +1,5 @@
+import { BadgeResponseDTO } from "../badge/BadgeResponseDTO";
+
 export interface UserResponseDTO {
   id: string;
   username: string;
@@ -12,7 +14,7 @@ export interface UserResponseDTO {
   linkedin_url: string | null;
 
   badge_id: string | null;
-  badges?: any[] | null;
+  badges?: BadgeResponseDTO[] | null;
   badgesCount?: number;
 
   current_streak: number;

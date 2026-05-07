@@ -1,5 +1,5 @@
-import { Transaction } from "../../../domain/entities/transaction/Transaction";
+import { IUserTransactionDetail } from "../../../domain/repositories/transaction/ITransactionRepository";
 
 export interface IGetCurrentPremiumPlanUseCase {
-  execute(userId: string): Promise<Transaction | null>;
+  execute(userId: string): Promise<IUserTransactionDetail | null>;
 }

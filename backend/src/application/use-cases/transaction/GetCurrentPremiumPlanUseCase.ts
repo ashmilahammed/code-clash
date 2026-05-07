@@ -1,4 +1,4 @@
-import { ITransactionRepository } from "../../../domain/repositories/transaction/ITransactionRepository";
+import { ITransactionRepository, IUserTransactionDetail } from "../../../domain/repositories/transaction/ITransactionRepository";
 import { IGetCurrentPremiumPlanUseCase } from "../../interfaces/transaction/IGetCurrentPremiumPlanUseCase";
 
 
@@ -7,7 +7,7 @@ export class GetCurrentPremiumPlanUseCase implements IGetCurrentPremiumPlanUseCa
         private readonly _transactionRepository: ITransactionRepository
     ) { }
 
-    async execute(userId: string): Promise<any> {
+    async execute(userId: string): Promise<IUserTransactionDetail | null> {
         return this._transactionRepository.findLatestSuccessfulTransaction(userId);
     }
 }

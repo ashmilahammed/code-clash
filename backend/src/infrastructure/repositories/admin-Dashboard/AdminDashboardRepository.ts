@@ -46,7 +46,7 @@ export class AdminDashboardRepository implements IAdminDashboardRepository {
             { $sort: { _id: 1 } }
         ]);
 
-        const map = new Map(data.map((d: any) => [d._id, d.count]));
+        const map = new Map(data.map((d: { _id: string; count: number }) => [d._id, d.count]));
         const result: { date: string; count: number }[] = [];  // explicit type
         const current = new Date(from);
         while (current <= now) {
@@ -70,7 +70,7 @@ export class AdminDashboardRepository implements IAdminDashboardRepository {
 
         if (!result.length) return null;
 
-        const challenge = result[0];
+        const challenge = result[0] as { _id: string; count: number; challenge: { title: string; difficulty: string } };
         const successfulSubmissions = await SubmissionModel.countDocuments({
             challengeId: challenge._id,
             finalStatus: "PASSED",
@@ -94,10 +94,10 @@ export class AdminDashboardRepository implements IAdminDashboardRepository {
 
         const activities: RecentActivity[] = [];
 
-        challenges.forEach((c: any) => activities.push({ type: "challenge", text: `New challenge "${c.title}" created`, time: c.createdAt }));
-        users.forEach((u: any) => activities.push({ type: "user", text: `User ${u.username} joined the platform`, time: u.createdAt }));
-        reports.forEach((r: any) => activities.push({ type: "report", text: `Report #${r._id.toString().slice(-4)} requires review`, time: r.createdAt }));
+        challenges.forEach((c) => activities.push({ type: "challenge", text: `New challenge "${c.title}" created`, time: c.createdAt }));
+        users.forEach((u) => activities.push({ type: "user", text: `User ${u.username} joined the platform`, time: u.createdAt }));
+        reports.forEach((r) => activities.push({ type: "report", text: `Report #${r._id.toString().slice(-4)} requires review`, time: r.createdAt }));
 
         return activities.sort((a, b) => b.time.getTime() - a.time.getTime()).slice(0, 4);
     }
-}
+}

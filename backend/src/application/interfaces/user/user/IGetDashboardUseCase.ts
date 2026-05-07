@@ -1,6 +1,8 @@
+import { UserResponseDTO } from "../../../dto/user/UserResponseDTO";
+
 export interface IGetDashboardUseCase {
   execute(userId: string): Promise<{
-    user: any;
+    user: UserResponseDTO;
     level: {
       level: number;
       currentXp: number;

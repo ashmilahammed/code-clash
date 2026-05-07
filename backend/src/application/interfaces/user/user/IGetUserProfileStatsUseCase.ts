@@ -1,4 +1,5 @@
 import { UserResponseDTO } from "../../../dto/user/UserResponseDTO";
+import { IUserSubmissionStats, IRecentActivity } from "../../../../domain/repositories/submission/ISubmissionRepository";
 
 export interface IGetUserProfileStatsUseCase {
   execute(userId: string): Promise<{
@@ -14,7 +15,7 @@ export interface IGetUserProfileStatsUseCase {
       current: number;
       longest: number;
     };
-    stats: any;
-    recentActivity: any[];
+    stats: IUserSubmissionStats;
+    recentActivity: IRecentActivity[];
   }>;
 }

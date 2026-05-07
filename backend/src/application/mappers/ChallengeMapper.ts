@@ -1,9 +1,7 @@
 import { Challenge } from "../../domain/entities/challenge/Challenge";
 import { IChallengeDoc } from "../../infrastructure/database/models/challenge/ChallengeModel";
 
-
 export class ChallengeMapper {
-
   static toDomain(doc: IChallengeDoc): Challenge {
     return new Challenge(
       doc._id.toString(),
@@ -21,64 +19,26 @@ export class ChallengeMapper {
       doc.availableUntil ?? null,
       doc.createdAt,
       doc.updatedAt,
-      doc.tags,
-      doc.languages
+      doc.tags?.map(tag => tag.toString()) || [],
+      doc.languages?.map(lang => lang.toString()) || []
     );
   }
 
-  static toPersistence(
-    entity: Partial<Challenge>
-  ): Partial<IChallengeDoc> {
-
+  static toPersistence(entity: Partial<Challenge>): Partial<IChallengeDoc> {
     const persistence: Partial<IChallengeDoc> = {};
 
-    if (entity.title !== undefined) {
-      persistence.title = entity.title;
-    }
-
-    if (entity.description !== undefined) {
-      persistence.description = entity.description;
-    }
-
-    if (entity.difficulty !== undefined) {
-      persistence.difficulty = entity.difficulty;
-    }
-
-    if (entity.domain !== undefined) {
-      persistence.domain = entity.domain;
-    }
-
-    if (entity.xpReward !== undefined) {
-      persistence.xpReward = entity.xpReward;
-    }
-
-    if (entity.timeLimitMinutes !== undefined) {
-      persistence.timeLimitMinutes = entity.timeLimitMinutes;
-    }
-
-    if (entity.isPremium !== undefined) {
-      persistence.isPremium = entity.isPremium;
-    }
-
-    if (entity.isActive !== undefined) {
-      persistence.isActive = entity.isActive;
-    }
-
-    if (entity.status !== undefined) {
-      persistence.status = entity.status;
-    }
-
-    if (entity.isCompleted !== undefined) {
-      persistence.isCompleted = entity.isCompleted;
-    }
-
-    if (entity.availableFrom !== undefined) {
-      persistence.availableFrom = entity.availableFrom;
-    }
-
-    if (entity.availableUntil !== undefined) {
-      persistence.availableUntil = entity.availableUntil;
-    }
+    if (entity.title !== undefined) persistence.title = entity.title;
+    if (entity.description !== undefined) persistence.description = entity.description;
+    if (entity.difficulty !== undefined) persistence.difficulty = entity.difficulty;
+    if (entity.domain !== undefined) persistence.domain = entity.domain;
+    if (entity.xpReward !== undefined) persistence.xpReward = entity.xpReward;
+    if (entity.timeLimitMinutes !== undefined) persistence.timeLimitMinutes = entity.timeLimitMinutes;
+    if (entity.isPremium !== undefined) persistence.isPremium = entity.isPremium;
+    if (entity.isActive !== undefined) persistence.isActive = entity.isActive;
+    if (entity.status !== undefined) persistence.status = entity.status;
+    if (entity.isCompleted !== undefined) persistence.isCompleted = entity.isCompleted;
+    if (entity.availableFrom !== undefined) persistence.availableFrom = entity.availableFrom;
+    if (entity.availableUntil !== undefined) persistence.availableUntil = entity.availableUntil;
 
     return persistence;
   }

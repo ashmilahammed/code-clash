@@ -75,21 +75,21 @@ export class SocketServer {
             // Auto-join all rooms the user is part of
             try {
                 const conversations = await getConversationsUseCase.execute(userId);
-                conversations.forEach(conv => {
+                for (const conv of conversations) {
                     if (conv.id) {
-                        socket.join(conv.id);
+                        await socket.join(conv.id);
                     }
-                });
+                }
 
                 // Also join their own personal room for direct messages initiated by others
-                socket.join(userId);
+                await socket.join(userId);
 
             } catch (error) {
                 this._logger.error("Error auto-joining rooms on connection", error);
             }
 
-            socket.on("join_conversation", (conversationId: string) => {
-                socket.join(conversationId);
+            socket.on("join_conversation", async (conversationId: string) => {
+                await socket.join(conversationId);
             });
 
             socket.on("send_message", async (data: { conversationId: string; content: string; messageType?: 'text' | 'image'; mediaUrl?: string }) => {
@@ -111,12 +111,14 @@ export class SocketServer {
                         lastMessage: message
                     });
 
-                } catch (error: any) {
+                } catch (error) {
+                    const errorMessage = error instanceof Error ? error.message : "Failed to send message";
                     this._logger.error("Error sending message via socket", error);
-                    socket.emit("error", { message: error.message || "Failed to send message" });
+                    socket.emit("error", { message: errorMessage });
                 }
             });
 
+            
             socket.on("delete_message", async (data: { messageId: string; conversationId: string }) => {
                 try {
                     const deletedMessage = await deleteMessageUseCase.execute(data.messageId, userId);

@@ -23,6 +23,7 @@ import { CreateChallengeDTO } from "../../application/dto/challenge/CreateChalle
 import { UpdateChallengeDTO } from "../../application/dto/challenge/UpdateChallengeDTO";
 import { ToggleChallengeDTO } from "../../application/dto/challenge/ToggleChallengeDTO";
 // import { AdminListChallengesQueryDTO } from "../../application/dto/challenge/AdminListChallengesQueryDTO";
+import { ListQuery } from "../../domain/types/ListQuery";
 
 // import { ChallengeDifficulty, ChallengeDomain } from "../../domain/entities/challenge/Challenge";
 
@@ -118,7 +119,7 @@ export class AdminChallengeController {
 
     adminList = async (req: Request, res: Response) => {
         try {
-            const result = await this._adminListChallenges.execute(req.query as any);
+            const result = await this._adminListChallenges.execute(req.query as unknown as ListQuery);
 
             return res
                 .status(HttpStatus.OK)

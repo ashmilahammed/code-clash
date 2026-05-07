@@ -86,10 +86,10 @@ export class ChatController {
             return res
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, groups));
-        } catch (error: any) {
+        } catch (err: unknown) {
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(error.message));
+                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
         }
     };
 

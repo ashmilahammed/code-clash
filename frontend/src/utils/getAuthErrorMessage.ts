@@ -1,8 +1,19 @@
 import { AUTH_ERROR_MESSAGES } from "../constants/authErrorMessages";
 
-export function getAuthErrorMessage(err: any): string {
-  const code = err?.response?.data?.message;
-  const status = err?.response?.status;
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+    status?: number;
+  };
+}
+
+export function getAuthErrorMessage(err: unknown): string {
+  const error = err as ApiError;
+  
+  const code = error?.response?.data?.message;
+  const status = error?.response?.status;
 
   // Blocked user (status-based)
   if (status === 403 || code === "ACCOUNT_BLOCKED") {

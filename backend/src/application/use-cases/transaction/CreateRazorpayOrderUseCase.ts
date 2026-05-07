@@ -11,7 +11,12 @@ export class CreateRazorpayOrderUseCase implements ICreateRazorpayOrderUseCase {
         private readonly _razorpayService: IRazorpayService
     ) { }
 
-    async execute(dto: CreateOrderDTO): Promise<any> {
+    async execute(dto: CreateOrderDTO): Promise<{
+        id: string;
+        amount: number;
+        currency: string;
+        receipt: string;
+    }> {
 
         const plan = await this._planRepository.findById(dto.planId);
 
@@ -31,7 +36,12 @@ export class CreateRazorpayOrderUseCase implements ICreateRazorpayOrderUseCase {
         // Receipt id 
         const receiptId = `rcpt_${Date.now()}`;
 
-        const order = await this._razorpayService.createOrder(amountInPaise, "INR", receiptId);
+        const order = await this._razorpayService.createOrder(amountInPaise, "INR", receiptId) as {
+            id: string;
+            amount: number;
+            currency: string;
+            receipt: string;
+        };
 
         return {
             id: order.id,

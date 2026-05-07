@@ -12,7 +12,6 @@ export type ChallengeDomain =
   | "math"
   | "sql";
 
-
 export type ChallengeStatus = "draft" | "active" | "archived";
 
 export class Challenge {
@@ -32,13 +31,13 @@ export class Challenge {
     public availableUntil?: Date | null,
     public readonly createdAt?: Date,
     public readonly updatedAt?: Date,
-    public tags?: any[],
-    public languages?: any[]
+    public tags: string[] = [],  
+    public languages: string[] = []  
   ) {
     this.validate();
   }
 
-  private validate() {
+  private validate(): void {
     if (this.xpReward <= 0) {
       throw new Error("XP reward must be positive");
     }
@@ -52,22 +51,18 @@ export class Challenge {
     }
   }
 
-  activate() {
+  activate(): void {
     this.isActive = true;
     this.status = "active";
   }
 
-  archive() {
+  archive(): void {
     this.isActive = false;
     this.status = "archived";
   }
 
-  schedule(from?: Date | null, until?: Date | null) {
+  schedule(from?: Date | null, until?: Date | null): void {
     this.availableFrom = from ?? null;
     this.availableUntil = until ?? null;
   }
 }
-
-
-
-

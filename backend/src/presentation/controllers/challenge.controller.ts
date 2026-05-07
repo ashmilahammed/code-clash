@@ -17,6 +17,9 @@ import { MESSAGES } from "../constants/messages";
 
 
 
+import { ListQuery } from "../../domain/types/ListQuery";
+
+
 export class ChallengeController {
     constructor(
         private readonly _userListChallenges: IListChallengesUseCase,
@@ -31,7 +34,7 @@ export class ChallengeController {
 
     userList = async (req: Request, res: Response) => {
         try {
-            const result = await this._userListChallenges.execute(req.query as any);
+            const result = await this._userListChallenges.execute(req.query as unknown as ListQuery);
 
             return res
                 .status(HttpStatus.OK)

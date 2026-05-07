@@ -40,7 +40,7 @@ export class GetUserNotificationsUseCase implements IGetUserNotificationsUseCase
         limit
       );
 
-    const unreadCount = data.filter((n: any) => !n.isRead).length;
+    const unreadCount = data.filter((n: { isRead?: boolean }) => !n.isRead).length;
 
     return {
       notifications: data,

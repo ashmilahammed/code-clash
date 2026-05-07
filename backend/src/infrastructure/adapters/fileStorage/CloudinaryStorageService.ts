@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from "cloudinary";
+import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import { IFileStorageService } from "../../../domain/services/IFileStorageService";
 
 
@@ -12,7 +12,7 @@ cloudinary.config({
 export class CloudinaryStorageService implements IFileStorageService {
 
   async uploadAvatar(file: Buffer, userId: string) {
-    const result = await new Promise<any>((resolve, reject) => {
+    const result = await new Promise<UploadApiResponse>((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         {
           folder: "avatars",
@@ -21,7 +21,7 @@ export class CloudinaryStorageService implements IFileStorageService {
           transformation: [{ width: 256, height: 256, crop: "fill" }],
         },
         (error, result) => {
-          if (error) reject(error);
+          if (error || !result) reject(error || new Error("Upload failed"));
           else resolve(result);
         }
       );
@@ -36,14 +36,14 @@ export class CloudinaryStorageService implements IFileStorageService {
   }
 
   async uploadChatImage(file: Buffer, conversationId: string) {
-    const result = await new Promise<any>((resolve, reject) => {
+    const result = await new Promise<UploadApiResponse>((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         {
           folder: `chat/${conversationId}`,
           transformation: [{ width: 1080, crop: "limit" }],
         },
         (error, result) => {
-          if (error) reject(error);
+          if (error || !result) reject(error || new Error("Upload failed"));
           else resolve(result);
         }
       );

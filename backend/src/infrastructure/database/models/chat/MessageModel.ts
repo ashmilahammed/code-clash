@@ -2,7 +2,7 @@ import { Schema, model, Document, Types } from "mongoose";
 
 export interface IMessageDoc extends Document {
     conversationId: Types.ObjectId;
-    senderId: Types.ObjectId | any;
+    senderId: Types.ObjectId | Record<string, unknown>;
     content: string;
     isDeleted: boolean;
     messageType: 'text' | 'image';

@@ -34,7 +34,7 @@ export class PlanRepository
   }
 
   async update(id: string, planData: Partial<Plan>): Promise<Plan | null> {
-    const updateData: any = {};
+    const updateData: Record<string, unknown> = {};
 
     if (planData.name !== undefined) updateData.name = planData.name;
     if (planData.description !== undefined) updateData.description = planData.description;

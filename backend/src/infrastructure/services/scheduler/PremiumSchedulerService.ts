@@ -62,5 +62,5 @@ export const startPremiumExpirationJob = () => {
     setInterval(expirePremiumUsers, CHECK_INTERVAL);
 
     // Also run immediately on startup
-    expirePremiumUsers();
+    void expirePremiumUsers();
 };
