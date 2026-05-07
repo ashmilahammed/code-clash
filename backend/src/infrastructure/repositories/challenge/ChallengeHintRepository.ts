@@ -1,7 +1,7 @@
 import { IChallengeHintRepository } from "../../../domain/repositories/challenge/IChallengeHintRepository";
 import { ChallengeHintModel } from "../../database/models/challenge/ChallengeHintModel";
 import { ChallengeHint } from "../../../domain/entities/challenge/ChallengeHint";
-import { ChallengeHintMapper } from "../../../application/mappers/ChallengeHintMapper";
+import { ChallengeHintMapper } from "../../../infrastructure/mappers/ChallengeHintMapper";
 
 
 

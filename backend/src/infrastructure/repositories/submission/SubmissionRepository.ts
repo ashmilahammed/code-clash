@@ -2,7 +2,7 @@ import { SubmissionModel } from "../../database/models/submission/SubmissionMode
 import { ISubmissionRepository, IUserSubmissionStats, IRecentActivity, ILeaderboardEntry } from "../../../domain/repositories/submission/ISubmissionRepository";
 import { Submission } from "../../../domain/entities/submission/Submission";
 import { Types, PipelineStage } from "mongoose";
-import { SubmissionMapper, ILeaderboardItem } from "../../../application/mappers/SubmissionMapper";
+import { SubmissionMapper, ILeaderboardItem } from "../../../infrastructure/mappers/SubmissionMapper";
 
 
 export class SubmissionRepository implements ISubmissionRepository {

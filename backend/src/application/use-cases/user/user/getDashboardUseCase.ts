@@ -132,7 +132,7 @@ import { ILevelRepository } from "../../../../domain/repositories/level/ILevelRe
 import { Badge } from "../../../../domain/entities/badge/Badge";
 import { SubmissionModel } from "../../../../infrastructure/database/models/submission/SubmissionModel"; 
 import { IGetDashboardUseCase } from "../../../interfaces/user/user/IGetDashboardUseCase";
-import { UserMapper } from "../../../mappers/UserMapper";
+import { UserDTOMapper } from "../../../mappers/UserDTOMapper";
 
 
 export class GetDashboardUseCase implements IGetDashboardUseCase {
@@ -155,7 +155,7 @@ export class GetDashboardUseCase implements IGetDashboardUseCase {
     }
 
     // Map user to DTO with populated badges
-    const userDTO = UserMapper.toResponse(user, populatedBadges);
+    const userDTO = UserDTOMapper.toResponse(user, populatedBadges);
 
     const xp = user.getXp();
     const streak = user.getStreaks();

@@ -134,7 +134,7 @@ export class AdminController {
   };
 
 
-  
+
   getUserSolvedCount = async (req: Request, res: Response) => {
     try {
       const { userId } = req.params;

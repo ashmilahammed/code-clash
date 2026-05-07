@@ -5,7 +5,7 @@ import { IChallengeRepository } from "../../../domain/repositories/challenge/ICh
 import { Challenge } from "../../../domain/entities/challenge/Challenge";
 import { ChallengeListQuery } from "../../../domain/types/ChallengeListQuery";
 import { PaginatedResult } from "../../../domain/types/PaginatedResult";
-import { ChallengeMapper } from "../../../application/mappers/ChallengeMapper";
+import { ChallengeMapper } from "../../../infrastructure/mappers/ChallengeMapper";
 
 
 

@@ -2,7 +2,7 @@ import { IUserRepository } from "../../../domain/repositories/user/IUserReposito
 import { User } from "../../../domain/entities/user/User";
 import { UserModel } from "../../database/models/user/UserModel";
 import { BaseRepository } from "../BaseRepository";
-import { UserMapper } from "../../../application/mappers/UserMapper";
+import { UserMapper } from "../../../infrastructure/mappers/UserMapper";
 import { ListQuery } from "../../../domain/types/ListQuery";
 import { PaginatedResult } from "../../../domain/types/PaginatedResult";
 import { IUserDoc } from "../../database/models/user/UserModel";

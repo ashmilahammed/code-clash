@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { ChallengeTestCaseModel } from "../../database/models/challenge/ChallengeTestCaseModel";
 import { IChallengeTestCaseRepository } from "../../../domain/repositories/challenge/IChallengeTestCaseRepository";
 import { ChallengeTestCase } from "../../../domain/entities/challenge/ChallengeTestCase";
-import { ChallengeTestCaseMapper } from "../../../application/mappers/ChallengeTestCaseMapper";
+import { ChallengeTestCaseMapper } from "../../../infrastructure/mappers/ChallengeTestCaseMapper";
 
 
 

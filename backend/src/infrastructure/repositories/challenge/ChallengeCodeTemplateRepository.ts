@@ -1,7 +1,7 @@
 import { ChallengeCodeTemplateModel } from "../../database/models/challenge/ChallengeCodeTemplateModel";
 import { IChallengeCodeTemplateRepository } from "../../../domain/repositories/challenge/IChallengeCodeTemplateRepository";
 import { ChallengeCodeTemplate } from "../../../domain/entities/challenge/ChallengeCodeTemplate";
-import { ChallengeCodeTemplateMapper } from "../../../application/mappers/ChallengeCodeTemplateMapper";
+import { ChallengeCodeTemplateMapper } from "../../../infrastructure/mappers/ChallengeCodeTemplateMapper";
 
 
 export class ChallengeCodeTemplateRepository implements IChallengeCodeTemplateRepository {

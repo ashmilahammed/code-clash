@@ -1,7 +1,7 @@
 import { ProgrammingLanguageModel } from "../../database/models/language/ProgrammingLanguageModel";
 import { IProgrammingLanguageRepository } from "../../../domain/repositories/language/IProgrammingLanguageRepository";
 import { ProgrammingLanguage } from "../../../domain/entities/language/ProgrammingLanguage";
-import { ProgrammingLanguageMapper } from "../../../application/mappers/ProgrammingLanguageMapper";
+import { ProgrammingLanguageMapper } from "../../../infrastructure/mappers/ProgrammingLanguageMapper";
 
 
 export class ProgrammingLanguageRepository implements IProgrammingLanguageRepository {

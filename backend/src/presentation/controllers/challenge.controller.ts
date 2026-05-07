@@ -119,13 +119,13 @@ export class ChallengeController {
             }
 
             const user = res.locals.user as { userId: string } | undefined;
-      if (!user) {
-        return res
-          .status(HttpStatus.UNAUTHORIZED)
-          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-      }
+            if (!user) {
+                return res
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
+            }
 
-      const templates = await this._getChallengeTemplates.execute(id, user.userId);
+            const templates = await this._getChallengeTemplates.execute(id, user.userId);
 
             if (!templates || templates.length === 0) {
                 return res

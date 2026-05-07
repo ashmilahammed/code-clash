@@ -1,7 +1,7 @@
 import { ITransactionRepository, IAdminTransactionDetail, IUserTransactionDetail } from "../../../domain/repositories/transaction/ITransactionRepository";
 import { Transaction } from "../../../domain/entities/transaction/Transaction";
 import { TransactionModel } from "../../database/models/transactions/TransactionModel";
-import { TransactionMapper } from "../../../application/mappers/TransactionMapper";
+import { TransactionMapper } from "../../../infrastructure/mappers/TransactionMapper";
 
 
 interface PopulatedAdminTransaction {

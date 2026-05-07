@@ -2,7 +2,7 @@ import { IUserAdminRepository } from "../../../../domain/repositories/user/IUser
 import { ListQuery } from "../../../../domain/types/ListQuery";
 import { PaginatedResult } from "../../../../domain/types/PaginatedResult";
 import { UserResponseDTO } from "../../../dto/user/UserResponseDTO";
-import { UserMapper } from "../../../mappers/UserMapper";
+import { UserDTOMapper } from "../../../mappers/UserDTOMapper";
 
 import { IListUsersUseCase } from "../../../interfaces/user/admin/IListUsersUseCase";
 
@@ -19,9 +19,9 @@ export class ListUsersUseCase implements IListUsersUseCase {
 
     return {
       ...result,
-      // data: result.data.map(UserMapper.toResponse),
+      // data: result.data.map(UserDTOMapper.toResponse),
       data: result.data.map(user =>
-        UserMapper.toResponse(user)
+        UserDTOMapper.toResponse(user)
       ),
     };
   }

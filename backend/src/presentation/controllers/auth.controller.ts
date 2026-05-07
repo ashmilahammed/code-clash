@@ -22,7 +22,7 @@ import { ForgotPasswordDTO } from "../../application/dto/auth/ForgotPasswordDTO"
 import { ResetPasswordDTO } from "../../application/dto/auth/ResetPasswordDTO";
 
 
-import { UserMapper } from "../../application/mappers/UserMapper";
+import { UserDTOMapper } from "../../application/mappers/UserDTOMapper";
 
 import { ApiResponse } from "../common/ApiResponse";
 import { MESSAGES } from "../constants/messages";
@@ -154,7 +154,7 @@ export class AuthController {
 
       return res.status(HttpStatus.OK).json(
         ApiResponse.success(MESSAGES.AUTH.LOGIN_SUCCESS, {
-          user: UserMapper.toAuth(result.user),
+          user: UserDTOMapper.toAuth(result.user),
           accessToken: result.accessToken,
         })
       );
@@ -297,7 +297,7 @@ export class AuthController {
 
       return res.status(HttpStatus.OK).json(
         ApiResponse.success(MESSAGES.AUTH.GOOGLE_LOGIN_SUCCESS, {
-          user: UserMapper.toAuth(result.user),
+          user: UserDTOMapper.toAuth(result.user),
           accessToken: result.accessToken,
         })
       );
@@ -352,7 +352,7 @@ export class AuthController {
         .json(
           ApiResponse.success(MESSAGES.USER.FETCH_SUCCESS, {
             // user
-            user: UserMapper.toResponse(user),
+            user: UserDTOMapper.toResponse(user),
           })
         );
 

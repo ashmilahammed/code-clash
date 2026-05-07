@@ -1,7 +1,7 @@
 import { IConversationRepository, IAdminGroupDetail } from "../../../domain/repositories/chat/IConversationRepository";
 import { Conversation } from "../../../domain/entities/chat/Conversation";
 import { ConversationModel } from "../../database/models/chat/ConversationModel";
-import { ConversationMapper } from "../../../application/mappers/chat/ConversationMapper";
+import { ConversationMapper } from "../../../infrastructure/mappers/chat/ConversationMapper";
 import { Types } from "mongoose";
 
 

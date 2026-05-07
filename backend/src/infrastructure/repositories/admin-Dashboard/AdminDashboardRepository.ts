@@ -100,4 +100,4 @@ export class AdminDashboardRepository implements IAdminDashboardRepository {
 
         return activities.sort((a, b) => b.time.getTime() - a.time.getTime()).slice(0, 4);
     }
-}
+}

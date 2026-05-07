@@ -13,6 +13,8 @@ import badgeRoutes from "./presentation/routes/badge.routes";
 import chatRoutes from "./presentation/routes/chat.routes";
 import transactionRoutes from "./presentation/routes/transaction.routes";
 import reportRoutes from "./presentation/routes/report.routes";
+import { errorMiddleware } from "./presentation/middlewares/error.middleware";
+
 
 import { WinstonLogger } from "./infrastructure/services/logger";
 import { startPremiumExpirationJob } from "./infrastructure/services/scheduler/PremiumSchedulerService";
@@ -53,6 +55,10 @@ app.use(API_ROUTES.BADGES, badgeRoutes);
 app.use(API_ROUTES.CHAT, chatRoutes);
 app.use(API_ROUTES.TRANSACTIONS, transactionRoutes);
 app.use(API_ROUTES.REPORTS, reportRoutes);
+
+// Global Error Handler
+app.use(errorMiddleware);
+
 
 
 app.get("/test", (req, res) => {

@@ -3,7 +3,7 @@ import { ISubmissionRepository } from "../../../../domain/repositories/submissio
 import { IXpService } from "../../../../domain/services/IXpService";
 import { ILevelRepository } from "../../../../domain/repositories/level/ILevelRepository";
 import { IBadgeRepository } from "../../../../domain/repositories/badge/IBadgeRepository";
-import { UserMapper } from "../../../mappers/UserMapper";import { IGetUserProfileStatsUseCase } from "../../../interfaces/user/user/IGetUserProfileStatsUseCase";
+import { UserDTOMapper } from "../../../mappers/UserDTOMapper";import { IGetUserProfileStatsUseCase } from "../../../interfaces/user/user/IGetUserProfileStatsUseCase";
 
 import { Badge } from "../../../../domain/entities/badge/Badge";
 
@@ -36,7 +36,7 @@ export class GetUserProfileStatsUseCase implements IGetUserProfileStatsUseCase {
         }
 
         return {
-            user: UserMapper.toResponse(user, populatedBadges),
+            user: UserDTOMapper.toResponse(user, populatedBadges),
             level: {
                 level: levelInfo ? levelInfo.levelNumber : 1,
                 currentXp: xp,

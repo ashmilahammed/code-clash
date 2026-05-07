@@ -1,7 +1,7 @@
 import { IMessageRepository } from "../../../domain/repositories/chat/IMessageRepository";
 import { Message } from "../../../domain/entities/chat/Message";
 import { MessageModel } from "../../database/models/chat/MessageModel";
-import { MessageMapper } from "../../../application/mappers/chat/MessageMapper";
+import { MessageMapper } from "../../../infrastructure/mappers/chat/MessageMapper";
 import { Types } from "mongoose";
 
 

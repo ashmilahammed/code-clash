@@ -1,7 +1,7 @@
 import { ILevelRepository } from "../../../domain/repositories/level/ILevelRepository";
 import { Level } from "../../../domain/entities/level/Level";
 import { LevelModel, ILevelDoc } from "../../database/models/level/LevelModel";
-import { LevelMapper } from "../../../application/mappers/LevelMapper";
+import { LevelMapper } from "../../../infrastructure/mappers/LevelMapper";
 import { BaseRepository } from "../BaseRepository";
 
 

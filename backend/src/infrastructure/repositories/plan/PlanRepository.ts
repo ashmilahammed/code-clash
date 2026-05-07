@@ -1,7 +1,7 @@
 import { IPlanRepository } from "../../../domain/repositories/plan/IPlanRepository";
 import { Plan } from "../../../domain/entities/plan/Plan";
 import { PlanModel, IPlanDoc } from "../../database/models/plan/PlanModel";
-import { PlanMapper } from "../../../application/mappers/PlanMapper";
+import { PlanMapper } from "../../../infrastructure/mappers/PlanMapper";
 import { BaseRepository } from "../BaseRepository";
 
 
