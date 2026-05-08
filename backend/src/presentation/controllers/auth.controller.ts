@@ -27,6 +27,8 @@ import { UserDTOMapper } from "../../application/mappers/UserDTOMapper";
 import { ApiResponse } from "../common/ApiResponse";
 import { MESSAGES } from "../constants/messages";
 import { HttpStatus } from "../constants/httpStatus";
+import { asyncHandler } from "../utils/asyncHandler";
+import { AppError } from "../common/AppError";
 
 
 
@@ -48,358 +50,254 @@ export class AuthController {
 
 
 
-  register = async (req: Request, res: Response) => {
-    try {
-      const { username, email, password } = req.body;
+  register = asyncHandler(async (req: Request, res: Response) => {
+    const { username, email, password } = req.body;
 
-      if (!username || !email || !password) {
-        return res
-          .status(HttpStatus.BAD_REQUEST)
-          .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-      }
-
-      const dto: RegisterDTO = { username, email, password };
-
-      const result = await this._registerUseCase.execute(dto);
-
-      return res
-        .status(HttpStatus.CREATED)
-        .json(
-          ApiResponse.success(MESSAGES.AUTH.REGISTER_SUCCESS, {
-            userId: result.userId,
-          })
-        );
-    } catch (err: unknown) {
-      return res
-        .status(HttpStatus.BAD_REQUEST)
-        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
+    if (!username || !email || !password) {
+      throw new AppError(MESSAGES.COMMON.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }
-  };
+
+    const dto: RegisterDTO = { username, email, password };
+
+    const result = await this._registerUseCase.execute(dto);
+
+    res
+      .status(HttpStatus.CREATED)
+      .json(
+        ApiResponse.success(MESSAGES.AUTH.REGISTER_SUCCESS, {
+          userId: result.userId,
+        })
+      );
+  });
 
 
   ///
-  verifyOtp = async (req: Request, res: Response) => {
-    try {
-      const { userId, otp } = req.body;
+  verifyOtp = asyncHandler(async (req: Request, res: Response) => {
+    const { userId, otp } = req.body;
 
-      if (!userId || !otp) {
-        return res
-          .status(HttpStatus.BAD_REQUEST)
-          .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-      }
-
-      const dto: VerifyOtpDTO = { userId, otp };
-
-      await this._verifyOtpUseCase.execute(dto);
-
-      return res
-        .status(HttpStatus.OK)
-        .json(ApiResponse.success(MESSAGES.AUTH.OTP_VERIFIED));
-    } catch (err: unknown) {
-      return res
-        .status(HttpStatus.BAD_REQUEST)
-        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
+    if (!userId || !otp) {
+      throw new AppError(MESSAGES.COMMON.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }
-  };
+
+    const dto: VerifyOtpDTO = { userId, otp };
+
+    await this._verifyOtpUseCase.execute(dto);
+
+    res
+      .status(HttpStatus.OK)
+      .json(ApiResponse.success(MESSAGES.AUTH.OTP_VERIFIED));
+  });
 
 
 
   ///
-  resendOtp = async (req: Request, res: Response) => {
-    try {
-      const { userId, ignoreVerified } = req.body;
+  resendOtp = asyncHandler(async (req: Request, res: Response) => {
+    const { userId, ignoreVerified } = req.body;
 
-      if (!userId) {
-        return res
-          .status(HttpStatus.BAD_REQUEST)
-          .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-      }
-
-      await this._resendOtpUseCase.execute(userId, { ignoreVerified });
-
-      return res
-        .status(HttpStatus.OK)
-        .json(ApiResponse.success(MESSAGES.AUTH.OTP_RESENT));
-
-    } catch (err: unknown) {
-      return res
-        .status(HttpStatus.BAD_REQUEST)
-        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
+    if (!userId) {
+      throw new AppError(MESSAGES.COMMON.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }
-  };
+
+    await this._resendOtpUseCase.execute(userId, { ignoreVerified });
+
+    res
+      .status(HttpStatus.OK)
+      .json(ApiResponse.success(MESSAGES.AUTH.OTP_RESENT));
+  });
 
 
 
   ///
-  login = async (req: Request, res: Response) => {
-    try {
-      const { email, password } = req.body;
+  login = asyncHandler(async (req: Request, res: Response) => {
+    const { email, password } = req.body;
 
-      if (!email || !password) {
-        return res
-          .status(HttpStatus.BAD_REQUEST)
-          .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-      }
+    if (!email || !password) {
+      throw new AppError(MESSAGES.COMMON.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+    }
 
-      const dto: LoginDTO = { email, password };
+    const dto: LoginDTO = { email, password };
 
-      const result = await this._loginUseCase.execute(dto);
+    const result = await this._loginUseCase.execute(dto);
 
-      res.cookie("refreshToken", result.refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
+    res.cookie("refreshToken", result.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
-      return res.status(HttpStatus.OK).json(
-        ApiResponse.success(MESSAGES.AUTH.LOGIN_SUCCESS, {
-          user: UserDTOMapper.toAuth(result.user),
+    res.status(HttpStatus.OK).json(
+      ApiResponse.success(MESSAGES.AUTH.LOGIN_SUCCESS, {
+        user: UserDTOMapper.toAuth(result.user),
+        accessToken: result.accessToken,
+      })
+    );
+  });
+
+
+  ///
+  logout = asyncHandler(async (req: Request, res: Response) => {
+    const user = res.locals.user as { userId: string; role: "user" | "admin" } | undefined;
+
+    if (!user) {
+      throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
+    }
+
+    await this._logoutUseCase.execute(user.userId);
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    });
+
+    res
+      .status(HttpStatus.OK)
+      .json(ApiResponse.success(MESSAGES.AUTH.LOGOUT_SUCCESS));
+  });
+
+
+
+
+
+  ///
+  forgotPassword = asyncHandler(async (req: Request, res: Response) => {
+    const dto = new ForgotPasswordDTO(req.body.email);
+
+    const result = await this._forgotPasswordUseCase.execute(dto);
+
+    res
+      .status(HttpStatus.OK)
+      .json(
+        ApiResponse.success(MESSAGES.AUTH.OTP_SENT, {
+          userId: result.userId,
+        })
+      );
+  });
+
+
+
+  ///
+  verifyForgotOtp = asyncHandler(async (req: Request, res: Response) => {
+    const { userId, otp } = req.body;
+
+    await this._verifyForgotOtpUseCase.execute(userId, otp);
+
+    res
+      .status(HttpStatus.OK)
+      .json(ApiResponse.success(MESSAGES.AUTH.OTP_VERIFIED));
+  });
+
+
+
+  ///
+  resetPassword = asyncHandler(async (req: Request, res: Response) => {
+    const dto = new ResetPasswordDTO(
+      req.body.userId,
+      req.body.password
+    );
+
+    await this._resetPasswordUseCase.execute(dto);
+
+
+    res
+      .status(HttpStatus.OK)
+      .json(ApiResponse.success(MESSAGES.USER.UPDATE_SUCCESS));
+  });
+
+
+
+  ///
+  googleLogin = asyncHandler(async (req: Request, res: Response) => {
+    const { googleToken } = req.body;
+
+    if (!googleToken) {
+      throw new AppError(MESSAGES.COMMON.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+    }
+
+    const dto: GoogleLoginDTO = { googleToken };
+
+    const result = await this._googleLoginUseCase.execute(dto);
+
+    res.cookie("refreshToken", result.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.status(HttpStatus.OK).json(
+      ApiResponse.success(MESSAGES.AUTH.GOOGLE_LOGIN_SUCCESS, {
+        user: UserDTOMapper.toAuth(result.user),
+        accessToken: result.accessToken,
+      })
+    );
+  });
+
+
+  ///
+  refreshSession = asyncHandler(async (req: Request, res: Response) => {
+    const refreshToken = req.cookies?.refreshToken;
+
+    const result = await this._refreshSessionUseCase.execute(refreshToken);
+
+    res
+      .status(HttpStatus.OK)
+      .json(
+        ApiResponse.success("Session refreshed", {
           accessToken: result.accessToken,
         })
       );
-    } catch (err: unknown) {
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
-    }
-  };
-
-
-  ///
-  logout = async (req: Request, res: Response) => {
-    try {
-      const user = res.locals.user as { userId: string; role: "user" | "admin" } | undefined;
-
-      if (!user) {
-        return res
-          .status(HttpStatus.UNAUTHORIZED)
-          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-      }
-
-      await this._logoutUseCase.execute(user.userId);
-
-      res.clearCookie("refreshToken", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-      });
-
-      return res
-        .status(HttpStatus.OK)
-        .json(ApiResponse.success(MESSAGES.AUTH.LOGOUT_SUCCESS));
-
-
-    } catch (err: unknown) {
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
-    }
-  };
-
-
+  });
 
 
 
   ///
-  forgotPassword = async (req: Request, res: Response) => {
-    try {
+  me = asyncHandler(async (req: Request, res: Response) => {
+    const userContext = res.locals.user as { userId: string; role: "user" | "admin" } | undefined;
 
-      const dto = new ForgotPasswordDTO(req.body.email);
-
-      const result = await this._forgotPasswordUseCase.execute(dto);
-
-      return res
-        .status(HttpStatus.OK)
-        .json(
-          ApiResponse.success(MESSAGES.AUTH.OTP_SENT, {
-            userId: result.userId,
-          })
-        );
-
-    } catch (err: unknown) {
-      return res
-        .status(HttpStatus.BAD_REQUEST)
-        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
+    if (!userContext) {
+      throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
     }
-  };
 
+    const user = await this._getCurrentUserUseCase.execute(userContext.userId);
 
-
-  ///
-  verifyForgotOtp = async (req: Request, res: Response) => {
-    try {
-      const { userId, otp } = req.body;
-
-      await this._verifyForgotOtpUseCase.execute(userId, otp);
-
-      return res
-        .status(HttpStatus.OK)
-        .json(ApiResponse.success(MESSAGES.AUTH.OTP_VERIFIED));
-
-    } catch (err: unknown) {
-      return res
-        .status(HttpStatus.BAD_REQUEST)
-        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
-    }
-  };
-
-
-
-  ///
-  resetPassword = async (req: Request, res: Response) => {
-    try {
-      // const { userId, password } = req.body;
-      // await this._resetPasswordUseCase.execute(userId, password);
-
-      const dto = new ResetPasswordDTO(
-        req.body.userId,
-        req.body.password
-      );
-
-      await this._resetPasswordUseCase.execute(dto);
-
-
-      return res
-        .status(HttpStatus.OK)
-        .json(ApiResponse.success(MESSAGES.USER.UPDATE_SUCCESS));
-
-    } catch (err: unknown) {
-      return res
-        .status(HttpStatus.BAD_REQUEST)
-        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
-    }
-  };
-
-
-
-  ///
-  googleLogin = async (req: Request, res: Response) => {
-    try {
-      const { googleToken } = req.body;
-
-      if (!googleToken) {
-        return res
-          .status(HttpStatus.BAD_REQUEST)
-          .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-      }
-
-      const dto: GoogleLoginDTO = { googleToken };
-
-      const result = await this._googleLoginUseCase.execute(dto);
-
-      res.cookie("refreshToken", result.refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
-
-      return res.status(HttpStatus.OK).json(
-        ApiResponse.success(MESSAGES.AUTH.GOOGLE_LOGIN_SUCCESS, {
-          user: UserDTOMapper.toAuth(result.user),
-          accessToken: result.accessToken,
+    res
+      .status(HttpStatus.OK)
+      .json(
+        ApiResponse.success(MESSAGES.USER.FETCH_SUCCESS, {
+          user: UserDTOMapper.toResponse(user),
         })
       );
-
-    } catch (err: unknown) {
-      return res
-        .status(HttpStatus.UNAUTHORIZED)
-        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.AUTH.UNAUTHORIZED));
-    }
-  };
+  });
 
 
   ///
-  refreshSession = async (req: Request, res: Response) => {
-    try {
-      const refreshToken = req.cookies?.refreshToken;
+  changePassword = asyncHandler(async (req: Request, res: Response) => {
+    const userContext = res.locals.user;
 
-      const result = await this._refreshSessionUseCase.execute(refreshToken);
-
-      return res
-        .status(HttpStatus.OK)
-        .json(
-          ApiResponse.success("Session refreshed", {
-            accessToken: result.accessToken,
-          })
-        );
-
-    } catch (err: unknown) {
-      return res
-        .status(HttpStatus.UNAUTHORIZED)
-        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.AUTH.UNAUTHORIZED));
+    if (!userContext) {
+      throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
     }
-  };
 
+    const { currentPassword, newPassword } = req.body;
 
-
-  ///
-  me = async (req: Request, res: Response) => {
-    try {
-      const userContext = res.locals.user as { userId: string; role: "user" | "admin" } | undefined;
-
-      if (!userContext) {
-        return res
-          .status(HttpStatus.UNAUTHORIZED)
-          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-      }
-
-      const user = await this._getCurrentUserUseCase.execute(userContext.userId);
-
-      return res
-        .status(HttpStatus.OK)
-        .json(
-          ApiResponse.success(MESSAGES.USER.FETCH_SUCCESS, {
-            // user
-            user: UserDTOMapper.toResponse(user),
-          })
-        );
-
-    } catch (err: unknown) {
-      return res
-        .status(HttpStatus.BAD_REQUEST)
-        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
+    if (!currentPassword || !newPassword) {
+      throw new AppError(MESSAGES.COMMON.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }
-  };
 
+    const dto: ChangePasswordDTO = {
+      userId: userContext.userId,
+      currentPassword,
+      newPassword,
+    };
 
-  ///
-  changePassword = async (req: Request, res: Response) => {
-    try {
-      const userContext = res.locals.user;
+    await this._changePasswordUseCase.execute(dto);
 
-      if (!userContext) {
-        return res
-          .status(HttpStatus.UNAUTHORIZED)
-          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-      }
-
-      const { currentPassword, newPassword } = req.body;
-
-      if (!currentPassword || !newPassword) {
-        return res
-          .status(HttpStatus.BAD_REQUEST)
-          .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-      }
-
-      const dto: ChangePasswordDTO = {
-        userId: userContext.userId,
-        currentPassword,
-        newPassword,
-      };
-
-      await this._changePasswordUseCase.execute(dto);
-
-      return res
-        .status(HttpStatus.OK)
-        .json(ApiResponse.success(MESSAGES.USER.UPDATE_SUCCESS));
-    } catch (err: unknown) {
-      return res
-        .status(HttpStatus.BAD_REQUEST)
-        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
-    }
-  };
+    res
+      .status(HttpStatus.OK)
+      .json(ApiResponse.success(MESSAGES.USER.UPDATE_SUCCESS));
+  });
 
 
 

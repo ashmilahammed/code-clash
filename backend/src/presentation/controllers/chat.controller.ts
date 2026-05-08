@@ -18,8 +18,8 @@ import { DirectConversationDTO } from "../../application/dto/chat/DirectConversa
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
 import { MESSAGES } from "../constants/messages";
-
-
+import { asyncHandler } from "../utils/asyncHandler";
+import { AppError } from "../common/AppError";
 
 
 export class ChatController {
@@ -37,278 +37,198 @@ export class ChatController {
 
 
 
-    createGroup = async (req: Request, res: Response) => {
-        try {
-            const userId = res.locals.user?.userId;
+    createGroup = asyncHandler(async (req: Request, res: Response) => {
+        const userId = res.locals.user?.userId;
 
-            if (!userId) {
-                return res
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-            }
-
-            const { name, description, memberLimit, isPrivate, participants } =
-                req.body;
-
-            if (!name) {
-                return res
-                    .status(HttpStatus.BAD_REQUEST)
-                    .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-            }
-
-            const dto: CreateGroupDTO = {
-                adminId: userId,
-                name,
-                description,
-                memberLimit,
-                isPrivate,
-                participants: participants || [],
-            };
-
-            const group = await this._createGroupUseCase.execute(dto);
-
-            return res
-                .status(HttpStatus.CREATED)
-                .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, group));
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
+        if (!userId) {
+            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
-    };
 
+        const { name, description, memberLimit, isPrivate, participants } =
+            req.body;
 
-
-    getPublicGroups = async (req: Request, res: Response) => {
-        try {
-            const groups = await this._getPublicConversationsUseCase.execute();
-
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, groups));
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
+        if (!name) {
+            throw new AppError(MESSAGES.COMMON.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         }
-    };
+
+        const dto: CreateGroupDTO = {
+            adminId: userId,
+            name,
+            description,
+            memberLimit,
+            isPrivate,
+            participants: participants || [],
+        };
+
+        const group = await this._createGroupUseCase.execute(dto);
+
+        res
+            .status(HttpStatus.CREATED)
+            .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, group));
+    });
 
 
 
-    joinGroup = async (req: Request, res: Response) => {
-        try {
+    getPublicGroups = asyncHandler(async (req: Request, res: Response) => {
+        const groups = await this._getPublicConversationsUseCase.execute();
 
-            const conversationId = req.params.conversationId;
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, groups));
+    });
 
-            if (!conversationId) {
-                res.status(400).json({ message: "Conversation ID is required" });
-                return;
-            }
 
-            const userId = res.locals.user?.userId as string;
 
-            if (!userId) {
-                res.status(401).json({ message: "Unauthorized" });
-                return;
-            }
+    joinGroup = asyncHandler(async (req: Request, res: Response) => {
+        const conversationId = req.params.conversationId;
 
-            const group = await this._joinGroupUseCase.execute(conversationId, userId);
-
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, group));
-
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
+        if (!conversationId) {
+            throw new AppError("Conversation ID is required", HttpStatus.BAD_REQUEST);
         }
-    };
 
+        const userId = res.locals.user?.userId as string;
 
-
-    getConversations = async (req: Request, res: Response) => {
-        try {
-
-            const userId = res.locals.user?.userId;
-
-            if (!userId) {
-                res.status(401).json({ message: "Unauthorized" });
-                return;
-            }
-
-            const conversations = await this._getConversationsUseCase.execute(userId);
-
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, conversations));
-
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
+        if (!userId) {
+            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
-    };
+
+        const group = await this._joinGroupUseCase.execute(conversationId, userId);
+
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, group));
+    });
 
 
 
-    getMessages = async (req: Request, res: Response) => {
-        try {
-            const userId = res.locals.user?.userId;
-            const { conversationId } = req.params;
+    getConversations = asyncHandler(async (req: Request, res: Response) => {
+        const userId = res.locals.user?.userId;
 
-            const limit = Number(req.query.limit ?? 50);
-            const skip = Number(req.query.skip ?? 0);
-
-            if (!userId || !conversationId) {
-                return res
-                    .status(HttpStatus.BAD_REQUEST)
-                    .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-            }
-
-            if (limit < 1 || limit > 100) {
-                return res
-                    .status(HttpStatus.BAD_REQUEST)
-                    .json(ApiResponse.error("Invalid pagination limit"));
-            }
-
-            const dto: GetMessagesQueryDTO = {
-                userId,
-                conversationId,
-                limit,
-                skip,
-            };
-
-            const messages = await this._getMessagesUseCase.execute(dto);
-
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, messages));
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
+        if (!userId) {
+            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
-    };
+
+        const conversations = await this._getConversationsUseCase.execute(userId);
+
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, conversations));
+    });
 
 
 
-    getOrCreateDirectConversation = async (req: Request, res: Response) => {
-        try {
-            const senderId = res.locals.user?.userId;
-            const { receiverId } = req.body;
+    getMessages = asyncHandler(async (req: Request, res: Response) => {
+        const userId = res.locals.user?.userId;
+        const { conversationId } = req.params;
 
-            if (!senderId || !receiverId) {
-                return res
-                    .status(HttpStatus.BAD_REQUEST)
-                    .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-            }
+        const limit = Number(req.query.limit ?? 50);
+        const skip = Number(req.query.skip ?? 0);
 
-            const dto: DirectConversationDTO = { senderId, receiverId };
-
-            const conversation = await this._getOrCreateDirectConversationUseCase.execute(dto);
-
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, conversation));
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
+        if (!userId || !conversationId) {
+            throw new AppError(MESSAGES.COMMON.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         }
-    };
 
-
-
-    leaveGroup = async (req: Request, res: Response) => {
-        try {
-
-            const conversationId = req.params.conversationId;
-            const userId = res.locals.user?.userId as string;
-
-            if (!conversationId) {
-                res.status(400).json({ message: "Conversation ID is required" });
-                return;
-            }
-
-            if (!userId) {
-                res.status(401).json({ message: "Unauthorized" });
-                return;
-            }
-
-            const group = await this._leaveGroupUseCase.execute(conversationId, userId);
-
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, group));
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
+        if (limit < 1 || limit > 100) {
+            throw new AppError("Invalid pagination limit", HttpStatus.BAD_REQUEST);
         }
-    };
+
+        const dto: GetMessagesQueryDTO = {
+            userId,
+            conversationId,
+            limit,
+            skip,
+        };
+
+        const messages = await this._getMessagesUseCase.execute(dto);
+
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, messages));
+    });
 
 
 
-    addParticipants = async (req: Request, res: Response) => {
-        try {
-            const adderId = res.locals.user?.userId;
-            const { conversationId } = req.params;
-            const { participants } = req.body;
+    getOrCreateDirectConversation = asyncHandler(async (req: Request, res: Response) => {
+        const senderId = res.locals.user?.userId;
+        const { receiverId } = req.body;
 
-            if (!adderId || !conversationId || !Array.isArray(participants)) {
-                return res
-                    .status(HttpStatus.BAD_REQUEST)
-                    .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-            }
-
-            const dto: AddParticipantsDTO = {
-                adderId,
-                conversationId,
-                participants,
-            };
-
-            const group = await this._addParticipantsUseCase.execute(dto);
-
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, group));
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
+        if (!senderId || !receiverId) {
+            throw new AppError(MESSAGES.COMMON.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         }
-    };
+
+        const dto: DirectConversationDTO = { senderId, receiverId };
+
+        const conversation = await this._getOrCreateDirectConversationUseCase.execute(dto);
+
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, conversation));
+    });
 
 
 
+    leaveGroup = asyncHandler(async (req: Request, res: Response) => {
+        const conversationId = req.params.conversationId;
+        const userId = res.locals.user?.userId as string;
 
-    uploadChatImage = async (req: Request, res: Response) => {
-        try {
-
-            const conversationId = req.params.conversationId;
-            const file = req.file;
-
-            if (!conversationId) {
-                res.status(400).json({ message: "Conversation ID is required" });
-                return;
-            }
-
-            if (!file) {
-                res.status(400).json({ message: "Image file is required" });
-                return;
-            }
-
-            const url = await this._uploadChatImageUseCase.execute(file.buffer, conversationId);
-
-
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, { url }));
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
+        if (!conversationId) {
+            throw new AppError("Conversation ID is required", HttpStatus.BAD_REQUEST);
         }
-    };
-}
+
+        if (!userId) {
+            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
+        }
+
+        const group = await this._leaveGroupUseCase.execute(conversationId, userId);
+
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, group));
+    });
+
+
+
+    addParticipants = asyncHandler(async (req: Request, res: Response) => {
+        const adderId = res.locals.user?.userId;
+        const { conversationId } = req.params;
+        const { participants } = req.body;
+
+        if (!adderId || !conversationId || !Array.isArray(participants)) {
+            throw new AppError(MESSAGES.COMMON.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+        }
+
+        const dto: AddParticipantsDTO = {
+            adderId,
+            conversationId,
+            participants,
+        };
+
+        const group = await this._addParticipantsUseCase.execute(dto);
+
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, group));
+    });
+
+
+
+
+    uploadChatImage = asyncHandler(async (req: Request, res: Response) => {
+        const conversationId = req.params.conversationId;
+        const file = req.file;
+
+        if (!conversationId) {
+            throw new AppError("Conversation ID is required", HttpStatus.BAD_REQUEST);
+        }
+
+        if (!file) {
+            throw new AppError("Image file is required", HttpStatus.BAD_REQUEST);
+        }
+
+        const url = await this._uploadChatImageUseCase.execute(file.buffer, conversationId);
+
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.COMMON.SUCCESS, { url }));
+    });
+}

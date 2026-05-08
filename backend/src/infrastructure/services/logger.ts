@@ -49,3 +49,6 @@ export class WinstonLogger implements Logger {
     winstonLogger.error(message, meta ? { meta } : undefined);
   }
 }
+
+export const logger = new WinstonLogger();
+

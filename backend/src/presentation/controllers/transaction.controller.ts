@@ -12,6 +12,8 @@ import { MESSAGES } from "../constants/messages";
 import { CreateOrderDTO } from "../../application/dto/transaction/CreateOrderDTO";
 import { VerifyPaymentDTO } from "../../application/dto/transaction/VerifyPaymentDTO";
 import { GetUserTransactionsQueryDTO } from "../../application/dto/transaction/GetUserTransactionsQueryDTO";
+import { asyncHandler } from "../utils/asyncHandler";
+import { AppError } from "../common/AppError";
 
 
 interface AuthUserContext {
@@ -29,164 +31,117 @@ export class TransactionController {
     ) { }
 
 
-    getTransactions = async (req: Request, res: Response) => {
-        try {
-            const transactions = await this._getTransactionsUseCase.execute();
+    getTransactions = asyncHandler(async (req: Request, res: Response) => {
+        const transactions = await this._getTransactionsUseCase.execute();
 
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, transactions));
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, transactions));
+    });
 
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
+
+    getMyTransactions = asyncHandler(async (req: Request, res: Response) => {
+        const user = res.locals.user as AuthUserContext | undefined;
+
+        if (!user) {
+            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
-    };
+
+        const dto: GetUserTransactionsQueryDTO = {
+            userId: user.userId,
+            page: Number(req.query.page ?? 1),
+            limit: Number(req.query.limit ?? 10),
+        };
+
+        const result = await this._getUserTransactionsUseCase.execute(
+            dto.userId,
+            dto.page,
+            dto.limit
+        );
+
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, result));
+    });
 
 
-    getMyTransactions = async (req: Request, res: Response) => {
-        try {
-            const user = res.locals.user as AuthUserContext | undefined;
+    getCurrentPlan = asyncHandler(async (req: Request, res: Response) => {
+        const user = res.locals.user as AuthUserContext | undefined;
 
-            if (!user) {
-                return res
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-            }
-
-            const dto: GetUserTransactionsQueryDTO = {
-                userId: user.userId,
-                page: Number(req.query.page ?? 1),
-                limit: Number(req.query.limit ?? 10),
-            };
-
-            const result = await this._getUserTransactionsUseCase.execute(
-                dto.userId,
-                dto.page,
-                dto.limit
-            );
-
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, result));
-
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
+        if (!user) {
+            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
-    };
+
+        const plan = await this._getCurrentPremiumPlanUseCase.execute(user.userId);
+
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, plan));
+    });
 
 
-    getCurrentPlan = async (req: Request, res: Response) => {
-        try {
-            const user = res.locals.user as AuthUserContext | undefined;
+    createOrder = asyncHandler(async (req: Request, res: Response) => {
+        const user = res.locals.user as AuthUserContext | undefined;
 
-            if (!user) {
-                return res
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-            }
-
-            const plan = await this._getCurrentPremiumPlanUseCase.execute(user.userId);
-
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, plan));
-
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
+        if (!user) {
+            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
-    };
 
+        const { planId } = req.body;
 
-    createOrder = async (req: Request, res: Response) => {
-        try {
-            const user = res.locals.user as AuthUserContext | undefined;
-
-            if (!user) {
-                return res
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-            }
-
-            const { planId } = req.body;
-
-            if (!planId) {
-                return res
-                    .status(HttpStatus.BAD_REQUEST)
-                    .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-            }
-
-            const dto: CreateOrderDTO = {
-                planId,
-                userId: user.userId,
-            };
-
-            const order = await this._createOrderUseCase.execute(dto);
-
-            return res
-                .status(HttpStatus.CREATED)
-                .json(ApiResponse.success("Order created successfully", order));
-
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
+        if (!planId) {
+            throw new AppError(MESSAGES.COMMON.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         }
-    };
+
+        const dto: CreateOrderDTO = {
+            planId,
+            userId: user.userId,
+        };
+
+        const order = await this._createOrderUseCase.execute(dto);
+
+        res
+            .status(HttpStatus.CREATED)
+            .json(ApiResponse.success("Order created successfully", order));
+    });
 
 
 
-    verifyPayment = async (req: Request, res: Response) => {
-        try {
-            const user = res.locals.user as AuthUserContext | undefined;
+    verifyPayment = asyncHandler(async (req: Request, res: Response) => {
+        const user = res.locals.user as AuthUserContext | undefined;
 
-            if (!user) {
-                return res
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-            }
-
-            const {
-                razorpayOrderId,
-                razorpayPaymentId,
-                razorpaySignature,
-                planId,
-            } = req.body;
-
-            if (
-                !razorpayOrderId ||
-                !razorpayPaymentId ||
-                !razorpaySignature ||
-                !planId
-            ) {
-                return res
-                    .status(HttpStatus.BAD_REQUEST)
-                    .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-            }
-
-            const dto: VerifyPaymentDTO = {
-                razorpayOrderId,
-                razorpayPaymentId,
-                razorpaySignature,
-                planId,
-                userId: user.userId,
-            };
-
-            const transaction = await this._verifyPaymentUseCase.execute(dto);
-
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success("Payment verified successfully", transaction));
-
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
+        if (!user) {
+            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
-    };
-}
+
+        const {
+            razorpayOrderId,
+            razorpayPaymentId,
+            razorpaySignature,
+            planId,
+        } = req.body;
+
+        if (
+            !razorpayOrderId ||
+            !razorpayPaymentId ||
+            !razorpaySignature ||
+            !planId
+        ) {
+            throw new AppError(MESSAGES.COMMON.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+        }
+
+        const dto: VerifyPaymentDTO = {
+            razorpayOrderId,
+            razorpayPaymentId,
+            razorpaySignature,
+            planId,
+            userId: user.userId,
+        };
+
+        const transaction = await this._verifyPaymentUseCase.execute(dto);
+
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success("Payment verified successfully", transaction));
+    });
+}

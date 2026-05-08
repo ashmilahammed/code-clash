@@ -13,6 +13,8 @@ import { IClearNotificationsUseCase } from "../../application/interfaces/notific
 import { SendNotificationDTO } from "../../application/dto/notification/SendNotificationDTO";
 import { AdminNotificationHistoryQueryDTO } from "../../application/dto/notification/AdminNotificationHistoryQueryDTO";
 import { UserNotificationsQueryDTO } from "../../application/dto/notification/UserNotificationsQueryDTO";
+import { asyncHandler } from "../utils/asyncHandler";
+import { AppError } from "../common/AppError";
 
 
 interface AuthUserContext {
@@ -32,157 +34,111 @@ export class NotificationController {
   ) { }
 
 
-  //admin
 
-  sendNotification = async (req: Request, res: Response) => {
-    try {
-      const { title, message, recipientType } = req.body;
-      const userContext = res.locals.user as AuthUserContext;
+  sendNotification = asyncHandler(async (req: Request, res: Response) => {
+    const { title, message, recipientType } = req.body;
+    const userContext = res.locals.user as AuthUserContext;
 
-      if (!title || !message || !recipientType) {
-        return res
-          .status(HttpStatus.BAD_REQUEST)
-          .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-      }
-
-      const dto: SendNotificationDTO = {
-        title,
-        message,
-        recipientType,
-        senderId: userContext.userId,
-      };
-
-      await this._sendNotificationUseCase.execute(dto);
-
-      return res
-        .status(HttpStatus.CREATED)
-        .json(ApiResponse.success(MESSAGES.NOTIFICATION.SENT));
-    } catch (err: unknown) {
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
+    if (!title || !message || !recipientType) {
+      throw new AppError(MESSAGES.COMMON.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }
-  };
+
+    const dto: SendNotificationDTO = {
+      title,
+      message,
+      recipientType,
+      senderId: userContext.userId,
+    };
+
+    await this._sendNotificationUseCase.execute(dto);
+
+    res
+      .status(HttpStatus.CREATED)
+      .json(ApiResponse.success(MESSAGES.NOTIFICATION.SENT));
+  });
 
 
 
-  getAdminHistory = async (req: Request, res: Response) => {
-    try {
-      const page = Number(req.query.page ?? 1);
-      const limit = Number(req.query.limit ?? 10);
+  getAdminHistory = asyncHandler(async (req: Request, res: Response) => {
+    const page = Number(req.query.page ?? 1);
+    const limit = Number(req.query.limit ?? 10);
 
-      const dto: AdminNotificationHistoryQueryDTO = {
-        page,
-        limit,
-      };
+    const dto: AdminNotificationHistoryQueryDTO = {
+      page,
+      limit,
+    };
 
-      const result = await this._getAdminNotificationHistoryUseCase.execute(dto);
+    const result = await this._getAdminNotificationHistoryUseCase.execute(dto);
 
-      return res
-        .status(HttpStatus.OK)
-        .json(ApiResponse.success(MESSAGES.NOTIFICATION.FETCH_SUCCESS, result));
-    } catch (err: unknown) {
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
+    res
+      .status(HttpStatus.OK)
+      .json(ApiResponse.success(MESSAGES.NOTIFICATION.FETCH_SUCCESS, result));
+  });
+
+
+
+  getUserNotifications = asyncHandler(async (req: Request, res: Response) => {
+    const userContext = res.locals.user as AuthUserContext;
+
+    if (!userContext) {
+      throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
     }
-  };
+
+    const page = Number(req.query.page ?? 1);
+    const limit = Number(req.query.limit ?? 10);
+
+    const dto: UserNotificationsQueryDTO = {
+      userId: userContext.userId,
+      page,
+      limit,
+    };
+
+    const result = await this._getUserNotificationsUseCase.execute(dto);
+
+    res
+      .status(HttpStatus.OK)
+      .json(ApiResponse.success(MESSAGES.NOTIFICATION.FETCH_SUCCESS, result));
+  });
 
 
+  markAsRead = asyncHandler(async (req: Request, res: Response) => {
+    const userContext = res.locals.user as AuthUserContext;
+    const { notificationId } = req.params;
 
-  // user
-
-  getUserNotifications = async (req: Request, res: Response) => {
-    try {
-      const userContext = res.locals.user as AuthUserContext;
-
-      if (!userContext) {
-        return res
-          .status(HttpStatus.UNAUTHORIZED)
-          .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-      }
-
-      const page = Number(req.query.page ?? 1);
-      const limit = Number(req.query.limit ?? 10);
-
-      const dto: UserNotificationsQueryDTO = {
-        userId: userContext.userId,
-        page,
-        limit,
-      };
-
-      const result = await this._getUserNotificationsUseCase.execute(dto);
-
-      return res
-        .status(HttpStatus.OK)
-        .json(ApiResponse.success(MESSAGES.NOTIFICATION.FETCH_SUCCESS, result));
-    } catch (err: unknown) {
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
+    if (!notificationId) {
+      throw new AppError(MESSAGES.NOTIFICATION.ID_REQUIRED, HttpStatus.BAD_REQUEST);
     }
-  };
 
+    await this._markNotificationReadUseCase.execute(userContext.userId, notificationId);
 
-  markAsRead = async (req: Request, res: Response) => {
-    try {
-
-      const userContext = res.locals.user as AuthUserContext;
-      const { notificationId } = req.params;
-
-      if (!notificationId) {
-        return res
-          .status(HttpStatus.BAD_REQUEST)
-          .json(ApiResponse.error(MESSAGES.NOTIFICATION.ID_REQUIRED));
-      }
-
-      await this._markNotificationReadUseCase.execute(userContext.userId, notificationId);
-
-      return res
-        .status(HttpStatus.OK)
-        .json(ApiResponse.success(MESSAGES.NOTIFICATION.MARKED_READ));
-    } catch (err: unknown) {
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
-    }
-  };
+    res
+      .status(HttpStatus.OK)
+      .json(ApiResponse.success(MESSAGES.NOTIFICATION.MARKED_READ));
+  });
 
 
 
-  markAllAsRead = async (req: Request, res: Response) => {
-    try {
-      const userContext = res.locals.user as AuthUserContext;
+  markAllAsRead = asyncHandler(async (req: Request, res: Response) => {
+    const userContext = res.locals.user as AuthUserContext;
 
-      await this._markAllReadUseCase.execute(
-        userContext.userId
-      );
+    await this._markAllReadUseCase.execute(
+      userContext.userId
+    );
 
-      return res
-        .status(HttpStatus.OK)
-        .json(ApiResponse.success(MESSAGES.NOTIFICATION.MARKED_ALL_READ));
-    } catch (err: unknown) {
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
-    }
-  };
+    res
+      .status(HttpStatus.OK)
+      .json(ApiResponse.success(MESSAGES.NOTIFICATION.MARKED_ALL_READ));
+  });
 
 
 
-  clearNotifications = async (req: Request, res: Response) => {
-    try {
-      const userContext = res.locals.user as AuthUserContext;
+  clearNotifications = asyncHandler(async (req: Request, res: Response) => {
+    const userContext = res.locals.user as AuthUserContext;
 
-      await this._clearNotificationsUseCase.execute(userContext.userId);
+    await this._clearNotificationsUseCase.execute(userContext.userId);
 
-      return res
-        .status(HttpStatus.OK)
-        .json(ApiResponse.success(MESSAGES.NOTIFICATION.CLEARED));
-    } catch (err: unknown) {
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
-    }
-  };
+    res
+      .status(HttpStatus.OK)
+      .json(ApiResponse.success(MESSAGES.NOTIFICATION.CLEARED));
+  });
 }

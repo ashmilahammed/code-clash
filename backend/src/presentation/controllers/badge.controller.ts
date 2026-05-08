@@ -10,6 +10,8 @@ import { UpdateBadgeDTO } from "../../application/dto/badge/UpdateBadgeDTO";
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
 import { MESSAGES } from "../constants/messages";
+import { asyncHandler } from "../utils/asyncHandler";
+import { AppError } from "../common/AppError";
 
 
 export class BadgeController {
@@ -21,168 +23,127 @@ export class BadgeController {
     ) { }
 
 
-    getAll = async (req: Request, res: Response) => {
-        try {
-            const page = parseInt(req.query.page as string) || 1;
-            const limit = parseInt(req.query.limit as string) || 9;
-            const search = req.query.search as string || "";
+    getAll = asyncHandler(async (req: Request, res: Response) => {
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 9;
+        const search = req.query.search as string || "";
 
-            const result = await this._getBadgesUseCase.execute(page, limit, search);
+        const result = await this._getBadgesUseCase.execute(page, limit, search);
 
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.BADGE.FETCH_SUCCESS, result));
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.BADGE.FETCH_SUCCESS, result));
+    });
 
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
+
+
+    create = asyncHandler(async (req: Request, res: Response) => {
+        const {
+            name,
+            description,
+            icon,
+            minXpRequired,
+            category,
+            requirementType,
+            requirementValue,
+        } = req.body;
+
+
+        if (
+            !name ||
+            !icon ||
+            minXpRequired === undefined ||
+            !category ||
+            !requirementType ||
+            requirementValue === undefined
+        ) {
+            throw new AppError(MESSAGES.COMMON.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         }
-    };
 
+        const dto: CreateBadgeDTO = {
+            name,
+            description,
+            icon,
+            minXpRequired,
+            category,
+            requirementType,
+            requirementValue,
+        };
 
-
-    create = async (req: Request, res: Response) => {
         try {
-            const {
-                name,
-                description,
-                icon,
-                minXpRequired,
-                category,
-                requirementType,
-                requirementValue,
-            } = req.body;
-
-
-            if (
-                !name ||
-                !icon ||
-                minXpRequired === undefined ||
-                !category ||
-                !requirementType ||
-                requirementValue === undefined
-            ) {
-                return res
-                    .status(HttpStatus.BAD_REQUEST)
-                    .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-            }
-
-            // Create DTO object
-            const dto: CreateBadgeDTO = {
-                name,
-                description,
-                icon,
-                minXpRequired,
-                category,
-                requirementType,
-                requirementValue,
-            };
-
             const badge = await this._createBadgeUseCase.execute(dto);
 
-            return res
+            res
                 .status(HttpStatus.CREATED)
                 .json(ApiResponse.success(MESSAGES.BADGE.CREATE_SUCCESS, badge));
-
         } catch (error: unknown) {
-            let message =
-                error instanceof Error
-                    ? error.message
-                    : MESSAGES.COMMON.INTERNAL_ERROR;
-
-            if (message.includes("E11000")) {
-                message = MESSAGES.BADGE.ALREADY_EXISTS;
+            if (error instanceof Error && error.message?.includes("E11000")) {
+                throw new AppError(MESSAGES.BADGE.ALREADY_EXISTS, HttpStatus.BAD_REQUEST);
             }
-
-            return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(message));
+            throw error;
         }
-    };
+    });
 
 
 
-    update = async (req: Request, res: Response) => {
+    update = asyncHandler(async (req: Request, res: Response) => {
+        const { id } = req.params;
+
+        if (!id) {
+            throw new AppError(MESSAGES.BADGE.ID_REQUIRED, HttpStatus.BAD_REQUEST);
+        }
+
+        const {
+            name,
+            description,
+            icon,
+            minXpRequired,
+            category,
+            requirementType,
+            requirementValue,
+            isActive,
+        } = req.body;
+
+        const dto: UpdateBadgeDTO = {
+            name,
+            description,
+            icon,
+            minXpRequired,
+            category,
+            requirementType,
+            requirementValue,
+            isActive,
+        };
+
         try {
-            const { id } = req.params;
-
-            if (!id) {
-                return res
-                    .status(HttpStatus.BAD_REQUEST)
-                    .json(ApiResponse.error(MESSAGES.BADGE.ID_REQUIRED));
-            }
-
-            const {
-                name,
-                description,
-                icon,
-                minXpRequired,
-                category,
-                requirementType,
-                requirementValue,
-                isActive,
-            } = req.body;
-
-            const dto: UpdateBadgeDTO = {
-                name,
-                description,
-                icon,
-                minXpRequired,
-                category,
-                requirementType,
-                requirementValue,
-                isActive,
-            };
-
             const updated = await this._updateBadgeUseCase.execute(id, dto);
 
-            return res
+            res
                 .status(HttpStatus.OK)
                 .json(ApiResponse.success(MESSAGES.BADGE.UPDATE_SUCCESS, updated));
-
         } catch (error: unknown) {
-            let message =
-                error instanceof Error
-                    ? error.message
-                    : MESSAGES.COMMON.INTERNAL_ERROR;
-
-            if (message.includes("E11000")) {
-                message = MESSAGES.BADGE.ALREADY_EXISTS;
+            if (error instanceof Error && error.message?.includes("E11000")) {
+                throw new AppError(MESSAGES.BADGE.ALREADY_EXISTS, HttpStatus.BAD_REQUEST);
             }
-
-            return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(message));
+            throw error;
         }
-    };
+    });
 
 
 
 
-    delete = async (req: Request, res: Response) => {
-        try {
-            const { id } = req.params;
+    delete = asyncHandler(async (req: Request, res: Response) => {
+        const { id } = req.params;
 
-            if (!id) {
-                return res
-                    .status(HttpStatus.BAD_REQUEST)
-                    .json(ApiResponse.error("Badge id is required"));
-            }
-
-            await this._deleteBadgeUseCase.execute(id);
-
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.BADGE.DELETE_SUCCESS));
-
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
+        if (!id) {
+            throw new AppError("Badge id is required", HttpStatus.BAD_REQUEST);
         }
-    };
 
+        await this._deleteBadgeUseCase.execute(id);
 
-
-} 
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.BADGE.DELETE_SUCCESS));
+    });
+}
+ 

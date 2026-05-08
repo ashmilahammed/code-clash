@@ -13,6 +13,8 @@ import { ReportMessageDTO } from "../../application/dto/report/ReportMessageDTO"
 import { GetReportsQueryDTO } from "../../application/dto/report/GetReportsQueryDTO";
 import { BanUserFromReportDTO } from "../../application/dto/report/BanUserFromReportDTO";
 import { ReportReason } from "../../domain/entities/chat/Report";
+import { asyncHandler } from "../utils/asyncHandler";
+import { AppError } from "../common/AppError";
 
 
 interface AuthUserContext {
@@ -30,171 +32,124 @@ export class ReportController {
     ) { }
 
 
-    reportMessage = async (req: Request, res: Response) => {
-        try {
-            const user = res.locals.user as AuthUserContext | undefined;
+    reportMessage = asyncHandler(async (req: Request, res: Response) => {
+        const user = res.locals.user as AuthUserContext | undefined;
 
-            if (!user) {
-                return res
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .json(ApiResponse.error(MESSAGES.AUTH.UNAUTHORIZED));
-            }
-
-            const { messageId, reason } = req.body;
-
-            if (!messageId || !reason) {
-                return res
-                    .status(HttpStatus.BAD_REQUEST)
-                    .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-            }
-
-            // validation
-            const validReasons: ReportReason[] = [
-                "Spam",
-                "Abuse",
-                "Harassment",
-                "Inappropriate",
-                "Other",
-            ];
-
-            if (!validReasons.includes(reason)) {
-                return res
-                    .status(HttpStatus.BAD_REQUEST)
-                    .json(ApiResponse.error("Invalid report reason"));
-            }
-
-            const dto: ReportMessageDTO = {
-                reportedById: user.userId,
-                messageId,
-                reason,
-            };
-
-            const report = await this._reportMessageUseCase.execute(dto);
-
-            return res
-                .status(HttpStatus.CREATED)
-                .json(ApiResponse.success("Message reported successfully", report));
-
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
+        if (!user) {
+            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
-    };
 
+        const { messageId, reason } = req.body;
 
-
-
-    getAllReports = async (req: Request, res: Response) => {
-        try {
-
-            const dto: GetReportsQueryDTO = {
-                page: Number(req.query.page ?? 1),
-                limit: Number(req.query.limit ?? 8),
-            };
-
-            if (typeof req.query.status === "string") {
-                dto.status = req.query.status;
-            }
-
-            const result = await this._getAllReportsUseCase.execute(
-                dto.page,
-                dto.limit,
-                dto.status
-            );
-
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, result));
-
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
+        if (!messageId || !reason) {
+            throw new AppError(MESSAGES.COMMON.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         }
-    };
 
+        // validation
+        const validReasons: ReportReason[] = [
+            "Spam",
+            "Abuse",
+            "Harassment",
+            "Inappropriate",
+            "Other",
+        ];
 
-
-    banUser = async (req: Request, res: Response) => {
-        try {
-            const { userId, days, reason, reportId } = req.body;
-
-            if (!userId || !days || !reason || !reportId) {
-                return res
-                    .status(HttpStatus.BAD_REQUEST)
-                    .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-            }
-
-            const dto: BanUserFromReportDTO = {
-                userId,
-                days,
-                reason,
-                reportId,
-            };
-
-            await this._banUserUseCase.execute(dto);
-
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success("User banned successfully"));
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
+        if (!validReasons.includes(reason)) {
+            throw new AppError("Invalid report reason", HttpStatus.BAD_REQUEST);
         }
-    };
+
+        const dto: ReportMessageDTO = {
+            reportedById: user.userId,
+            messageId,
+            reason,
+        };
+
+        const report = await this._reportMessageUseCase.execute(dto);
+
+        res
+            .status(HttpStatus.CREATED)
+            .json(ApiResponse.success("Message reported successfully", report));
+    });
 
 
-    dismissReport = async (req: Request, res: Response) => {
-        try {
-            const { reportId } = req.params;
 
-            if (!reportId) {
-                return res
-                    .status(HttpStatus.BAD_REQUEST)
-                    .json(ApiResponse.error("Report ID is required"));
-            }
 
-            await this._dismissReportUseCase.execute(reportId);
+    getAllReports = asyncHandler(async (req: Request, res: Response) => {
+        const dto: GetReportsQueryDTO = {
+            page: Number(req.query.page ?? 1),
+            limit: Number(req.query.limit ?? 8),
+        };
 
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success("Report dismissed successfully"));
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
+        if (typeof req.query.status === "string") {
+            dto.status = req.query.status;
         }
-    };
+
+        const result = await this._getAllReportsUseCase.execute(
+            dto.page,
+            dto.limit,
+            dto.status
+        );
+
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, result));
+    });
 
 
 
-    getReportedMessage = async (req: Request, res: Response) => {
-        try {
-            const { messageId } = req.params;
+    banUser = asyncHandler(async (req: Request, res: Response) => {
+        const { userId, days, reason, reportId } = req.body;
 
-            if (!messageId) {
-                return res
-                    .status(HttpStatus.BAD_REQUEST)
-                    .json(ApiResponse.error("Message ID is required"));
-            }
-
-            const message = await this._getMessageByIdUseCase.execute(messageId);
-
-            if (!message) {
-                return res
-                    .status(HttpStatus.NOT_FOUND)
-                    .json(ApiResponse.error("Message not found"));
-            }
-
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, message));
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
+        if (!userId || !days || !reason || !reportId) {
+            throw new AppError(MESSAGES.COMMON.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         }
-    };
+
+        const dto: BanUserFromReportDTO = {
+            userId,
+            days,
+            reason,
+            reportId,
+        };
+
+        await this._banUserUseCase.execute(dto);
+
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success("User banned successfully"));
+    });
+
+
+    dismissReport = asyncHandler(async (req: Request, res: Response) => {
+        const { reportId } = req.params;
+
+        if (!reportId) {
+            throw new AppError("Report ID is required", HttpStatus.BAD_REQUEST);
+        }
+
+        await this._dismissReportUseCase.execute(reportId);
+
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success("Report dismissed successfully"));
+    });
+
+
+
+    getReportedMessage = asyncHandler(async (req: Request, res: Response) => {
+        const { messageId } = req.params;
+
+        if (!messageId) {
+            throw new AppError("Message ID is required", HttpStatus.BAD_REQUEST);
+        }
+
+        const message = await this._getMessageByIdUseCase.execute(messageId);
+
+        if (!message) {
+            throw new AppError("Message not found", HttpStatus.NOT_FOUND);
+        }
+
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.COMMON.FETCH_SUCCESS, message));
+    });
 }

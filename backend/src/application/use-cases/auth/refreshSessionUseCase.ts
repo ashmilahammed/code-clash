@@ -2,6 +2,9 @@ import { IUserCoreRepository } from "../../../domain/repositories/user/IUserCore
 import { IJwtService } from "../../../domain/services/IJwtService";
 import { JwtPayload } from "../../../domain/types/JwtPayload";
 import { IRefreshSessionUseCase } from "../../interfaces/auth/IRefreshSessionUseCase";
+import { AppError } from "../../../presentation/common/AppError";
+import { HttpStatus } from "../../../presentation/constants/httpStatus";
+import { MESSAGES } from "../../../presentation/constants/messages";
 
 export class RefreshSessionUseCase implements IRefreshSessionUseCase {
   constructor(
@@ -12,7 +15,7 @@ export class RefreshSessionUseCase implements IRefreshSessionUseCase {
 
   async execute(refreshToken: string) {
     if (!refreshToken) {
-      throw new Error("NO_REFRESH_TOKEN");
+      throw new AppError(MESSAGES.AUTH.SESSION_EXPIRED, HttpStatus.UNAUTHORIZED);
     }
 
     // Verify refresh token
@@ -21,19 +24,16 @@ export class RefreshSessionUseCase implements IRefreshSessionUseCase {
 
     const user = await this._userRepo.findById(payload.userId);
     if (!user) {
-      throw new Error("USER_NOT_FOUND");
+      throw new AppError(MESSAGES.COMMON.NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
-    // if (user.refreshToken !== refreshToken) {
-    //   throw new Error("INVALID_SESSION");
-    // }
     // Validate refresh token via domain
     if (!user.isRefreshTokenValid(refreshToken)) {
-      throw new Error("INVALID_SESSION");
+      throw new AppError(MESSAGES.AUTH.SESSION_EXPIRED, HttpStatus.UNAUTHORIZED);
     }
 
     if (user.status === "blocked") {
-      throw new Error("ACCOUNT_BLOCKED");
+      throw new AppError(MESSAGES.AUTH.ACCOUNT_BLOCKED, HttpStatus.FORBIDDEN);
     }
 
     const newAccessToken = this._jwtService.generateAccessToken({
@@ -43,4 +43,4 @@ export class RefreshSessionUseCase implements IRefreshSessionUseCase {
 
     return { accessToken: newAccessToken };
   }
-}
+}

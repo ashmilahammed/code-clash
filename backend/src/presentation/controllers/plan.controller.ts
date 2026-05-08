@@ -10,6 +10,8 @@ import { UpdatePlanDTO } from "../../application/dto/plan/UpdatePlanDTO";
 import { ApiResponse } from "../common/ApiResponse";
 import { HttpStatus } from "../constants/httpStatus";
 import { MESSAGES } from "../constants/messages";
+import { asyncHandler } from "../utils/asyncHandler";
+import { AppError } from "../common/AppError";
 
 
 
@@ -22,118 +24,81 @@ export class PlanController {
     ) { }
 
 
-    createPlan = async (req: Request, res: Response) => {
-        try {
-            const { name, description, price, duration, features, status } = req.body;
+    createPlan = asyncHandler(async (req: Request, res: Response) => {
+        const { name, description, price, duration, features, status } = req.body;
 
-            if (!name || price === undefined || duration === undefined) {
-                return res
-                    .status(HttpStatus.BAD_REQUEST)
-                    .json(ApiResponse.error(MESSAGES.COMMON.BAD_REQUEST));
-            }
-
-            const dto: CreatePlanDTO = {
-                name,
-                description,
-                price,
-                duration,
-                features,
-                status,
-            };
-
-            const plan = await this._createPlanUseCase.execute(dto);
-
-            return res
-                .status(HttpStatus.CREATED)
-                .json(ApiResponse.success(MESSAGES.PLAN.CREATED, plan));
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
+        if (!name || price === undefined || duration === undefined) {
+            throw new AppError(MESSAGES.COMMON.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         }
-    };
+
+        const dto: CreatePlanDTO = {
+            name,
+            description,
+            price,
+            duration,
+            features,
+            status,
+        };
+
+        const plan = await this._createPlanUseCase.execute(dto);
+
+        res
+            .status(HttpStatus.CREATED)
+            .json(ApiResponse.success(MESSAGES.PLAN.CREATED, plan));
+    });
 
 
-    getPlans = async (req: Request, res: Response) => {
-        try {
-            const plans = await this._getPlansUseCase.execute();
+    getPlans = asyncHandler(async (req: Request, res: Response) => {
+        const plans = await this._getPlansUseCase.execute();
 
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.PLAN.FETCH_SUCCESS, plans));
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.PLAN.FETCH_SUCCESS, plans));
+    });
+
+
+
+    getPublicPlans = asyncHandler(async (req: Request, res: Response) => {
+        const plans = await this._getPlansUseCase.execute();
+
+        const activePlans = plans.filter(
+            (plan) => plan.status === "Active"
+        );
+
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.PLAN.FETCH_SUCCESS, activePlans));
+    });
+
+
+    updatePlan = asyncHandler(async (req: Request, res: Response) => {
+        const { id } = req.params;
+
+        if (!id) {
+            throw new AppError(MESSAGES.PLAN.ID_REQUIRED, HttpStatus.BAD_REQUEST);
         }
-    };
+
+        const dto: UpdatePlanDTO = req.body;
+
+        const updated = await this._updatePlanUseCase.execute(id, dto);
+
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.PLAN.UPDATED, updated));
+    });
 
 
+    deletePlan = asyncHandler(async (req: Request, res: Response) => {
+        const { id } = req.params;
 
-    getPublicPlans = async (req: Request, res: Response) => {
-        try {
-            const plans = await this._getPlansUseCase.execute();
-
-            const activePlans = plans.filter(
-                (plan) => plan.status === "Active"
-            );
-
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.PLAN.FETCH_SUCCESS, activePlans));
-
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.INTERNAL_ERROR));
+        if (!id) {
+            throw new AppError(MESSAGES.PLAN.ID_REQUIRED, HttpStatus.BAD_REQUEST);
         }
-    };
 
+        await this._deletePlanUseCase.execute(id);
 
-    updatePlan = async (req: Request, res: Response) => {
-        try {
-            const { id } = req.params;
-
-            if (!id) {
-                return res
-                    .status(HttpStatus.BAD_REQUEST)
-                    .json(ApiResponse.error(MESSAGES.PLAN.ID_REQUIRED));
-            }
-
-            const dto: UpdatePlanDTO = req.body;
-
-            const updated = await this._updatePlanUseCase.execute(id, dto);
-
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.PLAN.UPDATED, updated));
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
-        }
-    };
-
-
-    deletePlan = async (req: Request, res: Response) => {
-        try {
-            const { id } = req.params;
-
-            if (!id) {
-                return res
-                    .status(HttpStatus.BAD_REQUEST)
-                    .json(ApiResponse.error(MESSAGES.PLAN.ID_REQUIRED));
-            }
-
-            await this._deletePlanUseCase.execute(id);
-
-            return res
-                .status(HttpStatus.OK)
-                .json(ApiResponse.success(MESSAGES.PLAN.DELETED));
-        } catch (err: unknown) {
-            return res
-                .status(HttpStatus.BAD_REQUEST)
-                .json(ApiResponse.error(err instanceof Error ? err.message : MESSAGES.COMMON.BAD_REQUEST));
-        }
-    };
-}
+        res
+            .status(HttpStatus.OK)
+            .json(ApiResponse.success(MESSAGES.PLAN.DELETED));
+    });
+}
