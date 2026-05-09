@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Lock, Eye, EyeOff } from "lucide-react";
+import { Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { changePasswordApi } from "../../api/authApi";
+import { getAuthErrorMessage } from "../../utils/getAuthErrorMessage";
 
 const SecuritySettings = () => {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -62,7 +63,7 @@ const SecuritySettings = () => {
       setNewPassword("");
       setConfirmPassword("");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to update password");
+      setError(getAuthErrorMessage(err));
     } finally {
       setIsLoading(false);
     }
@@ -80,8 +81,9 @@ const SecuritySettings = () => {
 
         {/* Error */}
         {error && (
-          <div className="mb-6 p-3 text-sm text-red-200 bg-red-500/20 border border-red-400/30 rounded-lg text-center">
-            {error}
+          <div className="mb-6 flex items-center gap-3 p-4 text-sm text-red-200 bg-red-500/10 border border-red-500/20 rounded-xl animate-in fade-in zoom-in-95 duration-200">
+            <AlertCircle size={18} className="text-red-500 shrink-0" />
+            <p className="font-medium">{error}</p>
           </div>
         )}
 

@@ -21,6 +21,7 @@ export const AUTH_ERROR_MESSAGES: Record<string, string> = {
   UNAUTHORIZED: "You are not authorized",
   FORBIDDEN: "Access denied",
 
+  CURRENT_PASSWORD_INCORRECT: "The current password you entered is incorrect.",
   DEFAULT: "Something went wrong. Please try again",
 };
 

@@ -41,6 +41,10 @@ export function getAuthErrorMessage(err: unknown): string {
     return AUTH_ERROR_MESSAGES.INVALID_CREDENTIALS;
   }
 
+  if (code === "CURRENT_PASSWORD_INCORRECT") {
+    return AUTH_ERROR_MESSAGES.CURRENT_PASSWORD_INCORRECT;
+  }
+
   // Register
   if (code === "EMAIL_ALREADY_REGISTERED") {
     return AUTH_ERROR_MESSAGES.EMAIL_ALREADY_REGISTERED;
