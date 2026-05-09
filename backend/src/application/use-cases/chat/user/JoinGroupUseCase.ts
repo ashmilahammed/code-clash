@@ -29,6 +29,10 @@ export class JoinGroupUseCase implements IJoinGroupUseCase {
             throw new Error("Group not found");
         }
 
+        if (conversation.status !== 'active') {
+            throw new Error("This group is no longer active");
+        }
+
         if (conversation.type !== 'group') {
             throw new Error("Cannot join a direct message conversation");
         }

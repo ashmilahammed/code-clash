@@ -50,4 +50,5 @@ export class PlanRepository
   async delete(id: string): Promise<void> {
     await this.deleteByIdRaw(id);
   }
+
 }

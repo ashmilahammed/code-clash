@@ -27,9 +27,19 @@ export class LeaveGroupUseCase implements ILeaveGroupUseCase {
 
         const updatedParticipants = conversation.participants.filter(id => id.toString() !== userId.toString());
 
-        const updatedConversation = await this._conversationRepository.update(conversationId, {
+        const updateData: Partial<Conversation> = {
             participants: updatedParticipants
-        });
+        };
+
+        if (updatedParticipants.length === 0) {
+            updateData.status = 'inactive';
+            updateData.adminId = null;
+        } else if (conversation.adminId === userId) {
+            // Admin is leaving, assign new admin from remaining participants
+            updateData.adminId = updatedParticipants[0];
+        }
+
+        const updatedConversation = await this._conversationRepository.update(conversationId, updateData);
 
         if (!updatedConversation) {
             throw new Error("Failed to leave group");

@@ -4,14 +4,14 @@ export class Conversation {
     constructor(
         public readonly id: string | undefined,
         public readonly type: ConversationType,
-        public readonly participants: string[],
-        public readonly adminId?: string | null, 
-        public readonly name?: string | null, 
-        public readonly description?: string | null,
-        public readonly memberLimit?: number | null, 
-        public readonly isPrivate?: boolean, 
+        public participants: string[],
+        public adminId?: string | null, 
+        public name?: string | null, 
+        public description?: string | null,
+        public memberLimit?: number | null, 
+        public isPrivate?: boolean, 
         public status: 'active' | 'inactive' = 'active', // for all conversations,user by admin
-        public readonly lastMessageAt?: Date | null,
+        public lastMessageAt?: Date | null,
         public readonly createdAt?: Date,
         public readonly updatedAt?: Date,
         public readonly participantDetails?: { id: string; username: string; avatar?: string }[]
@@ -22,25 +22,27 @@ export class Conversation {
 
 
     private validate() {
-        if (!this.participants || this.participants.length === 0) {
-            throw new Error("A conversation must have at least 1 participant");
-        }
-
-        if (this.type === 'direct' && this.participants.length !== 2) {
-            throw new Error("Direct conversations must have exactly 2 participants");
-        }
-
-        if (this.type === 'group') {
-            if (!this.name) {
-                throw new Error("Group conversations must have a name");
+        if (this.status === 'active') {
+            if (!this.participants || this.participants.length === 0) {
+                throw new Error("A conversation must have at least 1 participant");
             }
 
-            if (!this.adminId) {
-                throw new Error("Group conversations must have an admin");
+            if (this.type === 'direct' && this.participants.length !== 2) {
+                throw new Error("Direct conversations must have exactly 2 participants");
             }
 
-            if (this.memberLimit && this.participants.length > this.memberLimit) {
-                throw new Error(`Group member limit of ${this.memberLimit} exceeded`);
+            if (this.type === 'group') {
+                if (!this.name) {
+                    throw new Error("Group conversations must have a name");
+                }
+
+                if (!this.adminId) {
+                    throw new Error("Group conversations must have an admin");
+                }
+
+                if (this.memberLimit && this.participants.length > this.memberLimit) {
+                    throw new Error(`Group member limit of ${this.memberLimit} exceeded`);
+                }
             }
         }
     }

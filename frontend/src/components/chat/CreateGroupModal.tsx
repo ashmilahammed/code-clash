@@ -97,8 +97,8 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ onClose }) => {
     };
 
     const filteredUsers = allUsers.filter(u =>
-        u.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        u.email.toLowerCase().includes(searchQuery.toLowerCase())
+        (u.username?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+        (u.email?.toLowerCase() || '').includes(searchQuery.toLowerCase())
     );
 
     return (
@@ -221,7 +221,7 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ onClose }) => {
                                                         {user.avatar ? (
                                                             <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
                                                         ) : (
-                                                            <span className="font-bold text-slate-300">{user.username.charAt(0).toUpperCase()}</span>
+                                                            <span className="font-bold text-slate-300">{(user.username || '?').charAt(0).toUpperCase()}</span>
                                                         )}
                                                     </div>
                                                     <div className="text-left leading-tight">

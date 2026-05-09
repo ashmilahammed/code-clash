@@ -64,8 +64,8 @@ const InviteModal: React.FC<InviteModalProps> = ({ onClose }) => {
     const availableUsers = allUsers.filter(u => !currentParticipantSet.has(u.id));
 
     const filteredUsers = availableUsers.filter(u =>
-        u.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        u.email.toLowerCase().includes(searchQuery.toLowerCase())
+        (u.username?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+        (u.email?.toLowerCase() || '').includes(searchQuery.toLowerCase())
     );
 
     return (
@@ -127,7 +127,7 @@ const InviteModal: React.FC<InviteModalProps> = ({ onClose }) => {
                                                         {user.avatar ? (
                                                             <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
                                                         ) : (
-                                                            <span className="font-bold text-slate-300">{user.username.charAt(0).toUpperCase()}</span>
+                                                            <span className="font-bold text-slate-300">{(user.username || '?').charAt(0).toUpperCase()}</span>
                                                         )}
                                                     </div>
                                                     <div className="text-left leading-tight">

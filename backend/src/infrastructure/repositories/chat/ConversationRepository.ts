@@ -46,7 +46,8 @@ export class ConversationRepository implements IConversationRepository {
         const docs = await ConversationModel.find({
             type: 'group',
             isPrivate: false,
-            status: 'active'
+            status: 'active',
+            'participants.0': { $exists: true }
         }).populate('participants', 'username avatar').sort({ createdAt: -1 });
 
         return docs.map(ConversationMapper.toDomain);

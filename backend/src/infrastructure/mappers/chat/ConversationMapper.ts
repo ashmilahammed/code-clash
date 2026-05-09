@@ -9,14 +9,18 @@ export class ConversationMapper {
     static toDomain(doc: IConversationDoc): Conversation {
         const isPopulated = doc.participants && doc.participants.length > 0 && typeof doc.participants[0] === 'object';
 
-        const participantDetails = isPopulated ? (doc.participants as unknown as Array<{ _id: Types.ObjectId; username: string; avatar?: string }>).map(p => ({
-            id: p._id.toString(),
-            username: p.username,
-            ...(p.avatar !== undefined && { avatar: p.avatar })
-        })) : undefined;
+        const participantDetails = isPopulated ? (doc.participants as unknown as Array<{ _id: Types.ObjectId; username: string; avatar?: string }>)
+            .filter(p => p !== null)
+            .map(p => ({
+                id: p._id.toString(),
+                username: p.username,
+                ...(p.avatar !== undefined && { avatar: p.avatar })
+            })) : undefined;
 
         const participantIds = isPopulated 
-            ? (doc.participants as unknown as Array<{ _id: Types.ObjectId }>).map(p => p._id.toString())
+            ? (doc.participants as unknown as Array<{ _id: Types.ObjectId }>)
+                .filter(p => p !== null)
+                .map(p => p._id.toString())
             : doc.participants.map(p => p.toString());
 
         return new Conversation(
