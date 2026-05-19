@@ -28,7 +28,6 @@
 - **Runtime:** Node.js + Express.js
 - **Language:** TypeScript
 - **Database:** MongoDB (via Mongoose)
-- **Caching & Message Broker:** Redis (via `ioredis`)
 - **Real-time Communication:** `socket.io`
 - **Payments:** Razorpay
 - **File Storage:** Cloudinary
@@ -53,7 +52,6 @@ The backend strictly adheres to **Clean Architecture** and **SOLID** principles 
 Before you begin, ensure you have the following installed:
 - **Node.js** (v18.0.0 or higher)
 - **MongoDB** (Local instance or MongoDB Atlas cluster)
-- **Redis** (Local instance or cloud Redis)
 
 ### Installation & Setup
 
@@ -99,7 +97,6 @@ NODE_ENV=development
 
 # Database
 MONGO_URI=your_mongodb_connection_string
-REDIS_URL=your_redis_connection_string
 
 # Authentication
 JWT_SECRET=your_jwt_secret_key
@@ -134,7 +131,7 @@ VITE_GOOGLE_CLIENT_ID=your_google_client_id
 
 ## 🐳 Docker Support
 
-The project includes a `docker-compose.yml` file for simplified orchestration of the underlying services (like Redis or MongoDB) or full application containerization.
+The project includes a `docker-compose.yml` file for simplified orchestration of the underlying services (like MongoDB) or full application containerization.
 
 To spin up the environment using Docker:
 ```bash
