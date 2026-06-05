@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import { registerApi } from "../../api/authApi";
+import { GoogleLogin } from "@react-oauth/google";
+import { registerApi, googleLoginApi } from "../../api/authApi";
+import { useAuthStore } from "../../store/useAuthStore";
 
 import { getAuthErrorMessage } from "../../utils/getAuthErrorMessage";
 
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
+  const setCredentials = useAuthStore((s) => s.setCredentials);
 
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
@@ -18,7 +21,31 @@ const Register: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Google signup/login
+  const handleGoogleLogin = async (credential: string) => {
+    try {
+      setLoading(true);
+      setError(null);
 
+      const res = await googleLoginApi({ googleToken: credential });
+
+      setCredentials({
+        user: res.data.data.user,
+        accessToken: res.data.data.accessToken,
+      });
+
+      if (res.data.data.user.role === "admin") {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate("/dashboard", { replace: true });
+      }
+
+    } catch (err: unknown) {
+      setError(getAuthErrorMessage(err));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   //
   const validate = () => {
@@ -159,6 +186,28 @@ if(xp > 100){
               {error}
             </div>
           )}
+
+          {/* Google */}
+          <div className="mb-6 flex justify-center">
+            <GoogleLogin
+              onSuccess={(credentialResponse) => {
+                if (credentialResponse.credential) {
+                  handleGoogleLogin(credentialResponse.credential);
+                }
+              }}
+              onError={() => setError("Google registration failed")}
+              width="380"
+              theme="filled_blue"
+              size="large"
+            />
+          </div>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 text-slate-500 text-sm mb-6">
+            <div className="flex-1 h-px bg-slate-800" />
+            or continue with email
+            <div className="flex-1 h-px bg-slate-800" />
+          </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
